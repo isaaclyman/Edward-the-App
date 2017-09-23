@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="app">
     <div class="app-header">
       <div class="app-header--content">
         <img class="app-header--logo" src="../static/logo.svg">
@@ -9,8 +9,9 @@
       </div>
     </div>
     <div class="app-header--after"></div>
-    <div class=""
-    <router-view></router-view>
+    <div class="page">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -28,6 +29,12 @@ export default {
 </script>
 
 <style scoped>
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .app-header {
   background-color: #FFF;
   box-shadow: 0 10px 20px rgba(0,0,0,0.09), 0 6px 6px rgba(0,0,0,0.11);
@@ -65,4 +72,9 @@ export default {
   height: 28px;
 }
 
+.page {
+  display: flex;
+  flex: 1;
+  padding: 10px 25px;
+}
 </style>

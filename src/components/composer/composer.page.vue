@@ -1,6 +1,6 @@
 <template>
   <div>
-    
+
   </div>
 </template>
 
@@ -14,6 +14,7 @@ export default {
   data () {
     return {}
   },
+  name: 'composer',
   props: {}
 }
 </script>

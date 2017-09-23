@@ -9,11 +9,11 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/compose'
+      redirect: '/write'
     },
     {
-      path: '/compose',
-      name: 'Compose',
+      path: '/write',
+      name: 'Write',
       component: Composer
     }
   ]

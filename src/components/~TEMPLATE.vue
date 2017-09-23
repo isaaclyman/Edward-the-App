@@ -4,18 +4,19 @@
 
 <script>
 export default {
-    beforeCreate() {
+    beforeCreate () {
 
     },
     components: {},
     computed: {},
-    data() {
+    data () {
         return {}
     },
+    name: 'x',
     props: {}
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>

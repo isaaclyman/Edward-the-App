@@ -1,28 +1,31 @@
 <template>
   <div class="composer">
-    <div class="editor">
+    <div class="editor-wrap">
+      <text-editor></text-editor>
+    </div>
+    <div class="map-wrap">
 
     </div>
-    <div class="map">
-
-    </div>
-    <div class="sidebar">
+    <div class="sidebar-wrap">
 
     </div>
   </div>
 </template>
 
 <script>
+import Editor from './editor.vue'
+
 export default {
   beforeCreate () {
 
   },
-  components: {},
+  components: {
+    TextEditor: Editor
+  },
   computed: {},
   data () {
     return {}
   },
-  name: 'composer',
   props: {}
 }
 </script>
@@ -34,26 +37,26 @@ export default {
   min-height: 300px;
 }
 
-.editor {
+.editor-wrap {
   display: flex;
   flex: 1;
 }
 
-.map {
+.map-wrap {
   display: flex;
   height: 100%;
   width: 120px;
 }
 
-.sidebar {
+.sidebar-wrap {
   display: flex;
   height: 100%;
   width: 300px;
 }
 
 /* MOBILE */
-@media (max-width: 500px) {
-  .map {
+@media (max-width: 700px) {
+  .map-wrap {
     display: none;
   }
 }

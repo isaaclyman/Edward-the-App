@@ -1,19 +1,19 @@
 <template>
-  
+
 </template>
 
 <script>
 export default {
-    beforeCreate () {
+  beforeCreate () {
 
-    },
-    components: {},
-    computed: {},
-    data () {
-        return {}
-    },
-    name: 'x',
-    props: {}
+  },
+  components: {},
+  computed: {},
+  data () {
+    return {}
+  },
+  name: 'x',
+  props: {}
 }
 </script>
 

@@ -17,3 +17,7 @@ button {
   cursor: pointer;
   padding: 6px 10px;
 }
+
+textarea {
+  border: 1px solid #CCC;
+}

@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <div class="app-header">
-      <div class="app-header--content">sidebar</div>
+      <div class="app-header--content">
+        <img class="app-header--logo" src="../static/logo.svg">
+      </div>
     </div>
     <div class="app-header--after"></div>
     <router-view></router-view>
@@ -23,16 +25,18 @@ html, body {
 }
 
 .app-header {
-  background-color: #9fa8da;
+  background-color: #FFF;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.09), 0 6px 6px rgba(0,0,0,0.11);
   height: 45px;
-  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-top: 10px;
   width: 100%;
 }
 
 .app-header--after {
-  background: linear-gradient(to bottom, #9fa8da 10%, rgba(255,255,255,0) 90%);
+  background: linear-gradient(to bottom, #FFF 10%, rgba(255,255,255,0) 90%);
   display: block;
-  height: 18px;
+  height: 8px;
   width: 100%;
 }
 
@@ -45,6 +49,10 @@ html, body {
   font-size: 22px;
   height: 100%;
   justify-content: center;
+}
+
+.app-header--logo {
+  height: 28px;
 }
 
 </style>

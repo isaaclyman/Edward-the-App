@@ -2,6 +2,7 @@
 
 html, body {
   background-color: #F0F0F0;
+  font-family: 'Asap Condensed', sans-serif;
   height: 100%;
   margin: 0;
   padding: 0;
@@ -10,6 +11,10 @@ html, body {
 
 
 /* TAGS */
+
+button, div, input, optgroup, select, span, textarea {
+  font-family: 'Asap Condensed', sans-serif;
+}
 
 button {
   background-color: transparent;

@@ -1,46 +1,38 @@
 <template>
-  <div id="editor" class="editor">
-    
-  </div>
+  <quill-editor :content="content" @update:content="updateContent"></quill-editor>
 </template>
 
 <script>
-import Quill from 'quill'
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
+import isEqual from 'lodash/isEqual'
+import QuillEditor from '../app/quillEditor.vue'
+import { UPDATE_CONTENT } from './composer.store'
 
 export default {
-  mounted () {
-    const quill = new Quill('#editor', {
-      theme: 'snow'
-    })
-
-    console.log(quill)
+  components: {
+    QuillEditor
   },
-  components: {},
-  computed: {},
+  computed: {
+    content () {
+      return this.$store.state.composer.deltaContent
+    }
+  },
   data () {
     return {}
   },
-  props: {}
+  methods: {
+    updateContent (delta) {
+      const oldDelta = this.$store.state.composer.deltaContent
+
+      if (isEqual(delta, oldDelta)) {
+        return
+      }
+
+      this.$store.commit(UPDATE_CONTENT, delta)
+    }
+  }
 }
 </script>
 
 <style>
-.editor {
-  display: flex;
-  height: 100%;
-  width: 100%;
-}
 
-.editor--textarea {
-  border-bottom: none;
-  border-top: none;
-  display: flex;
-  font-family: 'Libre Baskerville', serif;
-  height: 100%;
-  padding: 12px;
-  resize: none;
-  width: 100%;
-}
 </style>

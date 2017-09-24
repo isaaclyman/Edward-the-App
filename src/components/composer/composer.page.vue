@@ -16,17 +16,12 @@
 import Editor from './editor.vue'
 
 export default {
-  beforeCreate () {
-
-  },
   components: {
     TextEditor: Editor
   },
-  computed: {},
   data () {
     return {}
-  },
-  props: {}
+  }
 }
 </script>
 

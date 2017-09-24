@@ -17,8 +17,6 @@
 
 <script>
 import MainMenu from './components/app/mainMenu.vue'
-import 'normalize.css/normalize.css'
-import './main.css'
 
 export default {
   components: {
@@ -75,6 +73,6 @@ export default {
 .page {
   display: flex;
   flex: 1;
-  padding: 10px 25px;
+  padding: 14px 25px;
 }
 </style>

@@ -1,13 +1,25 @@
 <template>
   <div class="wrap">
     <div class="map" v-html="mapHtml" @click="mapClick"></div>
-    <button class="help-icon" v-html="helpIconSvg"></button>
+    <button class="help-icon" v-html="helpIconSvg" @click="helpClick"></button>
+    <div style="display: none" ref="helpModal">
+      <div class="help">
+        <title>Tip</title>
+        <p>This is the mini-map. It's the 10,000 foot view of your document. As you write, you'll see it fill up.</p>
+        <p>It has a couple of helpful features:</p>
+        <ul>
+          <li>If you click a paragraph in the mini-map, you'll jump to that paragraph in the main window.</li>
+          <li>If you highlight a word in the editor, every appearance of that word will be highlighted in the mini-map.</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import debounce from 'lodash/debounce'
 import Octicons from 'octicons'
+import swal from 'sweetalert'
 
 export default {
   data () {
@@ -17,10 +29,17 @@ export default {
         height: 20,
         width: 20
       }),
+      helpNode: null,
       mapHtml: ''
     }
   },
   methods: {
+    helpClick () {
+      swal({
+        title: 'Tip',
+        content: this.helpNode
+      })
+    },
     mapClick ({ target }) {
       if (![...target.parentNode.classList].includes('map')) {
         return
@@ -40,6 +59,7 @@ export default {
   },
   mounted () {
     this.$nextTick(this.updateMap)
+    this.helpNode = this.$refs.helpModal.querySelector('.help')
   },
   props: {
     dataStream: {
@@ -95,6 +115,14 @@ export default {
   top: 6px;
   transition: opacity 200ms;
   width: 20px;
+}
+
+.help {
+  font-size: 14px;
+}
+
+.help /deep/ li {
+  text-align: left;
 }
 
 .wrap:hover .help-icon {

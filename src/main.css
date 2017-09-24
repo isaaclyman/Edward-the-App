@@ -16,7 +16,7 @@ button, div, input, optgroup, select, span, textarea {
   font-family: 'Asap Condensed', sans-serif;
 }
 
-p {
+p, li {
   font-family: 'Libre Baskerville', serif;
 }
 
@@ -25,6 +25,10 @@ button {
   border: 1px solid #CCC;
   cursor: pointer;
   padding: 6px 10px;
+}
+
+li {
+  margin-bottom: 10px;
 }
 
 textarea {

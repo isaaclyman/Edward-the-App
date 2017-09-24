@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce'
 import isEqual from 'lodash/isEqual'
 import Quill from 'quill'
 import 'quill/dist/quill.core.css'
@@ -43,14 +44,17 @@ export default {
       this.quill.setContents(this.content, 'api')
     }
 
-    this.quill.on('text-change', () => {
+    this.quill.on('text-change', debounce(() => {
       this.$emit('update:content', this.quill.getContents())
-    })
+    }, 500))
   },
   name: 'quill-editor',
   props: {
     content: {
       required: true
+    },
+    scrollTo: {
+      type: Number
     }
   },
   watch: {
@@ -60,6 +64,11 @@ export default {
       }
 
       this.quill.setContents(delta, 'api')
+    },
+    scrollTo (index) {
+      const editor = this.$refs.editor.querySelector('.ql-editor')
+      const element = editor.childNodes[index]
+      element.scrollIntoView(true)
     }
   }
 }
@@ -73,13 +82,22 @@ export default {
 </style>
 
 <style>
-.ql-editor {
+.ql-toolbar {
+  background-color: #F0F0F0;
+}
+
+.ql-container {
   background-color: #FFF;
+}
+
+.ql-editor {
+  background-color: transparent;
   font-family: 'Libre Baskerville', serif;
+  font-size: 12px;
 }
 
 .ql-editor p {
-  padding-bottom: 2px;
+  padding-bottom: 6px;
 }
 
 .ql-editor h1, .ql-editor h2, .ql-editor h3 {

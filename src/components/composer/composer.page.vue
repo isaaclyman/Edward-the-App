@@ -1,10 +1,11 @@
 <template>
   <div class="composer">
     <div class="editor-wrap">
-      <text-editor></text-editor>
+      <text-editor ref="textEditor" :scroll-to="scrollTo"></text-editor>
     </div>
     <div class="map-wrap">
-
+      <text-map :editor-element="editorElement" :data-stream="$store.state.composer.deltaContent"
+                @select="selectMap"></text-map>
     </div>
     <div class="sidebar-wrap">
 
@@ -13,14 +14,27 @@
 </template>
 
 <script>
-import Editor from './editor.vue'
+import TextEditor from './editor.vue'
+import TextMap from './map.vue'
 
 export default {
   components: {
-    TextEditor: Editor
+    TextEditor,
+    TextMap
   },
   data () {
-    return {}
+    return {
+      editorElement: null,
+      scrollTo: 0
+    }
+  },
+  methods: {
+    selectMap (index) {
+      this.scrollTo = index
+    }
+  },
+  mounted () {
+    this.editorElement = this.$refs.textEditor
   }
 }
 </script>
@@ -40,7 +54,7 @@ export default {
 .map-wrap {
   display: flex;
   height: 100%;
-  width: 120px;
+  width: 160px;
 }
 
 .sidebar-wrap {

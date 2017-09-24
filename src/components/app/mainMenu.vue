@@ -11,11 +11,6 @@
 import Octicons from 'octicons'
 
 export default {
-  beforeCreate () {
-
-  },
-  components: {},
-  computed: {},
   data () {
     return {
       routes: [{
@@ -44,9 +39,7 @@ export default {
     goToRoute (location) {
       this.$router.push(location)
     }
-  },
-  name: 'main-menu',
-  props: {}
+  }
 }
 </script>
 

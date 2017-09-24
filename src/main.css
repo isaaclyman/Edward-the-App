@@ -16,6 +16,10 @@ button, div, input, optgroup, select, span, textarea {
   font-family: 'Asap Condensed', sans-serif;
 }
 
+p {
+  font-family: 'Libre Baskerville', serif;
+}
+
 button {
   background-color: transparent;
   border: 1px solid #CCC;

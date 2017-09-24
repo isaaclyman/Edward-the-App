@@ -1,5 +1,7 @@
 <template>
-  <quill-editor :content="content" @update:content="updateContent"></quill-editor>
+  <div class="quill-wrap">
+    <quill-editor :scroll-to="scrollTo" :content="content" @update:content="updateContent"></quill-editor>
+  </div>
 </template>
 
 <script>
@@ -29,10 +31,19 @@ export default {
 
       this.$store.commit(UPDATE_CONTENT, delta)
     }
+  },
+  props: {
+    scrollTo: {
+      type: Number
+    }
   }
 }
 </script>
 
 <style>
-
+.quill-wrap {
+  height: 100%;
+  margin-right: 15px;
+  width: 100%;
+}
 </style>

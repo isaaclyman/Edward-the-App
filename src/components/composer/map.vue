@@ -81,6 +81,11 @@ export default {
     }, 250),
     mark (text) {
       this.markInstance.unmark()
+
+      if (text.length < 3) {
+        return
+      }
+
       this.markInstance.mark(text)
     }
   }

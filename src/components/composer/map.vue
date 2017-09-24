@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <div class="map" v-html="mapHtml" @click="mapClick"></div>
+    <div class="map" v-html="mapHtml" @click="mapClick" ref="map"></div>
     <button class="help-icon" v-html="helpIconSvg" @click="helpClick"></button>
     <div style="display: none" ref="helpModal">
       <div class="help">
@@ -18,6 +18,7 @@
 
 <script>
 import debounce from 'lodash/debounce'
+import Mark from 'mark.js'
 import Octicons from 'octicons'
 import swal from 'sweetalert'
 
@@ -30,7 +31,8 @@ export default {
         width: 20
       }),
       helpNode: null,
-      mapHtml: ''
+      mapHtml: '',
+      markInstance: null
     }
   },
   methods: {
@@ -60,6 +62,7 @@ export default {
   mounted () {
     this.$nextTick(this.updateMap)
     this.helpNode = this.$refs.helpModal.querySelector('.help')
+    this.markInstance = new Mark(this.$refs.map)
   },
   props: {
     dataStream: {
@@ -67,12 +70,19 @@ export default {
     },
     editorElement: {
       required: true
+    },
+    mark: {
+      type: String
     }
   },
   watch: {
     dataStream: debounce(function () {
       this.updateMap()
-    }, 250)
+    }, 250),
+    mark (text) {
+      this.markInstance.unmark()
+      this.markInstance.mark(text)
+    }
   }
 }
 </script>
@@ -133,5 +143,10 @@ export default {
 <style>
 .help-icon--svg {
   fill: #444;
+}
+
+mark {
+  background-color: #8bc34a;
+  pointer-events: none;
 }
 </style>

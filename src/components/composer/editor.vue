@@ -1,13 +1,14 @@
 <template>
   <div class="quill-wrap">
-    <quill-editor :scroll-to="scrollTo" :content="content" @update:content="updateContent"></quill-editor>
+    <quill-editor :scroll-to="scrollTo" :content="content" @update:content="updateContent"
+                  @update:selection="updateSelection" :mark="selection.text"></quill-editor>
   </div>
 </template>
 
 <script>
 import isEqual from 'lodash/isEqual'
 import QuillEditor from '../app/quillEditor.vue'
-import { UPDATE_CONTENT } from './composer.store'
+import { UPDATE_CONTENT, UPDATE_SELECTION } from './composer.store'
 
 export default {
   components: {
@@ -16,6 +17,9 @@ export default {
   computed: {
     content () {
       return this.$store.state.composer.deltaContent
+    },
+    selection () {
+      return this.$store.state.composer.selection
     }
   },
   data () {
@@ -30,6 +34,15 @@ export default {
       }
 
       this.$store.commit(UPDATE_CONTENT, delta)
+    },
+    updateSelection (selection) {
+      const oldSelection = this.$store.state.composer.selection
+
+      if (isEqual(selection, oldSelection)) {
+        return
+      }
+
+      this.$store.commit(UPDATE_SELECTION, selection)
     }
   },
   props: {

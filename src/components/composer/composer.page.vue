@@ -5,7 +5,7 @@
     </div>
     <div class="map-wrap">
       <text-map :editor-element="editorElement" :data-stream="$store.state.composer.deltaContent"
-                @select="selectMap"></text-map>
+                @select="selectMap" :mark="mark"></text-map>
     </div>
     <div class="sidebar-wrap">
 
@@ -21,6 +21,11 @@ export default {
   components: {
     TextEditor,
     TextMap
+  },
+  computed: {
+    mark () {
+      return this.$store.state.composer.selection.text
+    }
   },
   data () {
     return {

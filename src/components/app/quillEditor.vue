@@ -92,7 +92,19 @@ export default {
       'clean'
     ]]
 
+    const allowedFormats = [
+      'size',
+      'bold',
+      'italic',
+      'underline',
+      'strikethrough',
+      'list',
+      'blockquote',
+      'indent'
+    ]
+
     this.quill = new Quill(this.$refs.editor, {
+      formats: allowedFormats,
       modules: {
         toolbar: toolbarOptions
       },

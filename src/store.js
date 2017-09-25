@@ -5,10 +5,12 @@ import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 
 import composer from './components/composer/composer.store.js'
+import outliner from './components/outliner/outliner.store.js'
 
 const store = new Vuex.Store({
   modules: {
-    composer
+    composer,
+    outliner
   },
   plugins: [createPersistedState()]
 })

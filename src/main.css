@@ -23,8 +23,26 @@ p, li {
 button {
   background-color: transparent;
   border: 1px solid #CCC;
+  border-radius: 4px;
   cursor: pointer;
   padding: 6px 10px;
+}
+
+button.button-green {
+  background-color: #8bc34a;
+  border: none;
+  color: #FFF;
+}
+
+button[disabled] {
+  background-color: #888;
+  cursor: default;
+}
+
+input {
+  border: 1px solid #e8cc84;
+  border-radius: 2px;
+  padding: 4px;
 }
 
 li {

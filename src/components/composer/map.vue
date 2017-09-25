@@ -2,8 +2,8 @@
   <div class="wrap">
     <div class="map" v-html="mapHtml" @click="mapClick" ref="map"></div>
     <button class="help-icon" v-html="helpIconSvg" @click="helpClick"></button>
-    <div style="display: none" ref="helpModal">
-      <div class="help">
+    <div style="display: none">
+      <div class="help" ref="helpModal">
         <title>Tip</title>
         <p>This is the mini-map. It's the 10,000 foot view of your document. As you write, you'll see it fill up.</p>
         <p>It has a couple of helpful features:</p>
@@ -61,7 +61,7 @@ export default {
   },
   mounted () {
     this.$nextTick(this.updateMap)
-    this.helpNode = this.$refs.helpModal.querySelector('.help')
+    this.helpNode = this.$refs.helpModal
     this.markInstance = new Mark(this.$refs.map)
   },
   props: {

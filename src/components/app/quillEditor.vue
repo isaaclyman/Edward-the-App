@@ -1,80 +1,20 @@
 <template>
   <div class="editor">
     <div ref="editor"></div>
-    <div class="search" :class="{ 'active': isSearchActive }">
-      <button v-html="caretLeftSvg" @click="searchPrev"></button>
-      <div class="search-results">{{ searchText }}</div>
-      <button v-html="caretRightSvg" @click="searchNext"></button>
-    </div>
   </div>
 </template>
 
 <script>
 import debounce from 'lodash/debounce'
-import escapeStringRegexp from 'escape-string-regexp'
-import findIndex from 'lodash/findIndex'
 import isEqual from 'lodash/isEqual'
-import Octicons from 'octicons'
 import Quill from 'quill'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 
 export default {
-  computed: {
-    isSearchActive () {
-      return !!this.searchRanges.length
-    },
-    searchText () {
-      return `${this.searchRangeCurrent + 1} / ${this.searchRanges.length} results`
-    }
-  },
   data () {
     return {
-      caretLeftSvg: Octicons['chevron-left'].toSVG({
-        class: 'search-icon--svg',
-        height: 20,
-        width: 20
-      }),
-      caretRightSvg: Octicons['chevron-right'].toSVG({
-        class: 'search-icon--svg',
-        height: 20,
-        width: 20
-      }),
-      quill: null,
-      searchRangeCurrent: -1,
-      searchRanges: []
-    }
-  },
-  methods: {
-    searchNext () {
-      if (!~this.searchRangeCurrent) {
-        return
-      }
-
-      const maxedOut = (this.searchRangeCurrent + 1) >= this.searchRanges.length
-
-      if (maxedOut) {
-        this.searchRangeCurrent = 0
-      } else {
-        this.searchRangeCurrent++
-      }
-
-      const nextRange = this.searchRanges[this.searchRangeCurrent]
-      this.quill.setSelection(nextRange.index, nextRange.length, 'api')
-    },
-    searchPrev () {
-      if (this.searchRangeCurrent < 0) {
-        return
-      }
-
-      if (this.searchRangeCurrent === 0) {
-        this.searchRangeCurrent = this.searchRanges.length - 1
-      } else {
-        this.searchRangeCurrent--
-      }
-
-      const prevRange = this.searchRanges[this.searchRangeCurrent]
-      this.quill.setSelection(prevRange.index, prevRange.length, 'api')
+      quill: null
     }
   },
   mounted () {
@@ -93,11 +33,12 @@ export default {
     ]]
 
     const allowedFormats = [
+      'header',
       'size',
       'bold',
       'italic',
       'underline',
-      'strikethrough',
+      'strike',
       'list',
       'blockquote',
       'indent'
@@ -146,9 +87,6 @@ export default {
     content: {
       required: true
     },
-    mark: {
-      type: String
-    },
     scrollTo: {
       type: Number
     },
@@ -164,19 +102,6 @@ export default {
 
       this.quill.setContents(delta, 'api')
     },
-    mark (text) {
-      if (text.length < 3) {
-        this.searchRangeCurrent = -1
-        this.searchRanges = []
-        return
-      }
-
-      const contents = this.quill.getText()
-      const search = new RegExp(escapeStringRegexp(text), 'gi')
-
-      this.searchRanges = getAllOccurrences(search, contents)
-      this.searchRangeCurrent = getRangeIndex(this.searchRanges, this.quill.getSelection())
-    },
     scrollTo (index) {
       const editor = this.$refs.editor.querySelector('.ql-editor')
       const element = editor.childNodes[index]
@@ -190,25 +115,6 @@ export default {
       this.quill.setSelection(selection, 'api')
     }
   }
-}
-
-function getAllOccurrences (regex, str) {
-  const ranges = []
-  let result
-  while ((result = regex.exec(str))) {
-    ranges.push({
-      index: result.index,
-      length: result[0].length
-    })
-  }
-
-  return ranges
-}
-
-function getRangeIndex (ranges, selection) {
-  return findIndex(ranges, (current) => {
-    return current.index === selection.index
-  })
 }
 </script>
 

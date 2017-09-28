@@ -1,7 +1,12 @@
 <template>
   <div class="wrap">
-    <div class="map" v-html="mapHtml" @click="mapClick" ref="map"></div>
+    <div class="map" @click="mapClick" ref="mapWrap">
+      <div v-html="mapHtml" ref="map"></div>
+    </div>
     <button class="help-icon" v-html="helpIconSvg" @click="helpClick"></button>
+    <text-magnifier :html="mapHtml" :magnify-el="mapNode" :mark="mark" :wrap-el="mapWrapNode"></text-magnifier>
+
+    <!-- [?] Modal -->
     <div style="display: none">
       <div class="help" ref="helpModal">
         <title>Tip</title>
@@ -17,12 +22,18 @@
 </template>
 
 <script>
+import './map-shared.css'
+
 import debounce from 'lodash/debounce'
 import Mark from 'mark.js'
 import Octicons from 'octicons'
 import swal from 'sweetalert'
+import TextMagnifier from './textMagnifier.vue'
 
 export default {
+  components: {
+    TextMagnifier
+  },
   data () {
     return {
       helpIconSvg: Octicons.question.toSVG({
@@ -32,7 +43,13 @@ export default {
       }),
       helpNode: null,
       mapHtml: '',
-      markInstance: null
+      mapNode: null,
+      mapWrapNode: null,
+      markInstance: null,
+      mouse: {
+        x: null,
+        y: null
+      }
     }
   },
   methods: {
@@ -63,6 +80,8 @@ export default {
     this.$nextTick(this.updateMap)
     this.helpNode = this.$refs.helpModal
     this.markInstance = new Mark(this.$refs.map)
+    this.mapNode = this.$refs.map
+    this.mapWrapNode = this.$refs.mapWrap
   },
   props: {
     dataStream: {
@@ -97,27 +116,6 @@ export default {
   height: 100%;
   position: relative;
   width: 100%;
-}
-
-.map {
-  background-color: #F8F8F8;
-  border: 1px solid #e8cc84;
-  cursor: default;
-  font-size: 2px;
-  height: 100%;
-  overflow-x: hidden;
-  padding-top: 4px;
-  user-select: none;
-  width: 100%;
-}
-
-.map /deep/ p {
-  margin: 0;
-  padding: 0.8px 2px;
-}
-
-.map--img {
-  width: 160px;
 }
 
 .help-icon {

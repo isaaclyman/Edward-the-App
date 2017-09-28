@@ -1,7 +1,7 @@
 <template>
   <div class="quill-wrap">
     <quill-editor :scroll-to="scrollTo" :content="content" @update:content="updateContent"
-                  @update:selection="updateSelection" :mark="selection.text"></quill-editor>
+                  @update:selection="updateSelection"></quill-editor>
   </div>
 </template>
 

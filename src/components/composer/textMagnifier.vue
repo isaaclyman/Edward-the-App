@@ -1,6 +1,8 @@
 <template>
   <div class="magnifier-wrap" :class="{ 'show': show }" ref="wrap">
-    <div class="magnifier" ref="magnifier"></div>
+    <div class="magnifier" ref="magnifier">
+      <div class="magnifier-content map" ref="magnifierContent"></div>
+    </div>
   </div>
 </template>
 
@@ -10,7 +12,7 @@ export default {
     return {
       cachedHtml: '',
       magnifyRadius: 50,
-      scale: 2,
+      scale: 5,
       show: false,
       wrapElBoundingClientRect: null
     }
@@ -35,8 +37,9 @@ export default {
       }
 
       let { x: left, y: top } = this.getRelativeCoords(event, this.magnifyEl.getBoundingClientRect())
-      left = -(left - 50)
-      top = -(top - 50)
+      left = this.transformCoord(left, 50)
+      top = this.transformCoord(top, 30)
+      console.log({left, top})
 
       const magnifierStyle = this.$refs.magnifier.style
       magnifierStyle.left = `${left}px`
@@ -46,9 +49,12 @@ export default {
     },
     refresh () {
       const clone = this.magnifyEl.cloneNode(true)
-      const magnifier = this.$refs.magnifier
-      magnifier.innerHTML = ''
-      magnifier.appendChild(clone)
+      const content = this.$refs.magnifierContent
+      content.innerHTML = ''
+      content.appendChild(clone)
+    },
+    transformCoord (value, adjust) {
+      return -(value * this.scale) + adjust
     }
   },
   mounted () {
@@ -109,12 +115,11 @@ export default {
 .magnifier {
   font-size: 2px;
   position: absolute;
-  /* transform: scale(1); */
   width: 145px;
 }
 
-.magnifier /deep/ p {
-  margin: 0;
-  padding: 0.8px 2px;
+.magnifier-content {
+  transform: scale(5);
+  transform-origin: top left;
 }
 </style>

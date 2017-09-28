@@ -2,13 +2,12 @@
   <div id="app" class="app">
     <div class="app-header">
       <div class="app-header--content">
-        <img class="app-header--logo" src="../static/logo.svg">
+        <img class="app-header--logo" src="../static/logo.png">
       </div>
       <div class="app-header--menu">
         <main-menu></main-menu>
       </div>
     </div>
-    <div class="app-header--after"></div>
     <div class="page">
       <router-view></router-view>
     </div>
@@ -41,13 +40,6 @@ export default {
   width: 100%;
 }
 
-.app-header--after {
-  background: linear-gradient(to bottom, #FFF 10%, rgba(255,255,255,0) 90%);
-  display: block;
-  height: 8px;
-  width: 100%;
-}
-
 .app-header--menu {
   display: flex;
   flex: 1;
@@ -73,6 +65,7 @@ export default {
 .page {
   display: flex;
   flex: 1;
+  /* max-height: calc(100% - 87px); */
   padding: 14px 25px;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <div class="map" @click="mapClick" ref="mapWrap">
-      <div v-html="mapHtml" ref="map"></div>
+      <div class="map-inner" v-html="mapHtml" ref="map"></div>
     </div>
     <button class="help-icon" v-html="helpIconSvg" @click="helpClick"></button>
     <text-magnifier :html="mapHtml" :magnify-el="mapNode" :mark="mark" :wrap-el="mapWrapNode"></text-magnifier>
@@ -60,6 +60,7 @@ export default {
       })
     },
     mapClick ({ target }) {
+      // BUG: Some reorganization of the HTML has broken this logic
       if (![...target.parentNode.classList].includes('map')) {
         return
       }
@@ -134,7 +135,7 @@ export default {
   font-size: 14px;
 }
 
-.help /deep/ li {
+.help li {
   text-align: left;
 }
 

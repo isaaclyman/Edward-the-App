@@ -2,15 +2,20 @@
   background-color: #F8F8F8;
   border: 1px solid #e8cc84;
   cursor: default;
-  font-size: 2px;
+  font-size: 3px;
   height: 100%;
   overflow-x: hidden;
+  overflow-y: auto;
   padding-top: 4px;
   user-select: none;
   width: 100%;
 }
 
-.map /deep/ p {
+.map p {
   margin: 0;
   padding: 0.8px 2px;
+}
+
+.map-inner {
+  max-width: 145px;
 }

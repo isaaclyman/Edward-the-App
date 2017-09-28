@@ -3,7 +3,7 @@
 html, body {
   background-color: #F0F0F0;
   font-family: 'Asap Condensed', sans-serif;
-  height: 100%;
+  height: 100vh;
   margin: 0;
   padding: 0;
   width: 100%;
@@ -37,6 +37,14 @@ button.button-green {
 button[disabled] {
   background-color: #888;
   cursor: default;
+}
+
+hr.vert {
+  border: none;
+  border-right: 1px solid #CCC;
+  display: inline-block;
+  height: 20px;
+  width: 1px;
 }
 
 input {

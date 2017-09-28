@@ -1,9 +1,12 @@
 <template>
   <div class="main-menu">
-    <button class="main-menu--button" v-for="route in routes" :key="route.name" @click="goToRoute(route.location)">
-      <div v-html="getIconSvg(route.icon)"></div>
-      <div>{{route.name}}</div>
-    </button>
+    <template v-for="route in routes">
+      <button class="main-menu--button" @click="goToRoute(route.location)" :key="route.name">
+        <div v-html="getIconSvg(route.icon)"></div>
+        <div>{{route.name}}</div>
+      </button>
+      <hr class="vert" :key="route.name"></hr>
+    </template>
   </div>
 </template>
 
@@ -44,6 +47,11 @@ export default {
 </script>
 
 <style scoped>
+.main-menu {
+  align-items: center;
+  display: flex;
+}
+
 .main-menu--button {
   background-color: transparent;
   border: none;
@@ -59,8 +67,8 @@ export default {
   color: #000;
 }
 
-.main-menu--button:not(:last-of-type) {
-  border-right: 1px solid #CCC;
+hr.vert:last-of-type {
+  display: none;
 }
 </style>
 

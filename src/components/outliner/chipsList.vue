@@ -1,10 +1,11 @@
 <template>
   <div>
     <div class="chip-list">
-      <div class="chip" v-for="(chip, index) in dataArray" v-show="filterChips(chip)" :key="index">
+      <div v-for="(chip, index) in dataArray" class="chip" :class="{ 'light': !isDeletable(chip) }" v-show="filterChips(chip)" :key="index">
         <div class="chip-content">
           {{ chip[nameProp] }}
-          <button class="button-icon chip-delete-button" @click="deleteChip(index)" v-html="deleteSvg"></button>
+          <button v-show="isDeletable(chip)" class="button-icon chip-delete-button" @click="deleteChip(index)" v-html="deleteSvg"></button>
+          <button v-show="!isDeletable(chip)" class="button-icon chip-delete-button" @click="restoreChip(index)" v-html="addSvg"></button>
         </div>
       </div>
       <div class="chip">
@@ -48,6 +49,9 @@ export default {
     },
     deleteChip (index) {
       this.$emit('delete', { index })
+    },
+    restoreChip (index) {
+      this.$emit('restore', { index })
     }
   },
   props: {
@@ -56,6 +60,11 @@ export default {
       type: Array
     },
     filterChips: {
+      required: true,
+      type: Function
+    },
+    isDeletable: {
+      required: true,
       type: Function
     },
     name: {
@@ -83,6 +92,10 @@ export default {
   display: inline-block;
   margin: 2px 3px;
   padding: 4px 6px;
+}
+
+.chip.light {
+  background-color: #DEDEDE;
 }
 
 .chip-content {

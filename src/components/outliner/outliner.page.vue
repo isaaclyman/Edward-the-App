@@ -27,9 +27,13 @@
           <h3>Chapters</h3>
           <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpChapterChipsNode, 'Chapter List')"></button>
         </div>
-        <chips-list :data-array="allChapters" :filter-chips="showChip" name="Chapter" name-prop="title"
+        <chips-list name="Chapter" name-prop="title"
+                    :data-array="allChapters"
+                    :filter-chips="showChip"
+                    :is-deletable="isDeletable"
                     @add="addChapter"
-                    @delete="deleteChapter"></chips-list>
+                    @delete="deleteChapter"
+                    @restore="restoreChapter"></chips-list>
       </div>
       <!-- Topic Chips -->
       <div class="chips-wrap">
@@ -37,9 +41,13 @@
           <h3>Topics</h3>
           <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpTopicChipsNode, 'Topic List')"></button>
         </div>
-        <chips-list :data-array="allTopics" :filter-chips="showChip" name="Topic" name-prop="title"
+        <chips-list name="Topic" name-prop="title"
+                    :data-array="allTopics"
+                    :filter-chips="showChip"
+                    :is-deletable="isDeletable"
                     @add="addTopic"
-                    @delete="deleteTopic"></chips-list>
+                    @delete="deleteTopic"
+                    @restore="restoreTopic"></chips-list>
       </div>
       <hr>
       <div class="chapters">
@@ -129,7 +137,7 @@
 </template>
 
 <script>
-import { ADD_CHAPTER, ADD_TOPIC, ARCHIVE_CHAPTER, ARCHIVE_TOPIC } from './outliner.store'
+import { ADD_CHAPTER, ADD_TOPIC, ARCHIVE_CHAPTER, ARCHIVE_TOPIC, RESTORE_CHAPTER, RESTORE_TOPIC } from './outliner.store'
 import ChipsList from './chipsList.vue'
 import Octicons from 'octicons'
 import swal from 'sweetalert'
@@ -211,6 +219,15 @@ export default {
         content,
         title
       })
+    },
+    isDeletable (chip) {
+      return !chip.archived
+    },
+    restoreChapter ({ index }) {
+      this.$store.commit(RESTORE_CHAPTER, this.allChapters[index])
+    },
+    restoreTopic ({ index }) {
+      this.$store.commit(RESTORE_TOPIC, this.allTopics[index])
     },
     showChip (chip) {
       return !chip.archived || this.filters.archived

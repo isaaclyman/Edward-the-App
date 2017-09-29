@@ -13,8 +13,9 @@
         <p>This is the mini-map. It's the 10,000 foot view of your document. As you write, you'll see it fill up.</p>
         <p>It has a couple of helpful features:</p>
         <ul>
-          <li>If you click a paragraph in the mini-map, you'll jump to that paragraph in the main window.</li>
+          <li>If you click a paragraph in the mini-map, you'll jump to that paragraph in the editor.</li>
           <li>If you highlight a word in the editor, every appearance of that word will be highlighted in the mini-map.</li>
+          <li>If you click a highlighted word in the mini-map, you'll jump to that word in the editor and highlight it.</li>
         </ul>
       </div>
     </div>

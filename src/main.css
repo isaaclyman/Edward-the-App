@@ -54,7 +54,13 @@ input {
 }
 
 li {
+  list-style-type: disc;
   margin-bottom: 10px;
+  margin-left: 18px;
+}
+
+p {
+  margin-bottom: 6px;
 }
 
 textarea {

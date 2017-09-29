@@ -13,7 +13,7 @@ const store = {
       title: 'Chapter 1',
       topics: []
     }],
-    topics: []    // [{ title '', content Delta, archived false }]
+    topics: []    // [{ archived false, content Delta, textContent '' (computed from content), title '' }]
   },
   mutations: {
     // CHAPTERS

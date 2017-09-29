@@ -9,7 +9,6 @@
     <!-- [?] Modal -->
     <div style="display: none">
       <div class="help" ref="helpModal">
-        <title>Tip</title>
         <p>This is the mini-map. It's the 10,000 foot view of your document. As you write, you'll see it fill up.</p>
         <p>It has a couple of helpful features:</p>
         <ul>
@@ -56,8 +55,8 @@ export default {
   methods: {
     helpClick () {
       swal({
-        title: 'Tip',
-        content: this.helpNode
+        content: this.helpNode,
+        title: 'Tip'
       })
     },
     mapClick ({ target }) {
@@ -146,33 +145,14 @@ function getNumberOfWords (str) {
   width: 100%;
 }
 
-.help-icon {
-  border: none;
-  height: 20px;
-  opacity: 0;
-  padding: 0;
-  position: absolute;
-  right: 6px;
-  top: 6px;
-  transition: opacity 200ms;
-  width: 20px;
-}
-
-.help {
-  font-size: 14px;
-}
-
-.help li {
-  text-align: left;
-}
-
 .wrap:hover .help-icon {
   opacity: 1;
 }
-</style>
 
-<style>
-.help-icon--svg {
-  fill: #444;
+.help-icon {
+  opacity: 0;
+  position: absolute;
+  right: 6px;
+  top: 6px;
 }
 </style>

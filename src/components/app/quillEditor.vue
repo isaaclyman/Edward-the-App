@@ -5,12 +5,10 @@
 </template>
 
 <script>
+import createQuill from './quillBuilder'
 import debounce from 'lodash/debounce'
 import escapeStringRegexp from 'escape-string-regexp'
 import isEqual from 'lodash/isEqual'
-import Quill from 'quill'
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
 
 export default {
   data () {
@@ -19,40 +17,7 @@ export default {
     }
   },
   mounted () {
-    const toolbarOptions = [[
-      { 'header': [1, 2, 3, false] }
-    ], [
-      'bold', 'italic', 'underline', 'strike'
-    ], [
-      { 'list': 'ordered' }, { 'list': 'bullet' }
-    ], [
-      'blockquote'
-    ], [
-      { 'indent': '-1' }, { 'indent': '+1' }
-    ], [
-      'clean'
-    ]]
-
-    const allowedFormats = [
-      'header',
-      'size',
-      'bold',
-      'italic',
-      'underline',
-      'strike',
-      'list',
-      'blockquote',
-      'indent'
-    ]
-
-    this.quill = new Quill(this.$refs.editor, {
-      formats: allowedFormats,
-      modules: {
-        toolbar: toolbarOptions
-      },
-      placeholder: 'Write here.',
-      theme: 'snow'
-    })
+    this.quill = createQuill(this.$refs.editor, 'Write here.')
 
     if (this.content) {
       this.quill.setContents(this.content, 'api')

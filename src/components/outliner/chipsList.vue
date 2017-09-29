@@ -1,14 +1,10 @@
 <template>
-  <div class="wrap">
-    <h3>{{ name }}s</h3>
-    <div class="add-chip">
-
-    </div>
+  <div>
     <div class="chip-list">
-      <div class="chip" v-for="chip in chips" v-show="filterChips(chip.data)" :key="chip.index">
+      <div class="chip" v-for="(chip, index) in dataArray" v-show="filterChips(chip)" :key="index">
         <div class="chip-content">
-          {{ chip.data[nameProp] }}
-          <button class="button-icon chip-delete-button" @click="deleteChip(chip)" v-html="deleteSvg"></button>
+          {{ chip[nameProp] }}
+          <button class="button-icon chip-delete-button" @click="deleteChip(index)" v-html="deleteSvg"></button>
         </div>
       </div>
       <div class="chip">
@@ -28,9 +24,6 @@ import Octicons from 'octicons'
 
 export default {
   computed: {
-    chips () {
-      return this.dataArray.map((data, index) => ({ data, index }))
-    },
     placeholder () {
       return `New ${this.name}...`
     }
@@ -53,8 +46,8 @@ export default {
       this.$emit('add', this.newChip)
       this.newChip = ''
     },
-    deleteChip (chip) {
-      this.$emit('delete', chip)
+    deleteChip (index) {
+      this.$emit('delete', { index })
     }
   },
   props: {
@@ -78,12 +71,6 @@ export default {
 </script>
 
 <style scoped>
-.wrap {
-  border-left: 2px solid #e8cc84;
-  margin: 10px 0;
-  padding-left: 6px;
-}
-
 .chip-list {
   align-items: center;
   display: flex;

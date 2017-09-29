@@ -2,9 +2,9 @@
   <div>
     <div class="topic" v-for="topic in getTopics" :key="topic.title">
       <div class="topic--head">
-        <h3 class="topic--title">
+        <h5 class="topic--title">
           {{ topic.title }}
-        </h3>
+        </h5>
         <div class="topic--actions">
           <!-- Move up, move down, rename, archive -->
         </div>

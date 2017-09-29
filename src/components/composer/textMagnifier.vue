@@ -37,9 +37,8 @@ export default {
       }
 
       let { x: left, y: top } = this.getRelativeCoords(event, this.magnifyEl.getBoundingClientRect())
-      left = this.transformCoord(left, 50)
+      left = this.transformCoord(left, 95)
       top = this.transformCoord(top, 30)
-      console.log({left, top})
 
       const magnifierStyle = this.$refs.magnifier.style
       magnifierStyle.left = `${left}px`
@@ -105,7 +104,7 @@ export default {
   position: absolute;
   top: 0;
   transition: opacity 250ms;
-  width: 100px;
+  width: 200px;
 }
 
 .magnifier-wrap.show {

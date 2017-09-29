@@ -60,13 +60,33 @@ export default {
       })
     },
     mapClick ({ target }) {
-      // BUG: Some reorganization of the HTML has broken this logic
-      if (![...target.parentNode.classList].includes('map')) {
+      if (target.tagName.toLowerCase() === 'mark') {
+        this.markClick({ target })
+        return
+      }
+
+      if (![...target.parentNode.classList].includes('map-inner')) {
         return
       }
 
       const index = [...target.parentNode.childNodes].indexOf(target)
-      this.$emit('select', index)
+      this.$emit('select', {
+        paragraphIndex: index,
+        searchTermIndex: -1
+      })
+    },
+    markClick ({ target }) {
+      const map = this.$refs.map
+      const marks = [...map.querySelectorAll('mark')]
+      const searchTermIndex = marks.indexOf(target)
+
+      const paragraph = target.parentNode
+      const paragraphIndex = [...paragraph.parentNode.childNodes].indexOf(paragraph)
+
+      this.$emit('select', {
+        paragraphIndex,
+        searchTermIndex
+      })
     },
     updateMap () {
       if (!this.editorElement) {
@@ -102,13 +122,19 @@ export default {
     mark (text) {
       this.markInstance.unmark()
 
-      if (text.length < 3) {
+      if (text.length < 3 || getNumberOfWords(text) > 3) {
         return
       }
 
-      this.markInstance.mark(text)
+      this.markInstance.mark(text, {
+        separateWordSearch: false
+      })
     }
   }
+}
+
+function getNumberOfWords (str) {
+  return str.trim().split(/\s/).length
 }
 </script>
 
@@ -147,10 +173,5 @@ export default {
 <style>
 .help-icon--svg {
   fill: #444;
-}
-
-mark {
-  background-color: #8bc34a;
-  pointer-events: none;
 }
 </style>

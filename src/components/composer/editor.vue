@@ -47,7 +47,7 @@ export default {
   },
   props: {
     scrollTo: {
-      type: Number
+      type: Object
     }
   }
 }

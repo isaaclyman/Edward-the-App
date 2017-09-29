@@ -6,6 +6,7 @@
 
 <script>
 import debounce from 'lodash/debounce'
+import escapeStringRegexp from 'escape-string-regexp'
 import isEqual from 'lodash/isEqual'
 import Quill from 'quill'
 import 'quill/dist/quill.core.css'
@@ -88,7 +89,7 @@ export default {
       required: true
     },
     scrollTo: {
-      type: Number
+      type: Object
     },
     selection: {
       type: Object
@@ -102,10 +103,26 @@ export default {
 
       this.quill.setContents(delta, 'api')
     },
-    scrollTo (index) {
+    scrollTo (descriptor) {
+      if (!descriptor || !~descriptor.paragraphIndex) {
+        return
+      }
+
       const editor = this.$refs.editor.querySelector('.ql-editor')
-      const element = editor.childNodes[index]
+      const element = editor.childNodes[descriptor.paragraphIndex]
       element.scrollIntoView(true)
+
+      if (!~descriptor.searchTermIndex) {
+        return
+      }
+
+      const searchTerm = this.$store.state.composer.selection.text
+      const contents = this.quill.getText()
+      const search = new RegExp(escapeStringRegexp(searchTerm), 'gi')
+
+      const searchRanges = getAllOccurrences(search, contents)
+      const selectedRange = searchRanges[descriptor.searchTermIndex]
+      this.quill.setSelection(selectedRange, 'api')
     },
     selection (selection) {
       if (!selection || isEqual(selection, this.quill.getSelection())) {
@@ -115,6 +132,18 @@ export default {
       this.quill.setSelection(selection, 'api')
     }
   }
+}
+
+function getAllOccurrences (regex, str) {
+  const ranges = []
+  let result
+  while ((result = regex.exec(str))) {
+    ranges.push({
+      index: result.index,
+      length: result[0].length
+    })
+  }
+  return ranges
 }
 </script>
 

@@ -30,12 +30,15 @@ export default {
   data () {
     return {
       editorElement: null,
-      scrollTo: 0
+      scrollTo: {
+        paragraphIndex: -1,
+        searchTermIndex: -1
+      }
     }
   },
   methods: {
-    selectMap (index) {
-      this.scrollTo = index
+    selectMap (descriptor) {
+      this.scrollTo = descriptor
     }
   },
   mounted () {

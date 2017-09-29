@@ -71,6 +71,10 @@ input {
   padding: 4px;
 }
 
+input[type="checkbox"] {
+  margin-right: 4px;
+}
+
 li {
   list-style-type: disc;
   margin-bottom: 10px;

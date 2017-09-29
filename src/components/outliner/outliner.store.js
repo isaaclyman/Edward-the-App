@@ -3,11 +3,8 @@ export const ARCHIVE_CHAPTER = 'DELETE_CHAPTER'
 export const UPDATE_CHAPTER = 'UPDATE_CHAPTER'
 
 export const ADD_TOPIC = 'ADD_TOPIC'
-export const ARCHIVE_TOPIC = 'DELETE_CHAPTER'
+export const ARCHIVE_TOPIC = 'DELETE_TOPIC'
 export const UPDATE_TOPIC = 'UPDATE_TOPIC'
-
-import find from 'lodash/find'
-import findIndex from 'lodash/findIndex'
 
 const store = {
   state: {
@@ -24,24 +21,37 @@ const store = {
       state.chapters.push(chapter)
     },
     [ARCHIVE_CHAPTER] (state, chapter) {
-      const chapterToArchive = find(state.chapters, current => current.title === chapter.title)
-      chapterToArchive.archived = true
+      if (!state.chapters.includes(chapter)) {
+        throw new Error(`Cannot archive chapter "${chapter.title}": does not exist.`)
+      }
+
+      chapter.archived = true
     },
-    [UPDATE_CHAPTER] (state, oldTitle, chapter) {
-      const chapterToUpdate = findIndex(state.chapters, current => current.title === oldTitle)
-      state.chapters.splice(chapterToUpdate, 1, chapter)
+    [UPDATE_CHAPTER] (state, chapter, newTitle) {
+      if (!state.chapters.includes(chapter)) {
+        throw new Error(`Cannot update chapter "${chapter.title}": does not exist.`)
+      }
+
+      chapter.title = newTitle
     },
     // TOPICS
     [ADD_TOPIC] (state, topic) {
       state.topics.push(topic)
     },
     [ARCHIVE_TOPIC] (state, topic) {
-      const topicToArchive = find(state.topics, current => current.title === topic.title)
-      topicToArchive.archived = true
+      if (!state.topics.includes(topic)) {
+        throw new Error(`Cannot archive topic "${topic.title}": does not exist.`)
+      }
+
+      topic.archived = true
     },
-    [UPDATE_TOPIC] (state, oldTitle, topic) {
-      const topicToUpdate = findIndex(state.topics, current => current.title === oldTitle)
-      state.topics.splice(topicToUpdate, 1, topic)
+    [UPDATE_TOPIC] (state, topic, newTitle, newContent) {
+      if (!state.topics.includes(topic)) {
+        throw new Error(`Cannot update topic "${topic.title}": does not exist.`)
+      }
+
+      topic.title = newTitle
+      topic.content = newContent
     }
   }
 }

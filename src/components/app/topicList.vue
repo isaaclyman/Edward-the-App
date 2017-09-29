@@ -13,10 +13,6 @@
         {{ topic.content }}
       </div>
     </div>
-    <button class="topic button-green" @click="addTopic(chapter)">
-      <span v-html="addSvg"></span>
-      Add New Topic
-    </button>
   </div>
 </template>
 

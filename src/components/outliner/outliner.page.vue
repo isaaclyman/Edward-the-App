@@ -1,13 +1,17 @@
 <template>
   <div class="outliner-wrap">
     <div class="outliner">
+      <div class="archive-filter">
+        <input id="showArchivedCheckbox" type="checkbox" v-model="filters.archived" />
+        <label for="showArchivedCheckbox">Show Deleted</label>
+      </div>
       <div class="chapter-chips">
-        <chips-list :data-array="allChapterTitles" name="Chapter"
+        <chips-list :data-array="allChapters" :filter-chips="showChip" name="Chapter" name-prop="title"
                     @add="addChapter"
                     @delete="deleteChapter"></chips-list>
       </div>
       <div class="topic-chips">
-        <chips-list :data-array="allTopicTitles" name="Topic"
+        <chips-list :data-array="allTopics" :filter-chips="showChip" name="Topic" name-prop="title"
                     @add="addTopic"
                     @delete="deleteTopic"></chips-list>
       </div>
@@ -38,9 +42,8 @@
 </template>
 
 <script>
-import { ADD_CHAPTER, ADD_TOPIC } from './outliner.store' // , ARCHIVE_CHAPTER, UPDATE_CHAPTER
+import { ADD_CHAPTER, ADD_TOPIC, ARCHIVE_CHAPTER, ARCHIVE_TOPIC } from './outliner.store'
 import ChipsList from './chipsList.vue'
-import cloneDeep from 'lodash/cloneDeep'
 import Octicons from 'octicons'
 import TopicList from '../app/topicList.vue'
 
@@ -50,18 +53,20 @@ export default {
     TopicList
   },
   computed: {
-    allChapterTitles () {
-      return this.$store.state.outliner.chapters.map(chapter => chapter.title)
+    allChapters () {
+      return this.$store.state.outliner.chapters
     },
-    allTopicTitles () {
-      return this.$store.state.outliner.topics.map(topic => topic.title)
+    allTopics () {
+      return this.$store.state.outliner.topics
     },
     viewingChapters () {
-      return this.$store.state.outliner.chapters.map(chapter => ({ ...cloneDeep(chapter), editing: false }))
+      return (this.allChapters
+        .filter(chapter => !chapter.archived || this.filters.archived))
     },
     viewingTopics () {
-      // Don't clone or transform topics here because that's TopicList's responsibility
-      return this.$store.state.outliner.topics
+      // Don't clone or transform topics here (but do filter) because that's TopicList's responsibility
+      return this.allTopics
+        .filter(topic => !topic.archived || this.filters.archived)
     }
   },
   data () {
@@ -79,20 +84,28 @@ export default {
     }
   },
   methods: {
-    addChapter (chapter) {
-      this.$store.commit(ADD_CHAPTER, chapter)
+    addChapter (title) {
+      this.$store.commit(ADD_CHAPTER, {
+        archived: false,
+        title,
+        topics: []
+      })
     },
-    addTopic (topic) {
-      this.$store.commit(ADD_TOPIC, topic)
+    addTopic (title) {
+      this.$store.commit(ADD_TOPIC, {
+        archived: false,
+        content: null,
+        title
+      })
     },
-    deleteChapter (chapter) {
-
+    deleteChapter ({ index }) {
+      this.$store.commit(ARCHIVE_CHAPTER, this.allChapters[index])
     },
-    deleteTopic (topic) {
-
+    deleteTopic ({ index }) {
+      this.$store.commit(ARCHIVE_TOPIC, this.allTopics[index])
     },
-    renameChapter (chapter) {
-
+    showChip (chip) {
+      return !chip.archived || this.filters.archived
     }
   }
 }

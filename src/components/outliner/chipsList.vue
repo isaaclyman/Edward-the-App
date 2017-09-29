@@ -5,9 +5,9 @@
 
     </div>
     <div class="chip-list">
-      <div class="chip" v-for="chip in chips" :key="chip.index">
+      <div class="chip" v-for="chip in chips" v-show="filterChips(chip.data)" :key="chip.index">
         <div class="chip-content">
-          {{ chip.data }}
+          {{ chip.data[nameProp] }}
           <button class="button-icon chip-delete-button" @click="deleteChip(chip)" v-html="deleteSvg"></button>
         </div>
       </div>
@@ -52,6 +52,9 @@ export default {
     addNewChip () {
       this.$emit('add', this.newChip)
       this.newChip = ''
+    },
+    deleteChip (chip) {
+      this.$emit('delete', chip)
     }
   },
   props: {
@@ -59,7 +62,14 @@ export default {
       required: true,
       type: Array
     },
+    filterChips: {
+      type: Function
+    },
     name: {
+      required: true,
+      type: String
+    },
+    nameProp: {
       required: true,
       type: String
     }

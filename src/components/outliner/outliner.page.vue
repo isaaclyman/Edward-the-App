@@ -32,7 +32,7 @@
                     :filter-chips="showChip"
                     :is-deletable="isDeletable"
                     @add="addChapter"
-                    @delete="deleteChapter"
+                    @delete="archiveChapter"
                     @restore="restoreChapter"></chips-list>
       </div>
       <!-- Topic Chips -->
@@ -46,7 +46,7 @@
                     :filter-chips="showChip"
                     :is-deletable="isDeletable"
                     @add="addTopic"
-                    @delete="deleteTopic"
+                    @delete="archiveTopic"
                     @restore="restoreTopic"></chips-list>
       </div>
       <hr>
@@ -57,20 +57,21 @@
         </div>
         <!-- Chapters > Topics -->
         <div class="chapter" v-for="(chapter, index) in viewingChapters" :key="index">
-          <div class="chapter-head">
-            <h4 class="chapter-title" v-if="!chapter.editing">
+          <div class="chapter-head" :class="{ 'light': chapter.archived }">
+            <h4 class="chapter-title">
               {{ chapter.title }}
             </h4>
-            <h4 class="chapter-title" v-if="chapter.editing">
+            <!-- <h4 class="chapter-title">
               <input v-model.trim="chapter.title">
-            </h4>
-            <div v-show="!chapter.editing" class="chapter-actions">
-              <!-- Move up, move down, rename, archive -->
-              <button @click="deleteChapter({ index })">Archive</button>
+            </h4> -->
+            <div class="chapter-actions">
+              <button class="chapter-action" v-show="!chapter.archived" @click="archiveChapter({ index })">Archive</button>
+              <button class="chapter-action" v-show="chapter.archived" @click="restoreChapter({ index })">Restore</button>
+              <button class="chapter-action button-red" v-show="chapter.archived" @click="deleteChapter({ index })">Delete Forever</button>
             </div>
           </div>
           <div class="chapter-content">
-            <topic-list v-show="!chapter.editing" :chapter="chapter" :topics="viewingTopics"></topic-list>
+            <topic-list :chapter="chapter" :topics="viewingTopics"></topic-list>
           </div>
         </div>
       </div>
@@ -137,7 +138,7 @@
 </template>
 
 <script>
-import { ADD_CHAPTER, ADD_TOPIC, ARCHIVE_CHAPTER, ARCHIVE_TOPIC, RESTORE_CHAPTER, RESTORE_TOPIC } from './outliner.store'
+import { ADD_CHAPTER, ADD_TOPIC, ARCHIVE_CHAPTER, ARCHIVE_TOPIC, DELETE_CHAPTER, DELETE_TOPIC, RESTORE_CHAPTER, RESTORE_TOPIC } from './outliner.store'
 import ChipsList from './chipsList.vue'
 import Octicons from 'octicons'
 import swal from 'sweetalert'
@@ -208,11 +209,17 @@ export default {
         title
       })
     },
-    deleteChapter ({ index }) {
+    archiveChapter ({ index }) {
       this.$store.commit(ARCHIVE_CHAPTER, this.allChapters[index])
     },
-    deleteTopic ({ index }) {
+    archiveTopic ({ index }) {
       this.$store.commit(ARCHIVE_TOPIC, this.allTopics[index])
+    },
+    deleteChapter ({ index }) {
+      this.$store.commit(DELETE_CHAPTER, this.allChapters[index])
+    },
+    deleteTopic ({ index }) {
+      this.$store.commit(DELETE_TOPIC, this.allTopics[index])
     },
     helpClick (content, title) {
       swal({
@@ -302,12 +309,16 @@ export default {
   padding: 8px;
 }
 
+.chapter-head.light {
+  background-color: rgba(232, 204, 132, 0.5);
+}
+
 .chapter-title {
   flex: 1;
   margin: 0;
 }
 
-.chapter-actions button {
+.chapter-action {
   background-color: transparent;
   border-color: #FFF;
   color: #000;
@@ -315,7 +326,7 @@ export default {
   transition: background-color 200ms;
 }
 
-.chapter-actions button:hover {
+.chapter-action:hover {
   background-color: #FFF;
 }
 

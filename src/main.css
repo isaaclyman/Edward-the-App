@@ -41,6 +41,12 @@ button.button-icon {
   padding: 0;
 }
 
+button.button-red {
+  background-color: #e53935 !important;
+  border: none;
+  color: #FFF !important;
+}
+
 button[disabled] {
   background-color: #888;
   cursor: default;

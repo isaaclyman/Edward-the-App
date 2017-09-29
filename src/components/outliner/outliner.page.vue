@@ -1,6 +1,16 @@
 <template>
   <div class="outliner-wrap">
     <div class="outliner">
+      <div class="chapter-chips">
+        <chips-list :data-array="allChapterTitles" name="Chapter"
+                    @add="addChapter"
+                    @delete="deleteChapter"></chips-list>
+      </div>
+      <div class="topic-chips">
+        <chips-list :data-array="allTopicTitles" name="Topic"
+                    @add="addTopic"
+                    @delete="deleteTopic"></chips-list>
+      </div>
       <div class="filters">
 
       </div>
@@ -22,43 +32,30 @@
           </div>
           <topic-list v-show="!chapter.editing" :chapter="chapter" :topics="viewingTopics"></topic-list>
         </div>
-        <!-- New chapter -->
-        <div class="chapter" v-if="newChapter">
-          <div class="chapter--head">
-            <div class="chapter--title">
-              <input v-model="newChapter.title">
-            </div>
-            <div class="chapter--actions">
-              <button class="button-green" :disabled="!newChapter.title" @click="addChapter">
-                Save
-              </button>
-              <button @click="hideNewChapter">
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-        <!-- Add chapter -->
-        <button v-if="!newChapter" class="chapter button-green" @click="showNewChapter">
-          <span v-html="addSvg"></span>
-          Add New Chapter
-        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ADD_CHAPTER } from './outliner.store' // , ARCHIVE_CHAPTER, UPDATE_CHAPTER
+import { ADD_CHAPTER, ADD_TOPIC } from './outliner.store' // , ARCHIVE_CHAPTER, UPDATE_CHAPTER
+import ChipsList from './chipsList.vue'
 import cloneDeep from 'lodash/cloneDeep'
 import Octicons from 'octicons'
 import TopicList from '../app/topicList.vue'
 
 export default {
   components: {
+    ChipsList,
     TopicList
   },
   computed: {
+    allChapterTitles () {
+      return this.$store.state.outliner.chapters.map(chapter => chapter.title)
+    },
+    allTopicTitles () {
+      return this.$store.state.outliner.topics.map(topic => topic.title)
+    },
     viewingChapters () {
       return this.$store.state.outliner.chapters.map(chapter => ({ ...cloneDeep(chapter), editing: false }))
     },
@@ -78,27 +75,24 @@ export default {
         archived: false,
         chapter: null,
         topic: null
-      },
-      newChapter: null
+      }
     }
   },
   methods: {
-    addChapter () {
-      this.$store.commit(ADD_CHAPTER, this.newChapter)
-      this.newChapter = null
+    addChapter (chapter) {
+      this.$store.commit(ADD_CHAPTER, chapter)
     },
-    hideNewChapter () {
-      this.newChapter = null
+    addTopic (topic) {
+      this.$store.commit(ADD_TOPIC, topic)
+    },
+    deleteChapter (chapter) {
+
+    },
+    deleteTopic (topic) {
+
     },
     renameChapter (chapter) {
 
-    },
-    showNewChapter () {
-      this.newChapter = {
-        archived: false,
-        title: '',
-        topics: []
-      }
     }
   }
 }
@@ -112,7 +106,7 @@ export default {
 }
 
 .outliner {
-  display: flex;
+  display: block;
   flex: 1;
   max-width: 1050px;
 }

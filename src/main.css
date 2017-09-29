@@ -3,6 +3,7 @@
 html, body {
   background-color: #F0F0F0;
   font-family: 'Asap Condensed', sans-serif;
+  font-size: 14px;
   height: 100vh;
   margin: 0;
   padding: 0;
@@ -25,6 +26,7 @@ button {
   border: 1px solid #CCC;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 14px;
   padding: 6px 10px;
 }
 
@@ -34,9 +36,25 @@ button.button-green {
   color: #FFF;
 }
 
+button.button-icon {
+  padding: 0;
+}
+
 button[disabled] {
   background-color: #888;
   cursor: default;
+}
+
+h1 {
+  font-size: 32px;
+}
+
+h2 {
+  font-size: 28px;
+}
+
+h3 {
+  font-size: 22px;
 }
 
 hr.vert {
@@ -65,4 +83,11 @@ p {
 
 textarea {
   border: 1px solid #CCC;
+}
+
+/* UTILITY CLASSES */
+.u-center-all {
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }

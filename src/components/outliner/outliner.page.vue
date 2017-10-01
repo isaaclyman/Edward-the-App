@@ -33,7 +33,9 @@
                     :is-deletable="isDeletable"
                     @add="addChapter"
                     @delete="archiveChapter"
-                    @restore="restoreChapter"></chips-list>
+                    @rearrange="rearrangeChapter"
+                    @restore="restoreChapter"
+                    @update="renameChapter"></chips-list>
       </div>
       <!-- Topic Chips -->
       <div class="chips-wrap">
@@ -47,7 +49,9 @@
                     :is-deletable="isDeletable"
                     @add="addTopic"
                     @delete="archiveTopic"
-                    @restore="restoreTopic"></chips-list>
+                    @rearrange="rearrangeTopic"
+                    @restore="restoreTopic"
+                    @update="renameTopic"></chips-list>
       </div>
       <hr>
       <div class="chapters">
@@ -138,7 +142,9 @@
 </template>
 
 <script>
-import { ADD_CHAPTER, ADD_TOPIC, ARCHIVE_CHAPTER, ARCHIVE_TOPIC, DELETE_CHAPTER, RESTORE_CHAPTER, RESTORE_TOPIC } from './outliner.store'
+import { ADD_CHAPTER, ADD_TOPIC, ARCHIVE_CHAPTER, ARCHIVE_TOPIC,
+         DELETE_CHAPTER, REARRANGE_CHAPTERS, REARRANGE_TOPICS,
+         RESTORE_CHAPTER, RESTORE_TOPIC, UPDATE_CHAPTER, UPDATE_TOPIC } from './outliner.store'
 import ChipsList from './chipsList.vue'
 import Octicons from 'octicons'
 import swal from 'sweetalert'
@@ -237,6 +243,27 @@ export default {
     },
     isDeletable (chip) {
       return !chip.archived
+    },
+    rearrangeChapter (chapters) {
+      this.$store.commit(REARRANGE_CHAPTERS, chapters)
+    },
+    rearrangeTopic (topics) {
+      this.$store.commit(REARRANGE_TOPICS, topics)
+    },
+    renameChapter ({ index, value: newTitle }) {
+      this.$store.commit(UPDATE_CHAPTER, {
+        chapter: this.allChapters[index],
+        newTitle
+      })
+    },
+    renameTopic ({ index, value: newTitle }) {
+      const topic = this.allTopics[index]
+
+      this.$store.commit(UPDATE_TOPIC, {
+        topic,
+        newContent: topic.content,
+        newTitle
+      })
     },
     restoreChapter ({ index }) {
       this.$store.commit(RESTORE_CHAPTER, this.allChapters[index])

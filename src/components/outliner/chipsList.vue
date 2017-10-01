@@ -1,33 +1,60 @@
 <template>
-  <div>
+  <div class="chip-list-wrap">
     <div class="chip-list">
-      <div v-for="(chip, index) in dataArray" class="chip" :class="{ 'light': !isDeletable(chip) }" v-show="filterChips(chip)" :key="index">
-        <div class="chip-content">
-          {{ chip[nameProp] }}
-          <button v-show="isDeletable(chip)" class="button-icon chip-delete-button" @click="deleteChip(index)" v-html="deleteSvg"></button>
-          <button v-show="!isDeletable(chip)" class="button-icon chip-delete-button" @click="restoreChip(index)" v-html="addSvg"></button>
+      <draggable v-model="reactiveArray" :options="draggableOptions">
+        <div v-for="(chip, index) in reactiveArray" class="chip" :class="{ 'light': !isDeletable(chip) }" v-show="filterChips(chip)"
+            :key="index">
+          <div class="chip-content" v-show="!showChipInput(index)">
+            <span class="chip-draggable">
+              {{ chip[nameProp] }}
+            </span>
+            <button v-show="isDeletable(chip)" class="button-icon chip-action-button" @click="renameChip(index)" v-html="editSvg"></button>
+            <button v-show="isDeletable(chip)" class="button-icon chip-action-button" @click="deleteChip(index)" v-html="deleteSvg"></button>
+            <button v-show="!isDeletable(chip)" class="button-icon chip-action-button" @click="restoreChip(index)" v-html="addSvg"></button>
+          </div>
+          <div class="chip-content" v-if="showChipInput(index)">
+            <input class="chip-input" v-model="chipValues[index]" :placeholder="chip[nameProp]">
+            <button class="button-green chip-add-button" @click="saveChipValue(index)" :disabled="!chipValues[index]">
+              <span class="u-center-all chip-add-svg" v-html="saveSvg"></span> Save
+            </button>
+            <button class="button-red chip-add-button" @click="cancelRename(index)">
+              <span class="u-center-all chip-add-svg" v-html="cancelSvg"></span> Cancel
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="chip">
-        <div class="chip-content">
-          <input class="chip-input" v-model="newChip" :placeholder="placeholder">
-          <button class="button-green chip-add-button" @click="addNewChip" :disabled="!newChip">
-            <span class="u-center-all chip-add-svg" v-html="addSvg"></span> Add
-          </button>
-        </div>
+      </draggable>
+    </div>
+    <div class="chip">
+      <div class="chip-content">
+        <input class="chip-input" v-model="newChip" :placeholder="placeholder">
+        <button class="button-green chip-add-button" @click="addNewChip" :disabled="!newChip">
+          <span class="u-center-all chip-add-svg" v-html="addSvg"></span> Add
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 import Octicons from 'octicons'
 import swal from 'sweetalert'
 
 export default {
+  components: {
+    draggable
+  },
   computed: {
     placeholder () {
       return `New ${this.name}...`
+    },
+    reactiveArray: {
+      get () {
+        return this.dataArray
+      },
+      set (value) {
+        this.$emit('rearrange', value)
+      }
     }
   },
   data () {
@@ -36,11 +63,30 @@ export default {
         height: 14,
         width: 14
       }),
+      cancelSvg: Octicons['circle-slash'].toSVG({
+        height: 14,
+        width: 14
+      }),
+      chipValues: [],
       deleteSvg: Octicons.x.toSVG({
         height: 14,
         width: 14
       }),
-      newChip: ''
+      draggableOptions: {
+        animation: 100,
+        draggable: '.chip',
+        group: this.name,
+        handle: '.chip-draggable'
+      },
+      editSvg: Octicons.pencil.toSVG({
+        height: 14,
+        width: 14
+      }),
+      newChip: '',
+      saveSvg: Octicons.check.toSVG({
+        height: 14,
+        width: 14
+      })
     }
   },
   methods: {
@@ -63,11 +109,24 @@ export default {
       const existing = arr.find(el => el[propName] === value)
       return !existing
     },
+    cancelRename (index) {
+      this.$set(this.chipValues, index, null)
+    },
     deleteChip (index) {
       this.$emit('delete', { index })
     },
+    renameChip (index) {
+      this.$set(this.chipValues, index, '')
+    },
     restoreChip (index) {
       this.$emit('restore', { index })
+    },
+    saveChipValue (index) {
+      this.$emit('update', { index, value: this.chipValues[index] })
+      this.$set(this.chipValues, index, null)
+    },
+    showChipInput (index) {
+      return typeof this.chipValues[index] === 'string'
     }
   },
   props: {
@@ -96,6 +155,11 @@ export default {
 </script>
 
 <style scoped>
+.chip-list-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .chip-list {
   align-items: center;
   display: flex;
@@ -118,6 +182,16 @@ export default {
   display: flex;
 }
 
+.chip-draggable {
+  cursor: grab;
+}
+
+.chip.sortable-ghost {
+  background-color: #333;
+  color: #FFF;
+  fill: #FFF;
+}
+
 .chip-input {
   background-color: rgba(255,255,255,0.8);
   border: none;
@@ -131,11 +205,15 @@ export default {
   padding: 2px 8px;
 }
 
+.chip-add-button:not(:first-of-type) {
+  margin-left: 6px;
+}
+
 .chip-add-svg {
   margin-right: 6px;
 }
 
-.chip-delete-button {
+.chip-action-button {
   margin-left: 8px;
 }
 </style>

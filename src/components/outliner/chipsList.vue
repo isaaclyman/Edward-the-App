@@ -94,11 +94,6 @@ export default {
       const isUnique = this.assertUnique(this.dataArray, this.nameProp, this.newChip)
 
       if (!isUnique) {
-        swal({
-          icon: 'error',
-          text: `Sorry, ${this.name.toLowerCase()} ${this.nameProp}s must be unique.
-                 Please choose a different ${this.nameProp}.`
-        })
         return
       }
 
@@ -107,7 +102,17 @@ export default {
     },
     assertUnique (arr, propName, value) {
       const existing = arr.find(el => el[propName] === value)
-      return !existing
+
+      if (existing) {
+        swal({
+          icon: 'error',
+          text: `Sorry, ${this.name.toLowerCase()} ${propName}s must be unique. "${value}" is already in use.
+                 Please choose a different ${propName}.`
+        })
+        return false
+      }
+
+      return true
     },
     cancelRename (index) {
       this.$set(this.chipValues, index, null)
@@ -122,6 +127,12 @@ export default {
       this.$emit('restore', { index })
     },
     saveChipValue (index) {
+      const isUnique = this.assertUnique(this.dataArray, this.nameProp, this.chipValues[index])
+
+      if (!isUnique) {
+        return
+      }
+
       this.$emit('update', { index, value: this.chipValues[index] })
       this.$set(this.chipValues, index, null)
     },

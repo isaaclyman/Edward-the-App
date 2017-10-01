@@ -29,7 +29,7 @@
         </div>
         <chips-list name="Chapter" name-prop="title"
                     :data-array="allChapters"
-                    :filter-chips="showChip"
+                    :filter-chips="showChapter"
                     :is-deletable="isDeletable"
                     @add="addChapter"
                     @delete="archiveChapter"
@@ -45,7 +45,7 @@
         </div>
         <chips-list name="Topic" name-prop="title"
                     :data-array="allTopics"
-                    :filter-chips="showChip"
+                    :filter-chips="showTopic"
                     :is-deletable="isDeletable"
                     @add="addTopic"
                     @delete="archiveTopic"
@@ -65,9 +65,6 @@
             <h4 class="chapter-title">
               {{ chapter.title }}
             </h4>
-            <!-- <h4 class="chapter-title">
-              <input v-model.trim="chapter.title">
-            </h4> -->
             <div class="chapter-actions">
               <button class="chapter-action" v-show="!chapter.archived" @click="archiveChapter({ index })">Archive</button>
               <button class="chapter-action" v-show="chapter.archived" @click="restoreChapter({ index })">Restore</button>
@@ -75,7 +72,7 @@
             </div>
           </div>
           <div class="chapter-content">
-            <topic-list :chapter="chapter" :show-archived="filters.archived" :topics="allTopics"></topic-list>
+            <topic-list :chapter="chapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
           </div>
         </div>
       </div>
@@ -168,12 +165,20 @@ export default {
         .filter(chapter => !this.filters.chapter ||
                 chapter.title.toLowerCase().includes(this.filters.chapter.toLowerCase()))
     },
-    viewingTopics () {
-      return (this.allTopics
-        .filter(topic => !topic.archived || this.filters.archived)
-        .filter(topic => !this.filters.topic ||
-                topic.title.toLowerCase().includes(this.filters.topic.toLowerCase()) ||
-                topic.textContent.toLowerCase().includes(this.filters.topic.toLowerCase())))
+    viewingTopicsFilteredArchived () {
+      return (this.allTopics.filter(topic => !topic.archived || this.filters.archived))
+    },
+    viewingTopicsFilteredTitle () {
+      return this.allTopics.filter(topic => {
+        if (!this.filters.topic) {
+          return true
+        }
+
+        const filter = this.filters.topic.toLowerCase()
+        const title = topic.title.toLowerCase()
+
+        return title.includes(filter)
+      })
     }
   },
   data () {
@@ -235,6 +240,9 @@ export default {
         this.$store.commit(DELETE_CHAPTER, this.allChapters[index])
       })
     },
+    getMasterTopic (chapterTopic) {
+      return this.allTopics.find(topic => topic.title === chapterTopic.title)
+    },
     helpClick (content, title) {
       swal({
         content,
@@ -271,8 +279,15 @@ export default {
     restoreTopic ({ index }) {
       this.$store.commit(RESTORE_TOPIC, this.allTopics[index])
     },
-    showChip (chip) {
-      return !chip.archived || this.filters.archived
+    showChapter (chapter) {
+      return this.viewingChapters.includes(chapter)
+    },
+    showTopic (topic) {
+      const masterTopic = this.getMasterTopic(topic)
+
+      return (this.viewingTopicsFilteredArchived.includes(masterTopic) &&
+        (this.viewingTopicsFilteredTitle.includes(masterTopic) ||
+        topic.textContent && topic.textContent.includes(this.filters.topic)))
     }
   },
   mounted () {

@@ -80,9 +80,7 @@ export default {
         return false
       }
 
-      const masterTopic = this.getMasterTopic(chapterTopic)
-
-      return masterTopic && (!masterTopic.archived || this.showArchived)
+      return this.filterTopics(chapterTopic)
     }
   },
   props: {
@@ -90,9 +88,9 @@ export default {
       required: true,
       type: Object
     },
-    showArchived: {
+    filterTopics: {
       required: true,
-      type: Boolean
+      type: Function
     },
     topics: {
       required: true,

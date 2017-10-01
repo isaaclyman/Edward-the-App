@@ -22,6 +22,7 @@
 
 <script>
 import Octicons from 'octicons'
+import swal from 'sweetalert'
 
 export default {
   computed: {
@@ -44,8 +45,23 @@ export default {
   },
   methods: {
     addNewChip () {
+      const isUnique = this.assertUnique(this.dataArray, this.nameProp, this.newChip)
+
+      if (!isUnique) {
+        swal({
+          icon: 'error',
+          text: `Sorry, ${this.name.toLowerCase()} ${this.nameProp}s must be unique.
+                 Please choose a different ${this.nameProp}.`
+        })
+        return
+      }
+
       this.$emit('add', this.newChip)
       this.newChip = ''
+    },
+    assertUnique (arr, propName, value) {
+      const existing = arr.find(el => el[propName] === value)
+      return !existing
     },
     deleteChip (index) {
       this.$emit('delete', { index })

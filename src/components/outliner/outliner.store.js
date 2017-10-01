@@ -1,4 +1,5 @@
 export const ADD_CHAPTER = 'ADD_CHAPTER'
+export const ADD_TOPIC_TO_CHAPTER = 'ADD_TOPIC_TO_CHAPTER'
 export const ARCHIVE_CHAPTER = 'ARCHIVE_CHAPTER'
 export const DELETE_CHAPTER = 'DELETE_CHAPTER'
 export const RESTORE_CHAPTER = 'RESTORE_CHAPTER'
@@ -15,14 +16,29 @@ const store = {
     chapters: [{
       archived: false,
       title: 'Chapter 1',
-      topics: []
+      topics: {}  // [{ content Delta, textContent '' (computed from content), title '' }]
     }],
-    topics: []    // [{ archived false, content Delta, textContent '' (computed from content), title '' }]
+    topics: []    // [{ archived false, title '' }]
   },
   mutations: {
     // CHAPTERS
     [ADD_CHAPTER] (state, chapter) {
       state.chapters.push(chapter)
+    },
+    [ADD_TOPIC_TO_CHAPTER] (state, { chapter, topic }) {
+      if (!state.chapters.includes(chapter)) {
+        throw new Error(`Cannot mutate chapter "${chapter.title}": does not exist.`)
+      }
+
+      if (!state.topics.includes(topic)) {
+        throw new Error(`Cannot include topic "${topic.title}": does not exist.`)
+      }
+
+      chapter.topics[topic.title] = {
+        content: null,
+        textContent: '',
+        title: topic.title
+      }
     },
     [ARCHIVE_CHAPTER] (state, chapter) {
       if (!state.chapters.includes(chapter)) {
@@ -69,6 +85,14 @@ const store = {
       }
 
       state.topics.splice(state.topics.indexOf(topic), 1)
+
+      state.chapters = state.chapters.map(chapter => {
+        if (chapter[topic.title]) {
+          delete chapter[topic.title]
+        }
+
+        return chapter
+      })
     },
     [RESTORE_TOPIC] (state, topic) {
       if (!state.topics.includes(topic)) {

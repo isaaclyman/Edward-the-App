@@ -71,7 +71,7 @@
             </div>
           </div>
           <div class="chapter-content">
-            <topic-list :chapter="chapter" :topics="viewingTopics"></topic-list>
+            <topic-list :chapter="chapter" :show-archived="filters.archived" :topics="allTopics"></topic-list>
           </div>
         </div>
       </div>
@@ -138,7 +138,7 @@
 </template>
 
 <script>
-import { ADD_CHAPTER, ADD_TOPIC, ARCHIVE_CHAPTER, ARCHIVE_TOPIC, DELETE_CHAPTER, DELETE_TOPIC, RESTORE_CHAPTER, RESTORE_TOPIC } from './outliner.store'
+import { ADD_CHAPTER, ADD_TOPIC, ARCHIVE_CHAPTER, ARCHIVE_TOPIC, DELETE_CHAPTER, RESTORE_CHAPTER, RESTORE_TOPIC } from './outliner.store'
 import ChipsList from './chipsList.vue'
 import Octicons from 'octicons'
 import swal from 'sweetalert'
@@ -198,14 +198,12 @@ export default {
       this.$store.commit(ADD_CHAPTER, {
         archived: false,
         title,
-        topics: []
+        topics: {}
       })
     },
     addTopic (title) {
       this.$store.commit(ADD_TOPIC, {
         archived: false,
-        content: null,
-        textContent: '',
         title
       })
     },
@@ -216,10 +214,20 @@ export default {
       this.$store.commit(ARCHIVE_TOPIC, this.allTopics[index])
     },
     deleteChapter ({ index }) {
-      this.$store.commit(DELETE_CHAPTER, this.allChapters[index])
-    },
-    deleteTopic ({ index }) {
-      this.$store.commit(DELETE_TOPIC, this.allTopics[index])
+      swal({
+        buttons: true,
+        dangerMode: true,
+        icon: 'warning',
+        text: `Are you sure you want to delete this chapter? Its outline and all of its written content (from the Write page)
+               will be lost. This cannot be undone.`,
+        title: 'Delete Forever?'
+      }).then((willDelete) => {
+        if (!willDelete) {
+          return
+        }
+
+        this.$store.commit(DELETE_CHAPTER, this.allChapters[index])
+      })
     },
     helpClick (content, title) {
       swal({

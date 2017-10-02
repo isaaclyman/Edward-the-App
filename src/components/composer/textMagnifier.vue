@@ -94,7 +94,7 @@ export default {
 
 <style scoped>
 .magnifier-wrap {
-  background-color: rgba(255,255,255,0.8);
+  background-color: #FFF;
   border: 1px solid #CCC;
   height: 100px;
   left: 170px;
@@ -108,7 +108,7 @@ export default {
 }
 
 .magnifier-wrap.show {
-  opacity: 0.9;
+  opacity: 1;
 }
 
 .magnifier {

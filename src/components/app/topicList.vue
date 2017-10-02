@@ -156,7 +156,7 @@ export default {
 
 .topic {
   border: 1px solid #e8cc84;
-  margin: 10px 0;
+  margin-bottom: 20px;
 }
 
 .topic-head {

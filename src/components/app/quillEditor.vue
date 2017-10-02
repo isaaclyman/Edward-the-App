@@ -26,7 +26,7 @@ export default {
     this.quill.on('text-change', debounce(() => {
       this.$emit('update:content', this.quill.getContents())
       this.$emit('update:textContent', this.quill.getText())
-    }, 500))
+    }, 250))
 
     this.quill.on('selection-change', debounce((range) => {
       if (!range) {

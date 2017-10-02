@@ -16,7 +16,13 @@
                 @select="selectMap" :mark="mark"></text-map>
     </div>
     <div class="sidebar-wrap">
-      <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
+      <div class="sidebar-options">
+        <input id="showArchivedTopics" type="checkbox" v-model="showArchivedTopics">
+        <label for="showArchivedTopics">Show Archived</label>
+      </div>
+      <div class="topic-list-wrap">
+        <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
+      </div>
     </div>
   </div>
 </template>
@@ -61,10 +67,14 @@ export default {
       scrollTo: {
         paragraphIndex: -1,
         searchTermIndex: -1
-      }
+      },
+      showArchivedTopics: false
     }
   },
   methods: {
+    getMasterTopic (chapterTopic) {
+      return this.allTopics.find(topic => topic.title === chapterTopic.title)
+    },
     isActive (index) {
       return index === this.activeChapterIndex
     },
@@ -74,8 +84,9 @@ export default {
     selectMap (descriptor) {
       this.scrollTo = descriptor
     },
-    showTopic (topic) {
-      return !topic.archived
+    showTopic (chapterTopic) {
+      const masterTopic = this.getMasterTopic(chapterTopic)
+      return !masterTopic.archived || this.showArchivedTopics
     },
     updateContent (newContent) {
       this.$store.commit(UPDATE_CHAPTER_CONTENT, {
@@ -121,9 +132,18 @@ export default {
 
 .sidebar-wrap {
   display: flex;
+  flex-direction: column;
   height: 100%;
   margin-left: 12px;
   width: 300px;
+}
+
+.sidebar-options {
+  margin-bottom: 10px;
+}
+
+.topic-list-wrap {
+  overflow: auto;
 }
 
 /* MOBILE */

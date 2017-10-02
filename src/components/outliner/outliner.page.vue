@@ -206,6 +206,10 @@ export default {
   },
   methods: {
     addChapter (title) {
+      if (!this.validateTitle('chapter', title)) {
+        return
+      }
+
       this.$store.commit(ADD_CHAPTER, {
         archived: false,
         content: null,
@@ -214,6 +218,10 @@ export default {
       })
     },
     addTopic (title) {
+      if (!this.validateTitle('topic', title)) {
+        return
+      }
+
       this.$store.commit(ADD_TOPIC, {
         archived: false,
         title
@@ -260,12 +268,20 @@ export default {
       this.$store.commit(REARRANGE_TOPICS, topics)
     },
     renameChapter ({ index, value: newTitle }) {
+      if (!this.validateTitle(newTitle)) {
+        return
+      }
+
       this.$store.commit(UPDATE_CHAPTER, {
         chapter: this.allChapters[index],
         newTitle
       })
     },
     renameTopic ({ index, value: newTitle }) {
+      if (!this.validateTitle(newTitle)) {
+        return
+      }
+
       const topic = this.allTopics[index]
 
       this.$store.commit(UPDATE_TOPIC, {
@@ -288,6 +304,20 @@ export default {
       return (this.viewingTopicsFilteredArchived.includes(masterTopic) &&
         (this.viewingTopicsFilteredTitle.includes(masterTopic) ||
         topic.textContent && topic.textContent.includes(this.filters.topic)))
+    },
+    validateTitle (itemName, title) {
+      const minlength = 1
+      const maxlength = 60
+
+      if (title.length < minlength || title.length > maxlength) {
+        swal({
+          icon: 'error',
+          text: `Sorry, ${itemName} titles must be between ${minlength} and ${maxlength} letters.`
+        })
+        return false
+      }
+
+      return true
     }
   },
   mounted () {
@@ -386,7 +416,8 @@ export default {
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   border-top: none;
-  padding: 8px;
+  padding: 0 8px;
+  padding-top: 20px;
 }
 </style>
 

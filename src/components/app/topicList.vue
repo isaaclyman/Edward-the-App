@@ -22,7 +22,7 @@
         </div>
         <div class="content-static" v-if="!isEditing(index)">
           {{ topic.textContent }}
-          <span v-if="!topic.textContent">No content yet. Click "Edit" to add some.</span>
+          <span class="content-placeholder" v-if="!topic.textContent">No content yet. Click "Edit" to add some.</span>
         </div>
         <div class="content-editable" v-if="isEditing(index)">
           <quill-editor :content="topic.content" @update:content="updateContent(topic, $event)"
@@ -186,5 +186,14 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+}
+
+.content-static {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 13px;
+}
+
+.content-placeholder {
+  color: #444;
 }
 </style>

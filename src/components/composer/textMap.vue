@@ -149,6 +149,10 @@ function getNumberOfWords (str) {
   opacity: 1;
 }
 
+.map-inner {
+  height: 100%;
+}
+
 .help-icon {
   opacity: 0;
   position: absolute;

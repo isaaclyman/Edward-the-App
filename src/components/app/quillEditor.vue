@@ -62,7 +62,7 @@ export default {
   },
   watch: {
     content (delta) {
-      if (!delta || isEqual(delta, this.quill.getContents())) {
+      if (delta === undefined || isEqual(delta, this.quill.getContents())) {
         return
       }
 

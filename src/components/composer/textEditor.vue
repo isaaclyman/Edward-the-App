@@ -8,45 +8,42 @@
 <script>
 import isEqual from 'lodash/isEqual'
 import QuillEditor from '../app/quillEditor.vue'
-import { UPDATE_CONTENT, UPDATE_SELECTION } from './composer.store'
 
 export default {
   components: {
     QuillEditor
-  },
-  computed: {
-    content () {
-      return this.$store.state.composer.deltaContent
-    },
-    selection () {
-      return this.$store.state.composer.selection
-    }
   },
   data () {
     return {}
   },
   methods: {
     updateContent (delta) {
-      const oldDelta = this.$store.state.composer.deltaContent
+      const oldDelta = this.content
 
       if (isEqual(delta, oldDelta)) {
         return
       }
 
-      this.$store.commit(UPDATE_CONTENT, delta)
+      this.$emit('update:content', delta)
     },
     updateSelection (selection) {
-      const oldSelection = this.$store.state.composer.selection
+      const oldSelection = this.selection
 
       if (isEqual(selection, oldSelection)) {
         return
       }
 
-      this.$store.commit(UPDATE_SELECTION, selection)
+      this.$emit('update:selection', selection)
     }
   },
   props: {
+    content: {
+      required: true
+    },
     scrollTo: {
+      type: Object
+    },
+    selection: {
       type: Object
     }
   }

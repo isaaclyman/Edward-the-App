@@ -1,4 +1,3 @@
-export const UPDATE_CONTENT = 'UPDATE_CONTENT'
 export const UPDATE_SELECTION = 'UPDATE_SELECTION'
 
 const store = {

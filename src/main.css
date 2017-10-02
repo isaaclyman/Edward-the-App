@@ -57,6 +57,21 @@ button.button-red {
   color: #FFF !important;
 }
 
+button.button-tab {
+  background-color: transparent;
+  border-bottom: none;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-color: #CCC;
+  margin-right: 1px;
+  transition: background-color 200ms, border-color 200ms;
+}
+
+button.button-tab.active {
+  background-color: #FFF;
+  border-color: #e8cc84;
+}
+
 button[disabled] {
   background-color: #888;
   cursor: default;

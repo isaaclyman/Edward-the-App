@@ -25,6 +25,7 @@ export default {
 
     this.quill.on('text-change', debounce(() => {
       this.$emit('update:content', this.quill.getContents())
+      this.$emit('update:textContent', this.quill.getText())
     }, 500))
 
     this.quill.on('selection-change', debounce((range) => {
@@ -48,7 +49,6 @@ export default {
       this.$emit('update:selection', selection)
     }, 500))
   },
-  name: 'quill-editor',
   props: {
     content: {
       required: true

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="topic" v-for="(topic, index) in getTopics" v-show="showTopic(topic)" :key="topic.title">
+    <div class="topic" v-for="(topic, index) in chapterTopics" v-show="showTopic(topic)" :key="topic.title">
       <div class="topic-head">
         <h5 class="topic-title">
           {{ topic.title }}
@@ -12,27 +12,51 @@
         </div>
       </div>
       <div class="topic-content">
-        {{ topic.content }}
+        <div class="content-actions">
+          <button class="button-link" v-if="!isEditing(index)" @click="editTopic(index)">
+            <span class="button-link-icon" v-html="editSvg"></span>Edit
+          </button>
+          <button class="button-link" v-if="isEditing(index)" @click="endEditTopic(index)">
+            <span class="button-link-icon" v-html="doneSvg"></span>Done Editing
+          </button>
+        </div>
+        <div class="content-static" v-if="!isEditing(index)">
+          {{ topic.textContent }}
+          <span v-if="!topic.textContent">No content yet. Click "Edit" to add some.</span>
+        </div>
+        <div class="content-editable" v-if="isEditing(index)">
+          <quill-editor :content="topic.content" @update:content="updateContent(topic, $event)"
+                        @update:textContent="updateTextContent(topic, $event)"></quill-editor>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ARCHIVE_TOPIC, ADD_TOPIC_TO_CHAPTER, DELETE_TOPIC, RESTORE_TOPIC } from '../outliner/outliner.store'
+import { ARCHIVE_TOPIC, ADD_TOPIC_TO_CHAPTER, DELETE_TOPIC, RESTORE_TOPIC,
+         UPDATE_TOPIC_CONTENT, UPDATE_TOPIC_TEXT_CONTENT } from '../outliner/outliner.store'
 import Octicons from 'octicons'
+import QuillEditor from '../app/quillEditor.vue'
 import swal from 'sweetalert'
 
 export default {
+  components: {
+    QuillEditor
+  },
   computed: {
-    getTopics () {
+    chapterTopics () {
       return this.topics.map(topic => this.getTopic(this.chapter, topic))
     }
   },
   data () {
     return {
-      addSvg: Octicons.plus.toSVG({
-        class: 'add-icon--svg',
+      doneSvg: Octicons.check.toSVG({
+        height: 14,
+        width: 14
+      }),
+      editingTopicIndex: -1,
+      editSvg: Octicons.pencil.toSVG({
         height: 14,
         width: 14
       })
@@ -58,6 +82,12 @@ export default {
         this.$store.commit(DELETE_TOPIC, this.topics[index])
       })
     },
+    editTopic (index) {
+      this.editingTopicIndex = index
+    },
+    endEditTopic (index) {
+      this.editingTopicIndex = -1
+    },
     getMasterTopic (chapterTopic) {
       return this.topics.find(topic => topic.title === chapterTopic.title)
     },
@@ -72,6 +102,9 @@ export default {
 
       return chapter.topics[topic.title]
     },
+    isEditing (index) {
+      return this.editingTopicIndex === index
+    },
     restoreTopic ({ index }) {
       this.$store.commit(RESTORE_TOPIC, this.topics[index])
     },
@@ -81,6 +114,20 @@ export default {
       }
 
       return this.filterTopics(chapterTopic)
+    },
+    updateContent (topic, newContent) {
+      this.$store.commit(UPDATE_TOPIC_CONTENT, {
+        chapter: this.chapter,
+        newContent,
+        topic
+      })
+    },
+    updateTextContent (topic, newTextContent) {
+      this.$store.commit(UPDATE_TOPIC_TEXT_CONTENT, {
+        chapter: this.chapter,
+        newTextContent,
+        topic
+      })
     }
   },
   props: {
@@ -102,16 +149,42 @@ export default {
 
 <style scoped>
 .topic {
+  border: 1px solid #e8cc84;
   margin: 10px 0;
 }
 
 .topic-head {
   align-items: center;
+  background-color: #e8cc84;
   display: flex;
   flex-direction: row;
+  padding: 8px;
 }
 
 .topic-title {
   flex: 1;
+}
+
+.topic-action {
+  background-color: transparent;
+  border-color: #FFF;
+  color: #000;
+  margin-right: 6px;
+  transition: background-color 200ms;
+}
+
+.topic-action:hover {
+  background-color: #FFF;
+}
+
+.topic-content {
+  background-color: #FFF;
+  padding: 8px;
+}
+
+.content-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 </style>

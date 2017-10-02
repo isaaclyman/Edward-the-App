@@ -41,6 +41,16 @@ button.button-icon {
   padding: 0;
 }
 
+button.button-link {
+  border: none;
+  color: #000;
+  text-decoration: underline;
+}
+
+.button-link-icon {
+  margin-right: 4px;
+}
+
 button.button-red {
   background-color: #e53935 !important;
   border: none;

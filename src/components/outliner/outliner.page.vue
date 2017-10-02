@@ -269,7 +269,6 @@ export default {
 
       this.$store.commit(UPDATE_TOPIC, {
         topic,
-        newContent: topic.content,
         newTitle
       })
     },
@@ -381,6 +380,7 @@ export default {
 }
 
 .chapter-content {
+  background-color: #FFFFD1;
   border: 1px solid #e8cc84;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;

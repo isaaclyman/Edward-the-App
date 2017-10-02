@@ -14,6 +14,8 @@ export const DELETE_TOPIC = 'DELETE_TOPIC'
 export const REARRANGE_TOPICS = 'REARRANGE_TOPICS'
 export const RESTORE_TOPIC = 'RESTORE_TOPIC'
 export const UPDATE_TOPIC = 'UPDATE_TOPIC'
+export const UPDATE_TOPIC_CONTENT = 'UPDATE_TOPIC_CONTENT'
+export const UPDATE_TOPIC_TEXT_CONTENT = 'UPDATE_TOPIC_TEXT_CONTENT'
 
 const store = {
   state: {
@@ -119,13 +121,34 @@ const store = {
 
       topic.archived = false
     },
-    [UPDATE_TOPIC] (state, { topic, newTitle, newContent }) {
+    [UPDATE_TOPIC] (state, { topic, newTitle }) {
       if (!state.topics.includes(topic)) {
         throw new Error(`Cannot update topic "${topic.title}": does not exist.`)
       }
 
       topic.title = newTitle
+    },
+    [UPDATE_TOPIC_CONTENT] (state, { chapter, topic, newContent }) {
+      if (!state.chapters.includes(chapter)) {
+        throw new Error(`Cannot update topic content for chapter "${chapter.title}": does not exist.`)
+      }
+
+      if (!state.topics.find(masterTopic => masterTopic.title === topic.title)) {
+        throw new Error(`Cannot update content of topic "${topic.title}": does not exist.`)
+      }
+
       topic.content = newContent
+    },
+    [UPDATE_TOPIC_TEXT_CONTENT] (state, { chapter, topic, newTextContent }) {
+      if (!state.chapters.includes(chapter)) {
+        throw new Error(`Cannot update topic text content for chapter "${chapter.title}": does not exist.`)
+      }
+
+      if (!state.topics.find(masterTopic => masterTopic.title === topic.title)) {
+        throw new Error(`Cannot update text content of topic "${topic.title}": does not exist.`)
+      }
+
+      topic.textContent = newTextContent
     }
   }
 }

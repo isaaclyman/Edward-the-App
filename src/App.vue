@@ -66,6 +66,6 @@ export default {
   display: flex;
   flex: 1;
   max-height: calc(100% - 87px);
-  padding: 14px 25px;
+  padding: 14px 14px;
 }
 </style>

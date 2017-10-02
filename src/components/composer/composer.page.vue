@@ -16,7 +16,7 @@
                 @select="selectMap" :mark="mark"></text-map>
     </div>
     <div class="sidebar-wrap">
-
+      <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
     </div>
   </div>
 </template>
@@ -40,6 +40,9 @@ export default {
     },
     allChapters () {
       return this.$store.state.chapters.chapters
+    },
+    allTopics () {
+      return this.$store.state.chapters.topics
     },
     mark () {
       return this.selection.text
@@ -70,6 +73,9 @@ export default {
     },
     selectMap (descriptor) {
       this.scrollTo = descriptor
+    },
+    showTopic (topic) {
+      return !topic.archived
     },
     updateContent (newContent) {
       this.$store.commit(UPDATE_CHAPTER_CONTENT, {
@@ -116,6 +122,7 @@ export default {
 .sidebar-wrap {
   display: flex;
   height: 100%;
+  margin-left: 12px;
   width: 300px;
 }
 

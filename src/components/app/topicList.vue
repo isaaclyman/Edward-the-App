@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wrap">
     <div class="topic" v-for="(topic, index) in chapterTopics" v-show="showTopic(topic)" :key="topic.title">
       <div class="topic-head">
         <h5 class="topic-title">
@@ -150,6 +150,10 @@ export default {
 </script>
 
 <style scoped>
+.wrap {
+  width: 100%;
+}
+
 .topic {
   border: 1px solid #e8cc84;
   margin: 10px 0;

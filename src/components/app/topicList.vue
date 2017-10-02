@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="topic-content">
-        <div class="content-actions">
+        <div class="content-actions" v-if="!getMasterTopic(topic).archived">
           <button class="button-link" v-if="!isEditing(index)" @click="editTopic(index)">
             <span class="button-link-icon" v-html="editSvg"></span>Edit
           </button>
@@ -22,7 +22,9 @@
         </div>
         <div class="content-static" v-if="!isEditing(index)">
           {{ topic.textContent }}
-          <span class="content-placeholder" v-if="!topic.textContent">No content yet. Click "Edit" to add some.</span>
+          <span class="content-placeholder" v-if="!topic.textContent && !getMasterTopic(topic).archived">
+            No content yet. Click "Edit" to add some.
+          </span>
         </div>
         <div class="content-editable" v-if="isEditing(index)">
           <quill-editor :content="topic.content" @update:content="updateContent(topic, $event)"
@@ -35,7 +37,7 @@
 
 <script>
 import { ARCHIVE_TOPIC, ADD_TOPIC_TO_CHAPTER, DELETE_TOPIC, RESTORE_TOPIC,
-         UPDATE_TOPIC_CONTENT, UPDATE_TOPIC_TEXT_CONTENT } from '../outliner/outliner.store'
+         UPDATE_TOPIC_CONTENT, UPDATE_TOPIC_TEXT_CONTENT } from '../app/chapters.store'
 import Octicons from 'octicons'
 import QuillEditor from '../app/quillEditor.vue'
 import swal from 'sweetalert'

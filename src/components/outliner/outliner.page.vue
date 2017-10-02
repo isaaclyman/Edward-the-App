@@ -141,7 +141,7 @@
 <script>
 import { ADD_CHAPTER, ADD_TOPIC, ARCHIVE_CHAPTER, ARCHIVE_TOPIC,
          DELETE_CHAPTER, REARRANGE_CHAPTERS, REARRANGE_TOPICS,
-         RESTORE_CHAPTER, RESTORE_TOPIC, UPDATE_CHAPTER, UPDATE_TOPIC } from './outliner.store'
+         RESTORE_CHAPTER, RESTORE_TOPIC, UPDATE_CHAPTER, UPDATE_TOPIC } from '../app/chapters.store'
 import ChipsList from './chipsList.vue'
 import Octicons from 'octicons'
 import swal from 'sweetalert'
@@ -154,10 +154,10 @@ export default {
   },
   computed: {
     allChapters () {
-      return this.$store.state.outliner.chapters
+      return this.$store.state.chapters.chapters
     },
     allTopics () {
-      return this.$store.state.outliner.topics
+      return this.$store.state.chapters.topics
     },
     viewingChapters () {
       return (this.allChapters
@@ -208,6 +208,7 @@ export default {
     addChapter (title) {
       this.$store.commit(ADD_CHAPTER, {
         archived: false,
+        content: null,
         title,
         topics: {}
       })

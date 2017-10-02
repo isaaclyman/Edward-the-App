@@ -115,6 +115,7 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  min-height: 28px;
 }
 
 .editor-wrap {

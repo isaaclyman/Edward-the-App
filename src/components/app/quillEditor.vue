@@ -114,7 +114,7 @@ function getAllOccurrences (regex, str) {
 
 <style scoped>
 .editor {
-  height: calc(100% - 45px);
+  height: calc(100% - 75px);
   position: relative;
   width: 100%;
 }

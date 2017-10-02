@@ -52,7 +52,7 @@ export default {
 
 <style>
 .quill-wrap {
-  height: 100%;
+  height: calc(100% - 30px);
   margin-right: 15px;
   width: 100%;
 }

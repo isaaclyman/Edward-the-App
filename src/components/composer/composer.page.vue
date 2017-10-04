@@ -2,7 +2,8 @@
   <div class="composer">
     <div class="editor-wrap">
       <div class="tabs">
-        <button v-for="(chapter, index) in viewingChapters" :key="chapter.title" @click="selectChapter(index)"
+        <button v-for="(chapter, index) in viewingChapters" :key="chapter.title" 
+                @click="selectChapter(index)"
                 class="button-tab" :class="{ 'active': isActive(index) }">
           {{ chapter.title }}
         </button>
@@ -16,13 +17,21 @@
                 @select="selectMap" :mark="mark"></text-map>
     </div>
     <div class="sidebar-wrap">
-      <div class="sidebar-options">
-        <input id="showArchivedTopics" type="checkbox" v-model="showArchivedTopics">
-        <label for="showArchivedTopics">Show Archived</label>
-      </div>
-      <div class="topic-list-wrap">
-        <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
-      </div>
+      <template v-if="allTopics.length">
+        <div class="sidebar-options">
+          <input id="showArchivedTopics" type="checkbox" v-model="showArchivedTopics">
+          <label for="showArchivedTopics">Show Archived</label>
+        </div>
+        <div class="topic-list-wrap">
+          <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
+        </div>
+      </template>
+      <template v-else>
+        <div>No outline yet.</div>
+        <div>
+          <a @click="goToOutliner()">Start outlining</a>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -75,6 +84,9 @@ export default {
     getMasterTopic (chapterTopic) {
       return this.allTopics.find(topic => topic.title === chapterTopic.title)
     },
+    goToOutliner () {
+      this.$router.push('/outline')
+    },
     isActive (index) {
       return index === this.activeChapterIndex
     },
@@ -123,6 +135,7 @@ export default {
   flex: 1;
   flex-direction: column;
   margin-right: 12px;
+  position: relative;
 }
 
 .map-wrap {

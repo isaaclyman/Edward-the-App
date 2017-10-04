@@ -118,25 +118,6 @@ function getAllOccurrences (regex, str) {
   position: relative;
   width: 100%;
 }
-
-.search {
-  background-color: rgba(240, 240, 240, 0.9);
-  opacity: 0;
-  padding: 6px;
-  position: absolute;
-  right: 16px;
-  top: 42px;
-  transition: opacity 200ms ease-in-out;
-}
-
-.search.active {
-  opacity: 1;
-}
-
-.search-results {
-  display: inline-block;
-  padding: 0 4px;
-}
 </style>
 
 <style>

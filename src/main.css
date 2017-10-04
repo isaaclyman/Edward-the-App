@@ -11,14 +11,23 @@ html, body {
 }
 
 
-/* TAGS */
+/* FONTS */
 
-button, div, input, optgroup, select, span, textarea {
+a, button, div, input, optgroup, select, span, textarea {
   font-family: 'Asap Condensed', sans-serif;
 }
 
 p, li {
   font-family: 'Libre Baskerville', serif;
+}
+
+/* TAGS */
+
+a {
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 21px;
+  text-decoration: underline;
 }
 
 button {

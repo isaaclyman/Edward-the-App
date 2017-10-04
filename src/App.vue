@@ -87,6 +87,7 @@ export default {
 
 .tooltip {
   color: #FFF;
+  cursor: default;
   font-size: 16px;
 }
 

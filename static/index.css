@@ -109,5 +109,5 @@ h3 {
 .screenshot {
   box-shadow: 2px 2px 33px 1px rgba(0,0,0,0.75);
   margin: 16px 0;
-  width: 30%;
+  max-width: 550px;
 }

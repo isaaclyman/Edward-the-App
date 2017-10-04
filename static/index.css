@@ -101,11 +101,13 @@ h3 {
 
 /* BACKGROUNDS */
 
-.background-gray, .background-pink, .background-blue, .background-brown, .background-green {
+.background-gray, .background-pink, .background-blue, .background-brown, .background-green,
+.background-yellow, .background-orange {
   padding: 0 30px;
 }
 
-.background-gray > div, .background-pink > div, .background-blue > div, .background-brown > div, .background-green > div {
+.background-gray > div, .background-pink > div, .background-blue > div, .background-brown > div,
+.background-green > div, .background-yellow > div, .background-orange > div {
   background-color: #fff;
 }
 
@@ -127,4 +129,12 @@ h3 {
 
 .background-green {
   background-color: #e1f7d5;
+}
+
+.background-yellow {
+  background-color: #ffffba;
+}
+
+.background-orange {
+  background-color: #ffdfba;
 }

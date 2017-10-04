@@ -23,6 +23,9 @@ export default {
       this.quill.setContents(this.content, 'api')
     }
 
+    this.$emit('update:content', this.quill.getContents())
+    this.$emit('update:textContent', this.quill.getText())
+
     this.quill.on('text-change', debounce(() => {
       this.$emit('update:content', this.quill.getContents())
       this.$emit('update:textContent', this.quill.getText())

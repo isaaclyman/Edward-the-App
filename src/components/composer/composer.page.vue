@@ -8,9 +8,20 @@
           {{ chapter.title }}
         </button>
       </div>
+      <div class="stats">
+        <div class="stats-content">
+          <p>
+            <b>{{ activeChapter.title }}</b>
+          </p>
+          <p>{{ wordCount }} words</p>
+          <p>{{ paragraphCount }} paragraphs</p>
+          <p>{{ readTimeMinutes }} minute read</p>
+        </div>
+      </div>
       <text-editor ref="textEditor" :content="activeChapter.content" :scroll-to="scrollTo" :selection="selection"
-                   @update:content="updateContent($event)"
-                   @update:selection="updateSelection($event)"></text-editor>
+                   @update:content="updateContent"
+                   @update:selection="updateSelection"
+                   @update:textContent="updateTextContent"></text-editor>
     </div>
     <div class="map-wrap">
       <text-map :editor-element="editorElement" :data-stream="activeChapter.content"
@@ -62,11 +73,20 @@ export default {
     mark () {
       return this.selection.text
     },
+    paragraphCount () {
+      return (this.textContent.match(/[\n]+/g) || []).length
+    },
+    readTimeMinutes () {
+      return Math.ceil(this.wordCount / 275)
+    },
     selection () {
       return this.$store.state.composer.selection
     },
     viewingChapters () {
       return this.allChapters.filter(chapter => !chapter.archived)
+    },
+    wordCount () {
+      return (this.textContent.match(/[^\s]+/g) || []).length
     }
   },
   data () {
@@ -77,7 +97,8 @@ export default {
         paragraphIndex: -1,
         searchTermIndex: -1
       },
-      showArchivedTopics: false
+      showArchivedTopics: false,
+      textContent: ''
     }
   },
   methods: {
@@ -108,6 +129,9 @@ export default {
     },
     updateSelection (selection) {
       this.$store.commit(UPDATE_SELECTION, selection)
+    },
+    updateTextContent (text) {
+      this.textContent = text
     }
   },
   mounted () {
@@ -123,6 +147,14 @@ export default {
   min-height: 300px;
 }
 
+.editor-wrap {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin-right: 12px;
+  position: relative;
+}
+
 .tabs {
   display: flex;
   flex-direction: row;
@@ -130,12 +162,27 @@ export default {
   min-height: 28px;
 }
 
-.editor-wrap {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  margin-right: 12px;
-  position: relative;
+.stats {
+  background-color: rgba(255, 255, 255, 0.85);
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 29px;
+  transition: opacity 200ms;
+  width: 100%;
+  z-index: 15;
+}
+
+.stats-content {
+  height: 100%;
+  padding: 12px;
+  width: 100%;
+}
+
+.tabs:hover ~ .stats {
+  opacity: 1;
 }
 
 .map-wrap {

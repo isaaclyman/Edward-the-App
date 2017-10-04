@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="app">
     <div class="app-header">
-      <div class="app-header--content">
+      <div class="app-header--logo-wrap" ref="logoWrap" title="Made in Utah by Isaac.">
         <img class="app-header--logo" src="../static/logo.png">
       </div>
       <div class="app-header--menu">
@@ -11,15 +11,31 @@
     <div class="page">
       <router-view></router-view>
     </div>
+
+    <!-- Author tooltip -->
+    <div style="display: none">
+      <div class="tooltip" ref="authorTooltip">
+        Made in Utah by <a href="http://isaaclyman.com">Isaac</a>.
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import MainMenu from './components/app/mainMenu.vue'
+import tippy from 'tippy.js'
 
 export default {
   components: {
     MainMenu
+  },
+  mounted () {
+    tippy(this.$refs.logoWrap, {
+      arrow: true,
+      html: this.$refs.authorTooltip,
+      interactive: true,
+      position: 'bottom'
+    })
   },
   name: 'app'
 }
@@ -46,7 +62,7 @@ export default {
   height: 100%;
 }
 
-.app-header--content {
+.app-header--logo-wrap {
   align-items: center;
   color: #FFF;
   display: flex;
@@ -67,5 +83,14 @@ export default {
   flex: 1;
   max-height: calc(100% - 87px);
   padding: 14px 14px;
+}
+
+.tooltip {
+  color: #FFF;
+  font-size: 16px;
+}
+
+.tooltip a {
+  color: #CCC;
 }
 </style>

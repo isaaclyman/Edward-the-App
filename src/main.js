@@ -7,6 +7,8 @@ import App from './App'
 Vue.config.productionTip = false
 
 import './assets/yui-cssreset.css'
+import 'tippy.js/dist/tippy.css'
+
 import './main.css'
 import store from './store'
 

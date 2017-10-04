@@ -1,0 +1,113 @@
+/* PAGE */
+
+html, body {
+  font-family: 'Asap Condensed', sans-serif;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  padding: 10px 20px;
+}
+
+/* FONTS */
+
+a, button, div, input, optgroup, select, span, textarea,
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Asap Condensed', sans-serif;
+}
+
+p, li {
+  font-family: 'Libre Baskerville', serif;
+}
+
+
+/* TAGS */
+a {
+  border: 2px solid #CCC;
+  border-radius: 3px;
+  color: #444;
+  font-size: 12px;
+  font-weight: bold;
+  margin: 2px 4px;
+  padding: 4px;
+  text-decoration: none;
+  transition: border-color 250ms, color 250ms;
+}
+
+a:hover {
+  border-color: #000;
+  color: #000;
+}
+
+h1, h2, h3, h4, h5 {
+  margin: 6px 0;
+}
+
+h1 {
+  font-size: 70px;
+}
+
+h2 {
+  font-size: 40px;
+}
+
+h3 {
+  font-size: 16.5px;
+}
+
+/* CLASSES */
+
+.header {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  height: 48px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.logo {
+  height: 40px;
+}
+
+.author {
+  font-size: 10px;
+  font-weight: bold;
+  margin-left: 8px;
+  margin-top: 36px;
+}
+
+.links {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.hook {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 35px;
+  margin-top: 35px;
+}
+
+.content {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  line-height: 23px;
+  width: 100%;
+}
+
+.content * {
+  max-width: 800px;
+  width: 800px;
+}
+
+.screenshot {
+  box-shadow: 2px 2px 33px 1px rgba(0,0,0,0.75);
+  margin: 16px 0;
+  width: 30%;
+}

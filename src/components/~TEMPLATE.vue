@@ -4,9 +4,6 @@
 
 <script>
 export default {
-  beforeCreate () {
-
-  },
   components: {},
   computed: {},
   data () {

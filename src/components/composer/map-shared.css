@@ -11,9 +11,29 @@
   width: 100%;
 }
 
-.map p {
+.map blockquote {
+  border-left: 1px solid #ccc;
+  margin-bottom: 5px;
+  margin-left: 2px;
+  margin-top: 5px;
+  padding-left: 4px;
+}
+
+.map p, .map h1, .map h2, .map h3 {
   margin: 0;
   padding: 0.8px 2px;
+}
+
+.map h1 {
+  font-size: 8px;
+}
+
+.map h2 {
+  font-size: 6px;
+}
+
+.map h3 {
+  font-size: 4px;
 }
 
 .map-inner {

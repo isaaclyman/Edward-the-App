@@ -11,8 +11,6 @@ const toolbarOptions = [[
 ], [
   'blockquote'
 ], [
-  { 'indent': '-1' }, { 'indent': '+1' }
-], [
   'clean'
 ]]
 
@@ -24,8 +22,7 @@ const allowedFormats = [
   'underline',
   'strike',
   'list',
-  'blockquote',
-  'indent'
+  'blockquote'
 ]
 
 const createQuill = (el, placeholder) => {

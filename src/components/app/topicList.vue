@@ -21,7 +21,7 @@
           </button>
         </div>
         <div class="content-static" v-if="!isEditing(index)">
-          {{ topic.textContent }}
+          <p v-text="topic.textContent"></p>
           <span class="content-placeholder" v-if="!topic.textContent && !getMasterTopic(topic).archived">
             No content yet. Click "Edit" to add some.
           </span>
@@ -209,7 +209,7 @@ export default {
 .content-static {
   font-family: 'Libre Baskerville', serif;
   font-size: 13px;
-  white-space: pre-line;
+  white-space: pre-wrap;
 }
 
 .content-placeholder {

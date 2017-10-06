@@ -17,8 +17,16 @@ a, button, div, input, optgroup, select, span, textarea {
   font-family: 'Asap Condensed', sans-serif;
 }
 
-p, li {
+blockquote, li, p {
   font-family: 'Libre Baskerville', serif;
+}
+
+em {
+  font-style: italic;
+}
+
+strong {
+  font-weight: bold;
 }
 
 /* TAGS */

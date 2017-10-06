@@ -45,6 +45,10 @@ h3 {
   font-size: 16.5px;
 }
 
+ul li {
+  margin-left: 20px;
+}
+
 /* CLASSES */
 
 .header {
@@ -78,6 +82,7 @@ h3 {
   display: flex;
   flex-direction: column;
   padding: 35px 0;
+  text-align: center;
 }
 
 .content {
@@ -88,8 +93,9 @@ h3 {
   width: 100%;
 }
 
-.content * {
-  max-width: 800px;
+.content > p, .content > ul {
+  max-width: 100%;
+  padding: 0 12px;
   width: 800px;
 }
 

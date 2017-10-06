@@ -23,18 +23,19 @@
 
 <script>
 import MainMenu from './components/app/mainMenu.vue'
-import tippy from 'tippy.js'
+import tooltip from './components/app/tippyBuilder'
 
 export default {
   components: {
     MainMenu
   },
   mounted () {
-    tippy(this.$refs.logoWrap, {
+    tooltip({
+      arrow: false,
+      content: this.$refs.authorTooltip,
       distance: -20,
-      html: this.$refs.authorTooltip,
-      interactive: true,
-      position: 'bottom'
+      el: this.$refs.logoWrap,
+      interactive: true
     })
   },
   name: 'app'

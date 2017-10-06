@@ -1,7 +1,8 @@
 <template>
   <div class="main-menu">
     <template v-for="route in routes">
-      <button class="main-menu--button" @click="goToRoute(route.location)" :key="route.name">
+      <button class="main-menu--button" @click="goToRoute(route.location)" :key="route.name"
+              :title="route.tooltip" v-tooltip>
         <div v-html="getIconSvg(route.icon)"></div>
         <div>{{route.name}}</div>
       </button>
@@ -12,24 +13,36 @@
 
 <script>
 import Octicons from 'octicons'
+import tooltip from './tooltip.directive'
 
 export default {
   data () {
     return {
       routes: [{
         icon: 'list-unordered',
+        location: '/outline',
         name: 'Outline',
-        location: '/outline'
+        tooltip: 'Create and organize chapters and outlines.'
       }, {
         icon: 'pencil',
+        location: '/write',
         name: 'Write',
-        location: '/write'
+        tooltip: 'Write, search and measure your content.'
       }, {
         icon: 'pulse',
+        location: '/analyze',
         name: 'Analyze',
-        location: '/analyze'
+        tooltip: 'Get data-driven insights into your writing.'
+      }, {
+        icon: 'briefcase',
+        location: '/tools',
+        name: 'Tools',
+        tooltip: 'Export your work.'
       }]
     }
+  },
+  directives: {
+    tooltip
   },
   methods: {
     getIconSvg (iconName) {

@@ -31,7 +31,7 @@ export default {
   },
   mounted () {
     tippy(this.$refs.logoWrap, {
-      arrow: true,
+      distance: -20,
       html: this.$refs.authorTooltip,
       interactive: true,
       position: 'bottom'

@@ -127,7 +127,7 @@ export default {
     updateTextContent (topic, newTextContent) {
       this.$store.commit(UPDATE_TOPIC_TEXT_CONTENT, {
         chapter: this.chapter,
-        newTextContent,
+        newTextContent: newTextContent.trim(),
         topic
       })
     }
@@ -156,6 +156,7 @@ export default {
 
 .topic {
   border: 1px solid #e8cc84;
+  border-top: none;  
   margin-bottom: 20px;
 }
 
@@ -164,18 +165,29 @@ export default {
   background-color: #e8cc84;
   display: flex;
   flex-direction: row;
-  padding: 8px;
+  height: 28px;
+  padding: 0 8px;
 }
 
 .topic-title {
   flex: 1;
+  padding: 2px 0;
+}
+
+.topic-actions {
+  height: 100%;
 }
 
 .topic-action {
   background-color: transparent;
-  border-color: #FFF;
+  border: none;
+  border-left: 1px solid #fff;
+  border-radius: 0;
+  border-right: 1px solid #fff;
   color: #000;
+  height: 100%;
   margin-right: 6px;
+  padding: 3px 6px;
   transition: background-color 200ms;
 }
 
@@ -185,7 +197,7 @@ export default {
 
 .topic-content {
   background-color: #FFF;
-  padding: 8px;
+  padding: 1px 8px;
 }
 
 .content-actions {
@@ -202,5 +214,6 @@ export default {
 
 .content-placeholder {
   color: #444;
+  white-space: normal;
 }
 </style>

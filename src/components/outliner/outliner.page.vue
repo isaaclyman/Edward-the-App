@@ -4,20 +4,24 @@
       <!-- Filters -->
       <div class="filters">
         <div class="section-title">
+          <button v-html="expandSvg" @click="toggleFilters"
+                  class="filter-toggle button-icon" :class="{ 'expanded': filtersVisible }"></button>
           <h3>Filters</h3>
           <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpFiltersNode, 'Filters')"></button>
         </div>
-        <div class="filter-input">
-          <label for="filterChaptersInput">Filter Chapters</label>
-          <input id="filterChaptersInput" type="text" v-model.trim="filters.chapter" />
-        </div>
-        <div class="filter-input">
-          <label for="filterTopicsInput">Filter Topics</label>
-          <input id="filterTopicsInput" type="text" v-model.trim="filters.topic" />
-        </div>
-        <div>
-          <input id="showArchivedCheckbox" type="checkbox" v-model="filters.archived" />
-          <label for="showArchivedCheckbox">Show Archived</label>
+        <div class="filter-content" :class="{ 'expanded': filtersVisible }">
+          <div class="filter-input">
+            <label for="filterChaptersInput">Filter Chapters</label>
+            <input id="filterChaptersInput" type="text" v-model.trim="filters.chapter" />
+          </div>
+          <div class="filter-input">
+            <label for="filterTopicsInput">Filter Topics</label>
+            <input id="filterTopicsInput" type="text" v-model.trim="filters.topic" />
+          </div>
+          <div>
+            <input id="showArchivedCheckbox" type="checkbox" v-model="filters.archived" />
+            <label for="showArchivedCheckbox">Show Archived</label>
+          </div>
         </div>
       </div>
       <hr>
@@ -189,11 +193,16 @@ export default {
         height: 14,
         width: 14
       }),
+      expandSvg: Octicons['chevron-down'].toSVG({
+        height: 18,
+        width: 18
+      }),
       filters: {
         archived: false,
         chapter: '',
         topic: ''
       },
+      filtersVisible: false,
       helpChapterBlocksNode: null,
       helpChapterChipsNode: null,
       helpFiltersNode: null,
@@ -305,6 +314,9 @@ export default {
       return (this.viewingTopicsFilteredArchived.includes(masterTopic) &&
         (this.viewingTopicsFilteredTitle.includes(masterTopic) ||
         topic.textContent && topic.textContent.includes(this.filters.topic)))
+    },
+    toggleFilters () {
+      this.filtersVisible = !this.filtersVisible
     }
   },
   mounted () {
@@ -341,6 +353,22 @@ export default {
 
 .filters {
   max-width: 350px;
+}
+
+.filter-toggle {
+  height: 18px;
+  margin-right: 6px;
+  width: 18px;
+}
+
+.filter-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 200ms;
+}
+
+.filter-content.expanded {
+  max-height: 120px;
 }
 
 .filter-input {
@@ -412,5 +440,14 @@ export default {
 .add-icon--svg {
   fill: #FFF;
   margin-right: 6px;
+}
+
+.filter-toggle svg {
+  transform-origin: center;
+  transition: transform 200ms;
+}
+
+.filter-toggle.expanded svg {
+  transform: rotate(180deg);
 }
 </style>

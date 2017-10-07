@@ -146,6 +146,7 @@ import ChipsList from './chipsList.vue'
 import Octicons from 'octicons'
 import swal from 'sweetalert'
 import TopicList from '../app/topicList.vue'
+import { ValidateTitle } from '../app/validate'
 
 export default {
   components: {
@@ -206,7 +207,7 @@ export default {
   },
   methods: {
     addChapter (title) {
-      if (!this.validateTitle('chapter', title)) {
+      if (!ValidateTitle('chapter', title)) {
         return
       }
 
@@ -218,7 +219,7 @@ export default {
       })
     },
     addTopic (title) {
-      if (!this.validateTitle('topic', title)) {
+      if (!ValidateTitle('topic', title)) {
         return
       }
 
@@ -268,7 +269,7 @@ export default {
       this.$store.commit(REARRANGE_TOPICS, topics)
     },
     renameChapter ({ index, value: newTitle }) {
-      if (!this.validateTitle(newTitle)) {
+      if (!ValidateTitle(newTitle)) {
         return
       }
 
@@ -278,7 +279,7 @@ export default {
       })
     },
     renameTopic ({ index, value: newTitle }) {
-      if (!this.validateTitle(newTitle)) {
+      if (!ValidateTitle(newTitle)) {
         return
       }
 
@@ -304,20 +305,6 @@ export default {
       return (this.viewingTopicsFilteredArchived.includes(masterTopic) &&
         (this.viewingTopicsFilteredTitle.includes(masterTopic) ||
         topic.textContent && topic.textContent.includes(this.filters.topic)))
-    },
-    validateTitle (itemName, title) {
-      const minlength = 1
-      const maxlength = 60
-
-      if (title.length < minlength || title.length > maxlength) {
-        swal({
-          icon: 'error',
-          text: `Sorry, ${itemName} titles must be between ${minlength} and ${maxlength} letters.`
-        })
-        return false
-      }
-
-      return true
     }
   },
   mounted () {

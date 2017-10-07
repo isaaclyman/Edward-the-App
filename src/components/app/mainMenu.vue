@@ -37,7 +37,7 @@ export default {
         icon: 'briefcase',
         location: '/tools',
         name: 'Tools',
-        tooltip: 'Export your work.'
+        tooltip: 'Download your work.'
       }]
     }
   },

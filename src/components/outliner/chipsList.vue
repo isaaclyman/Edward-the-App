@@ -206,7 +206,7 @@ export default {
 .chip-input {
   background-color: rgba(255,255,255,0.8);
   border: none;
-  height: 12px;
+  height: 20px;
   margin-right: 6px;
 }
 

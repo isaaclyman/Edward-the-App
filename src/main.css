@@ -55,6 +55,7 @@ button.button-green {
   background-color: #8bc34a;
   border: none;
   color: #FFF;
+  fill: #FFF;
 }
 
 button.button-icon {
@@ -76,19 +77,27 @@ button.button-red {
   background-color: #e53935 !important;
   border: none;
   color: #FFF !important;
+  fill: #FFF;
 }
 
-button.button-tab {
+.button-tab {
+  align-items: center;
   background-color: transparent;
+  border: 1px solid #CCC;
   border-bottom: none;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border-color: #CCC;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  display: flex;
+  font-size: 14px;
   margin-right: 1px;
+  padding: 6px 10px;
   transition: background-color 200ms, border-color 200ms;
 }
 
-button.button-tab.active {
+.button-tab.active {
   background-color: #FFF;
   border-color: #e8cc84;
 }

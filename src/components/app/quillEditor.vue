@@ -1,5 +1,5 @@
 <template>
-  <div class="editor">
+  <div class="editor" ref="container">
     <div ref="editor"></div>
   </div>
 </template>
@@ -17,7 +17,7 @@ export default {
     }
   },
   mounted () {
-    this.quill = createQuill(this.$refs.editor, 'Write here.')
+    this.quill = createQuill(this.$refs.editor, 'Write here.', this.$refs.container)
 
     if (this.content) {
       this.quill.setContents(this.content, 'api')

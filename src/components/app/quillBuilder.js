@@ -25,8 +25,9 @@ const allowedFormats = [
   'blockquote'
 ]
 
-const createQuill = (el, placeholder) => {
+const createQuill = (el, placeholder, container) => {
   return new Quill(el, {
+    bounds: container,
     formats: allowedFormats,
     modules: {
       toolbar: toolbarOptions

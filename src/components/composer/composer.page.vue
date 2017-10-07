@@ -3,25 +3,39 @@
     <div class="editor-wrap">
       <div class="tabs">
         <button v-for="(chapter, index) in viewingChapters" :key="chapter.title" 
+                class="button-tab" :class="{ 'active': isActive(index) }"
                 @click="selectChapter(index)"
-                class="button-tab" :class="{ 'active': isActive(index) }">
+                @mouseover="hoverChapter(index)"
+                @mouseout="unhoverChapter">
           {{ chapter.title }}
         </button>
-      </div>
-      <div class="stats">
-        <div class="stats-content">
-          <p>
-            <b>{{ activeChapter.title }}</b>
-          </p>
-          <p>{{ wordCount }} words</p>
-          <p>{{ paragraphCount }} paragraphs</p>
-          <p>{{ readTimeMinutes }} minute read</p>
+        <button @click="showNewChapter" class="button-tab" v-show="!showAddChapter" v-html="addSvg"></button>
+        <div class="button-tab add-tab" v-show="showAddChapter">
+          <input class="chapter-input" v-model="newChapter" placeholder="New chapter...">
+          <button class="button-green tab-internal-button" @click="addChapter">
+            <span class="u-center-all" v-html="saveSvg"></span> Save
+          </button>
+          <button class="button-red tab-internal-button" @click="cancelAddChapter">
+              <span class="u-center-all" v-html="cancelSvg"></span> Cancel
+            </button>
         </div>
       </div>
-      <text-editor ref="textEditor" :content="activeChapter.content" :scroll-to="scrollTo" :selection="selection"
-                   @update:content="updateContent"
-                   @update:selection="updateSelection"
-                   @update:textContent="updateTextContent"></text-editor>
+      <div class="below-tabs">
+        <div class="stats" :class="{ 'active': showStats }">
+          <div class="stats-content">
+            <p>
+              <b>{{ activeChapter.title }}</b>
+            </p>
+            <p>{{ wordCount }} words</p>
+            <p>{{ paragraphCount }} paragraphs</p>
+            <p>{{ readTimeMinutes }} minute read</p>
+          </div>
+        </div>
+        <text-editor ref="textEditor" :content="activeChapter.content" :scroll-to="scrollTo" :selection="selection"
+                    @update:content="updateContent"
+                    @update:selection="updateSelection"
+                    @update:textContent="updateTextContent"></text-editor>
+      </div>
     </div>
     <div class="map-wrap">
       <text-map :editor-element="editorElement" :data-stream="activeChapter.content"
@@ -48,11 +62,13 @@
 </template>
 
 <script>
+import Octicons from 'octicons'
 import TextEditor from './textEditor.vue'
 import TextMap from './textMap.vue'
 import TopicList from '../app/topicList.vue'
-import { UPDATE_CHAPTER_CONTENT } from '../app/chapters.store'
+import { ADD_CHAPTER, UPDATE_CHAPTER_CONTENT } from '../app/chapters.store'
 import { UPDATE_SELECTION } from './composer.store'
+import { ValidateTitle } from '../app/validate'
 
 export default {
   components: {
@@ -92,21 +108,58 @@ export default {
   data () {
     return {
       activeChapterIndex: 0,
+      addSvg: Octicons.plus.toSVG({
+        height: 14,
+        width: 14
+      }),
+      cancelSvg: Octicons['circle-slash'].toSVG({
+        height: 14,
+        width: 14
+      }),
       editorElement: null,
+      newChapter: '',
+      saveSvg: Octicons.check.toSVG({
+        height: 14,
+        width: 14
+      }),
       scrollTo: {
         paragraphIndex: -1,
         searchTermIndex: -1
       },
+      showAddChapter: false,
       showArchivedTopics: false,
+      showStats: false,
       textContent: ''
     }
   },
   methods: {
+    addChapter () {
+      if (!ValidateTitle('chapter', this.newChapter)) {
+        return
+      }
+
+      this.$store.commit(ADD_CHAPTER, {
+        archived: false,
+        content: null,
+        title: this.newChapter,
+        topics: {}
+      })
+
+      this.showAddChapter = false
+      this.newChapter = ''
+    },
+    cancelAddChapter () {
+      this.showAddChapter = false
+      this.newChapter = ''
+    },
     getMasterTopic (chapterTopic) {
       return this.allTopics.find(topic => topic.title === chapterTopic.title)
     },
     goToOutliner () {
       this.$router.push('/outline')
+    },
+    hoverChapter (index) {
+      this.showStats = true
     },
     isActive (index) {
       return index === this.activeChapterIndex
@@ -117,9 +170,15 @@ export default {
     selectMap (descriptor) {
       this.scrollTo = descriptor
     },
+    showNewChapter () {
+      this.showAddChapter = true
+    },
     showTopic (chapterTopic) {
       const masterTopic = this.getMasterTopic(chapterTopic)
       return !masterTopic.archived || this.showArchivedTopics
+    },
+    unhoverChapter () {
+      this.showStats = false
     },
     updateContent (newContent) {
       this.$store.commit(UPDATE_CHAPTER_CONTENT, {
@@ -162,6 +221,33 @@ export default {
   min-height: 28px;
 }
 
+.add-tab {
+  background-color: #CCC;
+  padding: 6px 6px;
+}
+
+.chapter-input {
+  background-color: rgba(255,255,255,0.8);
+  border: none;
+  height: 20px;
+  margin-right: 6px;
+}
+
+.tab-internal-button {
+  display: flex;
+  fill: #FFF;
+  padding: 2px 8px;
+}
+
+.tab-internal-button:not(:first-of-type) {
+  margin-left: 6px;
+}
+
+.below-tabs {
+  max-height: calc(100% - 28px);
+  position: relative;
+}
+
 .stats {
   background-color: rgba(255, 255, 255, 0.85);
   bottom: 0;
@@ -169,20 +255,20 @@ export default {
   opacity: 0;
   pointer-events: none;
   position: absolute;
-  top: 29px;
+  top: 0;
   transition: opacity 200ms;
   width: 100%;
   z-index: 15;
+}
+
+.stats.active {
+  opacity: 1;
 }
 
 .stats-content {
   height: 100%;
   padding: 12px;
   width: 100%;
-}
-
-.tabs:hover ~ .stats {
-  opacity: 1;
 }
 
 .map-wrap {

@@ -20,7 +20,7 @@
             </button>
         </div>
       </div>
-      <div class="below-tabs">
+      <div class="below-tabs" ref="editorContainer">
         <div class="stats" :class="{ 'active': showStats }">
           <div class="stats-content">
             <p>
@@ -32,6 +32,7 @@
           </div>
         </div>
         <text-editor ref="textEditor" :content="activeChapter.content" :scroll-to="scrollTo" :selection="selection"
+                    :container="editorContainerNode"
                     @update:content="updateContent"
                     @update:selection="updateSelection"
                     @update:textContent="updateTextContent"></text-editor>
@@ -116,6 +117,7 @@ export default {
         height: 14,
         width: 14
       }),
+      editorContainerNode: null,
       editorElement: null,
       newChapter: '',
       saveSvg: Octicons.check.toSVG({
@@ -194,6 +196,7 @@ export default {
     }
   },
   mounted () {
+    this.editorContainerNode = this.$refs.editorContainer
     this.editorElement = this.$refs.textEditor
   }
 }
@@ -244,7 +247,8 @@ export default {
 }
 
 .below-tabs {
-  max-height: calc(100% - 28px);
+  flex: 1;
+  overflow: hidden;
   position: relative;
 }
 

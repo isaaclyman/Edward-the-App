@@ -1,6 +1,6 @@
 <template>
   <div class="quill-wrap">
-    <quill-editor :scroll-to="scrollTo" :content="content" 
+    <quill-editor :scroll-to="scrollTo" :container="container" :content="content" 
                   @update:content="updateContent"
                   @update:selection="updateSelection"
                   @update:textContent="updateTextContent"></quill-editor>
@@ -42,6 +42,9 @@ export default {
     }
   },
   props: {
+    container: {
+      required: false
+    },
     content: {
       required: true
     },
@@ -57,7 +60,7 @@ export default {
 
 <style>
 .quill-wrap {
-  height: calc(100% - 30px);
+  height: 100%;
   margin-right: 15px;
   width: 100%;
 }

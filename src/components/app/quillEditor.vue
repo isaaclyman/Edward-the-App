@@ -17,7 +17,7 @@ export default {
     }
   },
   mounted () {
-    this.quill = createQuill(this.$refs.editor, 'Write here.', this.$refs.container)
+    this.quill = createQuill(this.$refs.editor, 'Write here.', this.container || this.$refs.container)
 
     if (this.content) {
       this.quill.setContents(this.content, 'api')
@@ -53,6 +53,9 @@ export default {
     }, 500))
   },
   props: {
+    container: {
+      required: false
+    },
     content: {
       required: true
     },

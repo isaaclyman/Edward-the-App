@@ -221,7 +221,9 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  max-height: 60px;
   min-height: 28px;
+  overflow: auto;
 }
 
 .add-tab {

@@ -6,7 +6,7 @@
           Select an analysis:
         </h4>
         <button class="analysis-button" v-for="(analysis, index) in Analyses" :key="index"
-                @click="selectAnalysis(analysis)">
+                @click="selectAnalysis(analysis)" :title="analysis.description" v-tooltip>
           {{ analysis.title }}
         </button>
       </div>
@@ -32,6 +32,7 @@
 
 <script>
 import Analyses from './analyses'
+import tooltip from '../app/tooltip.directive'
 
 export default {
   computed: {
@@ -49,6 +50,9 @@ export default {
       Analyses,
       currentAnalysis: null
     }
+  },
+  directives: {
+    tooltip
   },
   methods: {
     getInputId (input) {
@@ -91,6 +95,6 @@ export default {
 }
 
 .results {
-  background-color: #FFF;
+  margin-top: 12px;
 }
 </style>

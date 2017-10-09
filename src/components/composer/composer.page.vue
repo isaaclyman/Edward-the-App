@@ -79,6 +79,10 @@ export default {
   },
   computed: {
     activeChapter () {
+      if (this.activeChapterIndex === -1) {
+        this.activeChapterIndex = this.allChapters.indexOf(this.viewingChapters[0])
+      }
+
       return this.allChapters[this.activeChapterIndex]
     },
     allChapters () {
@@ -99,13 +103,16 @@ export default {
     selection () {
       return this.$store.state.composer.selection
     },
+    viewingChapters () {
+      return this.allChapters.filter(chapter => !chapter.archived)
+    },
     wordCount () {
       return (this.textContent.match(/[^\s]+/g) || []).length
     }
   },
   data () {
     return {
-      activeChapterIndex: 0,
+      activeChapterIndex: -1,
       addSvg: Octicons.plus.toSVG({
         height: 14,
         width: 14

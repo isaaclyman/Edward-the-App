@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import { GetWordArray } from './deltaParser'
+import range from 'lodash/range'
 
 const WordOverTime = ({ g: svg, maxWidth, maxHeight }, chapters, { Word: wordArg }) => {
   const chapterResults = []
@@ -14,7 +15,7 @@ const WordOverTime = ({ g: svg, maxWidth, maxHeight }, chapters, { Word: wordArg
   }
 
   const frequencies = chapterResults.map(result => result.frequency)
-  const domain = [Math.min(...frequencies), Math.max(...frequencies)]
+  const domain = [0, Math.max(...frequencies)]
   const margin = { bottom: 40, left: 30, top: 20, right: 50 }
 
   // Create svg and g and position with a margin
@@ -33,6 +34,7 @@ const WordOverTime = ({ g: svg, maxWidth, maxHeight }, chapters, { Word: wordArg
     .call(
       d3.axisBottom(x)
         .tickFormat(i => truncate(chapterResults[i - 1].title, 20))
+        .tickValues(range(1, chapterResults.length + 1))
     )
     .selectAll('text')
     .attr('transform', 'rotate(-8)')

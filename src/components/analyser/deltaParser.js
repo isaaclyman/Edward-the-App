@@ -8,5 +8,5 @@ export const GetContentString = (delta) => {
 }
 
 export const GetWordArray = (delta) => {
-  return GetContentString(delta).split(/\s/).filter(word => !!word)
+  return GetContentString(delta).replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '').split(/\s/).filter(word => !!word)
 }

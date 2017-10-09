@@ -56,6 +56,12 @@ const WordOverTime = ({ g: svg, maxWidth, maxHeight }, chapters, { Word: wordArg
     .attr('stroke-width', '2')
     .attr('d', line)
 
+  g.append('rect')
+    .attr('x', '5').attr('y', '-9')
+    .attr('height', '22')
+    .attr('width', '67')
+    .attr('fill', 'rgba(230, 230, 230, 0.8)')
+
   g.append('text')
     .attr('font-size', '12')
     .attr('x', '10')

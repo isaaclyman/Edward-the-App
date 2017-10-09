@@ -17,9 +17,9 @@ const ignoredWords = `
   be being is was were would will
   do doing did done go going went
   have having had
-  that those this these which
+  that those this these
   not
-  what`
+  what who which`
   .split(/\s/).map(str => str.toLowerCase())
 
 const CommonWords = ({ g: svg, maxHeight, maxWidth }, chapters) => {

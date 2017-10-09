@@ -6,11 +6,13 @@ Vue.use(Vuex)
 
 import composer from './components/composer/composer.store.js'
 import chapters from './components/app/chapters.store.js'
+import file from './components/app/file.store.js'
 
 const store = new Vuex.Store({
   modules: {
     composer,
-    chapters
+    chapters,
+    file
   },
   plugins: [createPersistedState()]
 })

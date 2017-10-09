@@ -1,5 +1,6 @@
 <template>
   <div id="app" class="app">
+    <file-menu></file-menu>
     <div class="app-header">
       <div class="app-header--logo-wrap" ref="logoWrap" title="Made in Utah by Isaac.">
         <img class="app-header--logo" src="../static/logo.png">
@@ -22,11 +23,13 @@
 </template>
 
 <script>
+import FileMenu from './components/app/fileMenu.vue'
 import MainMenu from './components/app/mainMenu.vue'
 import tooltip from './components/app/tippyBuilder'
 
 export default {
   components: {
+    FileMenu,
     MainMenu
   },
   mounted () {

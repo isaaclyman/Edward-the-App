@@ -33,11 +33,6 @@ export default {
         location: '/analyze',
         name: 'Analyze',
         tooltip: 'Get data-driven insights into your writing.'
-      }, {
-        icon: 'briefcase',
-        location: '/tools',
-        name: 'Tools',
-        tooltip: 'Download your work.'
       }]
     }
   },

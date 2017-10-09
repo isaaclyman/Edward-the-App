@@ -72,6 +72,7 @@ export default {
         return
       }
 
+      this.quill.setContents(null, 'api')
       this.quill.setContents(delta, 'api')
     },
     scrollTo (descriptor) {

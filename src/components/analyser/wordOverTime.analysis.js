@@ -50,12 +50,6 @@ const WordOverTime = (resultsWindow, { chapters }, { Word: wordArg }) => {
     .attr('transform', `translate(0, 0)`)
     .call(d3.axisLeft(y))
 
-  g.append('text')
-    .attr('font-size', '12')
-    .attr('x', '10')
-    .attr('y', '5')
-    .text('Occurrences')
-
   const line = d3.line()
     .x((d, index) => x(index + 1))
     .y(d => y(d.frequency))
@@ -68,6 +62,12 @@ const WordOverTime = (resultsWindow, { chapters }, { Word: wordArg }) => {
     .attr('stroke-linecap', 'round')
     .attr('stroke-width', '2')
     .attr('d', line)
+
+  g.append('text')
+    .attr('font-size', '12')
+    .attr('x', '10')
+    .attr('y', '5')
+    .text('Occurrences')
 }
 
 function truncate (str, length) {

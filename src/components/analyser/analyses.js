@@ -10,6 +10,10 @@ Analysis: {
 import swal from 'sweetalert'
 import WordOverTime from './wordOverTime.analysis'
 
+const clearPrevious = (el) => {
+  el.innerHTML = ''
+}
+
 const validateArgs = (inputs, args) => {
   for (const input of inputs) {
     if (!args[input]) {
@@ -41,6 +45,7 @@ const wordOverTime = {
     if (!validateArgs(this.inputs, args)) {
       return
     }
+    clearPrevious(resultsWindow)
 
     WordOverTime(resultsWindow, document, args)
   },

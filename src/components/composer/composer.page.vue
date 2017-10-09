@@ -2,7 +2,7 @@
   <div class="composer">
     <div class="editor-wrap">
       <div class="tabs">
-        <button v-for="(chapter, index) in viewingChapters" :key="chapter.title" 
+        <button v-for="(chapter, index) in allChapters" :key="chapter.title" v-show="isViewing(chapter)"
                 class="button-tab" :class="{ 'active': isActive(index) }"
                 @click="selectChapter(index)"
                 @mouseover="hoverChapter(index)"
@@ -99,9 +99,6 @@ export default {
     selection () {
       return this.$store.state.composer.selection
     },
-    viewingChapters () {
-      return this.allChapters.filter(chapter => !chapter.archived)
-    },
     wordCount () {
       return (this.textContent.match(/[^\s]+/g) || []).length
     }
@@ -165,6 +162,9 @@ export default {
     },
     isActive (index) {
       return index === this.activeChapterIndex
+    },
+    isViewing (chapter) {
+      return !chapter.archived
     },
     selectChapter (index) {
       this.activeChapterIndex = index

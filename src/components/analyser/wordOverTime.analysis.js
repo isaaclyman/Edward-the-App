@@ -1,11 +1,10 @@
 import * as d3 from 'd3'
 import { GetWordArray } from './deltaParser'
 
-const WordOverTime = (resultsWindow, { chapters }, { Word: wordArg }) => {
+const WordOverTime = ({ g: svg, maxWidth, maxHeight }, chapters, { Word: wordArg }) => {
   const chapterResults = []
-  const unarchivedChapters = chapters.filter(chapter => !chapter.archived && !!chapter.content)
 
-  for (const chapter of unarchivedChapters) {
+  for (const chapter of chapters) {
     const words = GetWordArray(chapter.content)
     const frequency = words.filter(word => word.toLowerCase() === wordArg.toLowerCase()).length
     chapterResults.push({
@@ -17,17 +16,9 @@ const WordOverTime = (resultsWindow, { chapters }, { Word: wordArg }) => {
   const frequencies = chapterResults.map(result => result.frequency)
   const domain = [Math.min(...frequencies), Math.max(...frequencies)]
   const margin = { bottom: 40, left: 30, top: 20, right: 50 }
-  const maxHeight = 400
-  const maxWidth = resultsWindow.offsetWidth
 
-  // Create svg and g and position with a 10px margin
-  const g = d3.select(resultsWindow)
-    .append('svg')
-    .style('background-color', '#FFF')
-    .attr('height', maxHeight)
-    .attr('width', maxWidth)
-    .append('g')
-    .attr('transform', `translate(${margin.left}, ${margin.top})`)
+  // Create svg and g and position with a margin
+  const g = svg.attr('transform', `translate(${margin.left}, ${margin.top})`)
 
   const x = d3.scaleLinear()
     .domain([1, chapterResults.length])

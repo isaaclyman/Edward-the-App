@@ -1,4 +1,8 @@
 export const GetContentString = (delta) => {
+  if (!delta) {
+    return ''
+  }
+
   const inserts = delta.ops.map(op => op.insert || '')
   return inserts.join('')
 }

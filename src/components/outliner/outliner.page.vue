@@ -285,7 +285,7 @@ export default {
       this.$store.commit(REARRANGE_TOPICS, { topics })
     },
     renameChapter ({ index, value: newTitle }) {
-      if (!ValidateTitle(newTitle)) {
+      if (!ValidateTitle('chapter', newTitle)) {
         return
       }
 
@@ -295,7 +295,7 @@ export default {
       })
     },
     renameTopic ({ index, value: newTitle }) {
-      if (!ValidateTitle(newTitle)) {
+      if (!ValidateTitle('topic', newTitle)) {
         return
       }
 

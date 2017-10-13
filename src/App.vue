@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="app">
     <file-menu></file-menu>
-    <div class="app-header">
+    <div class="app-header" v-show="currentFile.id">
       <div class="app-header--logo-wrap" ref="logoWrap" title="Made in Utah by Isaac.">
         <img class="app-header--logo" src="../static/logo.png">
       </div>
@@ -9,8 +9,12 @@
         <main-menu></main-menu>
       </div>
     </div>
-    <div class="page">
+    <div class="page" v-if="currentFile.id">
       <router-view></router-view>
+    </div>
+
+    <div v-if="!currentFile.id">
+      <wizard></wizard>
     </div>
 
     <!-- Author tooltip -->
@@ -26,11 +30,18 @@
 import FileMenu from './components/app/fileMenu.vue'
 import MainMenu from './components/app/mainMenu.vue'
 import tooltip from './components/app/tippyBuilder'
+import Wizard from './components/wizard/wizard.vue'
 
 export default {
   components: {
     FileMenu,
-    MainMenu
+    MainMenu,
+    Wizard
+  },
+  computed: {
+    currentFile () {
+      return this.$store.state.file.currentFile || { id: null }
+    }
   },
   mounted () {
     tooltip({

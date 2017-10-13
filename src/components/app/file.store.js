@@ -9,6 +9,17 @@ export const SET_UP_DOCUMENT = 'SET_UP_DOCUMENT'
 const LOAD_FILES = 'LOAD_FILES'
 const UPDATE_FILE_METADATA = 'UPDATE_FILE_METADATA'
 
+// Always use localStorage to store the document currently in progress
+const cacheKey = 'CURRENT_DOCUMENT'
+const cache = {
+  getCurrentFile () {
+    return JSON.parse(window.localStorage.getItem(cacheKey))
+  },
+  setCurrentFile (file) {
+    window.localStorage.setItem(cacheKey, JSON.stringify(file))
+  }
+}
+
 const store = {
   state: {
     currentFile: null, // file { id String, name String }
@@ -24,10 +35,17 @@ const store = {
 
       commit(LOAD_CONTENT, { chapters, topics })
       commit(UPDATE_FILE_METADATA, { id, name })
+
+      cache.setCurrentFile({ id, name })
     },
-    [INIT_FILES] ({ commit }) {
+    [INIT_FILES] ({ commit, dispatch }) {
       const documents = ChapterStorage.getAllDocuments()
       commit(LOAD_FILES, documents)
+
+      const currentFile = cache.getCurrentFile()
+      if (currentFile) {
+        dispatch(CHANGE_FILE, currentFile)
+      }
     },
     [SET_UP_DOCUMENT] ({ commit, dispatch }, { file, type }) {
       commit(ADD_FILE, file)

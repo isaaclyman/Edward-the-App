@@ -147,6 +147,7 @@ import { ADD_CHAPTER, ADD_TOPIC, ARCHIVE_CHAPTER, ARCHIVE_TOPIC,
          DELETE_CHAPTER, REARRANGE_CHAPTERS, REARRANGE_TOPICS,
          RESTORE_CHAPTER, RESTORE_TOPIC, UPDATE_CHAPTER, UPDATE_TOPIC } from '../app/chapters.store'
 import ChipsList from './chipsList.vue'
+import guid from '../app/guid'
 import Octicons from 'octicons'
 import swal from 'sweetalert'
 import TopicList from '../app/topicList.vue'
@@ -223,6 +224,7 @@ export default {
       const chapter = {
         archived: false,
         content: null,
+        id: guid(),
         title,
         topics: {}
       }
@@ -236,6 +238,7 @@ export default {
 
       const topic = {
         archived: false,
+        id: guid(),
         title
       }
 
@@ -264,7 +267,7 @@ export default {
       })
     },
     getMasterTopic (chapterTopic) {
-      return this.allTopics.find(topic => topic.title === chapterTopic.title)
+      return this.allTopics.find(topic => topic.id === chapterTopic.id)
     },
     helpClick (content, title) {
       swal({

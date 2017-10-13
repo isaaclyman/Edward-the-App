@@ -24,13 +24,11 @@ export const UPDATE_TOPIC_TEXT_CONTENT = 'UPDATE_TOPIC_TEXT_CONTENT'
 
 const store = {
   state: {
-    chapters: [{
-      archived: false,
-      content: null,
-      title: 'Chapter 1',
-      topics: {}  // [{ content Delta, textContent '' (computed from content), title '' }]
-    }],
-    topics: []    // [{ archived false, title '' }]
+    // chapters [{ archived bool false, content Delta null, id Guid, title string, topics topicDict {} }]
+    // topicDict { [id]: chapterTopic }
+    // chapterTopic { content Delta null, id Guid, textContent string '' }
+    chapters: [],
+    topics: []    // topic [{ archived bool false, id Guid, title string }]
   },
   mutations: {
     // CONTENT
@@ -55,10 +53,10 @@ const store = {
         throw new Error(`Cannot include topic "${topic.title}": does not exist.`)
       }
 
-      chapter.topics[topic.title] = {
+      chapter.topics[topic.id] = {
         content: null,
-        textContent: '',
-        title: topic.title
+        id: topic.id,
+        textContent: ''
       }
     },
     [ARCHIVE_CHAPTER] (state, { chapter }) {
@@ -122,8 +120,8 @@ const store = {
       state.topics.splice(state.topics.indexOf(topic), 1)
 
       state.chapters = state.chapters.map(chapter => {
-        if (chapter[topic.title]) {
-          delete chapter[topic.title]
+        if (chapter.topics[topic.id]) {
+          delete chapter.topics[topic.id]
         }
 
         return chapter

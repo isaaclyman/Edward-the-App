@@ -17,7 +17,7 @@ export default {
   },
   computed: {
     allFiles () {
-      return this.$store.state.ownedFiles
+      return this.$store.state.file.ownedFiles
     },
     currentFile () {
       return this.$store.state.file.currentFile
@@ -42,5 +42,9 @@ export default {
   color: #FFF;
   font-size: 14px;
   padding: 4px;
+}
+
+.file-dropdown /deep/ option {
+  color: #000;
 }
 </style>

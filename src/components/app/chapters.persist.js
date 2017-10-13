@@ -10,7 +10,18 @@ class ChapterStorage {
     this.topicKeyPrefix = fileId => `${fileId}_TOPIC_`
     this.topicOrderKey = fileId => `${fileId}_TOPIC_ORDER`
 
+    this.documentIdsKey = 'DOCUMENT_IDS'
+    this.documentsKey = fileId => `DOCUMENT_${fileId}`
+
     this.orderDelimiter = '___'
+  }
+
+  addDocument ({ id, name }) {
+    let documentIds = this.getAllDocumentIds()
+    documentIds.push(id)
+    this.storage.setItem(this.documentIdsKey, JSON.stringify(documentIds))
+
+    this.storage.setItem(this.documentsKey(id), JSON.stringify({ id, name }))
   }
 
   arrangeChapters (fileId, chapterIds) {
@@ -31,23 +42,34 @@ class ChapterStorage {
     this.storage.removeItem(key)
   }
 
-  getAllChapters (fileId, getId) {
+  getAllChapters (fileId) {
     const prefix = this.chapterKeyPrefix(fileId)
     const sortOrder = this.storage.getItem(this.chapterOrderKey(fileId))
     const keys = this.getStorageKeys().filter(key => key.startsWith(prefix))
     const chapters = keys.map(key => this.storage.getItem(key)).sort((chap1, chap2) => {
-      return sortOrder.indexOf(getId(chap1)) - sortOrder.indexOf(getId(chap2))
+      return sortOrder.indexOf(chap1.id) - sortOrder.indexOf(chap2.id)
     })
 
     return chapters
   }
 
-  getAllTopics (fileId, getId) {
+  getAllDocumentIds () {
+    return JSON.parse(this.storage.getItem(this.documentIdsKey)) || []
+  }
+
+  getAllDocuments () {
+    return this.getAllDocumentIds().map(id => {
+      const key = this.documentsKey(id)
+      return JSON.parse(this.storage.getItem(key))
+    })
+  }
+
+  getAllTopics (fileId) {
     const prefix = this.topicKeyPrefix(fileId)
     const sortOrder = this.storage.getItem(this.topicOrderKey(fileId))
     const keys = this.getStorageKeys().filter(key => key.startsWith(prefix))
     const topics = keys.map(key => this.storage.getItem(key)).sort((topic1, topic2) => {
-      return sortOrder.indexOf(getId(topic1)) - sortOrder.indexOf(getId(topic2))
+      return sortOrder.indexOf(topic1.id) - sortOrder.indexOf(topic2.id)
     })
 
     return topics
@@ -72,11 +94,19 @@ class ChapterStorage {
   }
 
   updateChapter (fileId, chapterId, chapter) {
+    if (!fileId) {
+      return
+    }
+
     const key = this.getChapterKey(fileId, chapterId)
     this.storage.setItem(key, JSON.stringify(chapter))
   }
 
   updateTopic (fileId, topicId, topic) {
+    if (!fileId) {
+      return
+    }
+
     const key = this.getTopicKey(fileId, topicId)
     this.storage.setItem(key, JSON.stringify(topic))
   }
@@ -108,35 +138,39 @@ const mutations = {
 export const chapterAutosaverPlugin = store => {
   store.subscribe((mutation, state) => {
     const { type, payload } = mutation
-    const fileId = state.file.currentFile.id
+    const fileId = state.file.currentFile && state.file.currentFile.id
+
+    if (!fileId) {
+      return
+    }
 
     if (mutations.deleteChapter.includes(type)) {
-      ChapterStorageSingleton.deleteChapter(fileId, payload.chapter.title)
+      ChapterStorageSingleton.deleteChapter(fileId, payload.chapter.id)
       return
     }
 
     if (mutations.deleteTopic.includes(type)) {
-      ChapterStorageSingleton.deleteTopic(fileId, payload.topic.title)
+      ChapterStorageSingleton.deleteTopic(fileId, payload.topic.id)
       return
     }
 
     if (mutations.rearrangeChapter.includes(type)) {
-      ChapterStorageSingleton.arrangeChapters(fileId, payload.chapters.map(chapter => chapter.title))
+      ChapterStorageSingleton.arrangeChapters(fileId, payload.chapters.map(chapter => chapter.id))
       return
     }
 
     if (mutations.rearrangeTopic.includes(type)) {
-      ChapterStorageSingleton.arrangeTopics(fileId, payload.topics.map(topic => topic.title))
+      ChapterStorageSingleton.arrangeTopics(fileId, payload.topics.map(topic => topic.id))
       return
     }
 
     if (mutations.updateChapter.includes(type)) {
-      ChapterStorageSingleton.updateChapter(fileId, payload.chapter.title, payload.chapter)
+      ChapterStorageSingleton.updateChapter(fileId, payload.chapter.id, payload.chapter)
       return
     }
 
     if (mutations.updateTopic.includes(type)) {
-      ChapterStorageSingleton.updateTopic(fileId, payload.topic.title, payload.topic)
+      ChapterStorageSingleton.updateTopic(fileId, payload.topic.id, payload.topic)
       return
     }
   })

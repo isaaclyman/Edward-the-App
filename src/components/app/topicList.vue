@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <div class="topic" v-for="(topic, index) in chapterTopics" v-show="showTopic(topic)" :key="topic.title">
+    <div class="topic" v-for="(topic, index) in chapterTopics" v-show="showTopic(topic)" :key="topic.id">
       <div class="topic-head">
         <h5 class="topic-title">
           {{ topic.title }}
@@ -91,18 +91,18 @@ export default {
       this.editingTopicIndex = -1
     },
     getMasterTopic (chapterTopic) {
-      return this.topics.find(topic => topic.title === chapterTopic.title)
+      return this.topics.find(topic => topic.id === chapterTopic.id)
     },
     getTopic (chapter, topic) {
       if (!chapter.topics) {
         throw new Error(`Chapter ${chapter.title} was created incorrectly and has no 'topics' dictionary.`)
       }
 
-      if (!chapter.topics[topic.title]) {
+      if (!chapter.topics[topic.id]) {
         this.$store.commit(ADD_TOPIC_TO_CHAPTER, { chapter, topic })
       }
 
-      return chapter.topics[topic.title]
+      return chapter.topics[topic.id]
     },
     isEditing (index) {
       return this.editingTopicIndex === index

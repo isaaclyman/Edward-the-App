@@ -2,7 +2,7 @@
   <div class="composer">
     <div class="editor-wrap">
       <div class="tabs">
-        <button v-for="(chapter, index) in allChapters" :key="chapter.title" v-show="isViewing(chapter)"
+        <button v-for="(chapter, index) in allChapters" :key="chapter.id" v-show="isViewing(chapter)"
                 class="button-tab" :class="{ 'active': isActive(index) }"
                 @click="selectChapter(index)"
                 @mouseover="hoverChapter(index)"
@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import guid from '../app/guid'
 import Octicons from 'octicons'
 import TextEditor from './textEditor.vue'
 import TextMap from './textMap.vue'
@@ -147,6 +148,7 @@ export default {
       const chapter = {
         archived: false,
         content: null,
+        id: guid(),
         title: this.newChapter,
         topics: {}
       }
@@ -161,7 +163,7 @@ export default {
       this.newChapter = ''
     },
     getMasterTopic (chapterTopic) {
-      return this.allTopics.find(topic => topic.title === chapterTopic.title)
+      return this.allTopics.find(topic => topic.id === chapterTopic.id)
     },
     goToOutliner () {
       this.$router.push('/outline')

@@ -6,6 +6,8 @@ export const ADD_FILE = 'ADD_FILE'
 export const CHANGE_FILE = 'CHANGE_FILE'
 export const INIT_FILES = 'INIT_FILES'
 export const SET_UP_DOCUMENT = 'SET_UP_DOCUMENT'
+export const UNLOAD_CURRENT_DOCUMENT = 'UNLOAD_CURRENT_DOCUMENT'
+
 const LOAD_FILES = 'LOAD_FILES'
 const UPDATE_FILE_METADATA = 'UPDATE_FILE_METADATA'
 
@@ -26,9 +28,8 @@ const store = {
     ownedFiles: [] // file[]
   },
   actions: {
-    [CHANGE_FILE] ({ commit }, { id, name }) {
-      commit(UPDATE_FILE_METADATA, { id: null, name: null })
-      commit(NUKE_CONTENT)
+    [CHANGE_FILE] ({ commit, dispatch }, { id, name }) {
+      dispatch(UNLOAD_CURRENT_DOCUMENT)
 
       const chapters = ChapterStorage.getAllChapters(id)
       const topics = ChapterStorage.getAllTopics(id)
@@ -67,6 +68,10 @@ const store = {
 
       commit(LOAD_CONTENT, { chapters, topics })
       ChapterStorage.syncEverything(file.id, chapters, topics)
+    },
+    [UNLOAD_CURRENT_DOCUMENT] ({ commit }) {
+      commit(UPDATE_FILE_METADATA, { id: null, name: null })
+      commit(NUKE_CONTENT)
     }
   },
   mutations: {

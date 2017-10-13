@@ -12,7 +12,9 @@
         </div>
         <div v-if="hasFiles">
           <p>Choose a saved document:</p>
-          <file-picker></file-picker>
+          <div class="file-picker-wrap">
+            <file-picker></file-picker>
+          </div>
         </div>
       </div>
       <div class="content">
@@ -145,6 +147,10 @@ export default {
 
 .border-bottom {
   border-bottom: 1px solid #CCC;
+}
+
+.file-picker-wrap {
+  margin-top: 6px;
 }
 
 .types {

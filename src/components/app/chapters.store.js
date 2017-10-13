@@ -153,7 +153,7 @@ const store = {
         throw new Error(`Cannot update topic content for chapter "${chapter.title}": does not exist.`)
       }
 
-      if (!state.topics.find(masterTopic => masterTopic.title === topic.title)) {
+      if (!state.topics.find(masterTopic => masterTopic.id === topic.id)) {
         throw new Error(`Cannot update content of topic "${topic.title}": does not exist.`)
       }
 
@@ -164,7 +164,7 @@ const store = {
         throw new Error(`Cannot update topic text content for chapter "${chapter.title}": does not exist.`)
       }
 
-      if (!state.topics.find(masterTopic => masterTopic.title === topic.title)) {
+      if (!state.topics.find(masterTopic => masterTopic.id === topic.id)) {
         throw new Error(`Cannot update text content of topic "${topic.title}": does not exist.`)
       }
 

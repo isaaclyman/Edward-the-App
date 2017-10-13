@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { GetWordArray } from './deltaParser'
+import { GetWordArray } from '../app/deltaParser'
 import range from 'lodash/range'
 
 const WordOverTime = ({ g: svg, maxWidth, maxHeight }, chapters, { Word: wordArg }) => {

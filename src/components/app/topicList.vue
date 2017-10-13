@@ -3,7 +3,7 @@
     <div class="topic" v-for="(topic, index) in chapterTopics" v-show="showTopic(topic)" :key="topic.id">
       <div class="topic-head">
         <h5 class="topic-title">
-          {{ topic.title }}
+          {{ getMasterTopic(topic).title }}
         </h5>
         <div class="topic-actions">
           <button class="topic-action" v-show="!getMasterTopic(topic).archived" @click="archiveTopic({ index })">Archive</button>
@@ -197,7 +197,10 @@ export default {
 
 .topic-content {
   background-color: #FFF;
-  padding: 1px 8px;
+  padding-bottom: 6px;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 1px;
 }
 
 .content-actions {

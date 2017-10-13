@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import * as d3 from 'd3'
-import { GetWordArray } from './deltaParser'
+import { GetWordArray } from '../app/deltaParser'
 
 const ignoredWords = `
   the a an

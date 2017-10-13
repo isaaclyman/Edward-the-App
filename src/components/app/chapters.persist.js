@@ -12,8 +12,6 @@ class ChapterStorage {
 
     this.documentIdsKey = 'DOCUMENT_IDS'
     this.documentsKey = fileId => `DOCUMENT_${fileId}`
-
-    this.orderDelimiter = '___'
   }
 
   addDocument ({ id, name }) {
@@ -25,11 +23,11 @@ class ChapterStorage {
   }
 
   arrangeChapters (fileId, chapterIds) {
-    this.storage.setItem(this.chapterOrderKey(fileId), chapterIds.join(this.orderDelimiter))
+    this.storage.setItem(this.chapterOrderKey(fileId), JSON.stringify(chapterIds))
   }
 
   arrangeTopics (fileId, topicIds) {
-    this.storage.setItem(this.topicOrderKey(fileId), topicIds.join(this.orderDelimiter))
+    this.storage.setItem(this.topicOrderKey(fileId), JSON.stringify(topicIds))
   }
 
   deleteChapter (fileId, chapterId) {
@@ -44,9 +42,9 @@ class ChapterStorage {
 
   getAllChapters (fileId) {
     const prefix = this.chapterKeyPrefix(fileId)
-    const sortOrder = this.storage.getItem(this.chapterOrderKey(fileId))
+    const sortOrder = this.getChaptersSortOrder(fileId)
     const keys = this.getStorageKeys().filter(key => key.startsWith(prefix))
-    const chapters = keys.map(key => this.storage.getItem(key)).sort((chap1, chap2) => {
+    const chapters = keys.map(key => JSON.parse(this.storage.getItem(key))).sort((chap1, chap2) => {
       return sortOrder.indexOf(chap1.id) - sortOrder.indexOf(chap2.id)
     })
 
@@ -66,9 +64,9 @@ class ChapterStorage {
 
   getAllTopics (fileId) {
     const prefix = this.topicKeyPrefix(fileId)
-    const sortOrder = this.storage.getItem(this.topicOrderKey(fileId))
+    const sortOrder = this.getTopicsSortOrder(fileId)
     const keys = this.getStorageKeys().filter(key => key.startsWith(prefix))
-    const topics = keys.map(key => this.storage.getItem(key)).sort((topic1, topic2) => {
+    const topics = keys.map(key => JSON.parse(this.storage.getItem(key))).sort((topic1, topic2) => {
       return sortOrder.indexOf(topic1.id) - sortOrder.indexOf(topic2.id)
     })
 
@@ -84,6 +82,10 @@ class ChapterStorage {
     return `${this.chapterKeyPrefix(fileId)}${chapterId}`
   }
 
+  getChaptersSortOrder (fileId) {
+    return JSON.parse(this.storage.getItem(this.chapterOrderKey(fileId))) || []
+  }
+
   getTopic (fileId, topicId) {
     const key = this.getTopicKey(fileId, topicId)
     return JSON.parse(this.storage.getItem(key))
@@ -93,6 +95,10 @@ class ChapterStorage {
     return `${this.topicKeyPrefix(fileId)}${topicId}`
   }
 
+  getTopicsSortOrder (fileId) {
+    return JSON.parse(this.storage.getItem(this.topicOrderKey(fileId))) || []
+  }
+
   updateChapter (fileId, chapterId, chapter) {
     if (!fileId) {
       return
@@ -100,6 +106,12 @@ class ChapterStorage {
 
     const key = this.getChapterKey(fileId, chapterId)
     this.storage.setItem(key, JSON.stringify(chapter))
+
+    let sortOrder = this.getChaptersSortOrder(fileId)
+    if (!sortOrder.includes(chapterId)) {
+      sortOrder.push(chapterId)
+      this.arrangeChapters(fileId, sortOrder)
+    }
   }
 
   updateTopic (fileId, topicId, topic) {
@@ -109,6 +121,12 @@ class ChapterStorage {
 
     const key = this.getTopicKey(fileId, topicId)
     this.storage.setItem(key, JSON.stringify(topic))
+
+    let sortOrder = this.getTopicsSortOrder(fileId)
+    if (!sortOrder.includes(topicId)) {
+      sortOrder.push(topicId)
+      this.arrangeTopics(fileId, sortOrder)
+    }
   }
 }
 

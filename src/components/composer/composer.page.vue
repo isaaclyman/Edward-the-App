@@ -144,12 +144,14 @@ export default {
         return
       }
 
-      this.$store.commit(ADD_CHAPTER, {
+      const chapter = {
         archived: false,
         content: null,
         title: this.newChapter,
         topics: {}
-      })
+      }
+
+      this.$store.commit(ADD_CHAPTER, { chapter })
 
       this.showAddChapter = false
       this.newChapter = ''

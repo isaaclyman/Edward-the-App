@@ -220,28 +220,32 @@ export default {
         return
       }
 
-      this.$store.commit(ADD_CHAPTER, {
+      const chapter = {
         archived: false,
         content: null,
         title,
         topics: {}
-      })
+      }
+
+      this.$store.commit(ADD_CHAPTER, { chapter })
     },
     addTopic (title) {
       if (!ValidateTitle('topic', title)) {
         return
       }
 
-      this.$store.commit(ADD_TOPIC, {
+      const topic = {
         archived: false,
         title
-      })
+      }
+
+      this.$store.commit(ADD_TOPIC, { topic })
     },
     archiveChapter ({ index }) {
-      this.$store.commit(ARCHIVE_CHAPTER, this.allChapters[index])
+      this.$store.commit(ARCHIVE_CHAPTER, { chapter: this.allChapters[index] })
     },
     archiveTopic ({ index }) {
-      this.$store.commit(ARCHIVE_TOPIC, this.allTopics[index])
+      this.$store.commit(ARCHIVE_TOPIC, { topic: this.allTopics[index] })
     },
     deleteChapter ({ index }) {
       swal({
@@ -256,7 +260,7 @@ export default {
           return
         }
 
-        this.$store.commit(DELETE_CHAPTER, this.allChapters[index])
+        this.$store.commit(DELETE_CHAPTER, { chapter: this.allChapters[index] })
       })
     },
     getMasterTopic (chapterTopic) {
@@ -272,10 +276,10 @@ export default {
       return !chip.archived
     },
     rearrangeChapter (chapters) {
-      this.$store.commit(REARRANGE_CHAPTERS, chapters)
+      this.$store.commit(REARRANGE_CHAPTERS, { chapters })
     },
     rearrangeTopic (topics) {
-      this.$store.commit(REARRANGE_TOPICS, topics)
+      this.$store.commit(REARRANGE_TOPICS, { topics })
     },
     renameChapter ({ index, value: newTitle }) {
       if (!ValidateTitle(newTitle)) {
@@ -300,10 +304,10 @@ export default {
       })
     },
     restoreChapter ({ index }) {
-      this.$store.commit(RESTORE_CHAPTER, this.allChapters[index])
+      this.$store.commit(RESTORE_CHAPTER, { chapter: this.allChapters[index] })
     },
     restoreTopic ({ index }) {
-      this.$store.commit(RESTORE_TOPIC, this.allTopics[index])
+      this.$store.commit(RESTORE_TOPIC, { topic: this.allTopics[index] })
     },
     showChapter (chapter) {
       return this.viewingChapters.includes(chapter)

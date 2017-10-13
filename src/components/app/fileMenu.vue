@@ -3,6 +3,9 @@
     <div>
       <select class="file-dropdown" v-model="fileValue">
         <option v-if="!currentFile" value="">No file selected</option>
+        <option v-for="file in allFiles" :key="file.id">
+          {{file.name}}
+        </option>
       </select>
     </div>
   </div>

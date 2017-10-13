@@ -1,5 +1,9 @@
 import difference from 'lodash/difference'
 
+// These two commands will be used together
+export const NUKE_CONTENT = 'NUKE_CONTENT'
+export const LOAD_CONTENT = 'LOAD_CONTENT'
+
 export const ADD_CHAPTER = 'ADD_CHAPTER'
 export const ADD_TOPIC_TO_CHAPTER = 'ADD_TOPIC_TO_CHAPTER'
 export const ARCHIVE_CHAPTER = 'ARCHIVE_CHAPTER'
@@ -29,8 +33,17 @@ const store = {
     topics: []    // [{ archived false, title '' }]
   },
   mutations: {
+    // CONTENT
+    [NUKE_CONTENT] (state) {
+      state.chapters = []
+      state.topics = []
+    },
+    [LOAD_CONTENT] (state, { chapters, topics }) {
+      state.chapters = chapters
+      state.topics = topics
+    },
     // CHAPTERS
-    [ADD_CHAPTER] (state, chapter) {
+    [ADD_CHAPTER] (state, { chapter }) {
       state.chapters.push(chapter)
     },
     [ADD_TOPIC_TO_CHAPTER] (state, { chapter, topic }) {
@@ -48,28 +61,28 @@ const store = {
         title: topic.title
       }
     },
-    [ARCHIVE_CHAPTER] (state, chapter) {
+    [ARCHIVE_CHAPTER] (state, { chapter }) {
       if (!state.chapters.includes(chapter)) {
         throw new Error(`Cannot archive chapter "${chapter.title}": does not exist.`)
       }
 
       chapter.archived = true
     },
-    [DELETE_CHAPTER] (state, chapter) {
+    [DELETE_CHAPTER] (state, { chapter }) {
       if (!state.chapters.includes(chapter)) {
         throw new Error(`Cannot delete chapter "${chapter.title}": does not exist.`)
       }
 
       state.chapters.splice(state.chapters.indexOf(chapter), 1)
     },
-    [REARRANGE_CHAPTERS] (state, chapters) {
+    [REARRANGE_CHAPTERS] (state, { chapters }) {
       if (!containSameElements(state.chapters, chapters)) {
         throw new Error('Cannot rearrange chapters: an invalid chapter array was received.')
       }
 
       state.chapters = chapters
     },
-    [RESTORE_CHAPTER] (state, chapter) {
+    [RESTORE_CHAPTER] (state, { chapter }) {
       if (!state.chapters.includes(chapter)) {
         throw new Error(`Cannot restore chapter "${chapter.title}": does not exist.`)
       }
@@ -91,17 +104,17 @@ const store = {
       chapter.content = newContent
     },
     // TOPICS
-    [ADD_TOPIC] (state, topic) {
+    [ADD_TOPIC] (state, { topic }) {
       state.topics.push(topic)
     },
-    [ARCHIVE_TOPIC] (state, topic) {
+    [ARCHIVE_TOPIC] (state, { topic }) {
       if (!state.topics.includes(topic)) {
         throw new Error(`Cannot archive topic "${topic.title}": does not exist.`)
       }
 
       topic.archived = true
     },
-    [DELETE_TOPIC] (state, topic) {
+    [DELETE_TOPIC] (state, { topic }) {
       if (!state.topics.includes(topic)) {
         throw new Error(`Cannot archive topic "${topic.title}": does not exist.`)
       }
@@ -116,14 +129,14 @@ const store = {
         return chapter
       })
     },
-    [REARRANGE_TOPICS] (state, topics) {
+    [REARRANGE_TOPICS] (state, { topics }) {
       if (!containSameElements(state.topics, topics)) {
         throw new Error('Cannot rearrange topics: an invalid topic array was received.')
       }
 
       state.topics = topics
     },
-    [RESTORE_TOPIC] (state, topic) {
+    [RESTORE_TOPIC] (state, { topic }) {
       if (!state.topics.includes(topic)) {
         throw new Error(`Cannot restore topic "${topic.title}": does not exist.`)
       }

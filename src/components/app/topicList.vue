@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     archiveTopic ({ index }) {
-      this.$store.commit(ARCHIVE_TOPIC, this.topics[index])
+      this.$store.commit(ARCHIVE_TOPIC, { topic: this.topics[index] })
     },
     deleteTopic ({ index }) {
       swal({
@@ -81,7 +81,7 @@ export default {
           return
         }
 
-        this.$store.commit(DELETE_TOPIC, this.topics[index])
+        this.$store.commit(DELETE_TOPIC, { topic: this.topics[index] })
       })
     },
     editTopic (index) {
@@ -108,7 +108,7 @@ export default {
       return this.editingTopicIndex === index
     },
     restoreTopic ({ index }) {
-      this.$store.commit(RESTORE_TOPIC, this.topics[index])
+      this.$store.commit(RESTORE_TOPIC, { topic: this.topics[index] })
     },
     showTopic (chapterTopic) {
       if (!chapterTopic) {

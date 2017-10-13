@@ -1,7 +1,7 @@
 <template>
-  <div id="app" class="app">
+  <div id="app" class="app" v-if="currentFile.id">
     <file-menu></file-menu>
-    <div class="app-header" v-show="currentFile.id">
+    <div class="app-header">
       <div class="app-header--logo-wrap" ref="logoWrap" title="Made in Utah by Isaac.">
         <img class="app-header--logo" src="../static/logo.png">
       </div>
@@ -9,12 +9,8 @@
         <main-menu></main-menu>
       </div>
     </div>
-    <div class="page" v-if="currentFile.id">
+    <div class="page">
       <router-view></router-view>
-    </div>
-
-    <div v-if="!currentFile.id">
-      <wizard></wizard>
     </div>
 
     <!-- Author tooltip -->
@@ -23,6 +19,9 @@
         Made in Utah by <a href="http://isaaclyman.com">Isaac</a>.
       </div>
     </div>
+  </div>
+  <div v-else class="page" >
+    <wizard></wizard>
   </div>
 </template>
 

@@ -15,6 +15,7 @@ const WordOverTime = ({ g: svg, maxWidth, maxHeight }, chapters, { Word: wordArg
   }
 
   const frequencies = chapterResults.map(result => result.frequency)
+
   const domain = [0, Math.max(...frequencies)]
   const margin = { bottom: 40, left: 30, top: 20, right: 50 }
 

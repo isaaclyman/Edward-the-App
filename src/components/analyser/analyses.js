@@ -29,6 +29,18 @@ const makeSvg = (el) => {
   return { g, maxHeight, maxWidth }
 }
 
+const safelyRunAnalysis = (analysisFn, args, onError) => {
+  try {
+    analysisFn(...args)
+  } catch (e) {
+    swal({
+      icon: 'error',
+      text: e
+    })
+    onError()
+  }
+}
+
 const validateArgs = (inputs, args) => {
   for (const input of inputs) {
     if (!args[input]) {
@@ -50,7 +62,12 @@ const wordFrequency = {
     clearPrevious(resultsWindow)
 
     const unarchivedChapters = chapters.filter(chapter => !chapter.archived && !!chapter.content)
-    CommonWords(makeSvg(resultsWindow), unarchivedChapters)
+
+    safelyRunAnalysis(
+      CommonWords,
+      [makeSvg(resultsWindow), unarchivedChapters],
+      () => clearPrevious(resultsWindow)
+    )
   },
   title: 'Most common words'
 }
@@ -65,7 +82,12 @@ const wordOverTime = {
     clearPrevious(resultsWindow)
 
     const unarchivedChapters = chapters.filter(chapter => !chapter.archived && !!chapter.content)
-    WordOverTime(makeSvg(resultsWindow), unarchivedChapters, args)
+
+    safelyRunAnalysis(
+      WordOverTime,
+      [makeSvg(resultsWindow), unarchivedChapters, args],
+      () => clearPrevious(resultsWindow)
+    )
   },
   title: 'Word over time'
 }

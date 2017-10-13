@@ -43,6 +43,9 @@ const CommonWords = ({ g: svg, maxHeight, maxWidth }, chapters) => {
   }
 
   const orderedFrequencies = _.chain(frequencies).orderBy([obj => obj.frequency], ['desc']).take(10).value()
+  if (!orderedFrequencies.length) {
+    throw new Error('No content was found.')
+  }
 
   const margin = { bottom: 20, left: 20, top: 20, right: 20 }
   const g = svg.attr('transform', `translate(${margin.left}, ${margin.top})`)

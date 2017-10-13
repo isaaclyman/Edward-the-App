@@ -1,9 +1,11 @@
 import ChapterStorage from './chapters.persist'
+import guid from './guid'
 import { LOAD_CONTENT, NUKE_CONTENT } from './chapters.store'
 
 export const ADD_FILE = 'ADD_FILE'
 export const CHANGE_FILE = 'CHANGE_FILE'
 export const INIT_FILES = 'INIT_FILES'
+export const SET_UP_DOCUMENT = 'SET_UP_DOCUMENT'
 const LOAD_FILES = 'LOAD_FILES'
 const UPDATE_FILE_METADATA = 'UPDATE_FILE_METADATA'
 
@@ -26,6 +28,27 @@ const store = {
     [INIT_FILES] ({ commit }) {
       const documents = ChapterStorage.getAllDocuments()
       commit(LOAD_FILES, documents)
+    },
+    [SET_UP_DOCUMENT] ({ commit, dispatch }, { file, type }) {
+      commit(ADD_FILE, file)
+      dispatch(CHANGE_FILE, file)
+
+      const chapters = type.chapters.map(title => ({
+        archived: false,
+        content: null,
+        id: guid(),
+        title,
+        topics: {}
+      }))
+
+      const topics = type.topics.map(title => ({
+        archived: false,
+        id: guid(),
+        title
+      }))
+
+      commit(LOAD_CONTENT, { chapters, topics })
+      ChapterStorage.syncEverything(file.id, chapters, topics)
     }
   },
   mutations: {

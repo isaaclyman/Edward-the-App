@@ -5,9 +5,9 @@ class ChapterStorage {
     this.storage = window.localStorage
     this.getStorageKeys = () => Object.keys(window.localStorage)
 
-    this.chapterKeyPrefix = fileId => `${fileId}_CHAPTER_`
+    this.chapterKeyPrefix = fileId => `${fileId}_CHAPTER_CONTENT_`
     this.chapterOrderKey = fileId => `${fileId}_CHAPTER_ORDER`
-    this.topicKeyPrefix = fileId => `${fileId}_TOPIC_`
+    this.topicKeyPrefix = fileId => `${fileId}_TOPIC_CONTENT_`
     this.topicOrderKey = fileId => `${fileId}_TOPIC_ORDER`
 
     this.documentIdsKey = 'DOCUMENT_IDS'
@@ -97,6 +97,11 @@ class ChapterStorage {
 
   getTopicsSortOrder (fileId) {
     return JSON.parse(this.storage.getItem(this.topicOrderKey(fileId))) || []
+  }
+
+  syncEverything (fileId, chapters, topics) {
+    chapters.forEach(chapter => this.updateChapter(fileId, chapter.id, chapter))
+    topics.forEach(topic => this.updateTopic(fileId, topic.id, topic))
   }
 
   updateChapter (fileId, chapterId, chapter) {

@@ -46,11 +46,10 @@
 </template>
 
 <script>
-import { ADD_FILE, CHANGE_FILE } from '../app/file.store'
+import { SET_UP_DOCUMENT } from '../app/file.store'
 import documentTypes from './documentTypes'
 import FilePicker from '../app/filePicker.vue'
 import guid from '../app/guid'
-import { LOAD_CONTENT } from '../app/chapters.store'
 
 export default {
   components: {
@@ -82,24 +81,7 @@ export default {
         name
       }
 
-      this.$store.commit(ADD_FILE, newFile)
-      this.$store.dispatch(CHANGE_FILE, newFile)
-
-      const chapters = type.chapters.map(title => ({
-        archived: false,
-        content: null,
-        id: guid(),
-        title,
-        topics: {}
-      }))
-
-      const topics = type.topics.map(title => ({
-        archived: false,
-        id: guid(),
-        title
-      }))
-
-      this.$store.commit(LOAD_CONTENT, { chapters, topics })
+      this.$store.dispatch(SET_UP_DOCUMENT, { file: newFile, type })
     },
     selectDocument (type) {
       this.selectedType = type

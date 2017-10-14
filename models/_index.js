@@ -17,16 +17,32 @@ if (!global.hasOwnProperty('db')) {
     sequelize = new Sequelize('example-app-db', 'root', null)
   }
 
+  const User = sequelize.import(path.join(__dirname, 'user'))
+  const Doc = sequelize.import(path.join(__dirname, 'document'))
+  const Chapter = sequelize.import(path.join(__dirname, 'chaper'))
+  const ChapterTopic = sequelize.import(path.join(__dirname, 'chapterTopic'))
+  const MasterTopic = sequelize.import(path.join(__dirname, 'masterTopic'))
+
   global.db = {
     Sequelize: Sequelize,
     sequelize: sequelize,
-    User: sequelize.import(path.join(__dirname, 'user'))
+    User,
+    Doc,
+    Chapter,
+    ChapterTopic,
+    MasterTopic
   }
 
   /*
     Associations can be defined here. E.g. like this:
     global.db.User.hasMany(global.db.SomethingElse)
   */
+
+  Doc.belongsTo(User)
+  Chapter.belongsTo(Doc)
+  ChapterTopic.belongsTo(Chapter)
+  MasterTopic.belongsTo(Doc)
+  ChapterTopic.belongsTo(MasterTopic)
 }
 
 module.exports = global.db

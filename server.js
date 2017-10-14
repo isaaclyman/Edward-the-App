@@ -13,14 +13,9 @@ const app = express()
 app.use('/static', express.static(path.join(__dirname, 'static')))
 app.use(express.static(path.join(__dirname, 'dist')))
 
-// Serve landing page
+// Serve public landing page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'))
-})
-
-// Serve Sidebar app
-app.get('/app', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/app.html'))
 })
 
 // Configure passport auth

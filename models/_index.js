@@ -5,21 +5,34 @@ if (!global.hasOwnProperty('db')) {
   let sequelize = null
 
   if (process.env.DATABASE_URL) {
-    // the application is executed on Heroku ... use the postgres database
+    // the application is executed on Heroku
     sequelize = new Sequelize(process.env.DATABASE_URL, {
       dialect: 'postgres',
       protocol: 'postgres',
-      logging: true,
+      logging: (e) => console.error(e),
       pool: { maxConnections: 10, maxIdleTime: 1000 }
     })
   } else {
-    // the application is executed on the local machine ... use mysql
-    sequelize = new Sequelize('example-app-db', 'root', null)
+    // the application is executed on the local machine
+    sequelize = new Sequelize('postgres', 'isaac', 'postgreslocal', {
+      dialect: 'postgres',
+      protocol: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      logging: (e) => console.error(e),
+      pool: { maxConnections: 5, maxIdleTime: 200 }
+    })
   }
+
+  sequelize.authenticate().then(() => {
+    console.log('Database connection established')
+  }).catch((e) => {
+    console.log(`Couldn't connect to database: `, e)
+  })
 
   const User = sequelize.import(path.join(__dirname, 'user'))
   const Doc = sequelize.import(path.join(__dirname, 'document'))
-  const Chapter = sequelize.import(path.join(__dirname, 'chaper'))
+  const Chapter = sequelize.import(path.join(__dirname, 'chapter'))
   const ChapterTopic = sequelize.import(path.join(__dirname, 'chapterTopic'))
   const MasterTopic = sequelize.import(path.join(__dirname, 'masterTopic'))
 
@@ -34,8 +47,7 @@ if (!global.hasOwnProperty('db')) {
   }
 
   /*
-    Associations can be defined here. E.g. like this:
-    global.db.User.hasMany(global.db.SomethingElse)
+    Associations
   */
 
   Doc.belongsTo(User)

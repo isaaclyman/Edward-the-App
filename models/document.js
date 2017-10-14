@@ -1,8 +1,8 @@
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define('Document', {
-    id: {
+    guid: {
       allowNull: false,
-      type: DataTypes.GUID
+      type: DataTypes.UUID
     },
     name: {
       allowNull: false,

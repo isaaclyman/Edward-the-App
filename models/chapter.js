@@ -8,7 +8,7 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: true,
       type: DataTypes.JSON
     },
-    id: {
+    guid: {
       allowNull: false,
       type: DataTypes.UUID
     },

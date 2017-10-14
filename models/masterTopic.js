@@ -4,7 +4,7 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false,
       type: DataTypes.BOOLEAN
     },
-    id: {
+    guid: {
       allowNull: false,
       type: DataTypes.UUID
     },

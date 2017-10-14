@@ -4,25 +4,14 @@ if (!global.hasOwnProperty('db')) {
   const Sequelize = require('sequelize')
   let sequelize = null
 
-  if (process.env.DATABASE_URL) {
-    // the application is executed on Heroku
-    sequelize = new Sequelize(process.env.DATABASE_URL, {
-      dialect: 'postgres',
-      protocol: 'postgres',
-      logging: (e) => console.error(e),
-      pool: { maxConnections: 10, maxIdleTime: 1000 }
-    })
-  } else {
-    // the application is executed on the local machine
-    sequelize = new Sequelize('postgres', 'isaac', 'postgreslocal', {
-      dialect: 'postgres',
-      protocol: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      logging: (e) => console.error(e),
-      pool: { maxConnections: 5, maxIdleTime: 200 }
-    })
-  }
+  // the application is executed on Heroku
+  console.log(process.env.DATABASE_URL)
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    protocol: 'postgres',
+    logging: (e) => console.error(e),
+    pool: { maxConnections: 10, maxIdleTime: 1000 }
+  })
 
   sequelize.authenticate().then(() => {
     console.log('Database connection established')

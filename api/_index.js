@@ -1,3 +1,3 @@
-module.exports = function (app) {
-  require('./user')(app)
+module.exports = function (app, passport) {
+  require('./user')(app, passport)
 }

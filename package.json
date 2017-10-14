@@ -78,7 +78,9 @@
     "webpack-hot-middleware": "2.18.0",
     "webpack-merge": "4.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^1.12.1"
+  },
   "engines": {
     "node": ">= 8.5.0",
     "npm": ">= 5.5.0"
@@ -89,6 +91,7 @@
     "dev": "node build/dev-server.js",
     "lint": "eslint --ext .js,.vue src",
     "server": "npm run build && node server.js",
-    "start": "npm run server"
+    "start": "npm run server",
+    "server-dev": "nodemon server.js"
   }
 }

@@ -6,6 +6,11 @@
       </div>
       <router-view></router-view>
     </div>
+    <div class="footer">
+      <p class="footer-text">
+        Sidebar © 2017 by <a class="footer-link" href="http://isaaclyman.com">Isaac Lyman</a>.
+      </p>
+    </div>
   </div>
 </template>
 
@@ -39,5 +44,21 @@ export default {
   height: 56px;
   justify-content: center;
   margin-top: 20px;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
+.footer-text, .footer-link {
+  color: #000;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 10px;
+}
+
+.footer-text {
+  margin: 2px;
 }
 </style>

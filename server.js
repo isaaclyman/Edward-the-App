@@ -18,11 +18,6 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'))
 })
 
-// Serve auth page
-app.get('/auth', (req, res) => {
-  res.sendFile(path.join(__dirname, 'auth.html'))
-})
-
 // Configure passport auth
 require('./passport/config')(passport)
 

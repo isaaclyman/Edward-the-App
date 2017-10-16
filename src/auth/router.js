@@ -3,16 +3,18 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
+import Login from './login.page.vue'
+
 export default new Router({
   routes: [
-    // {
-    //   path: '/',
-    //   redirect: '/write'
-    // },
-    // {
-    //   path: '/outline',
-    //   name: 'Outline',
-    //   component: Outliner
-    // },
+    {
+      path: '/',
+      redirect: '/login'
+    },
+    {
+      path: '/login',
+      name: 'Log In',
+      component: Login
+    }
   ]
 })

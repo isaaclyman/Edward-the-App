@@ -3,7 +3,7 @@
     <file-menu></file-menu>
     <div class="app-header">
       <div class="app-header--logo-wrap" ref="logoWrap" title="Made in Utah by Isaac.">
-        <img class="app-header--logo" src="../static/logo.png">
+        <img class="app-header--logo" src="../../static/logo.png">
       </div>
       <div class="app-header--menu">
         <main-menu></main-menu>
@@ -26,10 +26,10 @@
 </template>
 
 <script>
-import FileMenu from './components/app/fileMenu.vue'
-import MainMenu from './components/app/mainMenu.vue'
-import tooltip from './components/app/tippyBuilder'
-import Wizard from './components/wizard/wizard.vue'
+import FileMenu from './app/fileMenu.vue'
+import MainMenu from './app/mainMenu.vue'
+import tooltip from './app/tippyBuilder'
+import Wizard from './wizard/wizard.vue'
 
 export default {
   components: {
@@ -50,8 +50,7 @@ export default {
       el: this.$refs.logoWrap,
       interactive: true
     })
-  },
-  name: 'app'
+  }
 }
 </script>
 

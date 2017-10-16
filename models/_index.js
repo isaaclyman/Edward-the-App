@@ -5,12 +5,12 @@ if (!global.hasOwnProperty('db')) {
   let sequelize = null
 
   // the application is executed on Heroku
-  console.log(process.env.DATABASE_URL)
   sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
     protocol: 'postgres',
     logging: (e) => console.error(e),
-    pool: { maxConnections: 10, maxIdleTime: 1000 }
+    pool: { maxConnections: 10, maxIdleTime: 1000 },
+    operatorsAliases: false
   })
 
   sequelize.authenticate().then(() => {
@@ -18,6 +18,10 @@ if (!global.hasOwnProperty('db')) {
   }).catch((e) => {
     console.log(`Couldn't connect to database: `, e)
   })
+
+  /*
+    Models
+  */
 
   const User = sequelize.import(path.join(__dirname, 'user'))
   const Doc = sequelize.import(path.join(__dirname, 'document'))

@@ -3,19 +3,19 @@ import axios from 'axios'
 const route = route => `/api/user/${route}`
 
 const api = {
-  logIn (email, password) {
+  logIn (email, password, captchaResponse) {
     return new Promise((resolve, reject) => {
-      axios.post(route('login'), { email, password }).then(() => {
-        resolve()
+      axios.post(route('login'), { email, password }).then(response => {
+        resolve(response.data)
       }, () => {
         reject()
       })
     })
   },
-  signUp (email, password) {
+  signUp (email, password, captchaResponse) {
     return new Promise((resolve, reject) => {
-      axios.post(route('signup'), { email, password }).then(() => {
-        resolve()
+      axios.post(route('signup'), { email, password }).then(response => {
+        resolve(response.data)
       }, () => {
         reject()
       })

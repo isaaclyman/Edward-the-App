@@ -24,6 +24,7 @@ if (!global.hasOwnProperty('db')) {
   */
 
   const User = sequelize.import(path.join(__dirname, 'user'))
+  const AccountType = sequelize.import(path.join(__dirname, 'accountType'))
   const Doc = sequelize.import(path.join(__dirname, 'document'))
   const Chapter = sequelize.import(path.join(__dirname, 'chapter'))
   const ChapterTopic = sequelize.import(path.join(__dirname, 'chapterTopic'))
@@ -33,6 +34,7 @@ if (!global.hasOwnProperty('db')) {
     Sequelize: Sequelize,
     sequelize: sequelize,
     User,
+    AccountType,
     Doc,
     Chapter,
     ChapterTopic,
@@ -43,6 +45,7 @@ if (!global.hasOwnProperty('db')) {
     Associations
   */
 
+  User.belongsTo(AccountType)
   Doc.belongsTo(User)
   Chapter.belongsTo(Doc)
   ChapterTopic.belongsTo(Chapter)

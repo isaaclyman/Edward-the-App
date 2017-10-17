@@ -28,6 +28,9 @@
       </div>
       <button class="field-info" v-html="infoSvg" ref="aboutInfo" :title="aboutInfo"></button>
     </div>
+    <div class="captcha">
+      <Captcha @change="setCaptchaResponse" @expire="resetCaptchaResponse"></Captcha>
+    </div>
     <div class="message">
       <p class="message-text">{{ message }}</p>
     </div>
@@ -39,6 +42,7 @@
 
 <script>
 import authApi from './authApi'
+import Captcha from './captcha.vue'
 import { goToApp } from './shared'
 import Octicons from 'octicons'
 import tippy from 'tippy.js'
@@ -46,6 +50,9 @@ import tippy from 'tippy.js'
 const emailRegex = /^.+@.+$/
 
 export default {
+  components: {
+    Captcha
+  },
   computed: {
     canSignUp () {
       return (
@@ -76,6 +83,7 @@ export default {
     return {
       about: '',
       aboutInfo: `This field is optional.`,
+      captchaResponse: '',
       email: '',
       emailInfo: `We won't email you unless it's important.`,
       infoSvg: Octicons.info.toSVG({
@@ -94,8 +102,19 @@ export default {
         position: 'top'
       })
     },
+    resetCaptchaResponse () {
+      this.captchaResponse = ''
+    },
+    setCaptchaResponse (response) {
+      this.captchaResponse = response
+    },
     submit () {
       this.message = ''
+
+      if (!this.captchaResponse) {
+        this.message = 'Please indicate that you are not a robot.'
+        return
+      }
 
       authApi.signUp({
         about: this.about,
@@ -173,6 +192,7 @@ export default {
 .message {
   color: red;
   height: 20px;
+  margin: 8px 0;
 }
 
 .message-text {

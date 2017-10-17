@@ -10,7 +10,7 @@
     <input id="login-password-input" class="login-field" type="password" v-model="password">
   </div>
   <div class="captcha">
-    <div ref="recaptcha"></div>
+    <Captcha @change="setCaptchaResponse" @expire="resetCaptchaResponse"></Captcha>
   </div>
   <div class="messages">
     <p>{{ loginMessage }}</p>
@@ -28,9 +28,13 @@
 
 <script>
 import authApi from './authApi'
+import Captcha from './captcha.vue'
 import { goToApp } from './shared'
 
 export default {
+  components: {
+    Captcha
+  },
   computed: {
     canLogin () {
       return (
@@ -79,16 +83,6 @@ export default {
     signUp () {
       this.$router.push('/signup')
     }
-  },
-  mounted () {
-    const placeholderEl = this.$refs.recaptcha
-    placeholderEl.innerHTML = ''
-
-    window.grecaptcha.render(placeholderEl, {
-      callback: this.setCaptchaResponse,
-      'expired-callback': this.resetCaptchaResponse,
-      sitekey: '6LfxrTQUAAAAAKZHrZj_kqcmaVoYBcExGAfEN8kf'
-    })
   }
 }
 </script>

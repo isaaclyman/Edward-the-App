@@ -1,4 +1,5 @@
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const express = require('express')
 const passport = require('passport')
 const path = require('path')
@@ -15,6 +16,7 @@ const app = express()
 app.use('/static', express.static(path.join(__dirname, 'static')))
 app.use(express.static(path.join(__dirname, 'dist')))
 app.use(bodyParser.json())
+app.use(cookieParser())
 app.use(timeout(15000))
 
 // Serve public landing page
@@ -39,7 +41,7 @@ app.use(session({
   resave: false,
   cookie: {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    secure: true
+    secure: !!process.env.INSECURE_COOKIES
   }
 }))
 app.use(passport.initialize())

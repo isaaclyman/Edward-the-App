@@ -55,7 +55,7 @@ if (!global.hasOwnProperty('db')) {
   /*
     Create tables
   */
-  sequelize.sync({ force: true })
+  sequelize.sync()
 }
 
 module.exports = global.db

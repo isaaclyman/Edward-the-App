@@ -5,7 +5,7 @@ const route = route => `/api/user/${route}`
 const api = {
   logIn ({ email, password, captchaResponse }) {
     return new Promise((resolve, reject) => {
-      axios.post(route('login'), { email, password }).then(response => {
+      axios.post(route('login'), { email, password, captchaResponse }).then(response => {
         resolve(response.data)
       }, () => {
         reject()
@@ -14,7 +14,7 @@ const api = {
   },
   signUp ({ about, email, password, captchaResponse }) {
     return new Promise((resolve, reject) => {
-      axios.post(route('signup'), { email, password }).then(response => {
+      axios.post(route('signup'), { about, email, password, captchaResponse }).then(response => {
         resolve(response.data)
       }, () => {
         reject()

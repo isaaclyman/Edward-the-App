@@ -1,6 +1,7 @@
 const express = require('express')
 const passport = require('passport')
 const path = require('path')
+const timeout = require('connect-timeout')
 
 var env = require('node-env-file')
 if (!process.env.DATABASE_URL) {
@@ -12,6 +13,7 @@ const app = express()
 // Serve static files
 app.use('/static', express.static(path.join(__dirname, 'static')))
 app.use(express.static(path.join(__dirname, 'dist')))
+app.use(timeout(15000))
 
 // Serve public landing page
 app.get('/', (req, res) => {

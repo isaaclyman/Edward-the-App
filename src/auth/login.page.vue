@@ -28,6 +28,7 @@
 
 <script>
 import authApi from './authApi'
+import { goToApp } from './shared'
 
 export default {
   computed: {
@@ -55,11 +56,15 @@ export default {
         return
       }
 
-      authApi.logIn(this.email, this.password, this.captchaResponse).then(result => {
+      authApi.logIn({
+        email: this.email,
+        password: this.password,
+        captchaResponse: this.captchaResponse
+      }).then(result => {
         if (result.limited) {
           this.$router.push('/limited')
         } else {
-          // Redirect to the app
+          goToApp()
         }
       }, () => {
         this.loginMessage = 'Login failed. Please try again.'

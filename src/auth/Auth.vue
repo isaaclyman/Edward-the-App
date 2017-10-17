@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="app">
     <div class="page">
-      <div class="logo">
+      <div class="logo" @click="goToLogin()">
         <img src="../../static/logo.png">
       </div>
       <router-view></router-view>
@@ -18,6 +18,11 @@
 export default {
   data () {
     return {}
+  },
+  methods: {
+    goToLogin () {
+      this.$router.push('/')
+    }
   }
 }
 </script>
@@ -40,6 +45,7 @@ export default {
 
 .logo {
   align-items: center;
+  cursor: pointer;
   display: flex;
   height: 56px;
   justify-content: center;

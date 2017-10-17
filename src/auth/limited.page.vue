@@ -25,10 +25,9 @@
 </template>
 
 <script>
+import { goToApp } from './shared'
+
 export default {
-  beforeCreate () {
-    // If user is not logged in, redirect to /login
-  },
   components: {},
   computed: {},
   data () {
@@ -36,10 +35,10 @@ export default {
   },
   methods: {
     goPremium () {
-      // Redirect to premium signup page
+      this.$router.push('/premium')
     },
     noPremium () {
-      // Redirect to main app
+      goToApp()
     }
   },
   props: {}

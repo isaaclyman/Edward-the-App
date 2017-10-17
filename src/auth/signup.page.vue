@@ -118,6 +118,7 @@ export default {
 
       authApi.signUp({
         about: this.about,
+        captchaResponse: this.captchaResponse,
         email: this.email,
         password: this.password
       }).then(result => {

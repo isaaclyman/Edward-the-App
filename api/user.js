@@ -10,7 +10,7 @@ module.exports = function (app, passport) {
       }
 
       if (!user) {
-        return res.send(401, { success: false, message: 'authentication failure' })
+        return res.status(401).send({ success: false, message: 'authentication failure' })
       }
 
       req.login(user, err => {
@@ -20,6 +20,6 @@ module.exports = function (app, passport) {
 
         return res.send({ success: true, message: 'authentication success' })
       })
-    })
+    })(req, res, next)
   })
 }

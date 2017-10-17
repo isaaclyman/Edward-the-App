@@ -8,17 +8,19 @@ export default {
     return {}
   },
   mounted () {
-    const placeholderEl = this.$refs.recaptcha
-    placeholderEl.innerHTML = ''
+    this.$nextTick(() => {
+      const placeholderEl = this.$refs.recaptcha
+      placeholderEl.innerHTML = ''
 
-    window.grecaptcha.render(placeholderEl, {
-      callback: (response) => {
-        this.$emit('change', response)
-      },
-      'expired-callback': () => {
-        this.$emit('expire')
-      },
-      sitekey: '6LfxrTQUAAAAAKZHrZj_kqcmaVoYBcExGAfEN8kf'
+      window.grecaptcha.render(placeholderEl, {
+        callback: (response) => {
+          this.$emit('change', response)
+        },
+        'expired-callback': () => {
+          this.$emit('expire')
+        },
+        sitekey: '6LfxrTQUAAAAAKZHrZj_kqcmaVoYBcExGAfEN8kf'
+      })
     })
   }
 }

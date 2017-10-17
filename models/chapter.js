@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  return sequelize.define('Chapter', {
+  return sequelize.define('chapter', {
     archived: {
       allowNull: false,
       type: DataTypes.BOOLEAN

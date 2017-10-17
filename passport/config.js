@@ -1,5 +1,5 @@
 const LocalAuth = require('passport-local').Strategy
-const User = require('../models/user')
+const User = global.db.User
 
 module.exports = function config (passport) {
   passport.serializeUser((user, done) => {
@@ -14,15 +14,14 @@ module.exports = function config (passport) {
 
   passport.use('local-signup', new LocalAuth({
     usernameField: 'email',
-    passwordField: 'password',
-    passReqToCallback: true
-  }, (req, email, password, done) => {
+    passwordField: 'password'
+  }, (email, password, done) => {
     process.nextTick(() => {
-      User.findOne({ 'email': email }, (err, user) => {
-        if (err) {
-          return done(err)
+      User.findOne({
+        where: {
+          email
         }
-
+      }).then(user => {
         if (user) {
           return done(null, false)
         } else {
@@ -30,14 +29,16 @@ module.exports = function config (passport) {
           newUser.email = email
           newUser.password = password
 
-          newUser.save((err) => {
-            if (err) {
-              throw err
-            }
-
-            return done(null, newUser)
+          newUser.save().then(user => {
+            return done(null, user)
+          }, err => {
+            console.log(err)
+            return done(err, false)
           })
         }
+      }, err => {
+        console.log(err)
+        return done(null, false)
       })
     })
   }))

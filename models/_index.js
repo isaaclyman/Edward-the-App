@@ -8,7 +8,7 @@ if (!global.hasOwnProperty('db')) {
   sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
     protocol: 'postgres',
-    logging: (e) => console.error(e),
+    logging: process.env.DEBUG_DB === 'true' ? console.log : false,
     pool: { maxConnections: 10, maxIdleTime: 1000 },
     operatorsAliases: false
   })
@@ -51,6 +51,11 @@ if (!global.hasOwnProperty('db')) {
   ChapterTopic.belongsTo(Chapter)
   MasterTopic.belongsTo(Doc)
   ChapterTopic.belongsTo(MasterTopic)
+
+  /*
+    Create tables
+  */
+  sequelize.sync({ force: true })
 }
 
 module.exports = global.db

@@ -1,3 +1,4 @@
+const bodyParser = require('body-parser')
 const express = require('express')
 const passport = require('passport')
 const path = require('path')
@@ -13,12 +14,16 @@ const app = express()
 // Serve static files
 app.use('/static', express.static(path.join(__dirname, 'static')))
 app.use(express.static(path.join(__dirname, 'dist')))
+app.use(bodyParser.json())
 app.use(timeout(15000))
 
 // Serve public landing page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'))
 })
+
+// Database ORM
+require('./models/_index')
 
 // Configure passport auth
 require('./passport/config')(passport)
@@ -39,9 +44,6 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
-
-// Database ORM
-require('./models/_index')
 
 // REST APIs
 require('./api/_index')(app, passport)

@@ -19,8 +19,9 @@ module.exports = function config (passport) {
   */
   passport.use('local-signup', new LocalAuth({
     usernameField: 'email',
-    passwordField: 'password'
-  }, (email, password, done) => {
+    passwordField: 'password',
+    passReqToCallback: true
+  }, (req, email, password, done) => {
     process.nextTick(() => {
       User.findOne({
         where: {
@@ -28,8 +29,10 @@ module.exports = function config (passport) {
         }
       }).then(user => {
         if (user) {
+          // User already exists
           return done(null, false)
         } else {
+          // No user exists; create a new one
           const newUser = new User()
           newUser.email = email
           newUser.password = password
@@ -42,6 +45,7 @@ module.exports = function config (passport) {
           })
         }
       }, err => {
+        // Db error
         console.log(err)
         return done(null, false)
       })
@@ -53,8 +57,9 @@ module.exports = function config (passport) {
   */
   passport.use('local-login', new LocalAuth({
     usernameField: 'email',
-    passwordField: 'password'
-  }, (email, password, done) => {
+    passwordField: 'password',
+    passReqToCallback: true
+  }, (req, email, password, done) => {
     User.findOne({
       where: {
         email
@@ -65,14 +70,15 @@ module.exports = function config (passport) {
         return done(null, false)
       }
 
-      // Bad password
-      if (!user.isCorrectPassword(password)) {
+      user.isCorrectPassword(password).then(() => {
+        // Correct login
+        return done(null, user)
+      }, () => {
+        // Bad password
         return done(null, false)
-      }
-
-      // Correct login
-      return done(null, user)
+      })
     }, err => {
+      // Db error
       console.log(err)
       return done(err)
     })

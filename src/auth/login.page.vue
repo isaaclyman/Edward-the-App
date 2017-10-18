@@ -10,7 +10,7 @@
     <input id="login-password-input" class="login-field" type="password" v-model="password">
   </div>
   <div class="captcha">
-    <Captcha @change="setCaptchaResponse" @expire="resetCaptchaResponse"></Captcha>
+    <Captcha @change="setCaptchaResponse" @expire="resetCaptchaResponse" ref="captcha"></Captcha>
   </div>
   <div class="messages">
     <p>{{ loginMessage }}</p>
@@ -71,6 +71,7 @@ export default {
           goToApp()
         }
       }, () => {
+        this.$refs.captcha.reset()
         this.loginMessage = 'Login failed. Please try again.'
       })
     },

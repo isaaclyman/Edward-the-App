@@ -29,7 +29,7 @@
       <button class="field-info" v-html="infoSvg" ref="aboutInfo" :title="aboutInfo"></button>
     </div>
     <div class="captcha">
-      <Captcha @change="setCaptchaResponse" @expire="resetCaptchaResponse"></Captcha>
+      <Captcha @change="setCaptchaResponse" @expire="resetCaptchaResponse" ref="captcha"></Captcha>
     </div>
     <div class="message">
       <p class="message-text">{{ message }}</p>
@@ -124,6 +124,7 @@ export default {
       }).then(result => {
         goToApp()
       }, () => {
+        this.$refs.captcha.reset()
         this.message = 'Signup failed. Please check your email/password and try again.'
       })
     }

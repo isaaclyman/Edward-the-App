@@ -17,13 +17,19 @@ module.exports = function (sequelize, DataTypes) {
         len: [11, 150]
       }
     }
-  }, {
-    instanceMethods: {
-      isCorrectPassword (attempt) {
-        return bcrypt.compare(attempt, this.password)
-      }
-    }
   })
+
+  User.prototype.isCorrectPassword = function (attempt) {
+    return new Promise((resolve, reject) => {
+      bcrypt.compare(attempt, this.password).then(isValid => {
+        if (isValid) {
+          resolve()
+        } else {
+          reject()
+        }
+      }, reject)
+    })
+  }
 
   User.beforeCreate((user, options) => {
     return getHash(user.password).then(hash => {

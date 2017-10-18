@@ -26,6 +26,11 @@ export default {
         sitekey: '6LfxrTQUAAAAAKZHrZj_kqcmaVoYBcExGAfEN8kf'
       })
       return true
+    },
+    reset () {
+      if (window.grecaptcha) {
+        window.grecaptcha.reset()
+      }
     }
   },
   mounted () {

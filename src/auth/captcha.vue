@@ -7,8 +7,12 @@ export default {
   data () {
     return {}
   },
-  mounted () {
-    this.$nextTick(() => {
+  methods: {
+    mountCaptcha () {
+      if (!window.grecaptcha) {
+        return false
+      }
+
       const placeholderEl = this.$refs.recaptcha
       placeholderEl.innerHTML = ''
 
@@ -21,7 +25,16 @@ export default {
         },
         sitekey: '6LfxrTQUAAAAAKZHrZj_kqcmaVoYBcExGAfEN8kf'
       })
-    })
+      return true
+    }
+  },
+  mounted () {
+    const interval = window.setInterval(() => {
+      const success = this.mountCaptcha()
+      if (success) {
+        window.clearInterval(interval)
+      }
+    }, 100)
   }
 }
 </script>

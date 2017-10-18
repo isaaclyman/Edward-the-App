@@ -14,6 +14,9 @@ module.exports = function config (passport) {
     })
   })
 
+  /*
+    SIGN UP
+  */
   passport.use('local-signup', new LocalAuth({
     usernameField: 'email',
     passwordField: 'password'
@@ -42,6 +45,36 @@ module.exports = function config (passport) {
         console.log(err)
         return done(null, false)
       })
+    })
+  }))
+
+  /*
+    LOG IN
+  */
+  passport.use('local-login', new LocalAuth({
+    usernameField: 'email',
+    passwordField: 'password'
+  }, (email, password, done) => {
+    User.findOne({
+      where: {
+        email
+      }
+    }).then(user => {
+      // Bad username
+      if (!user) {
+        return done(null, false)
+      }
+
+      // Bad password
+      if (!user.isCorrectPassword(password)) {
+        return done(null, false)
+      }
+
+      // Correct login
+      return done(null, user)
+    }, err => {
+      console.log(err)
+      return done(err)
     })
   }))
 }

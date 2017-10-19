@@ -221,7 +221,7 @@ export default {
 
 .editor-wrap {
   display: flex;
-  flex: 1;
+  flex-basis: 600px;
   flex-direction: column;
   margin-right: 12px;
   position: relative;
@@ -295,6 +295,7 @@ export default {
 
 .sidebar-wrap {
   display: flex;
+  flex: 1;
   flex-direction: column;
   height: 100%;
   margin-left: 12px;

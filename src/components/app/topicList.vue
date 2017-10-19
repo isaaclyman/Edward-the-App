@@ -21,14 +21,13 @@
           </button>
         </div>
         <div class="content-static" v-if="!isEditing(index)">
-          <p v-text="topic.textContent"></p>
-          <span class="content-placeholder" v-if="!topic.textContent && !getMasterTopic(topic).archived">
+          <p v-text="getTextContent(topic.content)"></p>
+          <span class="content-placeholder" v-if="!getMasterTopic(topic).archived && !getTextContent(topic.content)">
             No content yet. Click "Edit" to add some.
           </span>
         </div>
         <div class="content-editable" v-if="isEditing(index)">
-          <quill-editor :content="topic.content" @update:content="updateContent(topic, $event)"
-                        @update:textContent="updateTextContent(topic, $event)"></quill-editor>
+          <quill-editor :content="topic.content" @update:content="updateContent(topic, $event)"></quill-editor>
         </div>
       </div>
     </div>
@@ -37,7 +36,8 @@
 
 <script>
 import { ARCHIVE_TOPIC, ADD_TOPIC_TO_CHAPTER, DELETE_TOPIC, RESTORE_TOPIC,
-         UPDATE_TOPIC_CONTENT, UPDATE_TOPIC_TEXT_CONTENT } from '../app/chapters.store'
+         UPDATE_TOPIC_CONTENT } from '../app/chapters.store'
+import { GetContentString } from './deltaParser'
 import Octicons from 'octicons'
 import QuillEditor from '../app/quillEditor.vue'
 import swal from 'sweetalert'
@@ -104,6 +104,9 @@ export default {
 
       return chapter.topics[topic.id]
     },
+    getTextContent (content) {
+      return GetContentString(content)
+    },
     isEditing (index) {
       return this.editingTopicIndex === index
     },
@@ -121,13 +124,6 @@ export default {
       this.$store.commit(UPDATE_TOPIC_CONTENT, {
         chapter: this.chapter,
         newContent,
-        topic
-      })
-    },
-    updateTextContent (topic, newTextContent) {
-      this.$store.commit(UPDATE_TOPIC_TEXT_CONTENT, {
-        chapter: this.chapter,
-        newTextContent: newTextContent.trim(),
         topic
       })
     }

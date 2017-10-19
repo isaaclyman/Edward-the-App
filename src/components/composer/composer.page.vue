@@ -34,8 +34,7 @@
         <text-editor ref="textEditor" :content="activeChapter.content" :scroll-to="scrollTo" :selection="selection"
                     :container="editorContainerNode"
                     @update:content="updateContent"
-                    @update:selection="updateSelection"
-                    @update:textContent="updateTextContent"></text-editor>
+                    @update:selection="updateSelection"></text-editor>
       </div>
     </div>
     <div class="map-wrap">
@@ -63,6 +62,7 @@
 </template>
 
 <script>
+import { GetContentString } from '../app/deltaParser'
 import guid from '../app/guid'
 import Octicons from 'octicons'
 import TextEditor from './textEditor.vue'
@@ -104,6 +104,9 @@ export default {
     selection () {
       return this.$store.state.composer.selection
     },
+    textContent () {
+      return GetContentString(this.activeChapter.content)
+    },
     viewingChapters () {
       return this.allChapters.filter(chapter => !chapter.archived)
     },
@@ -135,8 +138,7 @@ export default {
       },
       showAddChapter: false,
       showArchivedTopics: false,
-      showStats: false,
-      textContent: ''
+      showStats: false
     }
   },
   methods: {
@@ -201,9 +203,6 @@ export default {
     },
     updateSelection (selection) {
       this.$store.commit(UPDATE_SELECTION, selection)
-    },
-    updateTextContent (text) {
-      this.textContent = text
     }
   },
   mounted () {

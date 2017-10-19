@@ -2,8 +2,7 @@
   <div class="quill-wrap">
     <quill-editor :scroll-to="scrollTo" :container="container" :content="content" 
                   @update:content="updateContent"
-                  @update:selection="updateSelection"
-                  @update:textContent="updateTextContent"></quill-editor>
+                  @update:selection="updateSelection"></quill-editor>
   </div>
 </template>
 
@@ -36,9 +35,6 @@ export default {
       }
 
       this.$emit('update:selection', selection)
-    },
-    updateTextContent (text) {
-      this.$emit('update:textContent', text)
     }
   },
   props: {

@@ -1,5 +1,5 @@
 export const GetContentString = (delta) => {
-  if (!delta) {
+  if (!delta || !delta.ops) {
     return ''
   }
 

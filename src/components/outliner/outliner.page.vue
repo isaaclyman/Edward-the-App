@@ -147,6 +147,7 @@ import { ADD_CHAPTER, ADD_TOPIC, ARCHIVE_CHAPTER, ARCHIVE_TOPIC,
          DELETE_CHAPTER, REARRANGE_CHAPTERS, REARRANGE_TOPICS,
          RESTORE_CHAPTER, RESTORE_TOPIC, UPDATE_CHAPTER, UPDATE_TOPIC } from '../app/chapters.store'
 import ChipsList from './chipsList.vue'
+import { GetContentString } from '../app/deltaParser'
 import guid from '../app/guid'
 import Octicons from 'octicons'
 import swal from 'sweetalert'
@@ -317,10 +318,11 @@ export default {
     },
     showTopic (topic) {
       const masterTopic = this.getMasterTopic(topic)
+      const textContent = GetContentString(topic.content)
 
       return (this.viewingTopicsFilteredArchived.includes(masterTopic) &&
         (this.viewingTopicsFilteredTitle.includes(masterTopic) ||
-        topic.textContent && topic.textContent.includes(this.filters.topic)))
+        textContent && textContent.includes(this.filters.topic)))
     },
     toggleFilters () {
       this.filtersVisible = !this.filtersVisible

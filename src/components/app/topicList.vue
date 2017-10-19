@@ -21,7 +21,7 @@
           </button>
         </div>
         <div class="content-static" v-if="!isEditing(index)">
-          <p v-text="getTextContent(topic.content)"></p>
+          <div v-html="getHtml(topic)"></div>
           <span class="content-placeholder" v-if="!getMasterTopic(topic).archived && !getTextContent(topic.content)">
             No content yet. Click "Edit" to add some.
           </span>
@@ -37,7 +37,7 @@
 <script>
 import { ARCHIVE_TOPIC, ADD_TOPIC_TO_CHAPTER, DELETE_TOPIC, RESTORE_TOPIC,
          UPDATE_TOPIC_CONTENT } from '../app/chapters.store'
-import { GetContentString } from './deltaParser'
+import { GetContentString, GetHtml } from './deltaParser'
 import Octicons from 'octicons'
 import QuillEditor from '../app/quillEditor.vue'
 import swal from 'sweetalert'
@@ -89,6 +89,9 @@ export default {
     },
     endEditTopic (index) {
       this.editingTopicIndex = -1
+    },
+    getHtml (topic) {
+      return GetHtml(topic.content)
     },
     getMasterTopic (chapterTopic) {
       return this.topics.find(topic => topic.id === chapterTopic.id)

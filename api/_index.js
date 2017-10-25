@@ -15,6 +15,7 @@ module.exports = function (app, passport) {
 
   // Serve user signup, login, logout, verify, and passreset pages
   require('./user')(app, passport)
+  require('./document')(app, passport)
 }
 
 function isLoggedIn (req, res, next) {

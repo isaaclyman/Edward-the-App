@@ -1,4 +1,7 @@
 const LocalAuth = require('passport-local').Strategy
+
+const AccountType = global.db.AccountType
+const accountTypes = global.db.accountTypes
 const User = global.db.User
 
 module.exports = function config (passport) {
@@ -37,11 +40,16 @@ module.exports = function config (passport) {
           newUser.email = email
           newUser.password = password
 
-          newUser.save().then(user => {
-            return done(null, user)
-          }, err => {
-            console.log(err)
-            return done(err, false)
+          AccountType.findOne({
+            where: { name: accountTypes.LIMITED }
+          }).then(({ id }) => {
+            newUser.accountTypeId = id
+            newUser.save().then(user => {
+              return done(null, user)
+            }, err => {
+              console.log(err)
+              return done(err, false)
+            })
           })
         }
       }, err => {

@@ -10,6 +10,7 @@ module.exports = function (sequelize, DataTypes) {
     },
     guid: {
       allowNull: false,
+      primaryKey: false,
       type: DataTypes.UUID
     },
     title: {

@@ -1,3 +1,5 @@
+const values = require('lodash/values')
+
 const path = require('path')
 
 if (!global.hasOwnProperty('db')) {
@@ -30,11 +32,19 @@ if (!global.hasOwnProperty('db')) {
   const ChapterTopic = sequelize.import(path.join(__dirname, 'chapterTopic'))
   const MasterTopic = sequelize.import(path.join(__dirname, 'masterTopic'))
 
+  const accountTypes = {
+    LIMITED: 'limited',
+    PREMIUM: 'premium',
+    GOLD: 'gold',
+    ADMIN: 'admin'
+  }
+
   global.db = {
     Sequelize: Sequelize,
     sequelize: sequelize,
     User,
     AccountType,
+    accountTypes,
     Doc,
     Chapter,
     ChapterTopic,
@@ -46,16 +56,42 @@ if (!global.hasOwnProperty('db')) {
   */
 
   User.belongsTo(AccountType)
+
   Doc.belongsTo(User)
+  User.hasMany(Doc)
+
   Chapter.belongsTo(Doc)
+  Doc.hasMany(Chapter)
+
   ChapterTopic.belongsTo(Chapter)
+  Chapter.hasMany(ChapterTopic)
+
   MasterTopic.belongsTo(Doc)
+  Doc.hasMany(MasterTopic)
+
   ChapterTopic.belongsTo(MasterTopic)
+  MasterTopic.hasMany(ChapterTopic)
 
   /*
     Create tables
   */
   sequelize.sync()
+
+  /*
+    Init static data
+  */
+  const types = values(global.db.accountTypes)
+  for (const type of types) {
+    AccountType.findOrCreate({
+      where: {
+        name: type
+      }
+    }).then(([type, created]) => {
+      if (created) {
+        console.log(`Created account type "${type.name}".`)
+      }
+    })
+  }
 }
 
 module.exports = global.db

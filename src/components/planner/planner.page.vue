@@ -2,7 +2,7 @@
   <div class="wrap">
     <div class="planner">
       <!-- 'Show Archived' checkbox -->
-      <div>
+      <div class="filters">
         <input id="showArchivedCheckbox" type="checkbox" v-model="filters.archived" />
         <label for="showArchivedCheckbox">Show Archived</label>
       </div>
@@ -25,12 +25,14 @@
       </div>
 
       <!-- Plan Tabs -->
-      <tabs-list :active-index="activePlanIndex" :data-array="allPlans" :filter-tabs="showPlan"
-                 item-name="Plan"
-                 @add="addPlan"
-                 @update:activeIndex="selectPlan"></tabs-list>
-                 <!-- @hover="hoverPlan"
-                 @unhover="unhoverPlan" -->
+      <div class="plans-wrap" v-show="allPlans.length > 0">
+        <tabs-list :active-index="activePlanIndex" :data-array="allPlans" :filter-tabs="showPlan"
+                  item-name="Plan"
+                  @add="addPlan"
+                  @update:activeIndex="selectPlan"></tabs-list>
+                  <!-- @hover="hoverPlan"
+                  @unhover="unhoverPlan" -->
+      </div>
     </div>
 
     <!-- Plans: [?] Modal -->
@@ -54,19 +56,24 @@
 import { ADD_PLAN, ADD_SECTION, ARCHIVE_PLAN, ARCHIVE_SECTION,
   DELETE_PLAN, DELETE_SECTION, REARRANGE_PLANS, REARRANGE_SECTIONS,
   RESTORE_PLAN, RESTORE_SECTION, UPDATE_PLAN, UPDATE_SECTION } from '../app/chapters.store'
+import ChipsList from '../app/chipsList.vue'
 import guid from '../app/guid'
 import Octicons from 'octicons'
 import swal from 'sweetalert'
+import TabsList from '../app/tabsList.vue'
 import { ValidateTitle } from '../app/validate'
 
 export default {
-  components: {},
+  components: {
+    ChipsList,
+    TabsList
+  },
   computed: {
     activePlan () {
       return this.allPlans[this.activePlanIndex]
     },
     allPlans () {
-      return this.$store.state.chapters.plans
+      return this.$store.state.chapters.plans || []
     },
     viewingPlans () {
       return (this.allPlans
@@ -193,7 +200,7 @@ export default {
         newTitle
       })
     },
-    restoreChapter ({ index }) {
+    restorePlan ({ index }) {
       this.$store.commit(RESTORE_PLAN, { plan: this.allPlans[index] })
     },
     restoreSection ({ index }) {
@@ -205,6 +212,9 @@ export default {
     showPlan (plan) {
       return this.viewingPlans.includes(plan)
     }
+  },
+  mounted () {
+    this.helpPlanChipsModal = this.$refs.helpPlanChipsModal
   }
 }
 </script>
@@ -220,6 +230,10 @@ export default {
   display: block;
   flex: 1;
   max-width: 1050px;
+}
+
+.filters {
+  margin: 10px 0;
 }
 
 .chips-wrap {

@@ -32,9 +32,10 @@ const store = {
       dispatch(UNLOAD_CURRENT_DOCUMENT)
 
       const chapters = ChapterStorage.getAllChapters(id)
+      const plans = ChapterStorage.getAllPlans(id)
       const topics = ChapterStorage.getAllTopics(id)
 
-      commit(LOAD_CONTENT, { chapters, topics })
+      commit(LOAD_CONTENT, { plans, chapters, topics })
       commit(UPDATE_FILE_METADATA, { id, name })
 
       cache.setCurrentFile({ id, name })

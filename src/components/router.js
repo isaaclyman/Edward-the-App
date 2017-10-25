@@ -15,7 +15,7 @@ export default new Router({
       redirect: '/write'
     },
     {
-      path: '/',
+      path: '/plan',
       name: 'Plan',
       component: Planner
     },

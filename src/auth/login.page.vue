@@ -16,7 +16,8 @@
     <p>{{ loginMessage }}</p>
   </div>
   <div class="actions">
-    <button class="login-button button-green" :disabled="!canLogin" @click="logIn()">Log In</button>
+    <pulse-loader v-if="loading"></pulse-loader>
+    <button v-if="!loading" class="login-button button-green" :disabled="!canLogin" @click="logIn()">Log In</button>
   </div>
   <hr class="divider">
   <div class="sign-up">
@@ -30,10 +31,12 @@
 import authApi from './authApi'
 import Captcha from './captcha.vue'
 import { goToApp } from './shared'
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
 export default {
   components: {
-    Captcha
+    Captcha,
+    PulseLoader
   },
   computed: {
     canLogin () {
@@ -47,6 +50,7 @@ export default {
     return {
       captchaResponse: '',
       email: '',
+      loading: false,
       loginMessage: '',
       password: ''
     }
@@ -60,17 +64,21 @@ export default {
         return
       }
 
+      this.loading = true
+
       authApi.logIn({
         email: this.email,
         password: this.password,
         captchaResponse: this.captchaResponse
       }).then(result => {
+        this.loading = false
         if (result.limited) {
           this.$router.push('/limited')
         } else {
           goToApp()
         }
       }, () => {
+        this.loading = false
         this.$refs.captcha.reset()
         this.loginMessage = 'Login failed. Please try again.'
       })

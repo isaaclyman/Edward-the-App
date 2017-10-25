@@ -23,7 +23,7 @@ export default {
         'expired-callback': () => {
           this.$emit('expire')
         },
-        sitekey: '6LfxrTQUAAAAAKZHrZj_kqcmaVoYBcExGAfEN8kf'
+        sitekey: '6Lcg3DUUAAAAANAt-cV-ELiedVMT543DJ7-wOneQ'
       })
       return true
     },

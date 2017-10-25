@@ -35,7 +35,8 @@
       <p class="message-text">{{ message }}</p>
     </div>
     <div class="actions">
-      <button class="button-green" @click="submit()" :disabled="!canSignUp">Create account</button>
+      <pulse-loader v-if="loading"></pulse-loader>
+      <button class="button-green" v-if="!loading" @click="submit()" :disabled="!canSignUp">Create account</button>
     </div>
   </div>
 </template>
@@ -45,13 +46,15 @@ import authApi from './authApi'
 import Captcha from './captcha.vue'
 import { goToApp } from './shared'
 import Octicons from 'octicons'
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import tippy from 'tippy.js'
 
 const emailRegex = /^.+@.+$/
 
 export default {
   components: {
-    Captcha
+    Captcha,
+    PulseLoader
   },
   computed: {
     canSignUp () {
@@ -90,6 +93,7 @@ export default {
         height: 14,
         width: 14
       }),
+      loading: false,
       message: '',
       password: '',
       passwordInfo: `Please choose a long password (12 characters or more).`
@@ -116,14 +120,18 @@ export default {
         return
       }
 
+      this.loading = true
+
       authApi.signUp({
         about: this.about,
         captchaResponse: this.captchaResponse,
         email: this.email,
         password: this.password
       }).then(result => {
+        this.loading = false
         goToApp()
       }, () => {
+        this.loading = false
         this.$refs.captcha.reset()
         this.message = 'Signup failed. Please check your email/password and try again.'
       })

@@ -1,25 +1,12 @@
 <template>
   <div class="composer">
     <div class="editor-wrap">
-      <div class="tabs">
-        <button v-for="(chapter, index) in allChapters" :key="chapter.id" v-show="isViewing(chapter)"
-                class="button-tab" :class="{ 'active': isActive(index) }"
-                @click="selectChapter(index)"
-                @mouseover="hoverChapter(index)"
-                @mouseout="unhoverChapter">
-          {{ chapter.title }}
-        </button>
-        <button @click="showNewChapter" class="button-tab" v-show="!showAddChapter" v-html="addSvg"></button>
-        <div class="button-tab add-tab" v-show="showAddChapter">
-          <input class="chapter-input" v-model="newChapter" placeholder="New chapter...">
-          <button class="button-green tab-internal-button" @click="addChapter">
-            <span class="u-center-all" v-html="saveSvg"></span> Save
-          </button>
-          <button class="button-red tab-internal-button" @click="cancelAddChapter">
-              <span class="u-center-all" v-html="cancelSvg"></span> Cancel
-            </button>
-        </div>
-      </div>
+      <tabs-list :active-index="activeChapterIndex" :data-array="allChapters" :filter-tabs="isViewing"
+                 item-name="Chapter"
+                 @add="addChapter"
+                 @hover="hoverChapter"
+                 @unhover="unhoverChapter"
+                 @update:activeIndex="selectChapter"></tabs-list>
       <div class="below-tabs" ref="editorContainer">
         <div class="stats" :class="{ 'active': showStats }">
           <div class="stats-content">
@@ -64,7 +51,7 @@
 <script>
 import { GetContentString } from '../app/deltaParser'
 import guid from '../app/guid'
-import Octicons from 'octicons'
+import TabsList from '../app/tabsList.vue'
 import TextEditor from './textEditor.vue'
 import TextMap from './textMap.vue'
 import TopicList from '../app/topicList.vue'
@@ -74,6 +61,7 @@ import { ValidateTitle } from '../app/validate'
 
 export default {
   components: {
+    TabsList,
     TextEditor,
     TextMap,
     TopicList
@@ -117,33 +105,20 @@ export default {
   data () {
     return {
       activeChapterIndex: -1,
-      addSvg: Octicons.plus.toSVG({
-        height: 14,
-        width: 14
-      }),
-      cancelSvg: Octicons['circle-slash'].toSVG({
-        height: 14,
-        width: 14
-      }),
       editorContainerNode: null,
       editorElement: null,
       newChapter: '',
-      saveSvg: Octicons.check.toSVG({
-        height: 14,
-        width: 14
-      }),
       scrollTo: {
         paragraphIndex: -1,
         searchTermIndex: -1
       },
-      showAddChapter: false,
       showArchivedTopics: false,
       showStats: false
     }
   },
   methods: {
-    addChapter () {
-      if (!ValidateTitle('chapter', this.newChapter)) {
+    addChapter (title) {
+      if (!ValidateTitle('chapter', title)) {
         return
       }
 
@@ -151,18 +126,11 @@ export default {
         archived: false,
         content: null,
         id: guid(),
-        title: this.newChapter,
+        title,
         topics: {}
       }
 
       this.$store.commit(ADD_CHAPTER, { chapter })
-
-      this.showAddChapter = false
-      this.newChapter = ''
-    },
-    cancelAddChapter () {
-      this.showAddChapter = false
-      this.newChapter = ''
     },
     getMasterTopic (chapterTopic) {
       return this.allTopics.find(topic => topic.id === chapterTopic.id)
@@ -181,9 +149,6 @@ export default {
     },
     selectMap (descriptor) {
       this.scrollTo = descriptor
-    },
-    showNewChapter () {
-      this.showAddChapter = true
     },
     showTopic (chapterTopic) {
       const masterTopic = this.getMasterTopic(chapterTopic)
@@ -222,37 +187,6 @@ export default {
   flex-direction: column;
   margin-right: 12px;
   position: relative;
-}
-
-.tabs {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  max-height: 60px;
-  min-height: 28px;
-  overflow: auto;
-}
-
-.add-tab {
-  background-color: #CCC;
-  padding: 6px 6px;
-}
-
-.chapter-input {
-  background-color: rgba(255,255,255,0.8);
-  border: none;
-  height: 20px;
-  margin-right: 6px;
-}
-
-.tab-internal-button {
-  display: flex;
-  fill: #FFF;
-  padding: 2px 8px;
-}
-
-.tab-internal-button:not(:first-of-type) {
-  margin-left: 6px;
 }
 
 .below-tabs {

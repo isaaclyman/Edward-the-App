@@ -52,6 +52,19 @@ const store = {
       commit(ADD_FILE, file)
       dispatch(CHANGE_FILE, file)
 
+      const plans = type.plans.map(title => ({
+        archived: false,
+        id: guid(),
+        title,
+        sections: [{
+          archived: false,
+          content: null,
+          id: guid(),
+          tags: [],
+          title
+        }]
+      }))
+
       const chapters = type.chapters.map(title => ({
         archived: false,
         content: null,
@@ -66,7 +79,7 @@ const store = {
         title
       }))
 
-      commit(LOAD_CONTENT, { chapters, topics })
+      commit(LOAD_CONTENT, { plans, chapters, topics })
       ChapterStorage.syncEverything(file.id, chapters, topics)
     },
     [UNLOAD_CURRENT_DOCUMENT] ({ commit }) {

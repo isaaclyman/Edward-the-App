@@ -28,6 +28,8 @@ if (!global.hasOwnProperty('db')) {
   const User = sequelize.import(path.join(__dirname, 'user'))
   const AccountType = sequelize.import(path.join(__dirname, 'accountType'))
   const Doc = sequelize.import(path.join(__dirname, 'document'))
+  const Plan = sequelize.import(path.join(__dirname, 'plan'))
+  const Section = sequelize.import(path.join(__dirname, 'section'))
   const Chapter = sequelize.import(path.join(__dirname, 'chapter'))
   const ChapterTopic = sequelize.import(path.join(__dirname, 'chapterTopic'))
   const MasterTopic = sequelize.import(path.join(__dirname, 'masterTopic'))
@@ -46,6 +48,8 @@ if (!global.hasOwnProperty('db')) {
     AccountType,
     accountTypes,
     Doc,
+    Plan,
+    Section,
     Chapter,
     ChapterTopic,
     MasterTopic
@@ -59,6 +63,12 @@ if (!global.hasOwnProperty('db')) {
 
   Doc.belongsTo(User)
   User.hasMany(Doc)
+
+  Plan.belongsTo(Doc)
+  Doc.hasMany(Plan)
+
+  Section.belongsTo(Plan)
+  Plan.hasMany(Section)
 
   Chapter.belongsTo(Doc)
   Doc.hasMany(Chapter)

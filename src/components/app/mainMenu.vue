@@ -20,10 +20,15 @@ export default {
   data () {
     return {
       routes: [{
+        icon: 'telescope',
+        location: '/plan',
+        name: 'Plan',
+        tooltip: 'Make general notes about characters, topics, settings, and more.'
+      }, {
         icon: 'list-unordered',
         location: '/outline',
         name: 'Outline',
-        tooltip: 'Create and organize chapters and outlines.'
+        tooltip: 'Create and organize chapters and chapter-specific notes.'
       }, {
         icon: 'pencil',
         location: '/write',

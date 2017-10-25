@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import Analyser from '../components/analyser/analyser.page.vue'
 import Composer from '../components/composer/composer.page.vue'
 import Outliner from '../components/outliner/outliner.page.vue'
+import Planner from '../components/planner/planner.page.vue'
 
 Vue.use(Router)
 
@@ -12,6 +13,11 @@ export default new Router({
     {
       path: '/',
       redirect: '/write'
+    },
+    {
+      path: '/',
+      name: 'Plan',
+      component: Planner
     },
     {
       path: '/outline',

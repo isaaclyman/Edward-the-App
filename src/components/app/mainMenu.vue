@@ -1,11 +1,12 @@
 <template>
   <div class="main-menu">
     <template v-for="route in routes">
-      <button class="main-menu--button" @click="goToRoute(route.location)" :key="route.name"
-              :title="route.tooltip" v-tooltip>
-        <div v-html="getIconSvg(route.icon)"></div>
-        <div>{{route.name}}</div>
-      </button>
+      <router-link :to="route.location" :key="route.name">
+        <button class="main-menu--button" :title="route.tooltip" v-tooltip>
+          <div v-html="getIconSvg(route.icon)"></div>
+          <div>{{route.name}}</div>
+        </button>
+      </router-link>
       <hr class="vert" :key="route.name"></hr>
     </template>
   </div>
@@ -46,9 +47,6 @@ export default {
         height: 25,
         width: 25
       })
-    },
-    goToRoute (location) {
-      this.$router.push(location)
     }
   }
 }

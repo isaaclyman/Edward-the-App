@@ -54,7 +54,7 @@
       <template v-else>
         <div>No outline yet.</div>
         <div>
-          <a @click="goToOutliner()">Start outlining</a>
+          <router-link to="/outline">Start outlining</router-link>
         </div>
       </template>
     </div>
@@ -166,9 +166,6 @@ export default {
     },
     getMasterTopic (chapterTopic) {
       return this.allTopics.find(topic => topic.id === chapterTopic.id)
-    },
-    goToOutliner () {
-      this.$router.push('/outline')
     },
     hoverChapter (index) {
       this.showStats = true

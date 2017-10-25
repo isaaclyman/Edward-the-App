@@ -146,7 +146,7 @@
 import { ADD_CHAPTER, ADD_TOPIC, ARCHIVE_CHAPTER, ARCHIVE_TOPIC,
          DELETE_CHAPTER, REARRANGE_CHAPTERS, REARRANGE_TOPICS,
          RESTORE_CHAPTER, RESTORE_TOPIC, UPDATE_CHAPTER, UPDATE_TOPIC } from '../app/chapters.store'
-import ChipsList from './chipsList.vue'
+import ChipsList from '../app/chipsList.vue'
 import { GetContentString } from '../app/deltaParser'
 import guid from '../app/guid'
 import Octicons from 'octicons'

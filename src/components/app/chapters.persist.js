@@ -170,7 +170,7 @@ class ChapterStorage {
     return JSON.parse(this.storage.getItem(this.topicOrderKey(fileId))) || []
   }
 
-  syncEverything (fileId, { chapters, plans, topics }) {
+  saveEverything (fileId, { chapters, plans, topics }) {
     chapters.forEach(chapter => this.updateChapter(fileId, chapter.id, chapter))
     plans.forEach(plan => {
       this.updatePlan(fileId, plan.id, plan)

@@ -22,6 +22,14 @@ const cache = {
   }
 }
 
+export const GetDocumentBackup = (fileId) => {
+  const chapters = ChapterStorage.getAllChapters(fileId)
+  const plans = ChapterStorage.getAllPlans(fileId)
+  const topics = ChapterStorage.getAllTopics(fileId)
+
+  return { chapters, plans, topics }
+}
+
 const store = {
   state: {
     currentFile: null, // file { id String, name String }
@@ -81,7 +89,7 @@ const store = {
       }))
 
       commit(LOAD_CONTENT, { plans, chapters, topics })
-      ChapterStorage.syncEverything(file.id, { chapters, plans, topics })
+      ChapterStorage.saveEverything(file.id, { chapters, plans, topics })
     },
     [UNLOAD_CURRENT_DOCUMENT] ({ commit }) {
       commit(UPDATE_FILE_METADATA, { id: null, name: null })

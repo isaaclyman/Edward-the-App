@@ -2,43 +2,46 @@ import pdfMake from 'pdfmake/build/pdfmake'
 require('imports-loader?this=>window!pdfmake/build/vfs_fonts.js')
 
 export const chaptersToPdf = (title, chapters) => {
-  const definition = {
-    content: [{
-      text: title,
-      style: 'title'
-    }],
-    styles: {
-      body: {
-        fontSize: 12
-      },
-      chapterHeading: {
-        fontSize: 18
-      },
-      title: {
-        fontSize: 40
+  return new Promise((resolve) => {
+    const definition = {
+      content: [{
+        text: title,
+        style: 'title'
+      }],
+      styles: {
+        body: {
+          fontSize: 12
+        },
+        chapterHeading: {
+          fontSize: 18
+        },
+        title: {
+          fontSize: 40
+        }
       }
     }
-  }
 
-  const contentArrays = chapters.map(chapter => {
-    const ops = (chapter.content && chapter.content.ops) || []
-    const content = ops.map(op => {
-      const text = op.insert
-      const style = ['body']
+    const contentArrays = chapters.map(chapter => {
+      const ops = (chapter.content && chapter.content.ops) || []
+      const content = ops.map(op => {
+        const text = op.insert
+        const style = ['body']
 
-      return { text, style }
+        return { text, style }
+      })
+
+      content.unshift({
+        text: chapter.title,
+        style: 'chapterHeading',
+        pageBreak: 'before'
+      })
+
+      return content
     })
 
-    content.unshift({
-      text: chapter.title,
-      style: 'chapterHeading',
-      pageBreak: 'before'
-    })
+    definition.content = definition.content.concat(...contentArrays)
 
-    return content
+    pdfMake.createPdf(definition).download(`${title}.pdf`)
+    resolve()
   })
-
-  definition.content = definition.content.concat(...contentArrays)
-
-  pdfMake.createPdf(definition).download(`${title}.pdf`)
 }

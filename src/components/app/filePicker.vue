@@ -42,7 +42,7 @@ export default {
 
 <style scoped>
 .file-dropdown {
-  background-color: #444;
+  background-color: #777;
   color: #FFF;
   font-size: 14px;
   padding: 4px;

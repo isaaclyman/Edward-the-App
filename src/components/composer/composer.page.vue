@@ -1,5 +1,5 @@
 <template>
-  <div class="composer">
+  <div class="composer" v-if="allChapters.length > 0">
     <div class="editor-wrap">
       <tabs-list :active-index="activeChapterIndex" :data-array="allChapters" :filter-tabs="isViewing"
                  item-name="Chapter"
@@ -44,6 +44,12 @@
           <router-link to="/outline">Start outlining</router-link>
         </div>
       </template>
+    </div>
+  </div>
+  <div v-else>
+    <div>No chapters yet.</div>
+    <div>
+      <router-link to="/outline">Create one</router-link>
     </div>
   </div>
 </template>

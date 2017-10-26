@@ -12,10 +12,7 @@ module.exports = function (sequelize, DataTypes) {
     },
     password: {
       allowNull: false,
-      type: DataTypes.STRING,
-      validate: {
-        len: [11, 150]
-      }
+      type: DataTypes.STRING
     }
   })
 

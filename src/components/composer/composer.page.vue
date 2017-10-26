@@ -13,9 +13,17 @@
             <p>
               <b>{{ activeChapter.title }}</b>
             </p>
-            <p>{{ wordCount }} words</p>
-            <p>{{ paragraphCount }} paragraphs</p>
-            <p>{{ readTimeMinutes }} minute read</p>
+            <p>{{ chapterWordCount }} words</p>
+            <p>{{ chapterParagraphCount }} paragraphs</p>
+            <p>{{ chapterPageCount }} pages</p>
+            <p>{{ chapterReadTimeMinutes }} minute read</p>
+            <br>
+            <p>
+              <b>{{ documentTitle }} (Full document)</b>
+            </p>
+            <p>{{ documentWordCount }} words</p>
+            <p>{{ documentPageCount }} pages</p>
+            <p>{{ documentReadTimeMinutes }} minute read</p>
           </div>
         </div>
         <text-editor ref="textEditor" :content="activeChapter.content" :scroll-to="scrollTo" :selection="selection"
@@ -86,14 +94,38 @@ export default {
     allTopics () {
       return this.$store.state.chapters.topics
     },
+    chapterPageCount () {
+      return this.getPageCount(this.textContent)
+    },
+    chapterParagraphCount () {
+      return this.getParagraphCount(this.textContent)
+    },
+    chapterReadTimeMinutes () {
+      return this.getReadTimeMinutes(this.textContent)
+    },
+    chapterWordCount () {
+      return this.getWordCount(this.textContent)
+    },
+    documentFullText () {
+      return this.$store.state.chapters.chapters
+        .map(chapter => chapter.content)
+        .map(content => GetContentString(content))
+        .join(' ')
+    },
+    documentPageCount () {
+      return this.getPageCount(this.documentFullText)
+    },
+    documentReadTimeMinutes () {
+      return this.getReadTimeMinutes(this.documentFullText)
+    },
+    documentTitle () {
+      return this.$store.state.file.currentFile.name
+    },
+    documentWordCount () {
+      return this.getWordCount(this.documentFullText)
+    },
     mark () {
       return this.selection.text
-    },
-    paragraphCount () {
-      return (this.textContent.match(/[\n]+/g) || []).length
-    },
-    readTimeMinutes () {
-      return Math.ceil(this.wordCount / 275)
     },
     selection () {
       return this.$store.state.composer.selection
@@ -103,9 +135,6 @@ export default {
     },
     viewingChapters () {
       return this.allChapters.filter(chapter => !chapter.archived)
-    },
-    wordCount () {
-      return (this.textContent.match(/[^\s]+/g) || []).length
     }
   },
   data () {
@@ -140,6 +169,18 @@ export default {
     },
     getMasterTopic (chapterTopic) {
       return this.allTopics.find(topic => topic.id === chapterTopic.id)
+    },
+    getReadTimeMinutes (str) {
+      return Math.ceil(this.getWordCount(str) / 275)
+    },
+    getPageCount (str) {
+      return Math.ceil(this.getWordCount(str) / 300)
+    },
+    getParagraphCount (str) {
+      return (str.match(/[\n]+/g) || []).length
+    },
+    getWordCount (str) {
+      return (str.match(/[^\s]+/g) || []).length
     },
     hoverChapter (index) {
       this.showStats = true
@@ -209,7 +250,7 @@ export default {
   pointer-events: none;
   position: absolute;
   top: 0;
-  transition: opacity 200ms;
+  transition: opacity 100ms;
   width: 100%;
   z-index: 15;
 }

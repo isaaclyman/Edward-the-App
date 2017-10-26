@@ -151,7 +151,7 @@ export default {
   height: 90px;
   justify-content: center;
   margin-right: 6px;
-  transition: background-color 200ms;
+  transition: background-color 100ms;
   padding: 8px;
   width: 90px;
 }

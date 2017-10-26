@@ -81,7 +81,7 @@ const store = {
       }))
 
       commit(LOAD_CONTENT, { plans, chapters, topics })
-      ChapterStorage.syncEverything(file.id, chapters, topics)
+      ChapterStorage.syncEverything(file.id, { chapters, plans, topics })
     },
     [UNLOAD_CURRENT_DOCUMENT] ({ commit }) {
       commit(UPDATE_FILE_METADATA, { id: null, name: null })

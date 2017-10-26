@@ -94,7 +94,7 @@ button.button-red {
   font-size: 14px;
   margin-right: 1px;
   padding: 6px 10px;
-  transition: background-color 200ms, border-color 200ms;
+  transition: background-color 100ms, border-color 100ms;
 }
 
 .button-tab.active {
@@ -202,7 +202,7 @@ textarea {
   border: none;
   height: 20px;
   padding: 0;
-  transition: opacity 200ms;
+  transition: opacity 100ms;
   width: 20px;
 }
 

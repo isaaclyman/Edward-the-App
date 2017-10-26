@@ -187,7 +187,7 @@ export default {
   height: 100%;
   margin-right: 6px;
   padding: 3px 6px;
-  transition: background-color 200ms;
+  transition: background-color 100ms;
 }
 
 .topic-action:hover {

@@ -373,7 +373,7 @@ export default {
 .filter-content {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 200ms;
+  transition: max-height 100ms;
 }
 
 .filter-content.expanded {
@@ -427,7 +427,7 @@ export default {
   border-color: #FFF;
   color: #000;
   margin-right: 6px;
-  transition: background-color 200ms;
+  transition: background-color 100ms;
 }
 
 .chapter-action:hover {
@@ -453,7 +453,7 @@ export default {
 
 .filter-toggle svg {
   transform-origin: center;
-  transition: transform 200ms;
+  transition: transform 100ms;
 }
 
 .filter-toggle.expanded svg {

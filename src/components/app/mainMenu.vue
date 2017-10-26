@@ -71,7 +71,7 @@ export default {
   margin-bottom: 2px;
   margin-top: 2px;
   padding: 6px 20px;
-  transition: color 200ms ease-in-out;
+  transition: color 100ms ease-in-out;
 }
 
 .main-menu--button:hover {
@@ -86,7 +86,7 @@ hr.vert:last-of-type {
 <style>
 .main-menu--icon {
   fill: #777;
-  transition: fill 200ms ease-in-out;
+  transition: fill 100ms ease-in-out;
 }
 
 .main-menu--button:hover .main-menu--icon {

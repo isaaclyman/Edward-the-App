@@ -170,12 +170,12 @@ class ChapterStorage {
     return JSON.parse(this.storage.getItem(this.topicOrderKey(fileId))) || []
   }
 
-  syncEverything (fileId, chapters, plans, topics) {
+  syncEverything (fileId, { chapters, plans, topics }) {
     chapters.forEach(chapter => this.updateChapter(fileId, chapter.id, chapter))
     plans.forEach(plan => {
       this.updatePlan(fileId, plan.id, plan)
 
-      plan.sections.foreach(section => {
+      plan.sections.forEach(section => {
         this.updateSection(fileId, plan.id, section.id, section)
       })
     })
@@ -190,7 +190,7 @@ class ChapterStorage {
     const key = this.getChapterKey(fileId, chapterId)
     this.storage.setItem(key, JSON.stringify(chapter))
 
-    let sortOrder = this.getChaptersSortOrder(fileId)
+    let sortOrder = this.getChaptersSortOrder(fileId) || []
     if (!sortOrder.includes(chapterId)) {
       sortOrder.push(chapterId)
       this.arrangeChapters(fileId, sortOrder)
@@ -208,7 +208,7 @@ class ChapterStorage {
     plan.sections = null
     this.storage.setItem(key, JSON.stringify(plan))
 
-    let sortOrder = this.getPlansSortOrder(fileId)
+    let sortOrder = this.getPlansSortOrder(fileId) || []
     if (!sortOrder.includes(planId)) {
       sortOrder.push(planId)
       this.arrangePlans(fileId, sortOrder)
@@ -223,7 +223,7 @@ class ChapterStorage {
     const key = this.getSectionKey(fileId, planId, sectionId)
     this.storage.setItem(key, JSON.stringify(section))
 
-    let sortOrder = this.getSectionSortOrder(fileId, planId)
+    let sortOrder = this.getSectionSortOrder(fileId, planId) || []
     if (!sortOrder.includes(sectionId)) {
       sortOrder.push(sectionId)
       this.arrangeSections(fileId, sortOrder)
@@ -238,7 +238,7 @@ class ChapterStorage {
     const key = this.getTopicKey(fileId, topicId)
     this.storage.setItem(key, JSON.stringify(topic))
 
-    let sortOrder = this.getTopicsSortOrder(fileId)
+    let sortOrder = this.getTopicsSortOrder(fileId) || []
     if (!sortOrder.includes(topicId)) {
       sortOrder.push(topicId)
       this.arrangeTopics(fileId, sortOrder)

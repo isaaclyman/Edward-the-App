@@ -103,7 +103,7 @@ export default {
   pointer-events: none;
   position: absolute;
   top: 0;
-  transition: opacity 250ms;
+  transition: opacity 100ms;
   width: 200px;
 }
 

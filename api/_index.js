@@ -8,7 +8,7 @@ module.exports = function (app, passport) {
 
   app.get('/login', (req, res) => { res.redirect('/auth') })
 
-  // Serve Sidebar app
+  // Serve main app
   app.get('/app', isLoggedIn, (req, res) => {
     res.sendFile(path.join(__dirname, '../dist/app.html'))
   })

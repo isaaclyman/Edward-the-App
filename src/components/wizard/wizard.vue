@@ -3,7 +3,7 @@
     <div class="container">
       <div class="header">
         <p>
-          <strong>Welcome to Sidebar.</strong>
+          <strong>Welcome to Edward.</strong>
         </p>
       </div>
       <div class="content border-bottom">

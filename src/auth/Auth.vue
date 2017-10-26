@@ -8,7 +8,7 @@
     </div>
     <div class="footer">
       <p class="footer-text">
-        Sidebar © 2017 by <a class="footer-link" href="http://isaaclyman.com">Isaac Lyman</a>.
+        Edward the App © 2017 by <a class="footer-link" href="http://isaaclyman.com">Isaac Lyman</a>.
       </p>
     </div>
   </div>

@@ -8,7 +8,7 @@
         New
       </button>
       <button class="menu-button" @click="showExport()">
-        Export
+        Export / Import
       </button>
     </div>
   </div>

@@ -1,5 +1,5 @@
 import pdfMake from 'pdfmake/build/pdfmake'
-import 'pdfmake/build/vfs_fonts'
+require('imports-loader?this=>window!pdfmake/build/vfs_fonts.js')
 
 export const chaptersToPdf = (title, chapters) => {
   const definition = {
@@ -12,7 +12,7 @@ export const chaptersToPdf = (title, chapters) => {
         fontSize: 12
       },
       chapterHeading: {
-        fontSize: 25
+        fontSize: 18
       },
       title: {
         fontSize: 40
@@ -21,7 +21,7 @@ export const chaptersToPdf = (title, chapters) => {
   }
 
   const contentArrays = chapters.map(chapter => {
-    const ops = chapter.content.ops
+    const ops = (chapter.content && chapter.content.ops) || []
     const content = ops.map(op => {
       const text = op.insert
       const style = ['body']
@@ -31,12 +31,14 @@ export const chaptersToPdf = (title, chapters) => {
 
     content.unshift({
       text: chapter.title,
-      style: 'chapterHeading'
+      style: 'chapterHeading',
+      pageBreak: 'before'
     })
+
+    return content
   })
 
-  const content = definition.content.concat(...contentArrays)
-  definition.content = content
+  definition.content = definition.content.concat(...contentArrays)
 
   pdfMake.createPdf(definition).download(`${title}.pdf`)
 }

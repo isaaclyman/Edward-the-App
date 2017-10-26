@@ -73,13 +73,6 @@ ul li {
   height: 60px;
 }
 
-.author {
-  font-size: 10px;
-  font-weight: bold;
-  margin-left: 8px;
-  margin-top: 36px;
-}
-
 .links {
   display: flex;
   flex-direction: row;

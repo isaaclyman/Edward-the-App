@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 import Analyser from '../components/analyser/analyser.page.vue'
 import Composer from '../components/composer/composer.page.vue'
+import Exporter from '../components/exporter/exporter.page.vue'
 import Outliner from '../components/outliner/outliner.page.vue'
 import Planner from '../components/planner/planner.page.vue'
 
@@ -33,6 +34,11 @@ export default new Router({
       path: '/analyze',
       name: 'Analyze',
       component: Analyser
+    },
+    {
+      path: '/export',
+      name: 'Export',
+      component: Exporter
     }
   ]
 })

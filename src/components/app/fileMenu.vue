@@ -5,7 +5,10 @@
     </div>
     <div class="menu-item">
       <button class="menu-button" @click="showWizard()">
-        New...
+        New
+      </button>
+      <button class="menu-button" @click="showExport()">
+        Export
       </button>
     </div>
   </div>
@@ -23,6 +26,9 @@ export default {
     return {}
   },
   methods: {
+    showExport () {
+      this.$router.push('/export')
+    },
     showWizard () {
       this.$store.dispatch(UNLOAD_CURRENT_DOCUMENT)
     }

@@ -46,7 +46,12 @@ h2 {
 }
 
 h3 {
-  font-size: 16.5px;
+  font-size: 30px;
+  margin-top: 20px;
+}
+
+h4 {
+  font-size: 18px;
 }
 
 ul li {
@@ -59,13 +64,13 @@ ul li {
   align-items: center;
   display: flex;
   flex-direction: row;
-  height: 48px;
+  height: 95px;
   justify-content: center;
   padding: 15px 0;
 }
 
 .logo {
-  height: 40px;
+  height: 60px;
 }
 
 .author {
@@ -79,21 +84,29 @@ ul li {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  padding-bottom: 30px;
 }
 
 .hook {
   align-items: center;
+  /* background-color: #f0f0f0; */
+  background-color: #FFF;
+  color: #000051;
   display: flex;
   flex-direction: column;
   padding: 35px 0;
   text-align: center;
 }
 
+.below-hook {
+  padding-top: 30px;
+}
+
 .content {
   align-items: center;
   display: flex;
   flex-direction: column;
-  line-height: 23px;
+  line-height: 30px;
   width: 100%;
 }
 
@@ -101,6 +114,10 @@ ul li {
   max-width: 100%;
   padding: 0 12px;
   width: 800px;
+}
+
+.center {
+  text-align: center;
 }
 
 .screenshot {
@@ -116,7 +133,8 @@ ul li {
   padding: 0 30px;
 }
 
-.background-gray > div, .background-pink > div, .background-blue > div, .background-brown > div,
+/* .background-pink > div,  */
+.background-gray > div, .background-blue > div, .background-brown > div,
 .background-green > div, .background-yellow > div, .background-orange > div {
   background-color: #fff;
 }

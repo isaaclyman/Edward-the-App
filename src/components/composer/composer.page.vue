@@ -1,63 +1,65 @@
 <template>
-  <div class="composer" v-if="allChapters.length > 0">
-    <div class="editor-wrap">
-      <tabs-list :active-index="activeChapterIndex" :data-array="allChapters" :filter-tabs="isViewing"
-                 item-name="Chapter"
-                 @add="addChapter"
-                 @hover="hoverChapter"
-                 @unhover="unhoverChapter"
-                 @update:activeIndex="selectChapter"></tabs-list>
-      <div class="below-tabs" ref="editorContainer">
-        <div class="stats" :class="{ 'active': showStats }">
-          <div class="stats-content">
-            <p>
-              <b>{{ activeChapter.title }}</b>
-            </p>
-            <p>{{ chapterWordCount }} words</p>
-            <p>{{ chapterParagraphCount }} paragraphs</p>
-            <p>{{ chapterPageCount }} pages</p>
-            <p>{{ chapterReadTimeMinutes }} minute read</p>
-            <br>
-            <p>
-              <b>{{ documentTitle }} (Full document)</b>
-            </p>
-            <p>{{ documentWordCount }} words</p>
-            <p>{{ documentPageCount }} pages</p>
-            <p>{{ documentReadTimeMinutes }} minute read</p>
+  <div class="composer-wrap">
+    <div class="composer" v-if="allChapters.length > 0">
+      <div class="editor-wrap">
+        <tabs-list :active-index="activeChapterIndex" :data-array="allChapters" :filter-tabs="isViewing"
+                  item-name="Chapter"
+                  @add="addChapter"
+                  @hover="hoverChapter"
+                  @unhover="unhoverChapter"
+                  @update:activeIndex="selectChapter"></tabs-list>
+        <div class="below-tabs" ref="editorContainer">
+          <div class="stats" :class="{ 'active': showStats }">
+            <div class="stats-content">
+              <p>
+                <b>{{ activeChapter.title }}</b>
+              </p>
+              <p>{{ chapterWordCount }} words</p>
+              <p>{{ chapterParagraphCount }} paragraphs</p>
+              <p>{{ chapterPageCount }} pages</p>
+              <p>{{ chapterReadTimeMinutes }} minute read</p>
+              <br>
+              <p>
+                <b>{{ documentTitle }} (Full document)</b>
+              </p>
+              <p>{{ documentWordCount }} words</p>
+              <p>{{ documentPageCount }} pages</p>
+              <p>{{ documentReadTimeMinutes }} minute read</p>
+            </div>
           </div>
+          <text-editor ref="textEditor" :content="activeChapter.content" :scroll-to="scrollTo" :selection="selection"
+                      :container="editorContainerNode"
+                      @update:content="updateContent"
+                      @update:selection="updateSelection"></text-editor>
         </div>
-        <text-editor ref="textEditor" :content="activeChapter.content" :scroll-to="scrollTo" :selection="selection"
-                    :container="editorContainerNode"
-                    @update:content="updateContent"
-                    @update:selection="updateSelection"></text-editor>
+      </div>
+      <div class="map-wrap">
+        <text-map :editor-element="editorElement" :data-stream="activeChapter.content"
+                  @select="selectMap" :mark="mark"></text-map>
+      </div>
+      <div class="sidebar-wrap">
+        <template v-if="allTopics.length">
+          <div class="sidebar-options">
+            <input id="showArchivedTopics" type="checkbox" v-model="showArchivedTopics">
+            <label for="showArchivedTopics">Show Archived</label>
+          </div>
+          <div class="topic-list-wrap">
+            <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
+          </div>
+        </template>
+        <template v-else>
+          <div>No outline yet.</div>
+          <div>
+            <router-link to="/outline">Start outlining</router-link>
+          </div>
+        </template>
       </div>
     </div>
-    <div class="map-wrap">
-      <text-map :editor-element="editorElement" :data-stream="activeChapter.content"
-                @select="selectMap" :mark="mark"></text-map>
-    </div>
-    <div class="sidebar-wrap">
-      <template v-if="allTopics.length">
-        <div class="sidebar-options">
-          <input id="showArchivedTopics" type="checkbox" v-model="showArchivedTopics">
-          <label for="showArchivedTopics">Show Archived</label>
-        </div>
-        <div class="topic-list-wrap">
-          <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
-        </div>
-      </template>
-      <template v-else>
-        <div>No outline yet.</div>
-        <div>
-          <router-link to="/outline">Start outlining</router-link>
-        </div>
-      </template>
-    </div>
-  </div>
-  <div v-else>
-    <div>No chapters yet.</div>
-    <div>
-      <router-link to="/outline">Create one</router-link>
+    <div v-else>
+      <div>No chapters yet.</div>
+      <div>
+        <router-link to="/outline">Create one</router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -222,15 +224,22 @@ export default {
 </script>
 
 <style scoped>
+.composer-wrap {
+  display: flex;
+  justify-content: center;
+  min-height: 300px;
+  width: 100%;
+}
+
 .composer {
   display: flex;
   flex: 1;
-  min-height: 300px;
+  max-width: 1500px;
 }
 
 .editor-wrap {
   display: flex;
-  flex-basis: 600px;
+  flex: 1;
   flex-direction: column;
   margin-right: 12px;
   position: relative;

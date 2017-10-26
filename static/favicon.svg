@@ -1,43 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="9.0602074mm"
-   height="14.61834mm"
-   viewBox="0 0 9.0602075 14.61834"
-   version="1.1"
    id="svg8"
-   inkscape:version="0.92.2 (unknown)"
-   sodipodi:docname="favicon.svg">
+   version="1.1"
+   viewBox="0 0 10.769599 13.038666"
+   height="13.038666mm"
+   width="10.769599mm">
   <defs
      id="defs2" />
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="-138.78267"
-     inkscape:cy="-62.795499"
-     inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1054"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:measure-start="213.193,91.2168"
-     inkscape:measure-end="171.12,4.94975" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -51,30 +25,23 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(-76.467697,-107.16474)">
+     transform="translate(-20.416762,-80.610145)"
+     id="layer1">
     <text
-       xml:space="preserve"
-       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Asap Condensed';-inkscape-font-specification:'Asap Condensed, Italic';letter-spacing:0px;word-spacing:0px;fill:#e8cc84;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="76.426788"
-       y="120.22243"
-       id="text3701"><tspan
-         sodipodi:role="line"
-         id="tspan3699"
-         x="76.426788"
-         y="120.22243"
-         style="font-size:17.63888931px;line-height:2;letter-spacing:-1.58749998px;word-spacing:0px;fill:#e8cc84;fill-opacity:1;stroke-width:0.26458332"
-         dx="0"
-         rotate="359.5 0">s</tspan></text>
-    <rect
-       id="rect3703"
-       width="1.6147351"
-       height="14.584655"
-       x="90.926163"
-       y="103.66031"
-       style="fill:#e8cc84;stroke-width:0.25051802"
-       transform="matrix(0.99915522,0.04109552,-0.06689944,0.99775972,0,0)" />
+       id="text817"
+       y="93.648811"
+       x="19.654762"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Asap Condensed';-inkscape-font-specification:'Asap Condensed, Italic';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         id="tspan2442"
+         rotate="0 0 0"
+         dy="0 0"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.93333244px;font-family:'Libre Baskerville';-inkscape-font-specification:'Libre Baskerville';letter-spacing:-1.05833328px;stroke-width:0.26458332"
+         y="93.648811"
+         x="19.654762"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.93333244px;font-family:'Libre Baskerville';-inkscape-font-specification:'Libre Baskerville';letter-spacing:-1.05833328px;stroke-width:0.26458332"
+           id="tspan2444"
+           rotate="0 0"
+           dy="0">E</tspan></tspan></text>
   </g>
 </svg>

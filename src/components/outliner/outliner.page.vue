@@ -64,19 +64,23 @@
           <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpChapterBlocksNode, 'Outline')"></button>
         </div>
         <!-- Chapters > Topics -->
-        <div class="chapter" v-for="(chapter, index) in viewingChapters" :key="index">
-          <div class="chapter-head" :class="{ 'light': chapter.archived }">
+        <tabs-list :active-index="activeChapterIndex" :data-array="allChapters" :filter-tabs="showChapter"
+                  item-name="Chapter"
+                  @add="addChapter"
+                  @update:activeIndex="selectChapter"></tabs-list>
+        <div class="chapter">
+          <div class="chapter-head" :class="{ 'light': activeChapter.archived }">
             <h4 class="chapter-title">
-              {{ chapter.title }}
+              {{ activeChapter.title }}
             </h4>
             <div class="chapter-actions">
-              <button class="chapter-action" v-show="!chapter.archived" @click="archiveChapter({ index })">Archive</button>
-              <button class="chapter-action" v-show="chapter.archived" @click="restoreChapter({ index })">Restore</button>
-              <button class="chapter-action button-red" v-show="chapter.archived" @click="deleteChapter({ index })">Delete Forever</button>
+              <button class="chapter-action" v-show="!activeChapter.archived" @click="archiveChapter({ index: activeChapterIndex })">Archive</button>
+              <button class="chapter-action" v-show="activeChapter.archived" @click="restoreChapter({ index: activeChapterIndex })">Restore</button>
+              <button class="chapter-action button-red" v-show="activeChapter.archived" @click="deleteChapter({ index: activeChapterIndex })">Delete Forever</button>
             </div>
           </div>
           <div class="chapter-content">
-            <topic-list :chapter="chapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
+            <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
           </div>
         </div>
       </div>
@@ -151,15 +155,24 @@ import { GetContentString } from '../app/deltaParser'
 import guid from '../app/guid'
 import Octicons from 'octicons'
 import swal from 'sweetalert'
+import TabsList from '../app/tabsList.vue'
 import TopicList from '../app/topicList.vue'
 import { ValidateTitle } from '../app/validate'
 
 export default {
   components: {
     ChipsList,
+    TabsList,
     TopicList
   },
   computed: {
+    activeChapter () {
+      if (this.activeChapterIndex < 0) {
+        this.activeChapterIndex = this.allChapters.indexOf(this.viewingChapters[0])
+      }
+
+      return this.allChapters[this.activeChapterIndex]
+    },
     allChapters () {
       return this.$store.state.chapters.chapters
     },
@@ -190,6 +203,7 @@ export default {
   },
   data () {
     return {
+      activeChapterIndex: -1,
       addSvg: Octicons.plus.toSVG({
         class: 'add-icon--svg',
         height: 14,
@@ -247,6 +261,10 @@ export default {
     },
     archiveChapter ({ index }) {
       this.$store.commit(ARCHIVE_CHAPTER, { chapter: this.allChapters[index] })
+
+      if (index === this.activeChapterIndex) {
+        this.activeChapterIndex = -1
+      }
     },
     archiveTopic ({ index }) {
       this.$store.commit(ARCHIVE_TOPIC, { topic: this.allTopics[index] })
@@ -312,6 +330,9 @@ export default {
     },
     restoreTopic ({ index }) {
       this.$store.commit(RESTORE_TOPIC, { topic: this.allTopics[index] })
+    },
+    selectChapter (index) {
+      this.activeChapterIndex = index
     },
     showChapter (chapter) {
       return this.viewingChapters.includes(chapter)

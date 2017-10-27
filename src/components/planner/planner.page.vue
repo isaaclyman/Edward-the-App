@@ -30,8 +30,6 @@
                   item-name="Plan"
                   @add="addPlan"
                   @update:activeIndex="selectPlan"></tabs-list>
-                  <!-- @hover="hoverPlan"
-                  @unhover="unhoverPlan" -->
         <div class="plan">
           <div class="plan-header">
             <h4 class="plan-title">
@@ -219,7 +217,10 @@ export default {
     },
     archivePlan ({ index }) {
       this.$store.commit(ARCHIVE_PLAN, { plan: this.allPlans[index] })
-      this.activePlanIndex = -1
+
+      if (index === this.activePlanIndex) {
+        this.activePlanIndex = -1
+      }
     },
     archiveSection ({ index }) {
       this.$store.commit(ARCHIVE_SECTION, {

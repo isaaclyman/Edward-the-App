@@ -40,8 +40,15 @@
       <div class="sidebar-wrap">
         <template v-if="allTopics.length">
           <div class="sidebar-options">
-            <input id="showArchivedTopics" type="checkbox" v-model="showArchivedTopics">
-            <label for="showArchivedTopics">Show Archived</label>
+            <div class="plan-switch">
+              <div class="switch-label" :class="{ 'active': !showPlans }">Chapter Outlines</div>
+              <vue-switch v-model="showPlans" color="blue"></vue-switch>
+              <div class="switch-label" :class="{ 'active': showPlans }">Document Plans</div>
+            </div>
+            <div class="archived-filter">
+              <input id="showArchivedTopics" type="checkbox" v-model="showArchivedTopics">
+              <label for="showArchivedTopics">Show Archived</label>
+            </div>
           </div>
           <div class="topic-list-wrap">
             <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
@@ -65,22 +72,24 @@
 </template>
 
 <script>
+import { ADD_CHAPTER, UPDATE_CHAPTER_CONTENT } from '../app/chapters.store'
 import { GetContentString } from '../app/deltaParser'
 import guid from '../app/guid'
 import TabsList from '../app/tabsList.vue'
 import TextEditor from './textEditor.vue'
 import TextMap from './textMap.vue'
 import TopicList from '../app/topicList.vue'
-import { ADD_CHAPTER, UPDATE_CHAPTER_CONTENT } from '../app/chapters.store'
 import { UPDATE_SELECTION } from './composer.store'
 import { ValidateTitle } from '../app/validate'
+import VueSwitch from 'vue-switches'
 
 export default {
   components: {
     TabsList,
     TextEditor,
     TextMap,
-    TopicList
+    TopicList,
+    VueSwitch
   },
   computed: {
     activeChapter () {
@@ -150,6 +159,7 @@ export default {
         searchTermIndex: -1
       },
       showArchivedTopics: false,
+      showPlans: false,
       showStats: false
     }
   },
@@ -290,7 +300,32 @@ export default {
 }
 
 .sidebar-options {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
   margin-bottom: 10px;
+}
+
+.plan-switch {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+
+.switch-label {
+  color: #888;
+  margin: 0 8px;
+}
+
+.switch-label.active {
+  color: #000;
+}
+
+.archived-filter {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  margin-top: 4px;
 }
 
 .topic-list-wrap {

@@ -100,7 +100,7 @@
     "build": "node build/build.js",
     "dev": "node build/dev-server.js",
     "lint": "eslint --ext .js,.vue src",
-    "server": "npm run build && node server.js",
+    "server": "node server.js",
     "start": "npm run server",
     "server-dev": "nodemon server.js"
   }

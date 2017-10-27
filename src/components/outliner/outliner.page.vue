@@ -3,26 +3,8 @@
     <div class="outliner">
       <!-- Filters -->
       <div class="filters">
-        <div class="section-title">
-          <button v-html="expandSvg" @click="toggleFilters"
-                  class="filter-toggle button-icon" :class="{ 'expanded': filtersVisible }"></button>
-          <h3>Filters</h3>
-          <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpFiltersNode, 'Filters')"></button>
-        </div>
-        <div class="filter-content" :class="{ 'expanded': filtersVisible }">
-          <div class="filter-input">
-            <label for="filterChaptersInput">Filter Chapters</label>
-            <input id="filterChaptersInput" type="text" v-model.trim="filters.chapter" />
-          </div>
-          <div class="filter-input">
-            <label for="filterTopicsInput">Filter Topics</label>
-            <input id="filterTopicsInput" type="text" v-model.trim="filters.topic" />
-          </div>
-          <div>
-            <input id="showArchivedCheckbox" type="checkbox" v-model="filters.archived" />
-            <label for="showArchivedCheckbox">Show Archived</label>
-          </div>
-        </div>
+        <input id="showArchivedCheckbox" type="checkbox" v-model="filters.archived" />
+        <label for="showArchivedCheckbox">Show Archived</label>
       </div>
       <hr>
       <!-- Chapter Chips -->
@@ -83,19 +65,6 @@
             <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Filters: [?] Modal -->
-    <div style="display: none">
-      <div class="help" ref="helpFiltersModal">
-        <p>These are the filters. They can help you focus on the parts of your document you want to work on right now.</p>
-        <p>If you type in the "Filter Chapters" box, only chapters that match your search text will be visible.</p>
-        <p>If you type in the "Filter Topics" box, only topics that match your search text will be visible.</p>
-        <p>
-          If you check the "Show Archived" box, your archived chapters and topics will be visible.
-          You'll be able to delete them forever, if you want.
-        </p>
       </div>
     </div>
 
@@ -221,7 +190,6 @@ export default {
       filtersVisible: false,
       helpChapterBlocksNode: null,
       helpChapterChipsNode: null,
-      helpFiltersNode: null,
       helpIconSvg: Octicons.question.toSVG({
         class: 'help-icon--svg',
         height: 16,
@@ -352,7 +320,6 @@ export default {
   mounted () {
     this.helpChapterBlocksNode = this.$refs.helpChapterBlocksModal
     this.helpChapterChipsNode = this.$refs.helpChapterChipsModal
-    this.helpFiltersNode = this.$refs.helpFiltersModal
     this.helpTopicChipsNode = this.$refs.helpTopicChipsModal
   }
 }
@@ -382,29 +349,7 @@ export default {
 }
 
 .filters {
-  max-width: 350px;
-}
-
-.filter-toggle {
-  height: 18px;
-  margin-right: 6px;
-  width: 18px;
-}
-
-.filter-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 100ms;
-}
-
-.filter-content.expanded {
-  max-height: 120px;
-}
-
-.filter-input {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 6px;
+  margin: 10px 0;
 }
 
 .chips-wrap {

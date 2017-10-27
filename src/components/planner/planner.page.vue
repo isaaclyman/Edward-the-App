@@ -6,7 +6,7 @@
         <input id="showArchivedCheckbox" type="checkbox" v-model="filters.archived" />
         <label for="showArchivedCheckbox">Show Archived</label>
       </div>
-
+      <hr>
       <!-- Plan Chips -->
       <div class="chips-wrap">
         <div class="section-title">
@@ -23,7 +23,7 @@
                     @restore="restorePlan"
                     @update="renamePlan"></chips-list>
       </div>
-
+      <hr>
       <!-- Plan Tabs -->
       <div class="plans-wrap" v-show="viewingPlans.length > 0">
         <tabs-list :active-index="activePlanIndex" :data-array="allPlans" :filter-tabs="showPlan"

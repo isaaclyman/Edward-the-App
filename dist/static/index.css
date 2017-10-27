@@ -109,6 +109,20 @@ ul li {
   width: 800px;
 }
 
+.content-link {
+  background-color: #444;
+  border-radius: 3px;
+  color: #FFF;
+  font-size: 16px;
+  padding: 4px 6px;
+  transition: background-color 100ms;
+}
+
+.content-link:hover {
+  background-color: #AAA;
+  color: #FFF;
+}
+
 .center {
   text-align: center;
 }

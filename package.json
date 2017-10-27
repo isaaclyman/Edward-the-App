@@ -53,6 +53,7 @@
     "lodash": "4.17.4",
     "mark.js": "8.11.0",
     "mysql": "2.15.0",
+    "node-env-file": "0.1.8",
     "octicons": "6.0.1",
     "opn": "5.1.0",
     "optimize-css-assets-webpack-plugin": "2.0.0",

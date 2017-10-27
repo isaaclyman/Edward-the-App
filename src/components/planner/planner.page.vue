@@ -72,7 +72,25 @@
                   <button class="section-action button-red" v-show="section.archived" @click="deleteSection({ index })">Delete Forever</button>
                 </div>
               </div>
-
+              <div class="section-content">
+                <div class="content-actions" v-if="!section.archived">
+                  <button class="button-link" v-if="!isEditing(index)" @click="editSection(index)">
+                    <span class="button-link-icon" v-html="editSvg"></span>Edit
+                  </button>
+                  <button class="button-link" v-if="isEditing(index)" @click="endEditSection(index)">
+                    <span class="button-link-icon" v-html="doneSvg"></span>Done Editing
+                  </button>
+                </div>
+                <div class="content-static" v-if="!isEditing(index)">
+                  <div v-html="getHtml(section)"></div>
+                  <span class="content-placeholder" v-if="!section.archived && !getTextContent(section.content)">
+                    No content yet. Click "Edit" to add some.
+                  </span>
+                </div>
+                <div class="content-editable" v-if="isEditing(index)">
+                  <quill-editor :content="section.content" @update:content="updateContent(section, $event)"></quill-editor>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -114,10 +132,13 @@
 <script>
 import { ADD_PLAN, ADD_SECTION, ARCHIVE_PLAN, ARCHIVE_SECTION,
   DELETE_PLAN, DELETE_SECTION, REARRANGE_PLANS, REARRANGE_SECTIONS,
-  RESTORE_PLAN, RESTORE_SECTION, UPDATE_PLAN, UPDATE_SECTION } from '../app/chapters.store'
+  RESTORE_PLAN, RESTORE_SECTION, UPDATE_PLAN, UPDATE_SECTION,
+  UPDATE_SECTION_CONTENT, UPDATE_SECTION_TAGS } from '../app/chapters.store'
 import ChipsList from '../app/chipsList.vue'
+import { GetContentString, GetHtml } from '../app/deltaParser'
 import guid from '../app/guid'
 import Octicons from 'octicons'
+import QuillEditor from '../app/quillEditor.vue'
 import swal from 'sweetalert'
 import TabsList from '../app/tabsList.vue'
 import { ValidateTitle } from '../app/validate'
@@ -125,6 +146,7 @@ import { ValidateTitle } from '../app/validate'
 export default {
   components: {
     ChipsList,
+    QuillEditor,
     TabsList
   },
   computed: {
@@ -146,6 +168,15 @@ export default {
   data () {
     return {
       activePlanIndex: -1,
+      doneSvg: Octicons.check.toSVG({
+        height: 14,
+        width: 14
+      }),
+      editingSectionIndex: -1,
+      editSvg: Octicons.pencil.toSVG({
+        height: 14,
+        width: 14
+      }),
       filters: {
         archived: false
       },
@@ -229,6 +260,18 @@ export default {
         })
       })
     },
+    editSection (index) {
+      this.editingSectionIndex = index
+    },
+    endEditSection (index) {
+      this.editingSectionIndex = -1
+    },
+    getHtml (section) {
+      return GetHtml(section.content)
+    },
+    getTextContent (content) {
+      return GetContentString(content)
+    },
     helpClick (content, title) {
       swal({
         content,
@@ -237,6 +280,9 @@ export default {
     },
     isDeletable (chip) {
       return !chip.archived
+    },
+    isEditing (index) {
+      return this.editingSectionIndex === index
     },
     rearrangePlan (plans) {
       this.$store.commit(REARRANGE_PLANS, { plans })
@@ -278,6 +324,20 @@ export default {
     },
     showSection (section) {
       return !section.archived || this.filters.archived
+    },
+    updateContent (section, newContent) {
+      this.$store.commit(UPDATE_SECTION_CONTENT, {
+        plan: this.activePlan,
+        newContent,
+        section
+      })
+    },
+    updateTags (section, newTags) {
+      this.$store.commit(UPDATE_SECTION_TAGS, {
+        plan: this.activePlan,
+        newTags,
+        section
+      })
     }
   },
   mounted () {
@@ -319,9 +379,10 @@ export default {
 }
 
 .plan {
-  background-color: #FFF;
+  background-color: #e3f2fd;
   border: 1px solid #CCC;
   box-shadow: 0px -2px 12px -4px rgba(0,0,0,0.75);
+  margin-bottom: 10px;
 }
 
 .plan-header {
@@ -358,6 +419,10 @@ export default {
   padding: 8px;
 }
 
+.section {
+  border: 1px solid #005cb2;  
+}
+
 .section-header {
   align-items: center;
   background-color: #005cb2;
@@ -391,5 +456,30 @@ export default {
 
 .section-action:hover {
   background-color: #444;
+}
+
+.section-content {
+  background-color: #FFF;
+  padding-bottom: 6px;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 1px;
+}
+
+.content-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.content-static {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+.content-placeholder {
+  color: #444;
+  white-space: normal;
 }
 </style>

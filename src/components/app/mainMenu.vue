@@ -9,16 +9,25 @@
       </router-link>
       <hr class="vert" :key="route.name"></hr>
     </template>
+    <div class="spacer"></div>
+    <div class="account-type" :title="account.message" v-tooltip>
+      {{ account.type }}
+    </div>
   </div>
 </template>
 
 <script>
+import ChapterStorage from './chapters.persist'
 import Octicons from 'octicons'
 import tooltip from './tooltip.directive'
 
 export default {
   data () {
     return {
+      account: {
+        type: ChapterStorage.accountType,
+        message: ChapterStorage.accountMessage
+      },
       routes: [{
         icon: 'telescope',
         location: '/plan',
@@ -61,6 +70,7 @@ export default {
 .main-menu {
   align-items: center;
   display: flex;
+  flex: 1;
 }
 
 .main-menu--button {
@@ -80,6 +90,17 @@ export default {
 
 hr.vert:last-of-type {
   display: none;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.account-type {
+  color: #005cb2;
+  cursor: default;
+  font-size: 14px;
+  margin-right: 20px;
 }
 </style>
 

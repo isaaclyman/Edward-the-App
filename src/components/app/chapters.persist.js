@@ -3,7 +3,10 @@ import clone from 'lodash/clone'
 class ChapterStorage {
   constructor () {
     this.accountType = 'Limited Account'
-    this.accountMessage = 'Data is stored unsafely on your computer and may be lost.'
+    this.accountMessage = `
+      All data is stored on your computer's hard drive and may be lost if your browsing data is cleared.
+      Most computers have a maximum storage limit of 10MB (about 5,000 pages).
+    `
     this.storage = window.localStorage
     this.getStorageKeys = () => Object.keys(window.localStorage)
 

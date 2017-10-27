@@ -33,6 +33,7 @@ if (!global.hasOwnProperty('db')) {
   const Chapter = sequelize.import(path.join(__dirname, 'chapter'))
   const ChapterTopic = sequelize.import(path.join(__dirname, 'chapterTopic'))
   const MasterTopic = sequelize.import(path.join(__dirname, 'masterTopic'))
+  sequelize.import(path.join(__dirname, 'session'))
 
   const accountTypes = {
     LIMITED: 'limited',
@@ -85,23 +86,23 @@ if (!global.hasOwnProperty('db')) {
   /*
     Create tables
   */
-  sequelize.sync()
-
-  /*
-    Init static data
-  */
-  const types = values(global.db.accountTypes)
-  for (const type of types) {
-    AccountType.findOrCreate({
-      where: {
-        name: type
-      }
-    }).then(([type, created]) => {
-      if (created) {
-        console.log(`Created account type "${type.name}".`)
-      }
-    })
-  }
+  global.db.sync = sequelize.sync().then(() => {
+      /*
+        Init static data
+      */
+    const types = values(global.db.accountTypes)
+    for (const type of types) {
+      AccountType.findCreateFind({
+        where: {
+          name: type
+        }
+      }).then(([type, created]) => {
+        if (created) {
+          console.log(`Created account type "${type.name}".`)
+        }
+      })
+    }
+  })
 }
 
 module.exports = global.db

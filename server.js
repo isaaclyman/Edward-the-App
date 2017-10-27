@@ -30,30 +30,33 @@ require('./models/_index')
 // Configure passport auth
 require('./passport/config')(passport)
 
-// Auth sessions
-var session = require('express-session')
-app.use(session({
-  store: new (require('connect-pg-simple')(session))({
-    conString: process.env.DATABASE_URL
-  }),
-  saveUninitialized: false,
-  secret: process.env.SESSION_COOKIE_SECRET,
-  resave: false,
-  cookie: {
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    secure: !process.env.INSECURE_COOKIES
-  }
-}))
-app.use(passport.initialize())
-app.use(passport.session())
+global.db.sync.then(() => {
+  // Auth sessions
+  var session = require('express-session')
+  app.use(session({
+    store: new (require('connect-pg-simple')(session))({
+      conString: process.env.DATABASE_URL,
+      tableName: 'session'
+    }),
+    saveUninitialized: false,
+    secret: process.env.SESSION_COOKIE_SECRET,
+    resave: false,
+    cookie: {
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      secure: !process.env.INSECURE_COOKIES
+    }
+  }))
+  app.use(passport.initialize())
+  app.use(passport.session())
 
-// REST APIs
-require('./api/_index')(app, passport)
+  // REST APIs
+  require('./api/_index')(app, passport)
 
-// Listen
-const port = process.env.PORT || 3000
-app.listen(port, () => {
-  console.log('Express listening on port ' + port)
+  // Listen
+  const port = process.env.PORT || 3000
+  app.listen(port, () => {
+    console.log('Express listening on port ' + port)
+  })
 })
 
 module.exports = app

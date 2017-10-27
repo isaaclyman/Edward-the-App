@@ -80,7 +80,7 @@ export default {
 
       const editor = this.$refs.editor.querySelector('.ql-editor')
       const element = editor.childNodes[descriptor.paragraphIndex]
-      element.scrollIntoView(true)
+      element.parentNode.scrollTop = element.offsetTop
 
       if (!~descriptor.searchTermIndex) {
         return

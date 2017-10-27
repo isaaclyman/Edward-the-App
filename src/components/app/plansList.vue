@@ -24,7 +24,7 @@
         </div>
         <chips-list name="Section" name-prop="title"
                     :data-array="activePlan.sections"
-                    :filter-chips="showSection"
+                    :filter-chips="filterSections"
                     :is-deletable="isDeletable"
                     @add="addSection"
                     @delete="archiveSection"
@@ -34,7 +34,7 @@
       </div>
 
       <div class="sections">
-        <div class="section" v-for="(section, index) in activePlan.sections" :key="section.id" v-show="showSection(section)">
+        <div class="section" v-for="(section, index) in activePlan.sections" :key="section.id" v-show="filterSections(section)">
           <div class="section-header">
             <h5 class="section-title">
               {{ section.title }}
@@ -195,6 +195,10 @@ export default {
         }
 
         this.$store.commit(DELETE_PLAN, { plan: this.allPlans[index] })
+
+        if (index === this.activePlanIndex) {
+          this.activePlanIndex = -1
+        }
       })
     },
     deleteSection ({ index }) {
@@ -261,9 +265,6 @@ export default {
     selectPlan (index) {
       this.activePlanIndex = index
     },
-    showSection (section) {
-      return !section.archived || this.filters.archived
-    },
     updateContent (section, newContent) {
       this.$store.commit(UPDATE_SECTION_CONTENT, {
         plan: this.activePlan,
@@ -284,6 +285,10 @@ export default {
   },
   props: {
     filterPlans: {
+      required: true,
+      type: Function
+    },
+    filterSections: {
       required: true,
       type: Function
     }

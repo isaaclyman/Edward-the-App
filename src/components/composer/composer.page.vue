@@ -38,28 +38,43 @@
                   @select="selectMap" :mark="mark"></text-map>
       </div>
       <div class="sidebar-wrap">
-        <template v-if="allTopics.length">
-          <div class="sidebar-options">
-            <div class="plan-switch">
-              <div class="switch-label" :class="{ 'active': !showPlans }">Chapter Outlines</div>
-              <vue-switch v-model="showPlans" color="blue"></vue-switch>
-              <div class="switch-label" :class="{ 'active': showPlans }">Document Plans</div>
+        <div class="sidebar-options">
+          <div class="plan-switch">
+            <div class="switch-label" :class="{ 'active': !showPlans }">Chapter Outline</div>
+            <vue-switch v-model="showPlans" color="blue"></vue-switch>
+            <div class="switch-label" :class="{ 'active': showPlans }">Document Plans</div>
+          </div>
+          <div class="archived-filter">
+            <input id="showArchivedTopics" type="checkbox" v-model="filters.archived">
+            <label for="showArchivedTopics">Show Archived</label>
+          </div>
+        </div>
+        <!-- Document Plans -->
+        <div class="sidebar-content" v-show="showPlans">
+          <template v-if="allPlans.length">
+            <plans-list :filter-plans="showPlan" :filter-sections="showSection"></plans-list>
+          </template>
+          <template v-else>
+            <div>No plans yet.</div>
+            <div>
+              <router-link to="/plan">Start planning</router-link>
             </div>
-            <div class="archived-filter">
-              <input id="showArchivedTopics" type="checkbox" v-model="showArchivedTopics">
-              <label for="showArchivedTopics">Show Archived</label>
+          </template>
+        </div>
+        <!-- Chapter Outlines -->
+        <div class="sidebar-content" v-show="!showPlans">
+          <template v-if="allTopics.length">
+            <div class="topic-list-wrap">
+              <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
             </div>
-          </div>
-          <div class="topic-list-wrap">
-            <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
-          </div>
-        </template>
-        <template v-else>
-          <div>No outline yet.</div>
-          <div>
-            <router-link to="/outline">Start outlining</router-link>
-          </div>
-        </template>
+          </template>
+          <template v-else>
+            <div>No outline yet.</div>
+            <div>
+              <router-link to="/outline">Start outlining</router-link>
+            </div>
+          </template>
+        </div>
       </div>
     </div>
     <div v-else>
@@ -75,6 +90,7 @@
 import { ADD_CHAPTER, UPDATE_CHAPTER_CONTENT } from '../app/chapters.store'
 import { GetContentString } from '../app/deltaParser'
 import guid from '../app/guid'
+import PlansList from '../app/plansList.vue'
 import TabsList from '../app/tabsList.vue'
 import TextEditor from './textEditor.vue'
 import TextMap from './textMap.vue'
@@ -85,6 +101,7 @@ import VueSwitch from 'vue-switches'
 
 export default {
   components: {
+    PlansList,
     TabsList,
     TextEditor,
     TextMap,
@@ -101,6 +118,9 @@ export default {
     },
     allChapters () {
       return this.$store.state.chapters.chapters
+    },
+    allPlans () {
+      return this.$store.state.chapters.plans || []
     },
     allTopics () {
       return this.$store.state.chapters.topics
@@ -146,6 +166,10 @@ export default {
     },
     viewingChapters () {
       return this.allChapters.filter(chapter => !chapter.archived)
+    },
+    viewingPlans () {
+      return (this.allPlans
+        .filter(plan => !plan.archived || this.filters.archived))
     }
   },
   data () {
@@ -158,7 +182,9 @@ export default {
         paragraphIndex: -1,
         searchTermIndex: -1
       },
-      showArchivedTopics: false,
+      filters: {
+        archived: false
+      },
       showPlans: false,
       showStats: false
     }
@@ -209,9 +235,15 @@ export default {
     selectMap (descriptor) {
       this.scrollTo = descriptor
     },
+    showPlan (plan) {
+      return this.viewingPlans.includes(plan)
+    },
+    showSection (section) {
+      return !section.archived || this.filters.archived
+    },
     showTopic (chapterTopic) {
       const masterTopic = this.getMasterTopic(chapterTopic)
-      return !masterTopic.archived || this.showArchivedTopics
+      return !masterTopic.archived || this.filters.archived
     },
     unhoverChapter () {
       this.showStats = false
@@ -299,11 +331,16 @@ export default {
   width: 300px;
 }
 
+.sidebar-content {
+  overflow: auto;
+}
+
 .sidebar-options {
   align-items: center;
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
+  min-height: 45px;
 }
 
 .plan-switch {

@@ -24,7 +24,7 @@
                     @update="renamePlan"></chips-list>
       </div>
       <hr>
-      <plans-list :filter-plans="showPlan"></plans-list>
+      <plans-list :filter-plans="showPlan" :filter-sections="showSection"></plans-list>
     </div>
 
     <!-- Plans: [?] Modal -->
@@ -129,6 +129,9 @@ export default {
     },
     showPlan (plan) {
       return this.viewingPlans.includes(plan)
+    },
+    showSection (section) {
+      return !section.archived || this.filters.archived
     }
   },
   mounted () {

@@ -25,13 +25,57 @@
       </div>
 
       <!-- Plan Tabs -->
-      <div class="plans-wrap" v-show="allPlans.length > 0">
+      <div class="plans-wrap" v-show="viewingPlans.length > 0">
         <tabs-list :active-index="activePlanIndex" :data-array="allPlans" :filter-tabs="showPlan"
                   item-name="Plan"
                   @add="addPlan"
                   @update:activeIndex="selectPlan"></tabs-list>
                   <!-- @hover="hoverPlan"
                   @unhover="unhoverPlan" -->
+        <div class="plan">
+          <div class="plan-header">
+            <h4 class="plan-title">
+              {{ activePlan.title }}
+            </h4>
+            <div class="plan-actions">
+              <button class="plan-action" v-show="!activePlan.archived" @click="archivePlan({ index: activePlanIndex })">Archive</button>
+              <button class="plan-action" v-show="activePlan.archived" @click="restorePlan({ index: activePlanIndex })">Restore</button>
+              <button class="plan-action button-red" v-show="activePlan.archived" @click="deletePlan({ index: activePlanIndex })">Delete Forever</button>
+            </div>
+          </div>
+          <!-- Section Chips -->
+          <div class="chips-wrap section-chips">
+            <div class="section-title">
+              <h3>Sections</h3>
+              <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpSectionChipsModal, 'Section List')"></button>
+            </div>
+            <chips-list name="Section" name-prop="title"
+                        :data-array="activePlan.sections"
+                        :filter-chips="showSection"
+                        :is-deletable="isDeletable"
+                        @add="addSection"
+                        @delete="archiveSection"
+                        @rearrange="rearrangeSection"
+                        @restore="restoreSection"
+                        @update="renameSection"></chips-list>
+          </div>
+
+          <div class="sections">
+            <div class="section" v-for="(section, index) in activePlan.sections" :key="section.id" v-show="showSection(section)">
+              <div class="section-header">
+                <h5 class="section-title">
+                  {{ section.title }}
+                </h5>
+                <div class="section-actions">
+                  <button class="section-action" v-show="!section.archived" @click="archiveSection({ index })">Archive</button>
+                  <button class="section-action" v-show="section.archived" @click="restoreSection({ index })">Restore</button>
+                  <button class="section-action button-red" v-show="section.archived" @click="deleteSection({ index })">Delete Forever</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -47,6 +91,21 @@
         <p>To restore an archived plan, check the "Show Archived" box, then click the "+" next to its name in the list.</p>
         <p>To rename a plan, click the pencil icon next to its name in the list.</p>
         <p>To rearrange a plan, click and drag it to where you want it to go.</p>
+      </div>
+    </div>
+
+    <!-- Sections: [?] Modal -->
+    <div style="display: none">
+      <div class="help" ref="helpSectionChipsModal">
+        <p>This is the section list. It's the easiest place to add, archive, restore, rename, and rearrange sections.</p>
+        <p>To add a section, type its name into the "New Section" box and click "Add".</p>
+        <p>
+          To archive a section, click the "X" next to its name in the list.
+          Archiving a section removes it from your document without deleting it permanently.
+        </p>
+        <p>To restore an archived section, check the "Show Archived" box, then click the "+" next to its name in the list.</p>
+        <p>To rename a section, click the pencil icon next to its name in the list.</p>
+        <p>To rearrange a section, click and drag it to where you want it to go.</p>
       </div>
     </div>
   </div>
@@ -70,6 +129,10 @@ export default {
   },
   computed: {
     activePlan () {
+      if (this.activePlanIndex < 0) {
+        this.activePlanIndex = this.allPlans.indexOf(this.viewingPlans[0])
+      }
+
       return this.allPlans[this.activePlanIndex]
     },
     allPlans () {
@@ -125,6 +188,7 @@ export default {
     },
     archivePlan ({ index }) {
       this.$store.commit(ARCHIVE_PLAN, { plan: this.allPlans[index] })
+      this.activePlanIndex = -1
     },
     archiveSection ({ index }) {
       this.$store.commit(ARCHIVE_SECTION, {
@@ -204,17 +268,21 @@ export default {
       this.$store.commit(RESTORE_PLAN, { plan: this.allPlans[index] })
     },
     restoreSection ({ index }) {
-      this.$store.commit(RESTORE_SECTION, { section: this.activePlan.sections[index] })
+      this.$store.commit(RESTORE_SECTION, { plan: this.activePlan, section: this.activePlan.sections[index] })
     },
     selectPlan (index) {
       this.activePlanIndex = index
     },
     showPlan (plan) {
       return this.viewingPlans.includes(plan)
+    },
+    showSection (section) {
+      return !section.archived || this.filters.archived
     }
   },
   mounted () {
     this.helpPlanChipsModal = this.$refs.helpPlanChipsModal
+    this.helpSectionChipsModal = this.$refs.helpSectionChipsModal
   }
 }
 </script>
@@ -248,5 +316,80 @@ export default {
   align-items: center;
   display: flex;
   flex-direction: row;
+}
+
+.plan {
+  background-color: #FFF;
+  border: 1px solid #CCC;
+  box-shadow: 0px -2px 12px -4px rgba(0,0,0,0.75);
+}
+
+.plan-header {
+  align-items: center;
+  background-color: #005cb2;
+  color: #FFF;
+  display: flex;
+  flex-direction: row;
+  padding: 8px;
+}
+
+.plan-title {
+  flex: 1;
+}
+
+.plan-action {
+  background-color: transparent;
+  border-color: #FFF;
+  color: #FFF;
+  margin-right: 6px;
+  transition: background-color 100ms;
+}
+
+.plan-action:hover {
+  background-color: #444;
+}
+
+.section-chips {
+  margin-left: 8px;
+  margin-top: 8px;
+}
+
+.sections {
+  padding: 8px;
+}
+
+.section-header {
+  align-items: center;
+  background-color: #005cb2;
+  color: #FFF;
+  display: flex;
+  flex-direction: row;
+  height: 28px;
+  padding: 0 8px;
+}
+
+.section-title {
+  flex: 1;
+}
+
+.section-actions {
+  height: 100%;
+}
+
+.section-action {
+  background-color: transparent;
+  border: none;
+  border-left: 1px solid #fff;
+  border-radius: 0;
+  border-right: 1px solid #fff;
+  color: #fff;
+  height: 100%;
+  margin-right: 6px;
+  padding: 3px 6px;
+  transition: background-color 100ms;
+}
+
+.section-action:hover {
+  background-color: #444;
 }
 </style>

@@ -158,7 +158,7 @@ class ChapterStorage {
   }
 
   getSectionSortOrder (fileId, planId) {
-    return JSON.parse(this.storage.getItem(this.sectionOrderKey(fileId, planId)))
+    return JSON.parse(this.storage.getItem(this.sectionOrderKey(fileId, planId))) || []
   }
 
   getTopic (fileId, topicId) {

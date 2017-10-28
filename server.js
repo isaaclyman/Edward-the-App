@@ -4,6 +4,8 @@ const express = require('express')
 const passport = require('passport')
 const path = require('path')
 const timeout = require('connect-timeout')
+const session = require('express-session')
+const SequelizeStore = require('connect-session-sequelize')(session.Store)
 
 if (!process.env.DATABASE_URL) {
   var env = require('node-env-file')
@@ -46,14 +48,19 @@ const db = require('./models/_index')(sequelize)
 // Configure passport auth
 require('./passport/config')(passport, db)
 
+// store: new (require('connect-pg-simple')(session))({
+//   conString: process.env.DATABASE_URL,
+//   tableName: 'session'
+// })
+
 db.sync.then(() => {
   // Auth sessions
-  var session = require('express-session')
+  const sessionStore = new SequelizeStore({
+    db: sequelize
+  })
+
   app.use(session({
-    store: new (require('connect-pg-simple')(session))({
-      conString: process.env.DATABASE_URL,
-      tableName: 'session'
-    }),
+    store: sessionStore,
     saveUninitialized: false,
     secret: process.env.SESSION_COOKIE_SECRET,
     resave: false,
@@ -63,6 +70,8 @@ db.sync.then(() => {
       secure: !process.env.INSECURE_COOKIES
     }
   }))
+  sessionStore.sync()
+
   app.use(passport.initialize())
   app.use(passport.session())
 

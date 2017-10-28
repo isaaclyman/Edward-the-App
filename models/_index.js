@@ -14,7 +14,6 @@ module.exports = function (sequelize) {
   const Chapter = sequelize.import(path.join(__dirname, 'chapter'))
   const ChapterTopic = sequelize.import(path.join(__dirname, 'chapterTopic'))
   const MasterTopic = sequelize.import(path.join(__dirname, 'masterTopic'))
-  sequelize.import(path.join(__dirname, 'session'))
 
   const accountTypes = {
     LIMITED: 'limited',

@@ -48,11 +48,6 @@ const db = require('./models/_index')(sequelize)
 // Configure passport auth
 require('./passport/config')(passport, db)
 
-// store: new (require('connect-pg-simple')(session))({
-//   conString: process.env.DATABASE_URL,
-//   tableName: 'session'
-// })
-
 db.sync.then(() => {
   // Auth sessions
   const sessionStore = new SequelizeStore({

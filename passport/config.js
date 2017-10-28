@@ -1,10 +1,10 @@
 const LocalAuth = require('passport-local').Strategy
 
-const AccountType = global.db.AccountType
-const accountTypes = global.db.accountTypes
-const User = global.db.User
+module.exports = function config (passport, db) {
+  const AccountType = db.AccountType
+  const accountTypes = db.accountTypes
+  const User = db.User
 
-module.exports = function config (passport) {
   passport.serializeUser((user, done) => {
     done(null, user.id)
   })

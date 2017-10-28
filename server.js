@@ -5,8 +5,8 @@ const passport = require('passport')
 const path = require('path')
 const timeout = require('connect-timeout')
 
-var env = require('node-env-file')
 if (!process.env.DATABASE_URL) {
+  var env = require('node-env-file')
   env(path.join(__dirname, '.env'))
 }
 
@@ -25,12 +25,28 @@ app.get('/', (req, res) => {
 })
 
 // Database ORM
-require('./models/_index')
+const Sequelize = require('sequelize')
+
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres',
+  protocol: 'postgres',
+  logging: process.env.DEBUG_DB === 'true' ? console.log : false,
+  pool: { maxConnections: 10, maxIdleTime: 1000 },
+  operatorsAliases: false
+})
+
+sequelize.authenticate().then(() => {
+  console.log('Database connection established')
+}).catch((e) => {
+  console.log(`Couldn't connect to database: `, e)
+})
+
+const db = require('./models/_index')(sequelize)
 
 // Configure passport auth
-require('./passport/config')(passport)
+require('./passport/config')(passport, db)
 
-global.db.sync.then(() => {
+db.sync.then(() => {
   // Auth sessions
   var session = require('express-session')
   app.use(session({
@@ -43,6 +59,7 @@ global.db.sync.then(() => {
     resave: false,
     cookie: {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      // Set "null" for a temporary cookie (expires when browser session ends)
       secure: !process.env.INSECURE_COOKIES
     }
   }))

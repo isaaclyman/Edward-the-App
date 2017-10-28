@@ -1,26 +1,7 @@
 const values = require('lodash/values')
-
 const path = require('path')
 
-if (!global.hasOwnProperty('db')) {
-  const Sequelize = require('sequelize')
-  let sequelize = null
-
-  // the application is executed on Heroku
-  sequelize = new Sequelize(process.env.DATABASE_URL, {
-    dialect: 'postgres',
-    protocol: 'postgres',
-    logging: process.env.DEBUG_DB === 'true' ? console.log : false,
-    pool: { maxConnections: 10, maxIdleTime: 1000 },
-    operatorsAliases: false
-  })
-
-  sequelize.authenticate().then(() => {
-    console.log('Database connection established')
-  }).catch((e) => {
-    console.log(`Couldn't connect to database: `, e)
-  })
-
+module.exports = function (sequelize) {
   /*
     Models
   */
@@ -42,8 +23,7 @@ if (!global.hasOwnProperty('db')) {
     ADMIN: 'admin'
   }
 
-  global.db = {
-    Sequelize: Sequelize,
+  const db = {
     sequelize: sequelize,
     User,
     AccountType,
@@ -86,11 +66,11 @@ if (!global.hasOwnProperty('db')) {
   /*
     Create tables
   */
-  global.db.sync = sequelize.sync().then(() => {
+  db.sync = sequelize.sync().then(() => {
       /*
         Init static data
       */
-    const types = values(global.db.accountTypes)
+    const types = values(db.accountTypes)
     for (const type of types) {
       AccountType.findCreateFind({
         where: {
@@ -103,6 +83,6 @@ if (!global.hasOwnProperty('db')) {
       })
     }
   })
-}
 
-module.exports = global.db
+  return db
+}

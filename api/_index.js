@@ -1,6 +1,6 @@
 const path = require('path')
 
-module.exports = function (app, passport) {
+module.exports = function (app, passport, db) {
   // Serve auth pages
   app.get('/auth', (req, res) => {
     res.sendFile(path.join(__dirname, '../dist/auth.html'))
@@ -15,7 +15,7 @@ module.exports = function (app, passport) {
 
   // Serve user signup, login, logout, verify, and passreset pages
   require('./user')(app, passport)
-  require('./document')(app, passport)
+  require('./storage')(app, passport, db)
 }
 
 function isLoggedIn (req, res, next) {

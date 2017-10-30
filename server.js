@@ -72,7 +72,7 @@ db.sync.then(() => {
   app.use(passport.session())
 
   // REST APIs
-  require('./api/_index')(app, passport)
+  require('./api/_index')(app, passport, db)
 
   // Listen
   const port = process.env.PORT || 3000

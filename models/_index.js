@@ -16,6 +16,7 @@ module.exports = function (sequelize) {
   const MasterTopic = sequelize.import(path.join(__dirname, 'masterTopic'))
 
   const accountTypes = {
+    DEMO: 'demo',
     LIMITED: 'limited',
     PREMIUM: 'premium',
     GOLD: 'gold',
@@ -70,17 +71,49 @@ module.exports = function (sequelize) {
         Init static data
       */
     const types = values(db.accountTypes)
+    const accountTypePromises = []
     for (const type of types) {
-      AccountType.findCreateFind({
+      const promise = AccountType.findCreateFind({
         where: {
           name: type
         }
-      }).then(([type, created]) => {
+      })
+      accountTypePromises.push(promise)
+      promise.then(([type, created]) => {
         if (created) {
           console.log(`Created account type "${type.name}".`)
         }
       })
     }
+
+    Promise.all(accountTypePromises).then(() => {
+      AccountType.findOne({
+        where: { name: accountTypes.DEMO }
+      }).then(({ id: demoId }) => {
+        User.findCreateFind({
+          where: {
+            email: 'demo@edwardtheapp.com'
+          },
+          include: [{
+            model: AccountType,
+            where: {
+              'name': accountTypes.DEMO
+            }
+          }],
+          defaults: {
+            accountTypeId: demoId,
+            email: 'demo@edwardtheapp.com',
+            password: 'DEMO'
+          }
+        }).then(([user, created]) => {
+          if (created) {
+            console.log(`Created demo user.`)
+          }
+
+          db.DemoUser = user
+        })
+      })
+    })
   })
 
   return db

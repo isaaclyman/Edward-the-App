@@ -24,6 +24,11 @@
     <div class="sign-up-text">Don't have an account?</div>
     <button class="sign-up-link button-link" @click="signUp()">Sign up for free.</button>
   </div>
+  <hr class="divider">
+  <div class="sign-up">
+    <div class="sign-up-text">Just want to check it out?</div>
+    <button class="sign-up-link button-link" @click="viewDemo()">Try the demo.</button>
+  </div>
 </div>
 </template>
 
@@ -91,6 +96,17 @@ export default {
     },
     signUp () {
       this.$router.push('/signup')
+    },
+    viewDemo () {
+      this.loading = true
+
+      authApi.demoLogIn().then(result => {
+        this.loading = false
+        goToApp()
+      }, () => {
+        this.loading = false
+        this.loginMessage = `The demo account isn't working right now. Please try again later.`
+      })
     }
   }
 }
@@ -104,12 +120,12 @@ export default {
   flex-direction: column;
   font-size: 16px;
   justify-content: center;
+  margin-bottom: 20px;
 }
 
 .sign-up {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
   width: 100%;
 }
 

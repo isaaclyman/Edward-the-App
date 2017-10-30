@@ -1,6 +1,6 @@
 const request = require('request-promise-native')
 
-module.exports = function (app, passport) {
+module.exports = function (app, passport, db) {
   const route = route => `/api/user/${route}`
 
   const verifyCaptchaToken = (req) => {
@@ -77,5 +77,15 @@ module.exports = function (app, passport) {
         return res.send({ success: true, message: 'authentication success' })
       })
     })(req, res, next)
+  })
+
+  app.post(route('demo-login'), (req, res, next) => {
+    req.login(db.DemoUser, err => {
+      if (err) {
+        return next(err)
+      }
+
+      return res.send({ success: true, message: 'authentication success' })
+    })
   })
 }

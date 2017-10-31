@@ -14,7 +14,7 @@ module.exports = function (app, passport, db) {
   })
 
   // Serve user signup, login, logout, verify, and passreset pages
-  require('./user')(app, passport, db)
+  require('./user')(app, passport, db, isLoggedIn)
   require('./storage')(app, passport, db)
 }
 

@@ -28,7 +28,9 @@
 <script>
 import FileMenu from './app/fileMenu.vue'
 import MainMenu from './app/mainMenu.vue'
+import { SET_DEFAULT_USER, SET_USER } from './app/user.store'
 import tooltip from './app/tippyBuilder'
+import userApi from './app/userApi'
 import Wizard from './wizard/wizard.vue'
 
 export default {
@@ -49,6 +51,12 @@ export default {
       distance: -20,
       el: this.$refs.logoWrap,
       interactive: true
+    })
+
+    userApi.getUser().then(user => {
+      this.$store.commit(SET_USER, user)
+    }, () => {
+      this.$store.commit(SET_DEFAULT_USER)
     })
   }
 }

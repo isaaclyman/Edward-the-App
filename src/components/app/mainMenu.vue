@@ -10,24 +10,32 @@
       <hr class="vert" :key="route.name"></hr>
     </template>
     <div class="spacer"></div>
-    <div class="account-type" :title="account.message" v-tooltip>
-      {{ account.type }}
+    <div class="account">
+      <div class="email">
+        {{ email }}
+      </div>
+      <div class="account-type" :title="accountType.description" v-tooltip>
+        {{ accountType.displayName }}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import ChapterStorage from './chapters.persist'
 import Octicons from 'octicons'
 import tooltip from './tooltip.directive'
 
 export default {
+  computed: {
+    accountType () {
+      return this.$store.state.user.user.accountType || {}
+    },
+    email () {
+      return this.$store.state.user.user.email || ''
+    }
+  },
   data () {
     return {
-      account: {
-        type: ChapterStorage.accountType,
-        message: ChapterStorage.accountMessage
-      },
       routes: [{
         icon: 'telescope',
         location: '/plan',
@@ -94,6 +102,13 @@ hr.vert:last-of-type {
 
 .spacer {
   flex: 1;
+}
+
+.email {
+  color: #005cb2;
+  cursor: default;
+  font-size: 14px;
+  margin-right: 20px;
 }
 
 .account-type {

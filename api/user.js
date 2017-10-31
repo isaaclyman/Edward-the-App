@@ -1,6 +1,6 @@
 const request = require('request-promise-native')
 
-module.exports = function (app, passport, db) {
+module.exports = function (app, passport, db, isLoggedIn) {
   const route = route => `/api/user/${route}`
 
   const verifyCaptchaToken = (req) => {
@@ -35,9 +35,41 @@ module.exports = function (app, passport, db) {
     verifyCaptchaToken(req).then(() => {
       return next()
     }, () => {
-      res.status(401).send({ success: false, message: 'captcha failed' })
+      res.status(401).send('Captcha failed.')
     })
   }
+
+  const getUserResponse = user => {
+    return new Promise((resolve, reject) => {
+      db.User.findOne({
+        where: { id: user.id },
+        include: [db.AccountType]
+      }).then(user => {
+        debugger
+        const accountType = user['account_type']
+        const response = {
+          accountType: db.accountTypes[accountType.name],
+          email: user.email
+        }
+        resolve(response)
+      }, () => {
+        reject()
+      })
+    })
+  }
+
+  app.get(route('current'), isLoggedIn, (req, res, next) => {
+    if (!req.user) {
+      res.status(401).send('User not found.')
+    }
+
+    getUserResponse(req.user).then(response => {
+      res.status(200).send(response)
+    }, err => {
+      console.log(err)
+      res.status(500).send()
+    })
+  })
 
   app.post(route('signup'), captchaMiddleware, (req, res, next) => {
     passport.authenticate('local-signup', (err, user) => {
@@ -46,7 +78,7 @@ module.exports = function (app, passport, db) {
       }
 
       if (!user) {
-        return res.status(401).send({ success: false, message: 'authentication failure' })
+        return res.status(401).send('Signup failed.')
       }
 
       req.login(user, err => {
@@ -54,7 +86,7 @@ module.exports = function (app, passport, db) {
           return next(err)
         }
 
-        return res.send({ success: true, message: 'authentication success' })
+        return res.status(200).send()
       })
     })(req, res, next)
   })
@@ -66,7 +98,7 @@ module.exports = function (app, passport, db) {
       }
 
       if (!user) {
-        return res.status(401).send({ success: false, message: 'authentication failure' })
+        return res.status(401).send('Authentication failed.')
       }
 
       req.login(user, err => {
@@ -74,7 +106,7 @@ module.exports = function (app, passport, db) {
           return next(err)
         }
 
-        return res.send({ success: true, message: 'authentication success' })
+        return res.status(200).send()
       })
     })(req, res, next)
   })
@@ -85,7 +117,12 @@ module.exports = function (app, passport, db) {
         return next(err)
       }
 
-      return res.send({ success: true, message: 'authentication success' })
+      return res.status(200).send()
     })
+  })
+
+  app.get(route('logout'), (req, res, next) => {
+    req.logout()
+    res.status(200).send()
   })
 }

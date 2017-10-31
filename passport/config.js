@@ -27,9 +27,7 @@ module.exports = function config (passport, db) {
   }, (req, email, password, done) => {
     process.nextTick(() => {
       User.findOne({
-        where: {
-          email
-        }
+        where: { email }
       }).then(user => {
         if (user) {
           // User already exists
@@ -41,7 +39,7 @@ module.exports = function config (passport, db) {
           newUser.password = password
 
           AccountType.findOne({
-            where: { name: accountTypes.LIMITED }
+            where: { name: accountTypes.LIMITED.name }
           }).then(({ id }) => {
             newUser.accountTypeId = id
             newUser.save().then(user => {

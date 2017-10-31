@@ -7,12 +7,14 @@ import { chapterAutosaverPlugin } from './components/app/chapters.persist'
 import composer from './components/composer/composer.store.js'
 import chapters from './components/app/chapters.store.js'
 import file, { INIT_FILES } from './components/app/file.store.js'
+import user from './components/app/user.store'
 
 const store = new Vuex.Store({
   modules: {
     composer,
     chapters,
-    file
+    file,
+    user
   },
   plugins: [chapterAutosaverPlugin]
 })

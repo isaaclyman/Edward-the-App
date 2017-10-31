@@ -11,12 +11,20 @@
         Export / Import
       </button>
     </div>
+    <div class="spacer"></div>
+    <div class="menu-item">
+      <button class="menu-button" @click="logOut()">
+        Log Out
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
 import FilePicker from './filePicker.vue'
+import swal from 'sweetalert'
 import { UNLOAD_CURRENT_DOCUMENT } from './file.store'
+import userApi from './userApi'
 
 export default {
   components: {
@@ -26,6 +34,16 @@ export default {
     return {}
   },
   methods: {
+    logOut () {
+      userApi.logOut().then(() => {
+        window.location.href = '/auth'
+      }, () => {
+        swal({
+          icon: 'error',
+          text: `Sorry, logout failed. If security is a concern, please clear your cookies and other browsing data and close your browser.`
+        })
+      })
+    },
     showExport () {
       this.$router.push('/export')
     },
@@ -55,5 +73,9 @@ export default {
 .menu-button {
   color: #FFF;
   padding: 3px 10px;
+}
+
+.spacer {
+  flex: 1;
 }
 </style>

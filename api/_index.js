@@ -3,6 +3,7 @@ const path = require('path')
 module.exports = function (app, passport, db) {
   // Serve auth pages
   app.get('/auth', (req, res) => {
+    req.logout()
     res.sendFile(path.join(__dirname, '../dist/auth.html'))
   })
 

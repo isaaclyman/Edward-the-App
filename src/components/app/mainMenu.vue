@@ -96,6 +96,10 @@ export default {
   color: #000;
 }
 
+.router-link-active > .main-menu--button {
+  color: #000;
+}
+
 hr.vert:last-of-type {
   display: none;
 }
@@ -126,6 +130,10 @@ hr.vert:last-of-type {
 }
 
 .main-menu--button:hover .main-menu--icon {
+  fill: #000;
+}
+
+.router-link-active > .main-menu--button .main-menu--icon {
   fill: #000;
 }
 </style>

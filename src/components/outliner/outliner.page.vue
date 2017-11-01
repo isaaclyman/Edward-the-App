@@ -140,7 +140,7 @@ export default {
         this.activeChapterIndex = this.allChapters.indexOf(this.viewingChapters[0])
       }
 
-      return this.allChapters[this.activeChapterIndex]
+      return this.allChapters[this.activeChapterIndex] || {}
     },
     allChapters () {
       return this.$store.state.chapters.chapters

@@ -23,7 +23,7 @@
           <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpSectionChipsModal, 'Section List')"></button>
         </div>
         <chips-list name="Section" name-prop="title"
-                    :data-array="activePlan.sections"
+                    :data-array="activePlanSections"
                     :filter-chips="filterSections"
                     :is-deletable="isDeletable"
                     @add="addSection"
@@ -111,7 +111,10 @@ export default {
         this.activePlanIndex = this.allPlans.indexOf(this.viewingPlans[0])
       }
 
-      return this.allPlans[this.activePlanIndex]
+      return this.allPlans[this.activePlanIndex] || {}
+    },
+    activePlanSections () {
+      return this.activePlan.sections || []
     },
     allPlans () {
       return this.$store.state.chapters.plans || []

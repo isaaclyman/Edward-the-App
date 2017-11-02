@@ -66,7 +66,14 @@ export default {
         return
       }
 
-      if (![...target.parentNode.classList].includes('map-inner')) {
+      const parentClasses = [...target.parentNode.classList]
+
+      if (parentClasses.includes('wrap')) {
+        return
+      }
+
+      if (!parentClasses.includes('map-inner')) {
+        this.mapClick({ target: target.parentNode })
         return
       }
 

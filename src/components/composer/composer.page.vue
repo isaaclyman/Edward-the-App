@@ -31,6 +31,9 @@
               <p>{{ documentReadTimeMinutes }} minute read</p>
             </div>
           </div>
+          <div class="define">
+            <word-define :word="mark"></word-define>
+          </div>
           <text-editor ref="textEditor" :content="activeChapter.content" :scroll-to="scrollTo" :selection="selection"
                       :container="editorContainerNode"
                       @update:content="updateContent"
@@ -98,6 +101,7 @@ import TopicList from '../app/topicList.vue'
 import { UPDATE_SELECTION } from './composer.store'
 import { ValidateTitle } from '../app/validate'
 import VueSwitch from 'vue-switches'
+import WordDefine from './wordDefine.vue'
 
 export default {
   components: {
@@ -106,7 +110,8 @@ export default {
     TextEditor,
     TextMap,
     TopicList,
-    VueSwitch
+    VueSwitch,
+    WordDefine
   },
   computed: {
     activeChapter () {
@@ -302,12 +307,13 @@ export default {
 }
 
 .stats {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(255, 255, 255, 0.9);
   bottom: 0;
   left: 0;
   opacity: 0;
   pointer-events: none;
   position: absolute;
+  right: 0;
   top: 0;
   transition: opacity 100ms;
   width: 100%;
@@ -322,6 +328,17 @@ export default {
   height: 100%;
   padding: 12px;
   width: 100%;
+}
+
+.define {
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 15;
+
 }
 
 .sidebar-wrap {

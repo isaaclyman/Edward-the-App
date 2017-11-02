@@ -1,3 +1,6 @@
+import TrimEnd from 'lodash/trimEnd'
+import TrimStart from 'lodash/trimStart'
+
 export const GetContentString = (delta) => {
   if (!delta || !delta.ops) {
     return ''
@@ -7,8 +10,18 @@ export const GetContentString = (delta) => {
   return inserts.join('')
 }
 
+const wordStartRe = /^[a-zA-Z0-9'\-_@&]/
+const wordContentRe = /[a-zA-Z0-9]+/
 export const GetWordArray = (delta) => {
-  return GetContentString(delta).replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '').split(/\s/).filter(word => !!word)
+  const content = GetContentString(delta)
+  const tokens = content.split(/\s/g)
+  return tokens.map(token => {
+    token = TrimEnd(token, `.,;:?!"'\``)
+    token = TrimStart(token, `"'\``)
+    return token
+  }).filter(token =>
+    wordStartRe.test(token) && wordContentRe.test(token)
+  )
 }
 
 import DeltaToHtmlConverter from 'quill-delta-to-html'

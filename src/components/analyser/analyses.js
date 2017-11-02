@@ -73,7 +73,7 @@ const wordFrequency = {
 }
 
 const wordOverTime = {
-  description: 'Track your usage of a specific word over time',
+  description: 'Track your usage of a specific word in each chapter',
   inputs: ['Word'],
   run (resultsWindow, { chapters }, args) {
     if (!validateArgs(this.inputs, args)) {

@@ -1,6 +1,10 @@
 <template>
   <div class="composer-wrap">
     <div class="composer" v-if="allChapters.length > 0">
+      <div class="map-wrap">
+        <text-map :editor-element="editorElement" :data-stream="activeChapter.content"
+                  @select="selectMap" :mark="mark"></text-map>
+      </div>
       <div class="editor-wrap">
         <tabs-list :active-index="activeChapterIndex" :data-array="allChapters" :filter-tabs="isViewing"
                   item-name="Chapter"
@@ -32,10 +36,6 @@
                       @update:content="updateContent"
                       @update:selection="updateSelection"></text-editor>
         </div>
-      </div>
-      <div class="map-wrap">
-        <text-map :editor-element="editorElement" :data-stream="activeChapter.content"
-                  @select="selectMap" :mark="mark"></text-map>
       </div>
       <div class="sidebar-wrap">
         <div class="sidebar-options">
@@ -279,11 +279,19 @@ export default {
   max-width: 1500px;
 }
 
+.map-wrap {
+  display: flex;
+  height: 100%;
+  margin-right: 20px;
+  width: 160px;
+  z-index: 25;
+}
+
 .editor-wrap {
   display: flex;
   flex: 1;
   flex-direction: column;
-  margin-right: 12px;
+  margin-right: 20px;
   position: relative;
 }
 
@@ -316,18 +324,11 @@ export default {
   width: 100%;
 }
 
-.map-wrap {
-  display: flex;
-  height: 100%;
-  width: 160px;
-}
-
 .sidebar-wrap {
   display: flex;
   flex: 1;
   flex-direction: column;
   height: 100%;
-  margin-left: 12px;
   width: 300px;
 }
 

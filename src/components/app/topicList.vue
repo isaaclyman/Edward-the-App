@@ -209,7 +209,7 @@ export default {
 }
 
 .content-static {
-  font-family: 'Libre Baskerville', serif;
+  font-family: 'Khula', sans-serif;
   font-size: 13px;
   white-space: pre-wrap;
 }

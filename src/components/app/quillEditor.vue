@@ -137,7 +137,7 @@ function getAllOccurrences (regex, str) {
 .ql-editor {
   background-color: transparent;
   font-family: 'Khula', sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   padding: 12px 20px 12px 10px;
 }
 

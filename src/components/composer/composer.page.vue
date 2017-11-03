@@ -43,9 +43,15 @@
       <div class="sidebar-wrap">
         <div class="sidebar-options">
           <div class="plan-switch">
-            <div class="switch-label" :class="{ 'active': !showPlans }">Chapter Outline</div>
-            <vue-switch v-model="showPlans" color="blue"></vue-switch>
-            <div class="switch-label" :class="{ 'active': showPlans }">Document Plans</div>
+            <button class="switch-label" :class="{ 'active': !showPlans }" @click="showPlans = false">
+              <div class="switch-label-text">Chapter Outline</div>
+              <div v-html="outlineSvg"></div>
+            </button>
+            <hr class="vert">
+            <button class="switch-label" :class="{ 'active': showPlans }" @click="showPlans = true">
+              <div v-html="planSvg"></div>
+              <div class="switch-label-text">Document Plans</div>
+            </button>
           </div>
           <div class="archived-filter">
             <input id="showArchivedTopics" type="checkbox" v-model="filters.archived">
@@ -93,6 +99,7 @@
 import { ADD_CHAPTER, UPDATE_CHAPTER_CONTENT } from '../app/chapters.store'
 import { GetContentString } from '../app/deltaParser'
 import guid from '../app/guid'
+import Octicons from 'octicons'
 import PlansList from '../app/plansList.vue'
 import TabsList from '../app/tabsList.vue'
 import TextEditor from './textEditor.vue'
@@ -182,13 +189,21 @@ export default {
       activeChapterIndex: -1,
       editorContainerNode: null,
       editorElement: null,
+      filters: {
+        archived: false
+      },
       newChapter: '',
+      outlineSvg: Octicons['list-unordered'].toSVG({
+        height: 25,
+        width: 25
+      }),
+      planSvg: Octicons.telescope.toSVG({
+        height: 25,
+        width: 25
+      }),
       scrollTo: {
         paragraphIndex: -1,
         searchTermIndex: -1
-      },
-      filters: {
-        archived: false
       },
       showPlans: false,
       showStats: false
@@ -365,19 +380,39 @@ export default {
   align-items: center;
   display: flex;
   flex-direction: row;
+  margin-bottom: 6px;
 }
 
 .switch-label {
+  align-items: center;
+  border: none;
   color: #888;
-  margin: 0 8px;
+  cursor: pointer;
+  display: flex;
+  fill: #888;
+  flex-direction: row;
+  font-size: 16px;
+  margin: 0 4px;
+  transition: color 100ms, fill 100ms;
+}
+
+.switch-label:hover {
+  color: #000;
+  fill: #000;
 }
 
 .switch-label.active {
   color: #000;
+  fill: #000;
+}
+
+.switch-label-text {
+  margin: 0 12px;
 }
 
 .archived-filter {
   align-items: center;
+  align-self: flex-start;
   display: flex;
   flex-direction: row;
   margin-top: 8px;

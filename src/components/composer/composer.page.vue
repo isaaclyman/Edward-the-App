@@ -388,7 +388,7 @@ export default {
 }
 
 /* MOBILE */
-@media (max-width: 700px) {
+@media (max-width: 800px) {
   .map-wrap {
     display: none;
   }

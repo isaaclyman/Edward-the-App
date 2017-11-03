@@ -17,7 +17,11 @@ export default {
     }
   },
   mounted () {
-    this.quill = createQuill(this.$refs.editor, 'Write here.', this.container || this.$refs.container)
+    this.quill = createQuill(
+      this.$refs.editor,
+      'Write here.',
+      this.container || this.$refs.container,
+      () => { console.log('clicked fullscreen') })
 
     if (this.content) {
       this.quill.setContents(this.content, 'api')
@@ -152,5 +156,14 @@ function getAllOccurrences (regex, str) {
 
 .ql-editor h1 {
   font-size: 25px;
+}
+
+.ql-fullscreen {
+  fill: #444;
+  width: auto !important;
+}
+
+.ql-fullscreen:hover {
+  fill: #06c;
 }
 </style>

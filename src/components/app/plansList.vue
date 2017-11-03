@@ -409,6 +409,11 @@ export default {
   justify-content: flex-end;
 }
 
+.content-static, .content-editable {
+  max-height: 275px;
+  overflow-y: auto;
+}
+
 .content-static {
   font-family: 'Khula', sans-serif;
   font-size: 13px;

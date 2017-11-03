@@ -49,12 +49,12 @@ const createQuill = (el, placeholder, container, onFullScreen) => {
   })
 
   if (onFullScreen) {
-    const arrowUpSvg = Octicons['device-desktop'].toSVG({
+    const fullScreenSvg = Octicons['device-desktop'].toSVG({
       height: 30
     })
-    const fullScreenButton = document.querySelector('.ql-fullscreen')
+    const fullScreenButton = container.querySelector('.ql-fullscreen')
     fullScreenButton.title = 'Full-screen writing mode'
-    fullScreenButton.innerHTML = arrowUpSvg
+    fullScreenButton.innerHTML = fullScreenSvg
 
     tooltip({
       distance: 10,

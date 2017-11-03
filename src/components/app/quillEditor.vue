@@ -1,6 +1,15 @@
 <template>
-  <div class="editor" ref="container">
-    <div ref="editor"></div>
+  <div class="wrap">
+    <div class="editor" ref="container">
+      <div ref="editor"></div>
+    </div>
+    <div v-if="showFullScreen">
+      <quill-full-screen 
+        :content="content" :selection="selection"
+        @close="hideFullScreen()"
+        @update:content="emitContent"
+        @update:selection="emitSelection"></quill-full-screen>
+    </div>
   </div>
 </template>
 
@@ -9,11 +18,58 @@ import createQuill from './quillBuilder'
 import debounce from 'lodash/debounce'
 import escapeStringRegexp from 'escape-string-regexp'
 import isEqual from 'lodash/isEqual'
+import QuillFullScreen from './quillFullScreen.vue'
 
 export default {
+  components: {
+    QuillFullScreen
+  },
   data () {
     return {
-      quill: null
+      quill: null,
+      showFullScreen: false
+    }
+  },
+  methods: {
+    emitContent (content) {
+      this.$emit('update:content', content)
+    },
+    emitSelection (selection) {
+      this.$emit('update:selection', selection)
+    },
+    hideFullScreen () {
+      this.showFullScreen = false
+    },
+    listenQuill (quill) {
+      quill.on('text-change', debounce(() => {
+        this.emitContent(quill.getContents())
+      }, 250))
+
+      quill.on('selection-change', debounce((range) => {
+        if (!range) {
+          return
+        }
+
+        let selection
+        if (!range.length) {
+          selection = {
+            range: null,
+            text: ''
+          }
+        } else {
+          selection = {
+            range: range,
+            text: quill.getText(range.index, range.length)
+          }
+        }
+
+        this.emitSelection(selection)
+      }, 500))
+    },
+    updateQuill (quill, content) {
+      if (content) {
+        quill.setContents(content, 'api')
+      }
     }
   },
   mounted () {
@@ -21,38 +77,14 @@ export default {
       this.$refs.editor,
       'Write here.',
       this.container || this.$refs.container,
-      () => { console.log('clicked fullscreen') })
-
-    if (this.content) {
-      this.quill.setContents(this.content, 'api')
-    }
-
-    this.$emit('update:content', this.quill.getContents())
-
-    this.quill.on('text-change', debounce(() => {
-      this.$emit('update:content', this.quill.getContents())
-    }, 250))
-
-    this.quill.on('selection-change', debounce((range) => {
-      if (!range) {
-        return
+      () => {
+        this.showFullScreen = true
       }
+    )
 
-      let selection
-      if (!range.length) {
-        selection = {
-          range: null,
-          text: ''
-        }
-      } else {
-        selection = {
-          range: range,
-          text: this.quill.getText(range.index, range.length)
-        }
-      }
-
-      this.$emit('update:selection', selection)
-    }, 500))
+    this.updateQuill(this.quill, this.content)
+    this.emitContent(this.quill.getContents())
+    this.listenQuill(this.quill)
   },
   props: {
     container: {
@@ -122,8 +154,12 @@ function getAllOccurrences (regex, str) {
 </script>
 
 <style scoped>
-.editor {
+.wrap {
   height: calc(100% - 40px);
+}
+
+.editor {
+  height: 100%;
   position: relative;
   width: 100%;
 }
@@ -160,6 +196,7 @@ function getAllOccurrences (regex, str) {
 
 .ql-fullscreen {
   fill: #444;
+  min-width: 40px;
   width: auto !important;
 }
 

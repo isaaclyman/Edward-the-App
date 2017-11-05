@@ -87,7 +87,7 @@ export default {
   align-items: center;
   color: #FFF;
   display: flex;
-  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 22px;
   height: 100%;
   justify-content: center;

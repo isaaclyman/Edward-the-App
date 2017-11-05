@@ -5,6 +5,9 @@
         <p>
           <strong>Welcome to Edward.</strong>
         </p>
+        <p>
+          New here? <a href="http://isaaclyman.com/blog/tags/edward/">Read the documentation.</a>
+        </p>
       </div>
       <div class="content border-bottom">
         <div v-if="!hasFiles">
@@ -108,15 +111,20 @@ export default {
 }
 
 .header {
-  align-items: center;
   border-bottom: 1px solid #CCC;
   display: flex;
-  height: 48px;
+  flex-direction: column;
+  height: 75px;
+  justify-content: center;
   padding: 0 12px;
 }
 
 .header /deep/ p {
   margin: 0;
+}
+
+.header /deep/ a {
+  font-family: 'Khula', sans-serif;
 }
 
 .content {

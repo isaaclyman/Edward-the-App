@@ -380,6 +380,7 @@ export default {
   align-items: center;
   display: flex;
   flex-direction: row;
+  height: 35px;
   margin-bottom: 6px;
 }
 

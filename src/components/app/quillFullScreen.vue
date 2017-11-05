@@ -152,11 +152,11 @@ export default {
 .container {
   align-self: center;
   height: calc(100% - 40px);
+  max-width: 500px;
   padding-top: 20px;
-  width: 500px;
 }
 
 .container.wide {
-  width: 1000px;
+  max-width: 1000px;
 }
 </style>

@@ -74,7 +74,7 @@ export const chaptersToPdf = (title, chapters) => {
       for (const op of ops) {
         const insert = op.insert
         const { styles, lineStyles } = getStyles(op.attributes)
-        console.log(styles)
+
         if (lineStyles.length) {
           currentLine.style.push(...lineStyles)
         }
@@ -116,13 +116,18 @@ export const chaptersToPdf = (title, chapters) => {
       }
     }
 
+    let counter = 1
     splitContent.forEach(content => {
       if (content.style.includes('ul')) {
-        content.ul = content.text
+        content.ul = [{ text: content.text }]
+        counter = 1
         content.text = null
       } else if (content.style.includes('ol')) {
-        content.ol = content.text
+        content.ol = [{ text: content.text }]
+        content.start = counter++
         content.text = null
+      } else {
+        counter = 1
       }
       return content
     })

@@ -12,36 +12,163 @@ export const chaptersToPdf = (title, chapters) => {
         body: {
           fontSize: 12
         },
+        bold: {
+          bold: true
+        },
+        blockquote: {
+          italics: true
+        },
         chapterHeading: {
+          fontSize: 20,
+          margin: [5, 10]
+        },
+        h1: {
           fontSize: 18
+        },
+        h2: {
+          fontSize: 16
+        },
+        h3: {
+          fontSize: 14
+        },
+        italic: {
+          italics: true
+        },
+        strike: {
+          decoration: 'lineThrough'
         },
         title: {
           fontSize: 40
+        },
+        underline: {
+          decoration: 'underline'
         }
       }
     }
 
-    const contentArrays = chapters.map(chapter => {
-      const ops = (chapter.content && chapter.content.ops) || []
-      const content = ops.map(op => {
-        const text = op.insert
-        const style = ['body']
+    const splitContent = []
 
-        return { text, style }
-      })
+    function getNewLine () {
+      return {
+        text: [],
+        style: []
+      }
+    }
 
-      content.unshift({
+    function getNewSegment (text, style) {
+      return {
+        text: text || '',
+        style: style || []
+      }
+    }
+
+    for (const chapter of chapters) {
+      splitContent.push({
         text: chapter.title,
         style: 'chapterHeading',
         pageBreak: 'before'
       })
 
+      let currentLine = getNewLine()
+      const ops = (chapter.content && chapter.content.ops) || []
+      for (const op of ops) {
+        const insert = op.insert
+        const { styles, lineStyles } = getStyles(op.attributes)
+        console.log(styles)
+        if (lineStyles.length) {
+          currentLine.style.push(...lineStyles)
+        }
+
+        if (insert === '\n') {
+          splitContent.push(currentLine)
+          currentLine = getNewLine()
+          continue
+        }
+
+        if (insert.includes('\n')) {
+          const [first, ...lines] = insert.split('\n')
+          if (first) {
+            const segment = getNewSegment(first, styles)
+            currentLine.text.push(segment)
+          }
+
+          splitContent.push(currentLine)
+          currentLine = getNewLine()
+
+          for (let ix = 0; ix < lines.length - 1; ix++) {
+            const line = lines[ix]
+            const segment = getNewSegment(line, styles)
+            currentLine.text.push(segment)
+
+            splitContent.push(currentLine)
+            currentLine = getNewLine()
+          }
+
+          const last = lines[lines.length - 1]
+          const segment = getNewSegment(last, styles)
+          currentLine.text.push(segment)
+
+          continue
+        }
+
+        const segment = getNewSegment(insert, styles)
+        currentLine.text.push(segment)
+      }
+    }
+
+    splitContent.forEach(content => {
+      if (content.style.includes('ul')) {
+        content.ul = content.text
+        content.text = null
+      } else if (content.style.includes('ol')) {
+        content.ol = content.text
+        content.text = null
+      }
       return content
     })
 
-    definition.content = definition.content.concat(...contentArrays)
+    console.log(splitContent)
+
+    definition.content = definition.content.concat(...splitContent)
 
     pdfMake.createPdf(definition).download(`${title}.pdf`)
     resolve()
   })
+}
+
+const listMap = {
+  'bullet': 'ul',
+  'ordered': 'ol'
+}
+function getStyles (attributes) {
+  const styles = []
+  const lineStyles = []
+
+  if (!attributes) {
+    return { styles, lineStyles }
+  }
+
+  for (const attr in attributes) {
+    if (['bold', 'italic', 'underline', 'strike'].includes(attr)) {
+      styles.push(attr)
+      continue
+    }
+
+    if (attr === 'header') {
+      lineStyles.push(`h${attributes[attr]}`)
+      continue
+    }
+
+    if (attr === 'blockquote') {
+      lineStyles.push('blockquote')
+      continue
+    }
+
+    if (attr === 'list') {
+      lineStyles.push(listMap[attributes[attr]])
+      continue
+    }
+  }
+
+  return { styles, lineStyles }
 }

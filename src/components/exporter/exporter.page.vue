@@ -83,6 +83,7 @@ export default {
           text: `Could not import the document. DETAILS: "${err}"`,
           title: 'Failure'
         })
+        throw err
       })
     },
     exportDocxChapters () {
@@ -95,6 +96,7 @@ export default {
           icon: 'error',
           text: `Could not export the document. DETAILS: "${err}"`
         })
+        throw err
       })
     },
     exportJsonDocument () {
@@ -107,6 +109,7 @@ export default {
           icon: 'error',
           text: `Could not export the document. DETAILS: "${err}"`
         })
+        throw err
       })
     },
     setFile (event) {

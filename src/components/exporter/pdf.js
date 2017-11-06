@@ -132,8 +132,6 @@ export const chaptersToPdf = (title, chapters) => {
       return content
     })
 
-    console.log(splitContent)
-
     definition.content = definition.content.concat(...splitContent)
 
     pdfMake.createPdf(definition).download(`${title}.pdf`)

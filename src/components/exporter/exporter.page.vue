@@ -5,8 +5,18 @@
         <h3>Export to PDF</h3>
         <div>(You can open PDFs in Microsoft Word.)</div>
         <pulse-loader v-if="loading"></pulse-loader>
-        <button v-if="!loading" class="button-green export-button" @click="exportDocxChapters()">
+        <div class="export-checkbox">
+          <input id="includeArchived" v-if="!loading" type="checkbox" v-model="includeArchived">
+          <label for="includeArchived" v-if="!loading">Include Archived</label>
+        </div>
+        <button v-if="!loading" class="button-green export-button" @click="exportPdfChapters()">
           Export all chapters
+        </button>
+        <button v-if="!loading" class="button-green export-button" @click="exportPdfPlans()">
+          Export all plans
+        </button>
+        <button v-if="!loading" class="button-green export-button" @click="exportPdfOutlines()">
+          Export all outlines
         </button>
       </div>
       <div class="export-option">
@@ -53,15 +63,22 @@ export default {
     allChapters () {
       return this.$store.state.chapters.chapters
     },
+    allPlans () {
+      return this.$store.state.chapters.plans
+    },
     documentId () {
       return this.$store.state.file.currentFile.id
     },
     documentTitle () {
       return this.$store.state.file.currentFile.name
+    },
+    masterTopics () {
+      return this.$store.state.chapters.topics
     }
   },
   data () {
     return {
+      includeArchived: false,
       loading: false
     }
   },
@@ -86,19 +103,6 @@ export default {
         throw err
       })
     },
-    exportDocxChapters () {
-      this.loading = true
-      chaptersToPdf(this.documentTitle, this.allChapters).then(() => {
-        this.loading = false
-      }, err => {
-        this.loading = false
-        swal({
-          icon: 'error',
-          text: `Could not export the document. DETAILS: "${err}"`
-        })
-        throw err
-      })
-    },
     exportJsonDocument () {
       this.loading = true
       backupToJsonFile(this.documentTitle, GetDocumentBackup(this.documentId)).then(() => {
@@ -111,6 +115,91 @@ export default {
         })
         throw err
       })
+    },
+    exportPdfChapters () {
+      this.loading = true
+
+      const chaptersToExport = this.allChapters.filter(chapter =>
+        !chapter.archived || this.includeArchived
+      )
+
+      chaptersToPdf(this.documentTitle, chaptersToExport).then(() => {
+        this.loading = false
+      }, err => {
+        this.loading = false
+        swal({
+          icon: 'error',
+          text: `Could not export the document. DETAILS: "${err}"`
+        })
+        throw err
+      })
+    },
+    exportPdfOutlines () {
+      this.loading = true
+
+      const nestedTopics = this.allChapters.filter(chapter =>
+        !chapter.archived || this.includeArchived
+      ).map(chapter => {
+        const chapterTopics = Object.keys(chapter.topics).map(id => {
+          const topic = chapter.topics[id]
+          const masterTopic = this.getMasterTopic(topic)
+          topic.archived = masterTopic.archived
+          topic.title = `${chapter.title} - ${masterTopic.title}`
+          return topic
+        }).filter(topic =>
+          !topic.archived || this.includeArchived
+        )
+
+        return chapterTopics
+      })
+
+      const topicsArray = [].concat(...nestedTopics)
+
+      chaptersToPdf(`${this.documentTitle}: Outlines`, topicsArray).then(() => {
+        this.loading = false
+      }, err => {
+        this.loading = false
+        swal({
+          icon: 'error',
+          text: `Could not export outlines. DETAILS: "${err}"`
+        })
+        throw err
+      })
+    },
+    exportPdfPlans () {
+      this.loading = true
+      const nestedPlans = this.allPlans.filter(plan =>
+        !plan.archived || this.includeArchived
+      ).map(plan => {
+        return plan.sections.filter(section =>
+          !section.archived || this.includeArchived
+        ).map(section => {
+          const title = plan.title === section.title
+            ? plan.title
+            : `${plan.title} - ${section.title}`
+
+          return {
+            title,
+            content: section.content
+          }
+        })
+      })
+
+      const planArray = [].concat(...nestedPlans)
+
+      chaptersToPdf(`${this.documentTitle}: Plans`, planArray).then(() => {
+        this.loading = false
+      }, err => {
+        this.loading = false
+        swal({
+          icon: 'error',
+          text: `Could not export plans. DETAILS: "${err}"`
+        })
+        throw err
+      })
+    },
+    getMasterTopic (chapterTopic) {
+      return this.masterTopics.find(topic => topic.id === chapterTopic.id)
     },
     setFile (event) {
       swal({
@@ -146,6 +235,10 @@ export default {
 
 .export-option {
   margin-bottom: 16px;
+}
+
+.export-checkbox {
+  margin-top: 8px;
 }
 
 .export-button {

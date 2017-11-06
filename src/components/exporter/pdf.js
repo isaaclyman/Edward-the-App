@@ -16,7 +16,7 @@ export const chaptersToPdf = (title, chapters) => {
           bold: true
         },
         blockquote: {
-          italics: true
+          margin: [10, 10, 0, 10]
         },
         chapterHeading: {
           fontSize: 20,

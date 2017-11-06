@@ -154,6 +154,7 @@ export default {
   height: calc(100% - 40px);
   max-width: 500px;
   padding-top: 20px;
+  width: 100%;
 }
 
 .container.wide {

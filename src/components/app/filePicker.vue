@@ -25,7 +25,7 @@ export default {
   },
   data () {
     return {
-      fileValue: this.currentFile ? this.currentFile.id : ''
+      fileValue: ''
     }
   },
   mounted () {
@@ -34,6 +34,11 @@ export default {
   methods: {
     changeFile (value) {
       const file = this.allFiles.find(file => file.id === this.fileValue)
+
+      if (!file || file.id === this.currentFile.id) {
+        return
+      }
+
       this.$store.dispatch(CHANGE_FILE, file)
     }
   }

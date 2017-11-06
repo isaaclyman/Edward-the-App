@@ -4,11 +4,15 @@
       <file-picker></file-picker>
     </div>
     <div class="menu-item">
-      <button class="menu-button" @click="showWizard()">
-        New
+      <button class="menu-button" @click="showEdit()">
+        Edit
       </button>
       <button class="menu-button" @click="showExport()">
-        Export / Import
+        Download / Upload
+      </button>
+      <hr class="vert-flex">
+      <button class="menu-button" @click="showWizard()">
+        New
       </button>
     </div>
     <div class="spacer"></div>
@@ -44,6 +48,9 @@ export default {
         })
       })
     },
+    showEdit () {
+      this.$router.push('/documentEdit')
+    },
     showExport () {
       this.$router.push('/export')
     },
@@ -72,6 +79,7 @@ export default {
 
 .menu-button {
   color: #FFF;
+  margin: 0 2px;
   padding: 3px 10px;
 }
 

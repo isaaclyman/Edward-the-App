@@ -57,6 +57,7 @@ const store = {
   mutations: {
     // CONTENT
     [NUKE_CONTENT] (state) {
+      state.plans = []
       state.chapters = []
       state.topics = []
     },

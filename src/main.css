@@ -150,6 +150,13 @@ hr.vert {
   width: 1px;
 }
 
+hr.vert-flex {
+  border: non;
+  border-right: 1px solid #CCC;
+  display: inline;
+  margin: 0 10px;
+}
+
 input {
   border: 1px solid #e8cc84;
   border-radius: 2px;

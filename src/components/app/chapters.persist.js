@@ -54,6 +54,28 @@ class ChapterStorage {
     this.storage.removeItem(key)
   }
 
+  deleteDocument (id) {
+    // Remove document from document list
+    let documentIds = this.getAllDocumentIds()
+
+    if (documentIds.includes(id)) {
+      documentIds.splice(documentIds.indexOf(id), 1)
+    }
+
+    this.storage.setItem(this.documentIdsKey, JSON.stringify(documentIds))
+
+    // Remove all content (chapters, plans, sections, topics)
+    this.getAllChapters(id).forEach(chapter => this.deleteChapter(id, chapter.id))
+    this.getAllPlans(id).forEach(plan => {
+      this.getAllSections(id, plan.id).forEach(section => this.deleteSection(id, plan.id, section.id))
+      this.deletePlan(id, plan.id)
+    })
+    this.getAllTopics(id).forEach(topic => this.deleteTopic(id, topic.id))
+
+    // Remove document metadata
+    this.storage.removeItem(this.documentsKey(id))
+  }
+
   deletePlan (fileId, planId) {
     const key = this.getPlanKey(fileId, planId)
     this.storage.removeItem(key)
@@ -193,6 +215,10 @@ class ChapterStorage {
       sortOrder.push(chapterId)
       this.arrangeChapters(fileId, sortOrder)
     }
+  }
+
+  updateDocument ({ id, name }) {
+    this.storage.setItem(this.documentsKey(id), JSON.stringify({ id, name }))
   }
 
   updatePlan (fileId, planId, plan) {

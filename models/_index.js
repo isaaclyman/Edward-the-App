@@ -7,6 +7,7 @@ module.exports = function (sequelize) {
   */
 
   const User = sequelize.import(path.join(__dirname, 'user'))
+  const Order = sequelize.import(path.join(__dirname, 'order'))
   const AccountType = sequelize.import(path.join(__dirname, 'accountType'))
   const Doc = sequelize.import(path.join(__dirname, 'document'))
   const Plan = sequelize.import(path.join(__dirname, 'plan'))
@@ -32,6 +33,7 @@ module.exports = function (sequelize) {
   const db = {
     sequelize: sequelize,
     User,
+    Order,
     AccountType,
     accountTypes,
     Doc,
@@ -47,6 +49,9 @@ module.exports = function (sequelize) {
   */
 
   User.belongsTo(AccountType)
+
+  Order.belongsTo(User)
+  User.hasMany(Order)
 
   Doc.belongsTo(User)
   User.hasMany(Doc)

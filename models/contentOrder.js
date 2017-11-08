@@ -1,12 +1,8 @@
 module.exports = function (sequelize, DataTypes) {
-  return sequelize.define('order', {
+  return sequelize.define('content_order', {
     ownerGuid: {
-      allowNull: true,
+      allowNull: false,
       type: DataTypes.UUID
-    },
-    ownerType: {
-      allowNull: true,
-      type: DataTypes.STRING
     },
     order: {
       allowNull: false,

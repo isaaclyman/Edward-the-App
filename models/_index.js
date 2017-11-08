@@ -7,9 +7,10 @@ module.exports = function (sequelize) {
   */
 
   const User = sequelize.import(path.join(__dirname, 'user'))
-  const Order = sequelize.import(path.join(__dirname, 'order'))
   const AccountType = sequelize.import(path.join(__dirname, 'accountType'))
   const Doc = sequelize.import(path.join(__dirname, 'document'))
+  const DocOrder = sequelize.import(path.join(__dirname, 'documentOrder'))
+  const ContentOrder = sequelize.import(path.join(__dirname, 'contentOrder'))
   const Plan = sequelize.import(path.join(__dirname, 'plan'))
   const Section = sequelize.import(path.join(__dirname, 'section'))
   const Chapter = sequelize.import(path.join(__dirname, 'chapter'))
@@ -33,10 +34,11 @@ module.exports = function (sequelize) {
   const db = {
     sequelize: sequelize,
     User,
-    Order,
     AccountType,
     accountTypes,
     Doc,
+    DocOrder,
+    ContentOrder,
     Plan,
     Section,
     Chapter,
@@ -50,8 +52,11 @@ module.exports = function (sequelize) {
 
   User.belongsTo(AccountType)
 
-  Order.belongsTo(User)
-  User.hasMany(Order)
+  DocOrder.belongsTo(User)
+  User.hasOne(DocOrder)
+
+  ContentOrder.belongsTo(User)
+  User.hasMany(ContentOrder)
 
   Doc.belongsTo(User)
   User.hasMany(Doc)

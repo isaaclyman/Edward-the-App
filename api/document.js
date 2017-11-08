@@ -13,54 +13,119 @@ module.exports = function (app, passport, db) {
   app.post(route('document/add'), isPremiumUser, (req, res, next) => {
     const document = req.body
     const userId = req.user.id
-    db.Doc.findOne({
+    db.DocOrder.findOne({
       where: {
-        guid: document.guid,
         userId
       }
     }).then(doc => {
       if (doc) {
-        return res.status(409).send('Could not create document. A document with this ID already exists for the current user.')
+        res.status(409).send('Could not create document. A document with this ID already exists for the current user.')
+        return
       }
 
-      db.Order.findCreateFind({
+      return db.DocOrder.findCreateFind({
         where: {
-          ownerType: 'document',
           userId
         },
         defaults: {
-          ownerGuid: null,
-          ownerType: 'document',
-          order: []
+          order: [],
+          userId
         }
-      }).then(([order]) => {
-        const savePromises = []
-
-        order.order.push(document.guid)
-        savePromises.push(order.save())
-
-        const newDoc = new db.Doc()
-        newDoc.guid = document.guid
-        newDoc.name = document.name
-        newDoc.userId = req.user.id
-
-        savePromises.push(newDoc.save())
-
-        Promise.all(savePromises).then(() => {
-          return res.status(200).send(`Document ${document.name} created.`)
-        }, err => {
-          console.log(err)
-          return res.status(500).send(err)
-        })
-      }, err => {
-        console.log(err)
-        res.status(500).send(err)
       })
+    }).then(([docOrder]) => {
+      docOrder.order.push(document.id)
+      return docOrder.save()
+    }).then(() => {
+      const newDoc = new db.Doc()
+      newDoc.guid = document.id
+      newDoc.name = document.name
+      newDoc.userId = req.user.id
+
+      return newDoc.save()
+    }).then(() => {
+      res.status(200).send(`Document ${document.name} created.`)
     }, err => {
       console.log(err)
       res.status(500).send(err)
     })
   })
 
-  app.post(route('document/delete'), isPremiumUser, (req, res, next) => {})
+  app.post(route('document/delete'), isPremiumUser, (req, res, next) => {
+    const document = req.body
+    const userId = req.user.id
+
+    db.DocOrder.findOne({
+      where: {
+        userId
+      }
+    }).then(docOrder => {
+      const indexToRemove = docOrder.order.indexOf(document.id)
+
+      if (~indexToRemove) {
+        docOrder.order.splice(indexToRemove, 1)
+        return docOrder.save()
+      }
+
+      return indexToRemove
+    }).then(() => {
+      return db.Doc.destroy({
+        where: {
+          guid: document.id,
+          userId
+        }
+      })
+    }).then(() => {
+      res.status(200).send(`Document ${document.name} deleted.`)
+    }, err => {
+      console.log(err)
+      res.status(500).send(err)
+    })
+  })
+
+  app.get(route('documents'), isPremiumUser, (req, res, next) => {
+    const userId = req.user.id
+    let docOrder, documents
+
+    db.DocOrder.findOne({
+      where: {
+        userId
+      }
+    }).then(dbDocOrder => {
+      docOrder = dbDocOrder
+      return db.Doc.findAll({
+        where: {
+          userId
+        }
+      })
+    }).then(dbDocuments => {
+      documents = dbDocuments
+
+      let orderOutOfDate = false
+      documents.forEach(doc => {
+        if (!~docOrder.order.indexOf(doc.guid)) {
+          orderOutOfDate = true
+          docOrder.order.push(doc.guid)
+        }
+      })
+
+      if (orderOutOfDate) {
+        return docOrder.save()
+      }
+
+      return orderOutOfDate
+    }).then(() => {
+      documents.sort((doc1, doc2) => {
+        return docOrder.order.indexOf(doc1.guid) - docOrder.order.indexOf(doc2.guid)
+      })
+
+      res.status(200).send(documents)
+    }, err => {
+      console.log(err)
+      res.status(500).send(err)
+    })
+  })
+
+  app.get(route('document'), isPremiumUser, (req, res, next) => {
+
+  })
 }

@@ -1,4 +1,4 @@
-import ChapterStorage from './chapters.persist'
+import { storageApiPromise } from '../api/storageSwitch'
 import guid from './guid'
 import { LOAD_CONTENT, NUKE_CONTENT } from './chapters.store'
 
@@ -6,11 +6,11 @@ export const ADD_FILE = 'ADD_FILE'
 export const CHANGE_FILE = 'CHANGE_FILE'
 export const DELETE_DOCUMENT = 'DELETE_DOCUMENT'
 export const INIT_FILES = 'INIT_FILES'
+export const REMOVE_OWNED_FILE = 'REMOVE_OWNED_FILE'
 export const SET_UP_DOCUMENT = 'SET_UP_DOCUMENT'
 export const UNLOAD_CURRENT_DOCUMENT = 'UNLOAD_CURRENT_DOCUMENT'
 export const UPDATE_FILE_NAME = 'UPDATE_FILE_NAME'
 
-const REMOVE_OWNED_FILE = 'REMOVE_OWNED_FILE'
 const LOAD_FILES = 'LOAD_FILES'
 const UPDATE_FILE_METADATA = 'UPDATE_FILE_METADATA'
 
@@ -25,14 +25,6 @@ const cache = {
   }
 }
 
-export const GetDocumentBackup = (fileId) => {
-  const chapters = ChapterStorage.getAllChapters(fileId)
-  const plans = ChapterStorage.getAllPlans(fileId)
-  const topics = ChapterStorage.getAllTopics(fileId)
-
-  return { chapters, plans, topics }
-}
-
 const store = {
   state: {
     currentFile: null, // file { id String, name String }
@@ -41,31 +33,36 @@ const store = {
   actions: {
     [CHANGE_FILE] ({ commit, dispatch }, { id, name }) {
       return dispatch(UNLOAD_CURRENT_DOCUMENT).then(() => {
-        const chapters = ChapterStorage.getAllChapters(id)
-        const plans = ChapterStorage.getAllPlans(id)
-        const topics = ChapterStorage.getAllTopics(id)
+        return storageApiPromise.then(storage => {
+          // Get the new file from storage
+          const promises = [storage.getAllChapters(id), storage.getAllPlans(id), storage.getAllTopics(id)]
 
-        commit(LOAD_CONTENT, { plans, chapters, topics })
-        commit(UPDATE_FILE_METADATA, { id, name })
+          return Promise.all(promises).then(([chapters, plans, topics]) => {
+            commit(LOAD_CONTENT, { plans, chapters, topics })
+            commit(UPDATE_FILE_METADATA, { id, name })
 
-        cache.setCurrentFile({ id, name })
-        return Promise.resolve()
+            cache.setCurrentFile({ id, name })
+          }, err => {
+            throw err
+          })
+        })
       })
     },
     [DELETE_DOCUMENT] ({ commit, dispatch }, { id }) {
       dispatch(UNLOAD_CURRENT_DOCUMENT).then(() => {
-        ChapterStorage.deleteDocument(id)
-        commit(REMOVE_OWNED_FILE, id)
+        commit(REMOVE_OWNED_FILE, { id })
       })
     },
     [INIT_FILES] ({ commit, dispatch }) {
-      const documents = ChapterStorage.getAllDocuments()
-      commit(LOAD_FILES, documents)
-
-      const currentFile = cache.getCurrentFile()
-      if (currentFile) {
-        dispatch(CHANGE_FILE, currentFile)
-      }
+      return storageApiPromise.then(storage => {
+        return storage.getAllDocuments().then(documents => {
+          commit(LOAD_FILES, documents)
+          const currentFile = cache.getCurrentFile()
+          if (currentFile) {
+            dispatch(CHANGE_FILE, currentFile)
+          }
+        })
+      })
     },
     [SET_UP_DOCUMENT] ({ commit, dispatch }, { file, type }) {
       commit(ADD_FILE, file)
@@ -98,7 +95,10 @@ const store = {
         }))
 
         commit(LOAD_CONTENT, { plans, chapters, topics })
-        ChapterStorage.saveEverything(file.id, { chapters, plans, topics })
+
+        return storageApiPromise.then(storage => {
+          return storage.saveAllContent(file.id, { chapters, plans, topics })
+        })
       })
     },
     [UNLOAD_CURRENT_DOCUMENT] ({ commit }) {
@@ -110,14 +110,13 @@ const store = {
     }
   },
   mutations: {
-    [ADD_FILE] (state, file) {
-      state.ownedFiles.push(file)
-      ChapterStorage.addDocument(file)
+    [ADD_FILE] (state, { id, name }) {
+      state.ownedFiles.push({ id, name })
     },
     [LOAD_FILES] (state, files) {
       state.ownedFiles = files
     },
-    [REMOVE_OWNED_FILE] (state, id) {
+    [REMOVE_OWNED_FILE] (state, { id }) {
       let fileIndex
       state.ownedFiles.some((file, index) => {
         if (file.id === id) {
@@ -132,7 +131,6 @@ const store = {
     },
     [UPDATE_FILE_NAME] (state, { id, name }) {
       state.currentFile.name = name
-      ChapterStorage.updateDocument({ id, name })
       cache.setCurrentFile({ id, name })
 
       state.ownedFiles.some(file => {

@@ -10,16 +10,42 @@ module.exports = function (app, passport, db) {
   app.get('/login', (req, res) => { res.redirect('/auth') })
 
   // Serve main app
-  app.get('/app', httpsMiddleware, isLoggedIn, (req, res) => {
+  app.get('/app', httpsMiddleware, isLoggedInMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, '../dist/app.html'))
   })
 
   // Serve user signup, login, logout, verify, and passreset pages
-  require('./user')(app, passport, db, isLoggedIn)
-  require('./document')(app, passport, db)
+  require('./user')(app, passport, db, isPremiumUser, isLoggedInMiddleware)
+  require('./document')(app, passport, db, isPremiumUserMiddleware)
+  require('./chapter')(app, passport, db, isPremiumUserMiddleware)
+
+  const premiumTypes = [db.accountTypes.PREMIUM, db.accountTypes.GOLD, db.accountTypes.ADMIN]
+  function isPremiumUser (accountType) {
+    return premiumTypes.includes(accountType)
+  }
+
+  function isPremiumUserMiddleware (req, res, next) {
+    if (!req.isAuthenticated()) {
+      res.status(401).send('Attempted a storage API call without authentication.')
+    }
+
+    db.User.findOne({
+      where: { id: req.user.id },
+      include: [db.AccountType]
+    }).then(user => {
+      const accountType = user['account_type']
+
+      if (!isPremiumUser(accountType)) {
+        res.status(401).send('Attempted a storage API call with a limited account.')
+        return
+      }
+    })
+
+    return next()
+  }
 }
 
-function isLoggedIn (req, res, next) {
+function isLoggedInMiddleware (req, res, next) {
   if (req.isAuthenticated()) {
     return next()
   }

@@ -1,6 +1,6 @@
 const request = require('request-promise-native')
 
-module.exports = function (app, passport, db, isLoggedIn) {
+module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
   const route = route => `/api/user/${route}`
 
   const verifyCaptchaToken = (req) => {
@@ -45,11 +45,11 @@ module.exports = function (app, passport, db, isLoggedIn) {
         where: { id: user.id },
         include: [db.AccountType]
       }).then(user => {
-        debugger
         const accountType = user['account_type']
         const response = {
           accountType: db.accountTypes[accountType.name],
-          email: user.email
+          email: user.email,
+          isPremium: isPremiumUser(accountType)
         }
         resolve(response)
       }, () => {

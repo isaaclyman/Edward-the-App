@@ -1,14 +1,5 @@
-function isPremiumUser (req, res, next) {
-  if (!req.isAuthenticated()) {
-    res.status(401).send('Attempted a storage API call without authentication.')
-  }
-
-  console.log(req.user)
-  res.status(503).send()
-}
-
-module.exports = function (app, passport, db) {
-  const route = route => `/api/storage/${route}`
+module.exports = function (app, passport, db, isPremiumUser) {
+  const route = route => `/api/${route}`
 
   app.post(route('document/add'), isPremiumUser, (req, res, next) => {
     const document = req.body
@@ -123,9 +114,5 @@ module.exports = function (app, passport, db) {
       console.log(err)
       res.status(500).send(err)
     })
-  })
-
-  app.get(route('document'), isPremiumUser, (req, res, next) => {
-
   })
 }

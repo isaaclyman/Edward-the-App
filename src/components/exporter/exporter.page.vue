@@ -50,7 +50,6 @@
 <script>
 import { backupToJsonFile, jsonFileToBackup } from './json'
 import { chaptersToPdf } from './pdf'
-import { GetDocumentBackup } from '../app/file.store'
 import { LOAD_CONTENT } from '../app/chapters.store'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import swal from 'sweetalert'
@@ -65,6 +64,9 @@ export default {
     },
     allPlans () {
       return this.$store.state.chapters.plans
+    },
+    allTopics () {
+      return this.$store.state.chapters.topics
     },
     documentId () {
       return this.$store.state.file.currentFile.id
@@ -105,7 +107,14 @@ export default {
     },
     exportJsonDocument () {
       this.loading = true
-      backupToJsonFile(this.documentTitle, GetDocumentBackup(this.documentId)).then(() => {
+
+      const backup = {
+        chapters: this.allChapters,
+        plans: this.allPlans,
+        topics: this.allTopics
+      }
+
+      backupToJsonFile(this.documentTitle, backup).then(() => {
         this.loading = false
       }, err => {
         this.loading = false

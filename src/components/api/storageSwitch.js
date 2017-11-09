@@ -6,10 +6,10 @@ export const storageApiPromise = new Promise((resolve) => {
   storageApiResolve = resolve
 })
 
-export function getStorageApi (user) {
+export function getStorageApi (user, state) {
   let storage
   if (user && user.isPremium) {
-    storage = new ServerStorageApi()
+    storage = new ServerStorageApi(state)
   } else {
     storage = new LocalStorageApi()
   }

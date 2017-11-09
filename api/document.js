@@ -1,11 +1,13 @@
 module.exports = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
 
+  // POST { id, name }
   app.post(route('document/add'), isPremiumUser, (req, res, next) => {
     const document = req.body
     const userId = req.user.id
     db.DocOrder.findOne({
       where: {
+        id: document.guid,
         userId
       }
     }).then(doc => {
@@ -25,7 +27,9 @@ module.exports = function (app, passport, db, isPremiumUser) {
       })
     }).then(([docOrder]) => {
       docOrder.order.push(document.id)
-      return docOrder.save()
+      return docOrder.update({
+        order: docOrder.order
+      })
     }).then(() => {
       const newDoc = new db.Doc()
       newDoc.guid = document.id
@@ -34,13 +38,14 @@ module.exports = function (app, passport, db, isPremiumUser) {
 
       return newDoc.save()
     }).then(() => {
-      res.status(200).send(`Document ${document.name} created.`)
+      res.status(200).send(`Document "${document.name}" created.`)
     }, err => {
       console.log(err)
       res.status(500).send(err)
     })
   })
 
+  // POST { id }
   app.post(route('document/delete'), isPremiumUser, (req, res, next) => {
     const document = req.body
     const userId = req.user.id
@@ -66,13 +71,35 @@ module.exports = function (app, passport, db, isPremiumUser) {
         }
       })
     }).then(() => {
-      res.status(200).send(`Document ${document.name} deleted.`)
+      res.status(200).send(`Document "${document.id}" deleted.`)
     }, err => {
       console.log(err)
       res.status(500).send(err)
     })
   })
 
+  // POST { id, name } UPDATES name
+  app.post(route('document/update'), isPremiumUser, (req, res, next) => {
+    const document = req.body
+    const userId = req.user.id
+
+    db.Doc.findOne({
+      where: {
+        guid: document.id,
+        userId
+      }
+    }).then(dbDoc => {
+      dbDoc.name = document.name
+      return dbDoc.save()
+    }).then(() => {
+      res.status(200).send(`Document "${document.name}" updated.`)
+    }, err => {
+      console.log(err)
+      res.status(500).send()
+    })
+  })
+
+  // GET
   app.get(route('documents'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
     let docOrder, documents

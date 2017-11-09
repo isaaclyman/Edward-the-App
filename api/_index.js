@@ -19,9 +19,9 @@ module.exports = function (app, passport, db) {
   require('./document')(app, passport, db, isPremiumUserMiddleware)
   require('./chapter')(app, passport, db, isPremiumUserMiddleware)
 
-  const premiumTypes = [db.accountTypes.PREMIUM, db.accountTypes.GOLD, db.accountTypes.ADMIN]
+  const premiumTypes = [db.accountTypes.PREMIUM.name, db.accountTypes.GOLD.name, db.accountTypes.ADMIN.name]
   function isPremiumUser (accountType) {
-    return premiumTypes.includes(accountType)
+    return premiumTypes.includes(accountType.name)
   }
 
   function isPremiumUserMiddleware (req, res, next) {

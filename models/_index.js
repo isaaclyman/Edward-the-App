@@ -61,18 +61,28 @@ module.exports = function (sequelize) {
   Doc.belongsTo(User)
   User.hasMany(Doc)
 
+  Plan.belongsTo(User)
+  User.hasMany(Plan)
   Plan.belongsTo(Doc)
   Doc.hasMany(Plan)
 
+  Section.belongsTo(User)
+  User.hasMany(Section)
   Section.belongsTo(Plan)
   Plan.hasMany(Section)
 
+  Chapter.belongsTo(User)
+  User.hasMany(Chapter)
   Chapter.belongsTo(Doc)
   Doc.hasMany(Chapter)
 
+  ChapterTopic.belongsTo(User)
+  User.hasMany(ChapterTopic)
   ChapterTopic.belongsTo(Chapter)
   Chapter.hasMany(ChapterTopic)
 
+  MasterTopic.belongsTo(User)
+  User.hasMany(MasterTopic)
   MasterTopic.belongsTo(Doc)
   Doc.hasMany(MasterTopic)
 

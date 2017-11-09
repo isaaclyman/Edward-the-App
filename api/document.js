@@ -40,7 +40,7 @@ module.exports = function (app, passport, db, isPremiumUser) {
     }).then(() => {
       res.status(200).send(`Document "${document.name}" created.`)
     }, err => {
-      console.log(err)
+      console.error(err)
       res.status(500).send(err)
     })
   })
@@ -73,7 +73,7 @@ module.exports = function (app, passport, db, isPremiumUser) {
     }).then(() => {
       res.status(200).send(`Document "${document.id}" deleted.`)
     }, err => {
-      console.log(err)
+      console.error(err)
       res.status(500).send(err)
     })
   })
@@ -94,7 +94,7 @@ module.exports = function (app, passport, db, isPremiumUser) {
     }).then(() => {
       res.status(200).send(`Document "${document.name}" updated.`)
     }, err => {
-      console.log(err)
+      console.error(err)
       res.status(500).send()
     })
   })
@@ -138,7 +138,7 @@ module.exports = function (app, passport, db, isPremiumUser) {
 
       res.status(200).send(documents)
     }, err => {
-      console.log(err)
+      console.error(err)
       res.status(500).send(err)
     })
   })

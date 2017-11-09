@@ -66,7 +66,7 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
     getUserResponse(req.user).then(response => {
       res.status(200).send(response)
     }, err => {
-      console.log(err)
+      console.error(err)
       res.status(500).send()
     })
   })

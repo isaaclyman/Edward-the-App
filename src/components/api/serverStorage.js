@@ -7,6 +7,10 @@ class ServerStorageApi {
     })
   }
 
+  getAllDocuments () {
+    return api.getDocuments()
+  }
+
   deleteDocument (id) {
     return api.deleteDocument({ id })
   }
@@ -15,7 +19,9 @@ class ServerStorageApi {
     return api.updateDocument({ id, name })
   }
 
-  deleteChapter (fileId, chapterId) {}
+  deleteChapter (fileId, chapterId) {
+    return api.deleteChapter({ fileId, chapterId })
+  }
 
   deletePlan (fileId, planId) {}
 
@@ -23,7 +29,17 @@ class ServerStorageApi {
 
   deleteTopic (fileId, topicId) {}
 
-  arrangeChapters (fileId, chapterIds) {}
+  getAllChapters (fileId) {
+    return api.getChapters(fileId)
+  }
+
+  getAllPlans (fileId) {}
+
+  getAllTopics (fileId) {}
+
+  arrangeChapters (fileId, chapterIds) {
+    return api.arrangeChapters({ fileId, chapterIds })
+  }
 
   arrangePlans (fileId, planIds) {}
 
@@ -31,13 +47,17 @@ class ServerStorageApi {
 
   arrangeTopics (fileId, topicIds) {}
 
-  updateChapter (fileId, chapterId, chapter) {}
+  updateChapter (fileId, chapterId, chapter) {
+    return api.updateChapter({ fileId, chapterId, chapter })
+  }
 
   updatePlan (fileId, planId, plan) {}
 
   updateSection (fileId, planId, sectionId, section) {}
 
   updateTopic (fileId, topicId, topic) {}
+
+  saveAllContent (fileId, { chapters, plans, topics }) {}
 }
 
 export default ServerStorageApi

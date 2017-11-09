@@ -26,6 +26,11 @@ class Api {
   deleteDocument (doc) { return this.simplePost(route('document/delete'), doc) }
   getDocuments () { return this.simpleGet(route('documents')) }
   updateDocument (doc) { return this.simplePost(route('document/update'), doc) }
+
+  arrangeChapters (data) { return this.simplePost(route('chapter/arrange'), data) }
+  deleteChapter (data) { return this.simplePost(route('chapter/delete'), data) }
+  getChapters (fileId) { return this.simpleGet(route(`chapters/${fileId}`)) }
+  updateChapter (data) { return this.simplePost(route('chapter/update'), data) }
 }
 
 export default new Api()

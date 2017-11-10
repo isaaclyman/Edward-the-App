@@ -1,6 +1,6 @@
 <template>
   <div class="composer-wrap">
-    <div class="composer" v-if="allChapters.length > 0">
+    <div class="composer" v-if="hasChapters">
       <div class="map-wrap">
         <text-map :editor-element="editorElement" :data-stream="activeChapter.content"
                   @select="selectMap" :mark="mark"></text-map>
@@ -60,7 +60,7 @@
         </div>
         <!-- Document Plans -->
         <div class="sidebar-content" v-show="showPlans">
-          <template v-if="allPlans.length">
+          <template v-if="hasPlans">
             <plans-list :filter-plans="showPlan" :filter-sections="showSection"></plans-list>
           </template>
           <template v-else>
@@ -72,7 +72,7 @@
         </div>
         <!-- Chapter Outlines -->
         <div class="sidebar-content" v-show="!showPlans">
-          <template v-if="allTopics.length">
+          <template v-if="hasTopics">
             <div class="topic-list-wrap">
               <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
             </div>
@@ -166,6 +166,15 @@ export default {
     },
     documentWordCount () {
       return this.getWordCount(this.documentFullText)
+    },
+    hasChapters () {
+      return this.allChapters && this.allChapters.length
+    },
+    hasPlans () {
+      return this.allPlans && this.allPlans.length
+    },
+    hasTopics () {
+      return this.allTopics && this.allTopics.length
     },
     mark () {
       return this.selection.text

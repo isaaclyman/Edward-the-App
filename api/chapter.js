@@ -201,7 +201,7 @@ module.exports = function (app, passport, db, isPremiumUser) {
 
       return Promise.all(topicPromises)
     }).then(() => {
-      res.status(200).send(`Chapter "${chapter.title}" created.`)
+      res.status(200).send(`Chapter "${chapter.title}" updated.`)
     }, err => {
       console.error(err)
       res.status(500).send(err)

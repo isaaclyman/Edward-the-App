@@ -43,7 +43,7 @@ export default {
     listenQuill (quill) {
       quill.on('text-change', debounce(() => {
         this.emitContent(quill.getContents())
-      }, 250))
+      }, 1000))
 
       quill.on('selection-change', debounce((range) => {
         if (!range) {

@@ -38,7 +38,7 @@ export const chapterAutosaverPlugin = store => {
   store.subscribe((mutation, state) => {
     // Make sure we know the user type before handling mutations
     state.user.userPromise.then(user => {
-      const storage = getStorageApi(user, state)
+      const storage = getStorageApi(user)
       handleMutation(mutation, state, storage)
     })
   })

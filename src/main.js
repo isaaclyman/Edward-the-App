@@ -13,7 +13,7 @@ import './main.css'
 import store from './store'
 
 /* eslint-disable no-new */
-new Vue({
+export default new Vue({
   el: '#app',
   components: { App },
   router,

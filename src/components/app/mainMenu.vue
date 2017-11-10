@@ -7,9 +7,24 @@
           <div>{{route.name}}</div>
         </button>
       </router-link>
-      <hr class="vert" :key="route.name"></hr>
+      <hr class="vert between" :key="route.name"></hr>
     </template>
     <div class="spacer"></div>
+    <div class="status-wrap">
+      <div class="status">
+        <div class="status-saving" :class="{ 'show': isSaving }">
+          Saving...
+        </div>
+        <div class="status-saved" :class="{ 'show': !isSaving && !saveError }">
+          Saved <span v-html="savedIcon"></span>
+        </div>
+        <div class="status-error" :class="{ 'show': !isSaving && saveError }" v-show="saveError"
+             :title="saveErrorText" v-tooltip>
+          Error <span v-html="errorIcon"></span>
+        </div>
+      </div>
+    </div>
+    <hr class="vert">
     <div class="account">
       <div class="email">
         {{ email }}
@@ -32,10 +47,21 @@ export default {
     },
     email () {
       return this.$store.state.user.user.email || ''
+    },
+    saveError () {
+      return this.$store.state.status.error
+    },
+    saving () {
+      return this.$store.state.status.saving
     }
   },
   data () {
     return {
+      errorIcon: Octicons.alert.toSVG({
+        height: 15,
+        width: 15
+      }),
+      isSaving: false,
       routes: [{
         icon: 'telescope',
         location: '/plan',
@@ -56,7 +82,13 @@ export default {
         location: '/analyze',
         name: 'Analyze',
         tooltip: 'Get data-driven insights into your writing.'
-      }]
+      }],
+      savedIcon: Octicons.check.toSVG({
+        height: 15,
+        width: 15
+      }),
+      saveErrorText: `Your work may not be saved. Please check your Internet connection.`,
+      savingDebouncer: setTimeout(() => {})
     }
   },
   directives: {
@@ -69,6 +101,20 @@ export default {
         height: 25,
         width: 25
       })
+    }
+  },
+  watch: {
+    // A bit of trickery to make the "Saving" indicator show for at least 500ms.
+    // This comforts me.
+    saving (saving) {
+      if (saving) {
+        this.isSaving = true
+      }
+
+      clearTimeout(this.savingDebouncer)
+      this.savingDebouncer = setTimeout(() => {
+        this.isSaving = this.saving
+      }, 500)
     }
   }
 }
@@ -100,12 +146,58 @@ export default {
   color: #000;
 }
 
-hr.vert:last-of-type {
+hr.between:last-of-type {
   display: none;
 }
 
 .spacer {
   flex: 1;
+}
+
+.status-wrap {
+  align-items: center;
+  display: flex;
+  font-size: 17px;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.status {
+  cursor: default;
+  height: 20px;
+  position: relative;
+  text-align: right;
+  width: 65px;
+}
+
+.status-saving {
+  color: orange;
+  fill: orange;
+}
+
+.status-saved {
+  color: green;
+  fill: green;
+}
+
+.status-error {
+  color: red;
+  fill: red;
+}
+
+.status-saving, .status-saved, .status-error {
+  cursor: default;
+  opacity: 0;
+  position: absolute;
+  transition: opacity 500ms;
+}
+
+.status-saving.show, .status-saved.show, .status-error.show {
+  opacity: 1;
+}
+
+.account {
+  margin-left: 8px;
 }
 
 .email {

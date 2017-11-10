@@ -25,3 +25,11 @@ npm run server
 # serve Node server app with auto reload at localhost:3000
 npm run server-dev 
 ```
+
+For local development, you'll need a root-level `.env` file with the following keys:
+
+`DATABASE_URL={connectionString}`: A connection string for a local Postgres database. An empty database with a `public` schema and no tables should be sufficient; the ORM will create the tables and relations automatically.
+`DEBUG_DB={true|false}`: When true, all database calls will be logged to the server console.
+`INSECURE_COOKIES={true|false}`: When true, the "secure" parameter will not be set for auth cookies. This is required for local development.
+`RECAPTCHA_SECRET={secret}`: A valid Google Recaptcha site secret. If you're developing locally on /auth, you'll also need to set `window.recaptchaSiteKey` to a valid site key after page load. By default, this is set in `auth.html`.
+`SESSION_COOKIE_SECRET={secret}`: A secret to use for encrypting and decrypting session cookies.

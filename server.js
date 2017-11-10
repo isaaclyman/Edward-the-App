@@ -63,7 +63,7 @@ db.sync.then(() => {
     cookie: {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       // Set "null" for a temporary cookie (expires when browser session ends)
-      secure: !process.env.INSECURE_COOKIES
+      secure: process.env.INSECURE_COOKIES !== 'true'
     }
   }))
   sessionStore.sync()

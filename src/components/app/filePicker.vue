@@ -35,7 +35,7 @@ export default {
     changeFile (value) {
       const file = this.allFiles.find(file => file.id === this.fileValue)
 
-      if (!file || file.id === this.currentFile.id) {
+      if (!file || (this.currentFile && (file.id === this.currentFile.id))) {
         return
       }
 

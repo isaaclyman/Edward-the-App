@@ -143,10 +143,10 @@ export default {
       return this.allChapters[this.activeChapterIndex] || {}
     },
     allChapters () {
-      return this.$store.state.chapters.chapters
+      return this.$store.state.chapters.chapters || []
     },
     allTopics () {
-      return this.$store.state.chapters.topics
+      return this.$store.state.chapters.topics || []
     },
     viewingChapters () {
       return (this.allChapters

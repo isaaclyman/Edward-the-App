@@ -34,4 +34,4 @@ For local development, you'll need a root-level `.env` file with the following k
 `RECAPTCHA_SECRET={secret}`: A valid Google Recaptcha site secret. If you're developing locally on /auth, you'll also need to set `window.recaptchaSiteKey` to a valid site key after page load. By default, this is set in `auth.html`.
 `SESSION_COOKIE_SECRET={secret}`: A secret to use for encrypting and decrypting session cookies.
 
-API requests will automatically be proxied from port 8080 to port 3000. For full-stack development, you can run `npm run dev` and `npm run server-dev` side by side. Make sure to visit `/app` instead of `/app.html`.
+API requests will automatically be proxied from port 8080 to port 3000. For full-stack development, you can run `npm run dev` and `npm run server-dev` side by side.

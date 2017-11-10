@@ -53,14 +53,17 @@ const store = {
         commit(REMOVE_OWNED_FILE, { id })
       })
     },
-    [INIT_FILES] ({ commit, dispatch }) {
+    [INIT_FILES] ({ commit, dispatch, state }) {
       return storageApiPromise.then(storage => {
         return storage.getAllDocuments().then(documents => {
           commit(LOAD_FILES, documents)
           const currentFile = cache.getCurrentFile()
-          if (currentFile) {
-            dispatch(CHANGE_FILE, currentFile)
+
+          if (!currentFile || !state.ownedFiles.some(file => file.id === currentFile.id)) {
+            return
           }
+
+          dispatch(CHANGE_FILE, currentFile)
         })
       })
     },

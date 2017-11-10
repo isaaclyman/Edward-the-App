@@ -29,6 +29,11 @@ module.exports = function (app, passport, db, isPremiumUser) {
       res.status(200).send()
     }, err => {
       console.error(err)
+
+      if (res.headersSent) {
+        return
+      }
+
       res.status(500).send(err)
     })
   })
@@ -78,7 +83,9 @@ module.exports = function (app, passport, db, isPremiumUser) {
 
       if (~indexToRemove) {
         dbContentOrder.order.splice(indexToRemove, 1)
-        return dbContentOrder.save()
+        return dbContentOrder.update({
+          order: dbContentOrder.order
+        })
       }
 
       return indexToRemove
@@ -103,21 +110,26 @@ module.exports = function (app, passport, db, isPremiumUser) {
     const userId = req.user.id
     let dbChapterId
 
-    db.Chapter.findCreateFind({
+    db.Doc.findOne({
       where: {
-        guid: chapter.id,
-        userId
-      },
-      include: [{
-        model: db.Doc,
-        where: {
-          guid: documentId
-        }
-      }],
-      defaults: {
-        guid: chapter.id,
+        guid: documentId,
         userId
       }
+    }).then(dbDoc => {
+      return db.Chapter.findCreateFind({
+        where: {
+          documentId: dbDoc.id,
+          guid: chapter.id,
+          userId
+        },
+        defaults: {
+          archived: false,
+          documentId: dbDoc.id,
+          guid: chapter.id,
+          title: '',
+          userId
+        }
+      })
     }).then(([dbChapter, created]) => {
       dbChapterId = dbChapter.id
       const update = {
@@ -126,28 +138,30 @@ module.exports = function (app, passport, db, isPremiumUser) {
         title: chapter.title
       }
 
-      const document = dbChapter['document']
-      if (created) {
-        update.documentId = document.id
-      }
-
       return dbChapter.update(update)
     }).then(() => {
-      return db.ContentOrder.findOne({
+      return db.ContentOrder.findCreateFind({
         where: {
+          ownerGuid: documentId,
+          userId
+        },
+        defaults: {
+          order: [],
           ownerGuid: documentId,
           userId
         }
       })
-    }).then(dbContentOrder => {
+    }).then(([dbContentOrder]) => {
       if (dbContentOrder.order.includes(chapter.id)) {
         return chapter.id
       }
 
       dbContentOrder.order.push(chapter.id)
-      return dbContentOrder.save()
+      return dbContentOrder.update({
+        order: dbContentOrder.order
+      })
     }).then(() => {
-      const topics = chapter.topics
+      const topics = chapter.topics || {}
       const topicPromises = Object.keys(topics).map(id => {
         const topic = topics[id]
         return db.MasterTopic.findOne({
@@ -157,7 +171,7 @@ module.exports = function (app, passport, db, isPremiumUser) {
           }
         }).then(dbMasterTopic => {
           if (!dbMasterTopic) {
-            const error = new Error(`MasterTopic ${topic.id} was not found.`)
+            const error = new Error(`MasterTopic "${topic.id}" was not found.`)
             res.status(500).send(error)
             throw error
           }
@@ -187,7 +201,7 @@ module.exports = function (app, passport, db, isPremiumUser) {
 
       return Promise.all(topicPromises)
     }).then(() => {
-      res.status(200).send(`Chapter ${chapter.title} created.`)
+      res.status(200).send(`Chapter "${chapter.title}" created.`)
     }, err => {
       console.error(err)
       res.status(500).send(err)
@@ -200,12 +214,17 @@ module.exports = function (app, passport, db, isPremiumUser) {
     const userId = req.user.id
     let chapterOrder, chapters
 
-    db.ContentOrder.findOne({
+    db.ContentOrder.findCreateFind({
       where: {
         ownerGuid: documentId,
         userId
+      },
+      defaults: {
+        order: [],
+        ownerGuid: documentId,
+        userId
       }
-    }).then(dbContentOrder => {
+    }).then(([dbContentOrder]) => {
       chapterOrder = dbContentOrder
       return db.Chapter.findAll({
         where: {

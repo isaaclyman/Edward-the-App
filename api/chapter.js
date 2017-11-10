@@ -39,15 +39,29 @@ module.exports = function (app, passport, db, isPremiumUser) {
     const chapterId = req.body.chapterId
     const userId = req.user.id
 
-    db.ChapterTopic.destroy({
+    db.Chapter.findOne({
       where: {
-        chapterId,
+        guid: chapterId,
         userId
       }
+    }).then(dbChapter => {
+      return db.ChapterTopic.destroy({
+        where: {
+          chapterId: dbChapter.id,
+          userId
+        }
+      })
     }).then(() => {
+      return db.Doc.findOne({
+        where: {
+          guid: documentId,
+          userId
+        }
+      })
+    }).then(dbDocument => {
       return db.Chapter.destroy({
         where: {
-          documentId,
+          documentId: dbDocument.id,
           guid: chapterId,
           userId
         }
@@ -87,24 +101,37 @@ module.exports = function (app, passport, db, isPremiumUser) {
     const documentId = req.body.fileId
     const chapter = req.body.chapter
     const userId = req.user.id
+    let dbChapterId
 
     db.Chapter.findCreateFind({
       where: {
-        documentId,
         guid: chapter.id,
         userId
       },
+      include: [{
+        model: db.Doc,
+        where: {
+          guid: documentId
+        }
+      }],
       defaults: {
-        documentId,
         guid: chapter.id,
         userId
       }
-    }).then(([dbChapter]) => {
-      return dbChapter.update({
+    }).then(([dbChapter, created]) => {
+      dbChapterId = dbChapter.id
+      const update = {
         archived: chapter.archived,
         content: chapter.content,
         title: chapter.title
-      })
+      }
+
+      const document = dbChapter['document']
+      if (created) {
+        update.documentId = document.id
+      }
+
+      return dbChapter.update(update)
     }).then(() => {
       return db.ContentOrder.findOne({
         where: {
@@ -137,12 +164,12 @@ module.exports = function (app, passport, db, isPremiumUser) {
 
           return db.ChapterTopic.findCreateFind({
             where: {
-              chapterId: chapter.id,
+              chapterId: dbChapterId,
               masterTopicId: dbMasterTopic.id,
               userId
             },
             defaults: {
-              chapterId: chapter.id,
+              chapterId: dbChapterId,
               masterTopicId: dbMasterTopic.id,
               userId
             }
@@ -182,9 +209,14 @@ module.exports = function (app, passport, db, isPremiumUser) {
       chapterOrder = dbContentOrder
       return db.Chapter.findAll({
         where: {
-          documentId,
           userId
-        }
+        },
+        include: [{
+          model: db.Doc,
+          where: {
+            guid: documentId
+          }
+        }]
       })
     }).then(dbChapters => {
       chapters = dbChapters

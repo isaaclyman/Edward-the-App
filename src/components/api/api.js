@@ -24,12 +24,26 @@ class Api {
 
   addDocument (doc) { return this.simplePost(route('document/add'), doc) }
   deleteDocument (doc) { return this.simplePost(route('document/delete'), doc) }
-  getDocuments () { return this.simpleGet(route('documents')) }
+  getDocuments () {
+    return this.simpleGet(route('documents')).then(documents => {
+      return documents.map(doc => {
+        doc.id = doc.guid
+        return doc
+      })
+    })
+  }
   updateDocument (doc) { return this.simplePost(route('document/update'), doc) }
 
   arrangeChapters (data) { return this.simplePost(route('chapter/arrange'), data) }
   deleteChapter (data) { return this.simplePost(route('chapter/delete'), data) }
-  getChapters (fileId) { return this.simpleGet(route(`chapters/${fileId}`)) }
+  getChapters (fileId) {
+    return this.simpleGet(route(`chapters/${fileId}`)).then(chapters => {
+      return chapters.map(chapter => {
+        chapter.id = chapter.guid
+        return chapter
+      })
+    })
+  }
   updateChapter (data) { return this.simplePost(route('chapter/update'), data) }
 }
 

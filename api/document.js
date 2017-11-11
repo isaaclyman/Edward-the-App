@@ -59,7 +59,9 @@ module.exports = function (app, passport, db, isPremiumUser) {
 
       if (~indexToRemove) {
         docOrder.order.splice(indexToRemove, 1)
-        return docOrder.save()
+        return docOrder.update({
+          order: docOrder.order
+        })
       }
 
       return indexToRemove
@@ -89,8 +91,9 @@ module.exports = function (app, passport, db, isPremiumUser) {
         userId
       }
     }).then(dbDoc => {
-      dbDoc.name = document.name
-      return dbDoc.save()
+      return dbDoc.update({
+        name: document.name
+      })
     }).then(() => {
       res.status(200).send(`Document "${document.name}" updated.`)
     }, err => {
@@ -120,14 +123,16 @@ module.exports = function (app, passport, db, isPremiumUser) {
 
       let orderOutOfDate = false
       documents.forEach(doc => {
-        if (!~docOrder.order.indexOf(doc.guid)) {
+        if (!docOrder.order.includes(doc.guid)) {
           orderOutOfDate = true
           docOrder.order.push(doc.guid)
         }
       })
 
       if (orderOutOfDate) {
-        return docOrder.save()
+        return docOrder.update({
+          order: docOrder.order
+        })
       }
 
       return orderOutOfDate

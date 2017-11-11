@@ -40,11 +40,27 @@ class Api {
     return this.simpleGet(route(`chapters/${fileId}`)).then(chapters => {
       return chapters.map(chapter => {
         chapter.id = chapter.guid
+        Object.keys(chapter.topics).forEach(id => {
+          const topic = chapter.topics[id]
+          topic.id = topic.guid
+        })
         return chapter
       })
     })
   }
   updateChapter (data) { return this.simplePost(route('chapter/update'), data) }
+
+  arrangeTopics (data) { return this.simplePost(route('topic/arrange'), data) }
+  deleteTopic (data) { return this.simplePost(route('topic/delete'), data) }
+  getTopics (fileId) {
+    return this.simpleGet(route(`topics/${fileId}`)).then(topics => {
+      return topics.map(topic => {
+        topic.id = topic.guid
+        return topic
+      })
+    })
+  }
+  updateTopic (data) { return this.simplePost(route('topic/update'), data) }
 }
 
 export default new Api()

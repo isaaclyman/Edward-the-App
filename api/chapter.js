@@ -10,19 +10,19 @@ module.exports = function (app, passport, db, isPremiumUser) {
     const chapterIds = req.body.chapterIds
     const userId = req.user.id
 
-    db.ContentOrder.findOne({
+    db.ChapterOrder.findOne({
       where: {
         ownerGuid: documentId,
         userId
       }
-    }).then(dbContentOrder => {
-      if (!utilities.containSameElements(dbContentOrder.order, chapterIds)) {
+    }).then(dbChapterOrder => {
+      if (!utilities.containSameElements(dbChapterOrder.order, chapterIds)) {
         const err = new Error(`Cannot rearrange chapters: an invalid chapter array was received.`)
         res.status(400).send(err)
         throw err
       }
 
-      return dbContentOrder.update({
+      return dbChapterOrder.update({
         order: chapterIds
       })
     }).then(() => {
@@ -43,12 +43,22 @@ module.exports = function (app, passport, db, isPremiumUser) {
     const documentId = req.body.fileId
     const chapterId = req.body.chapterId
     const userId = req.user.id
+    let dbDocId
 
-    db.Chapter.findOne({
+    db.Doc.findOne({
       where: {
-        guid: chapterId,
+        guid: documentId,
         userId
       }
+    }).then(dbDoc => {
+      dbDocId = dbDoc.id
+      return db.Chapter.findOne({
+        where: {
+          documentId: dbDocId,
+          guid: chapterId,
+          userId
+        }
+      })
     }).then(dbChapter => {
       return db.ChapterTopic.destroy({
         where: {
@@ -57,34 +67,27 @@ module.exports = function (app, passport, db, isPremiumUser) {
         }
       })
     }).then(() => {
-      return db.Doc.findOne({
-        where: {
-          guid: documentId,
-          userId
-        }
-      })
-    }).then(dbDocument => {
       return db.Chapter.destroy({
         where: {
-          documentId: dbDocument.id,
+          documentId: dbDocId,
           guid: chapterId,
           userId
         }
       })
     }).then(() => {
-      return db.ContentOrder.findOne({
+      return db.ChapterOrder.findOne({
         where: {
           ownerGuid: documentId,
           userId
         }
       })
-    }).then(dbContentOrder => {
-      const indexToRemove = dbContentOrder.order.indexOf(chapterId)
+    }).then(dbChapterOrder => {
+      const indexToRemove = dbChapterOrder.order.indexOf(chapterId)
 
       if (~indexToRemove) {
-        dbContentOrder.order.splice(indexToRemove, 1)
-        return dbContentOrder.update({
-          order: dbContentOrder.order
+        dbChapterOrder.order.splice(indexToRemove, 1)
+        return dbChapterOrder.update({
+          order: dbChapterOrder.order
         })
       }
 
@@ -130,7 +133,7 @@ module.exports = function (app, passport, db, isPremiumUser) {
           userId
         }
       })
-    }).then(([dbChapter, created]) => {
+    }).then(([dbChapter]) => {
       dbChapterId = dbChapter.id
       const update = {
         archived: chapter.archived,
@@ -140,7 +143,7 @@ module.exports = function (app, passport, db, isPremiumUser) {
 
       return dbChapter.update(update)
     }).then(() => {
-      return db.ContentOrder.findCreateFind({
+      return db.ChapterOrder.findCreateFind({
         where: {
           ownerGuid: documentId,
           userId
@@ -151,14 +154,14 @@ module.exports = function (app, passport, db, isPremiumUser) {
           userId
         }
       })
-    }).then(([dbContentOrder]) => {
-      if (dbContentOrder.order.includes(chapter.id)) {
+    }).then(([dbChapterOrder]) => {
+      if (dbChapterOrder.order.includes(chapter.id)) {
         return chapter.id
       }
 
-      dbContentOrder.order.push(chapter.id)
-      return dbContentOrder.update({
-        order: dbContentOrder.order
+      dbChapterOrder.order.push(chapter.id)
+      return dbChapterOrder.update({
+        order: dbChapterOrder.order
       })
     }).then(() => {
       const topics = chapter.topics || {}
@@ -204,6 +207,11 @@ module.exports = function (app, passport, db, isPremiumUser) {
       res.status(200).send(`Chapter "${chapter.title}" updated.`)
     }, err => {
       console.error(err)
+
+      if (res.headersSent) {
+        return
+      }
+
       res.status(500).send(err)
     })
   })
@@ -214,7 +222,7 @@ module.exports = function (app, passport, db, isPremiumUser) {
     const userId = req.user.id
     let chapterOrder, chapters
 
-    db.ContentOrder.findCreateFind({
+    db.ChapterOrder.findCreateFind({
       where: {
         ownerGuid: documentId,
         userId
@@ -224,8 +232,8 @@ module.exports = function (app, passport, db, isPremiumUser) {
         ownerGuid: documentId,
         userId
       }
-    }).then(([dbContentOrder]) => {
-      chapterOrder = dbContentOrder
+    }).then(([dbChapterOrder]) => {
+      chapterOrder = dbChapterOrder
       return db.Chapter.findAll({
         where: {
           userId
@@ -242,23 +250,61 @@ module.exports = function (app, passport, db, isPremiumUser) {
 
       let orderOutOfDate = false
       chapters.forEach(chapter => {
-        if (!~chapterOrder.order.indexOf(chapter.guid)) {
+        if (!chapterOrder.order.includes(chapter.guid)) {
           orderOutOfDate = true
           chapterOrder.order.push(chapter.guid)
         }
       })
 
       if (orderOutOfDate) {
-        return chapterOrder.save()
+        return chapterOrder.update({
+          order: chapterOrder.order
+        })
       }
 
       return orderOutOfDate
     }).then(() => {
-      chapters.sort((chapter1, chapter2) => {
+      const chapterPromises = chapters.map(chapter => {
+        return db.ChapterTopic.findAll({
+          where: {
+            chapterId: chapter.id,
+            userId
+          }
+        }).then((chapterTopics = []) => {
+          const topicPromises = chapterTopics.map(chapterTopic => {
+            return db.MasterTopic.findOne({
+              where: {
+                id: chapterTopic.masterTopicId,
+                userId
+              }
+            }).then(dbMasterTopic => {
+              chapterTopic.guid = dbMasterTopic.guid
+              chapterTopic.setDataValue('guid', dbMasterTopic.guid)
+              return chapterTopic
+            })
+          })
+
+          return Promise.all(topicPromises)
+        }).then(chapterTopics => {
+          const topics = chapter.topics || {}
+
+          chapterTopics.forEach(topic => {
+            topics[topic.guid] = topic
+          })
+
+          chapter.setDataValue('topics', topics)
+
+          return chapter
+        })
+      })
+
+      return Promise.all(chapterPromises)
+    }).then(chaptersWithTopics => {
+      chaptersWithTopics.sort((chapter1, chapter2) => {
         return chapterOrder.order.indexOf(chapter1.guid) - chapterOrder.order.indexOf(chapter2.guid)
       })
 
-      res.status(200).send(chapters)
+      res.status(200).send(chaptersWithTopics)
     }, err => {
       console.error(err)
       res.status(500).send(err)

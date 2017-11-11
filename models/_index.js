@@ -10,7 +10,10 @@ module.exports = function (sequelize) {
   const AccountType = sequelize.import(path.join(__dirname, 'accountType'))
   const Doc = sequelize.import(path.join(__dirname, 'document'))
   const DocOrder = sequelize.import(path.join(__dirname, 'documentOrder'))
-  const ContentOrder = sequelize.import(path.join(__dirname, 'contentOrder'))
+  const ChapterOrder = sequelize.import(path.join(__dirname, 'chapterOrder'))
+  const MasterTopicOrder = sequelize.import(path.join(__dirname, 'masterTopicOrder'))
+  const PlanOrder = sequelize.import(path.join(__dirname, 'planOrder'))
+  const SectionOrder = sequelize.import(path.join(__dirname, 'section'))
   const Plan = sequelize.import(path.join(__dirname, 'plan'))
   const Section = sequelize.import(path.join(__dirname, 'section'))
   const Chapter = sequelize.import(path.join(__dirname, 'chapter'))
@@ -38,7 +41,10 @@ module.exports = function (sequelize) {
     accountTypes,
     Doc,
     DocOrder,
-    ContentOrder,
+    ChapterOrder,
+    MasterTopicOrder,
+    PlanOrder,
+    SectionOrder,
     Plan,
     Section,
     Chapter,
@@ -55,8 +61,17 @@ module.exports = function (sequelize) {
   DocOrder.belongsTo(User)
   User.hasOne(DocOrder)
 
-  ContentOrder.belongsTo(User)
-  User.hasMany(ContentOrder)
+  ChapterOrder.belongsTo(User)
+  User.hasMany(ChapterOrder)
+
+  MasterTopicOrder.belongsTo(User)
+  User.hasMany(MasterTopicOrder)
+
+  PlanOrder.belongsTo(User)
+  User.hasMany(PlanOrder)
+
+  SectionOrder.belongsTo(User)
+  User.hasMany(SectionOrder)
 
   Doc.belongsTo(User)
   User.hasMany(Doc)

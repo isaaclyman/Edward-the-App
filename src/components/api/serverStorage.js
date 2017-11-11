@@ -32,6 +32,8 @@ class ServerStorageApi {
     }
   }
 
+  // DOCUMENTS
+
   addDocument ({ id, name }) {
     return this.wrapStatus(api.addDocument({ id, name }).catch(err => {
       throw err
@@ -39,7 +41,7 @@ class ServerStorageApi {
   }
 
   getAllDocuments () {
-    return this.wrapStatus(api.getDocuments())
+    return api.getDocuments()
   }
 
   deleteDocument (id) {
@@ -50,23 +52,7 @@ class ServerStorageApi {
     return this.wrapStatus(api.updateDocument({ id, name }))
   }
 
-  deleteChapter (fileId, chapterId) {
-    return this.wrapStatus(api.deleteChapter({ fileId, chapterId }))
-  }
-
-  deletePlan (fileId, planId) {}
-
-  deleteSection (fileId, planId, sectionId) {}
-
-  deleteTopic (fileId, topicId) {}
-
-  getAllChapters (fileId) {
-    return this.wrapStatus(api.getChapters(fileId))
-  }
-
-  getAllPlans (fileId) {}
-
-  getAllTopics (fileId) {}
+  // ARRANGE
 
   arrangeChapters (fileId, chapterIds) {
     return this.wrapStatus(api.arrangeChapters({ fileId, chapterIds }))
@@ -76,7 +62,37 @@ class ServerStorageApi {
 
   arrangeSections (fileId, planId, sectionIds) {}
 
-  arrangeTopics (fileId, topicIds) {}
+  arrangeTopics (fileId, topicIds) {
+    return this.wrapStatus(api.arrangeTopics({ fileId, topicIds }))
+  }
+
+  // DELETE
+
+  deleteChapter (fileId, chapterId) {
+    return this.wrapStatus(api.deleteChapter({ fileId, chapterId }))
+  }
+
+  deletePlan (fileId, planId) {}
+
+  deleteSection (fileId, planId, sectionId) {}
+
+  deleteTopic (fileId, topicId) {
+    return this.wrapStatus(api.deleteTopic({ fileId, topicId }))
+  }
+
+  // GET
+
+  getAllChapters (fileId) {
+    return api.getChapters(fileId)
+  }
+
+  getAllPlans (fileId) {}
+
+  getAllTopics (fileId) {
+    return api.getTopics(fileId)
+  }
+
+  // UPDATE
 
   updateChapter (fileId, chapterId, chapter) {
     return this.wrapStatus(api.updateChapter({ fileId, chapterId, chapter }))
@@ -86,7 +102,9 @@ class ServerStorageApi {
 
   updateSection (fileId, planId, sectionId, section) {}
 
-  updateTopic (fileId, topicId, topic) {}
+  updateTopic (fileId, topicId, topic) {
+    return this.wrapStatus(api.updateTopic({ fileId, topicId, topic }))
+  }
 
   saveAllContent (fileId, { chapters, plans, topics }) {}
 }

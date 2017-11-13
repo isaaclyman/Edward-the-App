@@ -1,9 +1,4 @@
-import { app as server, sequelize } from '../server'
-import request from 'supertest'
-import test from 'ava'
-import wrapTest from './_util'
-
-const app = request(server)
+import { app, server, sequelize, test, wrapTest } from './_imports'
 
 test('express app was created', t => {
   t.truthy(server)

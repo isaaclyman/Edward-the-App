@@ -48,7 +48,7 @@ const db = require('./models/_index')(sequelize)
 // Configure passport auth
 require('./passport/config')(passport, db)
 
-db.sync.then(() => {
+const serverReady = db.sync.then(() => {
   // Auth sessions
   const sessionStore = new SequelizeStore({
     db: sequelize
@@ -81,4 +81,4 @@ db.sync.then(() => {
   })
 })
 
-module.exports = { app, sequelize }
+module.exports = { app, sequelize, serverReady }

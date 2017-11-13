@@ -1,20 +1,17 @@
-import { app, getPersistentAgent, sequelize, serverReady, test, wrapTest } from '../_imports'
-import request from 'request-promise-native'
-import sinon from 'sinon'
+import {
+  app,
+  getPersistentAgent,
+  sequelize,
+  serverReady,
+  stubRecaptcha,
+  test,
+  wrapTest
+} from '../_imports'
 
 const route = route => `/api/user/${route}`
-const sandbox = sinon.sandbox.create()
 const user = { email: 'user.js@test.com__TEST', password: 'thisismysecurepassword', captchaResponse: 'token' }
 
-test.before('stub', t => {
-  sandbox.stub(request, 'post')
-  .withArgs(sinon.match({ uri: 'https://www.google.com/recaptcha/api/siteverify' }))
-  .resolves({ success: true })
-})
-
-test.after('unstub', t => {
-  sandbox.restore()
-})
+stubRecaptcha(test)
 
 async function deleteTestUser () {
   await sequelize.query(`DELETE FROM users WHERE email = '${user.email}';`)

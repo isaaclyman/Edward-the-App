@@ -36,22 +36,21 @@ test('sign up and log in', async t => {
   )
 })
 
-test(`can't log in with wrong password`, t => {
-  return sequelize.query(`DELETE FROM users WHERE email = '${user.email}';`).then(
-    () => serverReady,
-    err => t.fail(err)
-  ).then(() => {
-    return (
-      app.post(route('signup'))
-      .send(user)
-      .expect(200)
-      .then(response => response.body)
-    )
-  }).then(() => {
-    return wrapTest(t,
-      app.post(route('login'))
-      .send({ email: user.email, password: 'notthecorrectpassword!' })
-      .expect(401)
-    )
-  })
+test(`can't log in with wrong password`, async t => {
+  await sequelize.query(`DELETE FROM users WHERE email = '${user.email}';`)
+  await serverReady
+  await (
+    app.post(route('signup'))
+    .send(user)
+    .expect(200)
+    .then(response => {
+      return response.body
+    })
+  )
+
+  return wrapTest(t,
+    app.post(route('login'))
+    .send({ email: user.email, password: 'notthecorrectpassword!', captchaResponse: 'token' })
+    .expect(401)
+  )
 })

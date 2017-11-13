@@ -81,4 +81,4 @@ db.sync.then(() => {
   })
 })
 
-module.exports = app
+module.exports = { app, sequelize }

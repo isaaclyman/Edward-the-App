@@ -4,5 +4,6 @@ import test from 'ava'
 import wrapTest from './_util'
 
 const app = request(server)
+const getPersistentAgent = () => request.agent(server)
 
-export { app, server, sequelize, serverReady, test, wrapTest }
+export { app, getPersistentAgent, server, sequelize, serverReady, test, wrapTest }

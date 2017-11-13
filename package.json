@@ -91,7 +91,9 @@
     "webpack-merge": "4.1.0"
   },
   "devDependencies": {
-    "nodemon": "^1.12.1"
+    "ava": "^0.23.0",
+    "nodemon": "^1.12.1",
+    "supertest": "^3.0.0"
   },
   "engines": {
     "node": "^8.5.0",
@@ -104,6 +106,17 @@
     "lint": "eslint --ext .js,.vue src",
     "server": "node server.js",
     "start": "npm run server",
-    "server-dev": "nodemon server.js"
+    "server-dev": "nodemon server.js",
+    "test": "ava"
+  },
+  "ava": {
+    "files": [
+      "test/*.js"
+    ],
+    "source": [
+      "**/*.js",
+      "!dist/**/*",
+      "!node_modules/**/*"
+    ]
   }
 }

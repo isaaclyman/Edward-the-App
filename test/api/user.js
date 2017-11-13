@@ -1,7 +1,8 @@
 import {
   app,
+  createTestUser,
+  deleteTestUser,
   getPersistentAgent,
-  sequelize,
   serverReady,
   stubRecaptcha,
   test,
@@ -9,29 +10,13 @@ import {
 } from '../_imports'
 
 const route = route => `/api/user/${route}`
-const user = { email: 'user.js@test.com__TEST', password: 'thisismysecurepassword', captchaResponse: 'token' }
 
 stubRecaptcha(test)
-
-async function deleteTestUser () {
-  await sequelize.query(`DELETE FROM users WHERE email = '${user.email}';`)
-}
-
-async function createTestUser (overrideApp) {
-  await (
-    (overrideApp || app).post(route('signup'))
-    .send(user)
-    .expect(200)
-    .then(response => {
-      return response.body
-    })
-  )
-}
 
 test('sign up and log in', async t => {
   await deleteTestUser()
   await serverReady
-  await createTestUser()
+  const user = await createTestUser()
   return wrapTest(t,
     app.post(route('login'))
     .send(user)
@@ -54,7 +39,7 @@ test('get current user', async t => {
 
   await deleteTestUser()
   await serverReady
-  await createTestUser(app)
+  const user = await createTestUser(app)
 
   return wrapTest(t,
     app.get(route('current'))
@@ -71,7 +56,7 @@ test('get current user', async t => {
 test(`can't log in with wrong password`, async t => {
   await deleteTestUser()
   await serverReady
-  await createTestUser()
+  const user = await createTestUser()
 
   return wrapTest(t,
     app.post(route('login'))

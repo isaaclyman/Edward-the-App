@@ -1,3 +1,22 @@
+const user = { email: 'user.js@test.com__TEST', password: 'thisismysecurepassword', captchaResponse: 'token' }
+
+async function createTestUser (defaultApp, app) {
+  await (
+    (app || defaultApp).post('/api/user/signup')
+    .send(user)
+    .expect(200)
+    .then(response => {
+      return response.body
+    })
+  )
+
+  return user
+}
+
+async function deleteTestUser (sequelize) {
+  await sequelize.query(`DELETE FROM users WHERE email = '${user.email}';`)
+}
+
 import request from 'request-promise-native'
 import sinon from 'sinon'
 
@@ -28,4 +47,4 @@ const wrapTest = (t, supertest) => {
   })
 }
 
-export { stubRecaptcha, wrapTest }
+export { createTestUser, deleteTestUser, stubRecaptcha, wrapTest }

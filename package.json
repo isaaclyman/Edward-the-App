@@ -112,7 +112,8 @@
   },
   "ava": {
     "files": [
-      "test/**/*.js"
+      "test/**/*.js",
+      "!test/**/_*.js"
     ],
     "source": [
       "**/*.js",

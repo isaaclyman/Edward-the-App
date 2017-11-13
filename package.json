@@ -108,7 +108,7 @@
     "server": "node server.js",
     "start": "npm run server",
     "server-dev": "nodemon server.js",
-    "test": "ava"
+    "test": "ava --serial"
   },
   "ava": {
     "files": [
@@ -118,6 +118,7 @@
       "**/*.js",
       "!dist/**/*",
       "!node_modules/**/*"
-    ]
+    ],
+    "require": []
   }
 }

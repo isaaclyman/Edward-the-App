@@ -7,7 +7,7 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
     const token = req.body && req.body.captchaResponse
     return new Promise((resolve, reject) => {
       if (!token) {
-        reject()
+        return reject()
       }
 
       const postOptions = {

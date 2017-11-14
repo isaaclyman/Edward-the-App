@@ -9,6 +9,7 @@ import {
   stubRecaptcha,
   wrapTest
 } from './_util'
+import uuid from 'uuid/v1'
 
 const app = request(server)
 const getPersistentAgent = () => request.agent(server)
@@ -28,5 +29,6 @@ export {
   serverReady,
   stubRecaptcha,
   test,
+  uuid,
   wrapTest
 }

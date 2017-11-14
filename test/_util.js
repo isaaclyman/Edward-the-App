@@ -17,6 +17,19 @@ async function deleteTestUser (sequelize) {
   await sequelize.query(`DELETE FROM users WHERE email = '${user.email}';`)
 }
 
+async function makeTestUserPremium (sequelize) {
+  const query =
+  `DO $$
+  DECLARE
+    premiumId INTEGER;
+  BEGIN
+    SELECT account_types.id INTO premiumId FROM account_types WHERE name = 'PREMIUM';
+    UPDATE users SET "accountTypeId" = premiumId WHERE email = '${user.email}';
+  END $$;`
+
+  await sequelize.query(query)
+}
+
 import request from 'request-promise-native'
 import sinon from 'sinon'
 
@@ -47,4 +60,4 @@ const wrapTest = (t, supertest) => {
   })
 }
 
-export { createTestUser, deleteTestUser, stubRecaptcha, wrapTest }
+export { createTestUser, deleteTestUser, makeTestUserPremium, stubRecaptcha, wrapTest }

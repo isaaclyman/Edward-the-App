@@ -3,6 +3,7 @@ import {
   createTestUser,
   deleteTestUser,
   getPersistentAgent,
+  makeTestUserPremium,
   sequelize,
   serverReady,
   stubRecaptcha,
@@ -20,17 +21,7 @@ test('log in as premium user', async t => {
   await deleteTestUser()
   await serverReady
   const user = await createTestUser(app)
-
-  const query =
-  `DO $$
-  DECLARE
-    premiumId INTEGER;
-  BEGIN
-    SELECT account_types.id INTO premiumId FROM account_types WHERE name = 'PREMIUM';
-    UPDATE users SET "accountTypeId" = premiumId WHERE email = '${user.email}';
-  END $$;`
-
-  await sequelize.query(query)
+  await makeTestUserPremium()
 
   return wrapTest(t,
     app.get(route('current'))
@@ -41,5 +32,19 @@ test('log in as premium user', async t => {
       t.is(userRes.isPremium, true)
       t.is(userRes.accountType.name, 'PREMIUM')
     })
+  )
+})
+
+test('access a premium API', async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+  await makeTestUserPremium()
+
+  return wrapTest(t,
+    app.get('/api/documents')
+    .expect(200)
   )
 })

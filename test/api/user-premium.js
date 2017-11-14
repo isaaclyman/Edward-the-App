@@ -1,10 +1,8 @@
 import {
-  app,
   createTestUser,
   deleteTestUser,
   getPersistentAgent,
   makeTestUserPremium,
-  sequelize,
   serverReady,
   stubRecaptcha,
   test,

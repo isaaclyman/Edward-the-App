@@ -55,6 +55,14 @@ const addChapter = async (app, docId, title) => {
   return chapter
 }
 
+const updateChapter = async (app, newChapter) => {
+  await (
+    app.post(route('chapter/update'))
+    .send(newChapter)
+    .expect(200)
+  )
+}
+
 const compareChapters = (t, docId, apiChapter, chapter) => {
   t.deepEqual({
     fileId: docId,
@@ -161,11 +169,7 @@ test('update chapter', async t => {
     }
   }
 
-  await (
-    app.post(route('chapter/update'))
-    .send(newChapter)
-    .expect(200)
-  )
+  await updateChapter(app, newChapter)
 
   return checkChapters(t, app, doc.id, chapters => {
     t.is(chapters.length, 2)
@@ -177,7 +181,24 @@ test('update chapter', async t => {
 test('add chapters, then a topic', async t => {
   const chap1 = await addChapter(app, doc.id, 'Test1')
   const chap2 = await addChapter(app, doc.id, 'Test2')
-  await addTopic(app, doc.id, 'Topic')
+  const topic = await addTopic(app, doc.id, 'Topic')
+
+  chap1.chapter.topics = {
+    [topic.topicId]: {
+      content: null,
+      id: topic.topicId
+    }
+  }
+
+  chap2.chapter.topics = {
+    [topic.topicId]: {
+      content: null,
+      id: topic.topicId
+    }
+  }
+
+  await updateChapter(app, chap1)
+  await updateChapter(app, chap2)
 
   return checkChapters(t, app, doc.id, chapters => {
     t.is(chapters.length, 2)
@@ -187,9 +208,26 @@ test('add chapters, then a topic', async t => {
 })
 
 test('add a topic, then add chapters', async t => {
-  await addTopic(app, doc.id, 'Topic')
+  const topic = await addTopic(app, doc.id, 'Topic')
   const chap1 = await addChapter(app, doc.id, 'Test1')
   const chap2 = await addChapter(app, doc.id, 'Test2')
+
+  chap1.chapter.topics = {
+    [topic.topicId]: {
+      content: null,
+      id: topic.topicId
+    }
+  }
+
+  chap2.chapter.topics = {
+    [topic.topicId]: {
+      content: null,
+      id: topic.topicId
+    }
+  }
+
+  await updateChapter(app, chap1)
+  await updateChapter(app, chap2)
 
   return checkChapters(t, app, doc.id, chapters => {
     t.is(chapters.length, 2)

@@ -1,3 +1,27 @@
+/*
+  DOCUMENTS
+*/
+
+import uuid from 'uuid/v1'
+
+const addDocument = async (app, name) => {
+  const document = {
+    id: uuid(),
+    name
+  }
+
+  await (
+    app.post('/api/document/add')
+    .send(document)
+  )
+
+  return document
+}
+
+/*
+  TEST USER
+*/
+
 const user = { email: 'user.js@test.com__TEST', password: 'thisismysecurepassword', captchaResponse: 'token' }
 
 async function createTestUser (defaultApp, app) {
@@ -47,6 +71,10 @@ async function makeTestUserPremium (sequelize) {
   await sequelize.query(query)
 }
 
+/*
+  EXTERNAL REQUEST STUBBING
+*/
+
 import request from 'request-promise-native'
 import sinon from 'sinon'
 
@@ -64,6 +92,10 @@ const stubRecaptcha = (test) => {
   })
 }
 
+/*
+  SUPERTEST WRAPPING
+*/
+
 const wrapTest = (t, supertest) => {
   return new Promise((resolve, reject) => {
     supertest.end((err, res) => {
@@ -71,10 +103,16 @@ const wrapTest = (t, supertest) => {
         t.fail(err)
         return reject()
       }
-      t.pass()
       return resolve()
     })
   })
 }
 
-export { createTestUser, deleteTestUser, makeTestUserPremium, stubRecaptcha, wrapTest }
+export {
+  addDocument,
+  createTestUser,
+  deleteTestUser,
+  makeTestUserPremium,
+  stubRecaptcha,
+  wrapTest
+}

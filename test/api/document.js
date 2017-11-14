@@ -1,4 +1,5 @@
 import {
+  addDocument,
   createTestUser,
   deleteTestUser,
   getPersistentAgent,
@@ -8,11 +9,14 @@ import {
   test,
   wrapTest
 } from '../_imports'
-import uuid from 'uuid/v1'
 
 const route = route => `/api/${route}`
 
 stubRecaptcha(test)
+
+/*
+  HELPER FUNCTIONS
+*/
 
 const checkDocuments = (t, app, expectFn) => {
   return wrapTest(t,
@@ -25,19 +29,9 @@ const checkDocuments = (t, app, expectFn) => {
   )
 }
 
-const addDocument = async (app, name) => {
-  const document = {
-    id: uuid(),
-    name
-  }
-
-  await (
-    app.post(route('document/add'))
-    .send(document)
-  )
-
-  return document
-}
+/*
+  TESTS
+*/
 
 let app
 test.beforeEach('set up a premium user', async t => {
@@ -64,5 +58,40 @@ test('add documents', async t => {
 
     t.is(docs[1].guid, doc2.id)
     t.is(docs[1].name, doc2.name)
+  })
+})
+
+test('delete a document', async t => {
+  const doc1 = await addDocument(app, 'Test1')
+  const doc2 = await addDocument(app, 'Test2')
+  await (
+    app.post(route('document/delete'))
+    .send({ id: doc1.id })
+    .expect(200)
+  )
+  return checkDocuments(t, app, docs => {
+    t.is(docs.length, 1)
+    t.is(docs[0].guid, doc2.id)
+    t.is(docs[0].name, doc2.name)
+  })
+})
+
+test('update a document (rename)', async t => {
+  const doc1 = await addDocument(app, 'Test1')
+  const doc2 = await addDocument(app, 'Test2')
+  const updatedName = 'Test2-updated'
+  await wrapTest(t,
+    app.post(route('document/update'))
+    .send({ id: doc2.id, name: updatedName })
+    .expect(200)
+  )
+  return checkDocuments(t, app, docs => {
+    t.is(docs.length, 2)
+
+    t.is(docs[0].guid, doc1.id)
+    t.is(docs[0].name, doc1.name)
+
+    t.is(docs[1].guid, doc2.id)
+    t.is(docs[1].name, updatedName)
   })
 })

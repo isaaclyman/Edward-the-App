@@ -120,6 +120,7 @@
       "!dist/**/*",
       "!node_modules/**/*"
     ],
-    "require": []
+    "require": [],
+    "failWithoutAssertions": false
   }
 }

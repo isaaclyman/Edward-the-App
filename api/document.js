@@ -5,9 +5,9 @@ module.exports = function (app, passport, db, isPremiumUser) {
   app.post(route('document/add'), isPremiumUser, (req, res, next) => {
     const document = req.body
     const userId = req.user.id
-    db.DocOrder.findOne({
+    db.Doc.findOne({
       where: {
-        id: document.guid,
+        guid: document.id,
         userId
       }
     }).then(doc => {

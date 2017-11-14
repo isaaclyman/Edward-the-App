@@ -14,6 +14,23 @@ async function createTestUser (defaultApp, app) {
 }
 
 async function deleteTestUser (sequelize) {
+  const dbUsers = await sequelize.query(
+    `SELECT id FROM users WHERE email = '${user.email}';`,
+    { type: sequelize.QueryTypes.SELECT }
+  )
+  if (dbUsers.length) {
+    const userId = dbUsers[0].id
+    const tablesToDeleteFrom = [
+      'documents', 'document_orders', 'chapters', 'chapter_orders', 'master_topics', 'master_topic_orders',
+      'plans', 'plan_orders', 'sections', 'section_orders', 'chapter_topics'
+    ]
+
+    tablesToDeleteFrom.forEach(async table => {
+      const deleteQuery = `DELETE FROM ${table} WHERE "userId" = ${userId};`
+      await sequelize.query(deleteQuery)
+    })
+  }
+
   await sequelize.query(`DELETE FROM users WHERE email = '${user.email}';`)
 }
 

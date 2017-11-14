@@ -19,6 +19,32 @@ const addDocument = async (app, name) => {
 }
 
 /*
+  TOPICS
+*/
+
+const addTopic = async (app, docId, title) => {
+  const topicId = uuid()
+
+  const topic = {
+    fileId: docId,
+    topicId,
+    topic: {
+      archived: false,
+      id: topicId,
+      title
+    }
+  }
+
+  await (
+    app.post('/api/topic/update')
+    .send(topic)
+    .expect(200)
+  )
+
+  return topic
+}
+
+/*
   TEST USER
 */
 
@@ -110,6 +136,7 @@ const wrapTest = (t, supertest) => {
 
 export {
   addDocument,
+  addTopic,
   createTestUser,
   deleteTestUser,
   makeTestUserPremium,

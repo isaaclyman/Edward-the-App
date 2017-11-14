@@ -1,5 +1,6 @@
 import {
   addDocument,
+  addTopic,
   createTestUser,
   deleteTestUser,
   getPersistentAgent,
@@ -63,7 +64,15 @@ const compareChapters = (t, docId, apiChapter, chapter) => {
       content: apiChapter.content,
       id: apiChapter.guid,
       title: apiChapter.title,
-      topics: {}
+      topics: Object.keys(apiChapter.topics).reduce((topics, id) => {
+        const topic = apiChapter.topics[id]
+        topics[id] = {
+          content: topic.content,
+          id
+        }
+
+        return topics
+      }, {})
     }
   }, chapter)
 }
@@ -142,13 +151,85 @@ test('update chapter', async t => {
     chapter: {
       archived: false,
       content: {
-        ops: {
+        ops: [{
           insert: 'my chapter 1'
-        }
+        }]
       },
       id: chap1.chapterId,
       title: 'Test1-updated',
       topics: {}
+    }
+  }
+
+  await (
+    app.post(route('chapter/update'))
+    .send(newChapter)
+    .expect(200)
+  )
+
+  return checkChapters(t, app, doc.id, chapters => {
+    t.is(chapters.length, 2)
+    compareChapters(t, doc.id, chapters[0], newChapter)
+    compareChapters(t, doc.id, chapters[1], chap2)
+  })
+})
+
+test('add chapters, then a topic', async t => {
+  const chap1 = await addChapter(app, doc.id, 'Test1')
+  const chap2 = await addChapter(app, doc.id, 'Test2')
+  await addTopic(app, doc.id, 'Topic')
+
+  return checkChapters(t, app, doc.id, chapters => {
+    t.is(chapters.length, 2)
+    compareChapters(t, doc.id, chapters[0], chap1)
+    compareChapters(t, doc.id, chapters[1], chap2)
+  })
+})
+
+test('add a topic, then add chapters', async t => {
+  await addTopic(app, doc.id, 'Topic')
+  const chap1 = await addChapter(app, doc.id, 'Test1')
+  const chap2 = await addChapter(app, doc.id, 'Test2')
+
+  return checkChapters(t, app, doc.id, chapters => {
+    t.is(chapters.length, 2)
+    compareChapters(t, doc.id, chapters[0], chap1)
+    compareChapters(t, doc.id, chapters[1], chap2)
+  })
+})
+
+test('update chapter topic content', async t => {
+  const chap1 = await addChapter(app, doc.id, 'Test1')
+  const chap2 = await addChapter(app, doc.id, 'Test2')
+  const topic1 = await addTopic(app, doc.id, 'Topic1')
+  const topic2 = await addTopic(app, doc.id, 'Topic2')
+
+  const newChapter = {
+    fileId: doc.id,
+    chapterId: chap1.chapterId,
+    chapter: {
+      archived: chap1.chapter.archived,
+      content: chap1.chapter.content,
+      id: chap1.chapterId,
+      title: chap1.chapter.title,
+      topics: {
+        [topic1.topicId]: {
+          content: {
+            ops: [{
+              insert: 'Topic1-content'
+            }]
+          },
+          id: topic1.topicId
+        },
+        [topic2.topicId]: {
+          content: {
+            ops: [{
+              insert: 'Topic2-content'
+            }]
+          },
+          id: topic2.topicId
+        }
+      }
     }
   }
 

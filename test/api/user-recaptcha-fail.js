@@ -16,22 +16,20 @@ test.after('unstub', t => {
   sandbox.restore()
 })
 
-test('does not log in when captcha fails', t => {
-  return serverReady.then(() => {
-    return wrapTest(t,
-      app.post(route('login'))
-      .send(user)
-      .expect(401)
-    )
-  })
+test('does not log in when captcha fails', async t => {
+  await serverReady
+  return wrapTest(t,
+    app.post(route('login'))
+    .send(user)
+    .expect(401)
+  )
 })
 
-test('does not sign up when captcha fails', t => {
-  return serverReady.then(() => {
-    return wrapTest(t,
-      app.post(route('signup'))
-      .send(user)
-      .expect(401)
-    )
-  })
+test('does not sign up when captcha fails', async t => {
+  await serverReady
+  return wrapTest(t,
+    app.post(route('signup'))
+    .send(user)
+    .expect(401)
+  )
 })

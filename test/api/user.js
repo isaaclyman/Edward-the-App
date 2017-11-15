@@ -3,13 +3,12 @@ import {
   createTestUser,
   deleteTestUser,
   getPersistentAgent,
+  route,
   serverReady,
   stubRecaptcha,
   test,
   wrapTest
 } from '../_imports'
-
-const route = route => `/api/user/${route}`
 
 stubRecaptcha(test)
 
@@ -18,7 +17,7 @@ test('sign up and log in', async t => {
   await serverReady
   const user = await createTestUser()
   return wrapTest(t,
-    app.post(route('login'))
+    app.post(route('user/login'))
     .send(user)
     .expect(200)
     .expect('set-cookie', /connect\.sid/)
@@ -28,7 +27,7 @@ test('sign up and log in', async t => {
 test('get demo token', async t => {
   await serverReady
   return wrapTest(t,
-    app.post(route('demo-login'))
+    app.post(route('user/demo-login'))
     .expect(200)
     .expect('set-cookie', /connect\.sid/)
   )
@@ -42,7 +41,7 @@ test('get current user', async t => {
   const user = await createTestUser(app)
 
   return wrapTest(t,
-    app.get(route('current'))
+    app.get(route('user/current'))
     .expect(200)
     .expect(res => {
       const userRes = res.body
@@ -59,7 +58,7 @@ test(`can't log in with wrong password`, async t => {
   const user = await createTestUser()
 
   return wrapTest(t,
-    app.post(route('login'))
+    app.post(route('user/login'))
     .send({ email: user.email, password: 'notthecorrectpassword!', captchaResponse: 'token' })
     .expect(401)
   )

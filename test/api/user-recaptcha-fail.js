@@ -1,8 +1,7 @@
-import { app, serverReady, test, wrapTest } from '../_imports'
+import { app, route, serverReady, test, wrapTest } from '../_imports'
 import request from 'request-promise-native'
 import sinon from 'sinon'
 
-const route = route => `/api/user/${route}`
 const sandbox = sinon.sandbox.create()
 const user = { email: 'user-recaptcha-fail.js@test.com__TEST', password: 'thisismysecurepassword', captchaResponse: 'token' }
 
@@ -19,7 +18,7 @@ test.after('unstub', t => {
 test('does not log in when captcha fails', async t => {
   await serverReady
   return wrapTest(t,
-    app.post(route('login'))
+    app.post(route('user/login'))
     .send(user)
     .expect(401)
   )
@@ -28,7 +27,7 @@ test('does not log in when captcha fails', async t => {
 test('does not sign up when captcha fails', async t => {
   await serverReady
   return wrapTest(t,
-    app.post(route('signup'))
+    app.post(route('user/signup'))
     .send(user)
     .expect(401)
   )

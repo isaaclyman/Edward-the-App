@@ -1,86 +1,8 @@
-import uuid from 'uuid/v1'
-
 /*
-  DOCUMENTS
+  ROUTES
 */
 
-const addDocument = async (app, name) => {
-  const document = {
-    id: uuid(),
-    name
-  }
-
-  await (
-    app.post('/api/document/add')
-    .send(document)
-  )
-
-  return document
-}
-
-/*
-  TOPICS
-*/
-
-const addTopic = async (app, docId, title) => {
-  const topicId = uuid()
-
-  const topic = {
-    fileId: docId,
-    topicId,
-    topic: {
-      archived: false,
-      id: topicId,
-      title
-    }
-  }
-
-  await (
-    app.post('/api/topic/update')
-    .send(topic)
-    .expect(200)
-  )
-
-  return topic
-}
-
-/*
-  PLANS
-*/
-
-const checkPlans = (t, app, docId, expectFn) => {
-  return wrapTest(t,
-    app.get(`/api/plans/${docId}`)
-    .expect(200)
-    .expect(response => {
-      t.truthy(Array.isArray(response.body))
-      expectFn(response.body)
-    })
-  )
-}
-
-const addPlan = async (app, docId, title) => {
-  const planId = uuid()
-
-  const plan = {
-    fileId: docId,
-    planId: planId,
-    plan: {
-      archived: false,
-      id: planId,
-      title,
-      sections: []
-    }
-  }
-
-  await (
-    app.post('/api/plan/update')
-    .send(plan)
-    .expect(200)
-  )
-
-  return plan
-}
+const route = route => `/api/${route}`
 
 /*
   TEST USER
@@ -90,7 +12,7 @@ const user = { email: 'user.js@test.com__TEST', password: 'thisismysecurepasswor
 
 async function createTestUser (defaultApp, app) {
   await (
-    (app || defaultApp).post('/api/user/signup')
+    (app || defaultApp).post(route('user/signup'))
     .send(user)
     .expect(200)
     .then(response => {
@@ -145,13 +67,13 @@ import sinon from 'sinon'
 const stubRecaptcha = (test) => {
   const sandbox = sinon.sandbox.create()
 
-  test.before('stub', t => {
+  test.before('stub recaptcha request', t => {
     sandbox.stub(request, 'post')
     .withArgs(sinon.match({ uri: 'https://www.google.com/recaptcha/api/siteverify' }))
     .resolves({ success: true })
   })
 
-  test.after('unstub', t => {
+  test.after('unstub recaptcha request', t => {
     sandbox.restore()
   })
 }
@@ -173,13 +95,10 @@ const wrapTest = (t, supertest) => {
 }
 
 export {
-  addDocument,
-  addPlan,
-  addTopic,
-  checkPlans,
   createTestUser,
   deleteTestUser,
   makeTestUserPremium,
+  route,
   stubRecaptcha,
   wrapTest
 }

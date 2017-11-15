@@ -1,46 +1,17 @@
 import {
-  addDocument,
-  addTopic,
   createTestUser,
   deleteTestUser,
   getPersistentAgent,
   makeTestUserPremium,
+  route,
   serverReady,
   stubRecaptcha,
-  test,
-  wrapTest
+  test
 } from '../_imports'
-
-const route = route => `/api/${route}`
+import { addDocument } from './_document.helper'
+import { addTopic, checkTopics, compareTopics } from './_topic.helper'
 
 stubRecaptcha(test)
-
-/*
-  HELPER FUNCTIONS
-*/
-
-const checkTopics = (t, app, docId, expectFn) => {
-  return wrapTest(t,
-    app.get(route(`topics/${docId}`))
-    .expect(200)
-    .expect(response => {
-      t.truthy(Array.isArray(response.body))
-      expectFn(response.body)
-    })
-  )
-}
-
-const compareTopics = (t, docId, apiTopic, topic) => {
-  t.deepEqual({
-    fileId: docId,
-    topicId: apiTopic.guid,
-    topic: {
-      archived: apiTopic.archived,
-      id: apiTopic.guid,
-      title: apiTopic.title
-    }
-  }, topic)
-}
 
 /*
   TESTS

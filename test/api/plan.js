@@ -1,50 +1,17 @@
 import {
-  addDocument,
-  addPlan,
-  checkPlans,
   createTestUser,
   deleteTestUser,
   getPersistentAgent,
   makeTestUserPremium,
+  route,
   serverReady,
   stubRecaptcha,
   test
 } from '../_imports'
-
-const route = route => `/api/${route}`
+import { addDocument } from './_document.helper'
+import { addPlan, checkPlans, comparePlans, updatePlan } from './_plan.helper'
 
 stubRecaptcha(test)
-
-/*
-  HELPER FUNCTIONS
-*/
-
-const updatePlan = async (app, newPlan) => {
-  await (
-    app.post(route('plan/update'))
-    .send(newPlan)
-    .expect(200)
-  )
-}
-
-const comparePlans = (t, docId, apiPlan, plan) => {
-  t.deepEqual({
-    fileId: docId,
-    planId: apiPlan.guid,
-    plan: {
-      archived: apiPlan.archived,
-      id: apiPlan.guid,
-      title: apiPlan.title,
-      sections: apiPlan.sections.map(section => ({
-        archived: section.archived,
-        content: section.content,
-        id: section.guid,
-        tags: section.tags,
-        title: section.title
-      }))
-    }
-  }, plan)
-}
 
 /*
   TESTS

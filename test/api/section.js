@@ -1,18 +1,16 @@
 import {
-  addDocument,
-  addPlan,
-  checkPlans,
   createTestUser,
   deleteTestUser,
   getPersistentAgent,
   makeTestUserPremium,
+  route,
   serverReady,
   stubRecaptcha,
   test,
   uuid
 } from '../_imports'
-
-const route = route => `/api/${route}`
+import { addDocument } from './_document.helper'
+import { addPlan, checkPlans } from './_plan.helper'
 
 stubRecaptcha(test)
 
@@ -20,7 +18,7 @@ stubRecaptcha(test)
   HELPER FUNCTIONS
 */
 
-const addSection = async (app, docId, planId, title) => {
+export const addSection = async (app, docId, planId, title) => {
   const sectionId = uuid()
 
   const section = {
@@ -45,7 +43,7 @@ const addSection = async (app, docId, planId, title) => {
   return section
 }
 
-const compareSections = async (t, docId, planId, apiSection, section) => {
+export const compareSections = async (t, docId, planId, apiSection, section) => {
   t.deepEqual({
     fileId: docId,
     planId: planId,

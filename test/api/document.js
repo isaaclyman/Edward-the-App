@@ -1,33 +1,17 @@
 import {
-  addDocument,
   createTestUser,
   deleteTestUser,
   getPersistentAgent,
   makeTestUserPremium,
+  route,
   serverReady,
   stubRecaptcha,
   test,
   wrapTest
 } from '../_imports'
-
-const route = route => `/api/${route}`
+import { addDocument, checkDocuments } from './_document.helper'
 
 stubRecaptcha(test)
-
-/*
-  HELPER FUNCTIONS
-*/
-
-const checkDocuments = (t, app, expectFn) => {
-  return wrapTest(t,
-    app.get(route('documents'))
-    .expect(200)
-    .expect(response => {
-      t.truthy(Array.isArray(response.body))
-      expectFn(response.body)
-    })
-  )
-}
 
 /*
   TESTS
@@ -95,4 +79,3 @@ test('update a document (rename)', async t => {
     t.is(docs[1].name, updatedName)
   })
 })
-

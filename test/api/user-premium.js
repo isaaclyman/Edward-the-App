@@ -3,13 +3,12 @@ import {
   deleteTestUser,
   getPersistentAgent,
   makeTestUserPremium,
+  route,
   serverReady,
   stubRecaptcha,
   test,
   wrapTest
 } from '../_imports'
-
-const route = route => `/api/user/${route}`
 
 stubRecaptcha(test)
 
@@ -22,7 +21,7 @@ test('log in as premium user', async t => {
   await makeTestUserPremium()
 
   return wrapTest(t,
-    app.get(route('current'))
+    app.get(route('user/current'))
     .expect(200)
     .expect(res => {
       const userRes = res.body
@@ -42,7 +41,7 @@ test('access a premium API', async t => {
   await makeTestUserPremium()
 
   return wrapTest(t,
-    app.get('/api/documents')
+    app.get(route('documents'))
     .expect(200)
   )
 })

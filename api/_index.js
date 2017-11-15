@@ -17,10 +17,10 @@ module.exports = function (app, passport, db) {
   // Serve user signup, login, logout, verify, and passreset pages
   require('./user')(app, passport, db, isPremiumUser, isLoggedInMiddleware)
   require('./document')(app, passport, db, isPremiumUserMiddleware)
-  require('./chapter')(app, passport, db, isPremiumUserMiddleware)
-  require('./topic')(app, passport, db, isPremiumUserMiddleware)
-  require('./plan')(app, passport, db, isPremiumUserMiddleware)
-  require('./section')(app, passport, db, isPremiumUserMiddleware)
+  require('./chapter').registerApis(app, passport, db, isPremiumUserMiddleware)
+  require('./topic').registerApis(app, passport, db, isPremiumUserMiddleware)
+  require('./plan').registerApis(app, passport, db, isPremiumUserMiddleware)
+  require('./section').registerApis(app, passport, db, isPremiumUserMiddleware)
 
   const premiumTypes = [db.accountTypes.PREMIUM.name, db.accountTypes.GOLD.name, db.accountTypes.ADMIN.name]
   function isPremiumUser (accountType) {

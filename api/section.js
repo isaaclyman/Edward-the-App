@@ -1,6 +1,74 @@
+const isEqual = require('lodash/isEqual')
 const utilities = require('../api/utilities')
 
-module.exports = function (app, passport, db, isPremiumUser) {
+const updateSection = (db, userId, documentId, planId, section) => {
+  return db.Doc.findOne({
+    where: {
+      guid: documentId,
+      userId
+    }
+  }).then(dbDoc => {
+    return db.Plan.findOne({
+      where: {
+        documentId: dbDoc.id,
+        guid: planId,
+        userId
+      }
+    })
+  }).then(dbPlan => {
+    return db.Section.findCreateFind({
+      where: {
+        guid: section.id,
+        planId: dbPlan.id,
+        userId
+      },
+      defaults: {
+        archived: false,
+        content: null,
+        guid: section.id,
+        planId: dbPlan.id,
+        tags: [],
+        title: '',
+        userId
+      }
+    })
+  }).then(([dbSection]) => {
+    const update = {
+      archived: section.archived,
+      tags: section.tags,
+      title: section.title
+    }
+
+    if (!isEqual(dbSection.content, section.content)) {
+      update.content = section.content
+    }
+
+    return dbSection.update(update)
+  }).then(() => {
+    return db.SectionOrder.findCreateFind({
+      where: {
+        ownerGuid: planId,
+        userId
+      },
+      defaults: {
+        order: [],
+        ownerGuid: planId,
+        userId
+      }
+    })
+  }).then(([dbSectionOrder]) => {
+    if (dbSectionOrder.order.includes(section.id)) {
+      return section.id
+    }
+
+    dbSectionOrder.order.push(section.id)
+    return dbSectionOrder.update({
+      order: dbSectionOrder.order
+    })
+  })
+}
+
+const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
 
   // POST { fileId, planId, sectionIds }
@@ -76,7 +144,7 @@ module.exports = function (app, passport, db, isPremiumUser) {
       })
     }).then(dbSectionOrder => {
       const indexToRemove = dbSectionOrder.order.indexOf(sectionId)
-      
+
       if (~indexToRemove) {
         dbSectionOrder.order.splice(indexToRemove, 1)
         return dbSectionOrder.update({
@@ -102,67 +170,7 @@ module.exports = function (app, passport, db, isPremiumUser) {
     const section = req.body.section
     const userId = req.user.id
 
-    db.Doc.findOne({
-      where: {
-        guid: documentId,
-        userId
-      }
-    }).then(dbDoc => {
-      return db.Plan.findOne({
-        where: {
-          documentId: dbDoc.id,
-          guid: planId,
-          userId
-        }
-      })
-    }).then(dbPlan => {
-      return db.Section.findCreateFind({
-        where: {
-          guid: section.id,
-          planId: dbPlan.id,
-          userId
-        },
-        defaults: {
-          archived: false,
-          content: null,
-          guid: section.id,
-          planId: dbPlan.id,
-          tags: [],
-          title: '',
-          userId
-        }
-      })
-    }).then(([dbSection]) => {
-      const update = {
-        archived: section.archived,
-        content: section.content,
-        tags: section.tags,
-        title: section.title
-      }
-
-      return dbSection.update(update)
-    }).then(() => {
-      return db.SectionOrder.findCreateFind({
-        where: {
-          ownerGuid: planId,
-          userId
-        },
-        defaults: {
-          order: [],
-          ownerGuid: planId,
-          userId
-        }
-      })
-    }).then(([dbSectionOrder]) => {
-      if (dbSectionOrder.order.includes(section.id)) {
-        return section.id
-      }
-
-      dbSectionOrder.order.push(section.id)
-      return dbSectionOrder.update({
-        order: dbSectionOrder.order
-      })
-    }).then(() => {
+    updateSection(db, userId, documentId, planId, section).then(() => {
       res.status(200).send(`Section "${section.title}" updated.`)
     }, err => {
       console.error(err)
@@ -175,3 +183,5 @@ module.exports = function (app, passport, db, isPremiumUser) {
     })
   })
 }
+
+module.exports = { registerApis, updateSection }

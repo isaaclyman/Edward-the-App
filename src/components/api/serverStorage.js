@@ -120,7 +120,9 @@ class ServerStorageApi {
     return this.wrapStatus(api.updateTopic({ fileId, topicId, topic }))
   }
 
-  saveAllContent (fileId, { chapters, plans, topics }) {}
+  saveAllContent (fileId, { chapters, plans, topics }) {
+    return this.wrapStatus(api.saveAllContent({ fileId, chapters, plans, topics }))
+  }
 }
 
 export default ServerStorageApi

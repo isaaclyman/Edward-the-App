@@ -1,3 +1,8 @@
+const updateChapter = require('./chapter').updateChapter
+const updateTopic = require('./topic').updateTopic
+const updatePlan = require('./plan').updatePlan
+const updateSection = require('./section').updateSection
+
 module.exports = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
 
@@ -142,6 +147,37 @@ module.exports = function (app, passport, db, isPremiumUser) {
       })
 
       res.status(200).send(documents)
+    }, err => {
+      console.error(err)
+      res.status(500).send(err)
+    })
+  })
+
+  // SAVE ALL CONTENT
+  // POST { fileId, chapters, plans, topics }
+  app.post(route('document/saveAll'), isPremiumUser, (req, res, next) => {
+    const userId = req.user.id
+    const { fileId: documentId, chapters, plans, topics } = req.body
+
+    const updatePromises = []
+
+    topics.forEach(topic => {
+      updatePromises.push(updateTopic(db, userId, documentId, topic))
+    })
+
+    chapters.forEach(chapter => {
+      updatePromises.push(updateChapter(db, userId, documentId, chapter))
+    })
+
+    plans.forEach(plan => {
+      updatePromises.push(updatePlan(db, userId, documentId, plan))
+      plan.sections.forEach(section => {
+        updatePromises.push(updateSection(db, userId, documentId, plan.id, section))
+      })
+    })
+
+    Promise.all(updatePromises).then(() => {
+      res.status(200).send({ documentId, chapters, plans, topics })
     }, err => {
       console.error(err)
       res.status(500).send(err)

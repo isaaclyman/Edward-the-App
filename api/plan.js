@@ -1,6 +1,58 @@
 const utilities = require('../api/utilities')
 
-module.exports = function (app, passport, db, isPremiumUser) {
+const updatePlan = (db, userId, documentId, plan) => {
+  return db.Doc.findOne({
+    where: {
+      guid: documentId,
+      userId
+    }
+  }).then(dbDoc => {
+    return db.Plan.findCreateFind({
+      where: {
+        documentId: dbDoc.id,
+        guid: plan.id,
+        userId
+      },
+      defaults: {
+        archived: false,
+        documentId: dbDoc.id,
+        guid: plan.id,
+        title: '',
+        userId
+      }
+    })
+  }).then(([dbPlan]) => {
+    const update = {
+      archived: plan.archived,
+      title: plan.title
+    }
+
+    return dbPlan.update(update)
+  }).then(() => {
+    return db.PlanOrder.findCreateFind({
+      where: {
+        ownerGuid: documentId,
+        userId
+      },
+      defaults: {
+        order: [],
+        ownerGuid: documentId,
+        userId
+      }
+    })
+  }).then(([dbPlanOrder]) => {
+    if (dbPlanOrder.order.includes(plan.id)) {
+      return plan.id
+    }
+
+    dbPlanOrder.order.push(plan.id)
+    return dbPlanOrder.update({
+      order: dbPlanOrder.order
+    })
+  })
+}
+
+const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
 
   // POST { fileId, planIds }
@@ -105,59 +157,11 @@ module.exports = function (app, passport, db, isPremiumUser) {
   //   }]
   // } }
   app.post(route('plan/update'), isPremiumUser, (req, res, next) => {
+    const userId = req.user.id
     const documentId = req.body.fileId
     const plan = req.body.plan
-    const userId = req.user.id
 
-    db.Doc.findOne({
-      where: {
-        guid: documentId,
-        userId
-      }
-    }).then(dbDoc => {
-      return db.Plan.findCreateFind({
-        where: {
-          documentId: dbDoc.id,
-          guid: plan.id,
-          userId
-        },
-        defaults: {
-          archived: false,
-          documentId: dbDoc.id,
-          guid: plan.id,
-          title: '',
-          userId
-        }
-      })
-    }).then(([dbPlan]) => {
-      const update = {
-        archived: plan.archived,
-        title: plan.title
-      }
-
-      return dbPlan.update(update)
-    }).then(() => {
-      return db.PlanOrder.findCreateFind({
-        where: {
-          ownerGuid: documentId,
-          userId
-        },
-        defaults: {
-          order: [],
-          ownerGuid: documentId,
-          userId
-        }
-      })
-    }).then(([dbPlanOrder]) => {
-      if (dbPlanOrder.order.includes(plan.id)) {
-        return plan.id
-      }
-
-      dbPlanOrder.order.push(plan.id)
-      return dbPlanOrder.update({
-        order: dbPlanOrder.order
-      })
-    }).then(() => {
+    updatePlan(db, userId, documentId, plan).then(() => {
       res.status(200).send(`Plan "${plan.title}" updated.`)
     }, err => {
       console.error(err)
@@ -249,13 +253,13 @@ module.exports = function (app, passport, db, isPremiumUser) {
               sectionOrder.order.push(section.guid)
             }
           })
-    
+
           if (orderOutOfDate) {
             return sectionOrder.update({
               order: sectionOrder.order
             })
           }
-    
+
           return orderOutOfDate
         }).then(() => {
           sections.sort((section1, section2) => {
@@ -281,3 +285,5 @@ module.exports = function (app, passport, db, isPremiumUser) {
     })
   })
 }
+
+module.exports = { registerApis, updatePlan }

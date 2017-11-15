@@ -1,6 +1,58 @@
 const utilities = require('../api/utilities')
 
-module.exports = function (app, passport, db, isPremiumUser) {
+const updateTopic = (db, userId, documentId, topic) => {
+  return db.Doc.findOne({
+    where: {
+      guid: documentId,
+      userId
+    }
+  }).then(dbDoc => {
+    return db.MasterTopic.findCreateFind({
+      where: {
+        documentId: dbDoc.id,
+        guid: topic.id,
+        userId
+      },
+      defaults: {
+        archived: false,
+        documentId: dbDoc.id,
+        guid: topic.id,
+        title: '',
+        userId
+      }
+    })
+  }).then(([dbMasterTopic]) => {
+    const update = {
+      archived: topic.archived,
+      title: topic.title
+    }
+
+    return dbMasterTopic.update(update)
+  }).then(() => {
+    return db.MasterTopicOrder.findCreateFind({
+      where: {
+        ownerGuid: documentId,
+        userId
+      },
+      defaults: {
+        order: [],
+        ownerGuid: documentId,
+        userId
+      }
+    })
+  }).then(([dbMasterTopicOrder]) => {
+    if (dbMasterTopicOrder.order.includes(topic.id)) {
+      return topic.id
+    }
+
+    dbMasterTopicOrder.order.push(topic.id)
+    return dbMasterTopicOrder.update({
+      order: dbMasterTopicOrder.order
+    })
+  })
+}
+
+const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
 
   // POST { fileId, topicIds }
@@ -103,59 +155,11 @@ module.exports = function (app, passport, db, isPremiumUser) {
   //  archived, id, title
   // } }
   app.post(route('topic/update'), isPremiumUser, (req, res, next) => {
+    const userId = req.user.id
     const documentId = req.body.fileId
     const topic = req.body.topic
-    const userId = req.user.id
 
-    db.Doc.findOne({
-      where: {
-        guid: documentId,
-        userId
-      }
-    }).then(dbDoc => {
-      return db.MasterTopic.findCreateFind({
-        where: {
-          documentId: dbDoc.id,
-          guid: topic.id,
-          userId
-        },
-        defaults: {
-          archived: false,
-          documentId: dbDoc.id,
-          guid: topic.id,
-          title: '',
-          userId
-        }
-      })
-    }).then(([dbMasterTopic]) => {
-      const update = {
-        archived: topic.archived,
-        title: topic.title
-      }
-
-      return dbMasterTopic.update(update)
-    }).then(() => {
-      return db.MasterTopicOrder.findCreateFind({
-        where: {
-          ownerGuid: documentId,
-          userId
-        },
-        defaults: {
-          order: [],
-          ownerGuid: documentId,
-          userId
-        }
-      })
-    }).then(([dbMasterTopicOrder]) => {
-      if (dbMasterTopicOrder.order.includes(topic.id)) {
-        return topic.id
-      }
-
-      dbMasterTopicOrder.order.push(topic.id)
-      return dbMasterTopicOrder.update({
-        order: dbMasterTopicOrder.order
-      })
-    }).then(() => {
+    updateTopic(db, userId, documentId, topic).then(() => {
       res.status(200).send(`Topic "${topic.title}" updated.`)
     }, err => {
       console.error(err)
@@ -222,3 +226,5 @@ module.exports = function (app, passport, db, isPremiumUser) {
     })
   })
 }
+
+module.exports = { registerApis, updateTopic }

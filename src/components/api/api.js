@@ -22,6 +22,8 @@ class Api {
     })
   }
 
+  saveAllContent (data) { return this.simplePost(route('document/saveAll'), data) }
+
   // DOCUMENTS
   addDocument (doc) { return this.simplePost(route('document/add'), doc) }
   deleteDocument (doc) { return this.simplePost(route('document/delete'), doc) }

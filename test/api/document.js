@@ -95,3 +95,4 @@ test('update a document (rename)', async t => {
     t.is(docs[1].name, updatedName)
   })
 })
+

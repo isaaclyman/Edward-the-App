@@ -1,7 +1,105 @@
 const isEqual = require('lodash/isEqual')
 const utilities = require('../api/utilities')
 
-module.exports = function (app, passport, db, isPremiumUser) {
+const updateChapter = (db, userId, documentId, chapter) => {
+  let dbChapterId
+
+  return db.Doc.findOne({
+    where: {
+      guid: documentId,
+      userId
+    }
+  }).then(dbDoc => {
+    return db.Chapter.findCreateFind({
+      where: {
+        documentId: dbDoc.id,
+        guid: chapter.id,
+        userId
+      },
+      defaults: {
+        archived: false,
+        documentId: dbDoc.id,
+        guid: chapter.id,
+        title: '',
+        userId
+      }
+    })
+  }).then(([dbChapter]) => {
+    dbChapterId = dbChapter.id
+    const update = {
+      archived: chapter.archived,
+      title: chapter.title
+    }
+
+    if (!isEqual(dbChapter.content, chapter.content)) {
+      update.content = chapter.content
+    }
+
+    return dbChapter.update(update)
+  }).then(() => {
+    return db.ChapterOrder.findCreateFind({
+      where: {
+        ownerGuid: documentId,
+        userId
+      },
+      defaults: {
+        order: [],
+        ownerGuid: documentId,
+        userId
+      }
+    })
+  }).then(([dbChapterOrder]) => {
+    if (dbChapterOrder.order.includes(chapter.id)) {
+      return chapter.id
+    }
+
+    dbChapterOrder.order.push(chapter.id)
+    return dbChapterOrder.update({
+      order: dbChapterOrder.order
+    })
+  }).then(() => {
+    const topics = chapter.topics || {}
+    const topicPromises = Object.keys(topics).map(id => {
+      const topic = topics[id]
+      return db.MasterTopic.findOne({
+        where: {
+          guid: topic.id,
+          userId
+        }
+      }).then(dbMasterTopic => {
+        if (!dbMasterTopic) {
+          const error = new Error(`MasterTopic "${topic.id}" was not found.`)
+          throw error
+        }
+
+        return db.ChapterTopic.findCreateFind({
+          where: {
+            chapterId: dbChapterId,
+            masterTopicId: dbMasterTopic.id,
+            userId
+          },
+          defaults: {
+            chapterId: dbChapterId,
+            masterTopicId: dbMasterTopic.id,
+            userId
+          }
+        })
+      }).then(([dbChapterTopic]) => {
+        if (isEqual(dbChapterTopic.content, topic.content)) {
+          return
+        }
+
+        return dbChapterTopic.update({
+          content: topic.content
+        })
+      })
+    })
+
+    return Promise.all(topicPromises)
+  })
+}
+
+const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
 
   // POST { fileId, chapterIds }
@@ -108,110 +206,14 @@ module.exports = function (app, passport, db, isPremiumUser) {
   //   }
   // } }
   app.post(route('chapter/update'), isPremiumUser, (req, res, next) => {
+    const userId = req.user.id
     const documentId = req.body.fileId
     const chapter = req.body.chapter
-    const userId = req.user.id
-    let dbChapterId
 
-    db.Doc.findOne({
-      where: {
-        guid: documentId,
-        userId
-      }
-    }).then(dbDoc => {
-      return db.Chapter.findCreateFind({
-        where: {
-          documentId: dbDoc.id,
-          guid: chapter.id,
-          userId
-        },
-        defaults: {
-          archived: false,
-          documentId: dbDoc.id,
-          guid: chapter.id,
-          title: '',
-          userId
-        }
-      })
-    }).then(([dbChapter]) => {
-      dbChapterId = dbChapter.id
-      const update = {
-        archived: chapter.archived,
-        content: chapter.content,
-        title: chapter.title
-      }
-
-      return dbChapter.update(update)
-    }).then(() => {
-      return db.ChapterOrder.findCreateFind({
-        where: {
-          ownerGuid: documentId,
-          userId
-        },
-        defaults: {
-          order: [],
-          ownerGuid: documentId,
-          userId
-        }
-      })
-    }).then(([dbChapterOrder]) => {
-      if (dbChapterOrder.order.includes(chapter.id)) {
-        return chapter.id
-      }
-
-      dbChapterOrder.order.push(chapter.id)
-      return dbChapterOrder.update({
-        order: dbChapterOrder.order
-      })
-    }).then(() => {
-      const topics = chapter.topics || {}
-      const topicPromises = Object.keys(topics).map(id => {
-        const topic = topics[id]
-        return db.MasterTopic.findOne({
-          where: {
-            guid: topic.id,
-            userId
-          }
-        }).then(dbMasterTopic => {
-          if (!dbMasterTopic) {
-            const error = new Error(`MasterTopic "${topic.id}" was not found.`)
-            res.status(500).send(error)
-            throw error
-          }
-
-          return db.ChapterTopic.findCreateFind({
-            where: {
-              chapterId: dbChapterId,
-              masterTopicId: dbMasterTopic.id,
-              userId
-            },
-            defaults: {
-              chapterId: dbChapterId,
-              masterTopicId: dbMasterTopic.id,
-              userId
-            }
-          })
-        }).then(([dbChapterTopic]) => {
-          if (isEqual(dbChapterTopic.content, topic.content)) {
-            return
-          }
-
-          return dbChapterTopic.update({
-            content: topic.content
-          })
-        })
-      })
-
-      return Promise.all(topicPromises)
-    }).then(() => {
+    updateChapter(db, userId, documentId, chapter).then(() => {
       res.status(200).send(`Chapter "${chapter.title}" updated.`)
     }, err => {
       console.error(err)
-
-      if (res.headersSent) {
-        return
-      }
-
       res.status(500).send(err)
     })
   })
@@ -311,3 +313,5 @@ module.exports = function (app, passport, db, isPremiumUser) {
     })
   })
 }
+
+module.exports = { registerApis, updateChapter }

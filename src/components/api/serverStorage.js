@@ -58,9 +58,13 @@ class ServerStorageApi {
     return this.wrapStatus(api.arrangeChapters({ fileId, chapterIds }))
   }
 
-  arrangePlans (fileId, planIds) {}
+  arrangePlans (fileId, planIds) {
+    return this.wrapStatus(api.arrangePlans({ fileId, planIds }))
+  }
 
-  arrangeSections (fileId, planId, sectionIds) {}
+  arrangeSections (fileId, planId, sectionIds) {
+    return this.wrapStatus(api.arrangeSections({ fileId, planId, sectionIds }))
+  }
 
   arrangeTopics (fileId, topicIds) {
     return this.wrapStatus(api.arrangeTopics({ fileId, topicIds }))
@@ -72,9 +76,13 @@ class ServerStorageApi {
     return this.wrapStatus(api.deleteChapter({ fileId, chapterId }))
   }
 
-  deletePlan (fileId, planId) {}
+  deletePlan (fileId, planId) {
+    return this.wrapStatus(api.deletePlan({ fileId, planId }))
+  }
 
-  deleteSection (fileId, planId, sectionId) {}
+  deleteSection (fileId, planId, sectionId) {
+    return this.wrapStatus(api.deleteSection({ fileId, planId, sectionId }))
+  }
 
   deleteTopic (fileId, topicId) {
     return this.wrapStatus(api.deleteTopic({ fileId, topicId }))
@@ -86,7 +94,9 @@ class ServerStorageApi {
     return api.getChapters(fileId)
   }
 
-  getAllPlans (fileId) {}
+  getAllPlans (fileId) {
+    return api.getPlans(fileId)
+  }
 
   getAllTopics (fileId) {
     return api.getTopics(fileId)
@@ -98,9 +108,13 @@ class ServerStorageApi {
     return this.wrapStatus(api.updateChapter({ fileId, chapterId, chapter }))
   }
 
-  updatePlan (fileId, planId, plan) {}
+  updatePlan (fileId, planId, plan) {
+    return this.wrapStatus(api.updatePlan({ fileId, planId, plan }))
+  }
 
-  updateSection (fileId, planId, sectionId, section) {}
+  updateSection (fileId, planId, sectionId, section) {
+    return this.wrapStatus(api.updatePlan({ fileId, planId, sectionId, section }))
+  }
 
   updateTopic (fileId, topicId, topic) {
     return this.wrapStatus(api.updateTopic({ fileId, topicId, topic }))

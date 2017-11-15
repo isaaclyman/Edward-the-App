@@ -20,6 +20,7 @@ module.exports = function (app, passport, db) {
   require('./chapter')(app, passport, db, isPremiumUserMiddleware)
   require('./topic')(app, passport, db, isPremiumUserMiddleware)
   require('./plan')(app, passport, db, isPremiumUserMiddleware)
+  require('./section')(app, passport, db, isPremiumUserMiddleware)
 
   const premiumTypes = [db.accountTypes.PREMIUM.name, db.accountTypes.GOLD.name, db.accountTypes.ADMIN.name]
   function isPremiumUser (accountType) {
@@ -29,6 +30,7 @@ module.exports = function (app, passport, db) {
   function isPremiumUserMiddleware (req, res, next) {
     if (!req.isAuthenticated()) {
       res.status(401).send('Attempted a storage API call without authentication.')
+      return
     }
 
     db.User.findOne({

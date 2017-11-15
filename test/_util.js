@@ -1,8 +1,8 @@
+import uuid from 'uuid/v1'
+
 /*
   DOCUMENTS
 */
-
-import uuid from 'uuid/v1'
 
 const addDocument = async (app, name) => {
   const document = {
@@ -42,6 +42,44 @@ const addTopic = async (app, docId, title) => {
   )
 
   return topic
+}
+
+/*
+  PLANS
+*/
+
+const checkPlans = (t, app, docId, expectFn) => {
+  return wrapTest(t,
+    app.get(`/api/plans/${docId}`)
+    .expect(200)
+    .expect(response => {
+      t.truthy(Array.isArray(response.body))
+      expectFn(response.body)
+    })
+  )
+}
+
+const addPlan = async (app, docId, title) => {
+  const planId = uuid()
+
+  const plan = {
+    fileId: docId,
+    planId: planId,
+    plan: {
+      archived: false,
+      id: planId,
+      title,
+      sections: []
+    }
+  }
+
+  await (
+    app.post('/api/plan/update')
+    .send(plan)
+    .expect(200)
+  )
+
+  return plan
 }
 
 /*
@@ -136,7 +174,9 @@ const wrapTest = (t, supertest) => {
 
 export {
   addDocument,
+  addPlan,
   addTopic,
+  checkPlans,
   createTestUser,
   deleteTestUser,
   makeTestUserPremium,

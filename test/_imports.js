@@ -3,7 +3,9 @@ import request from 'supertest'
 import test from 'ava'
 import {
   addDocument,
+  addPlan,
   addTopic,
+  checkPlans,
   createTestUser,
   deleteTestUser,
   makeTestUserPremium,
@@ -20,11 +22,13 @@ const boundMakeTestUserPremium = makeTestUserPremium.bind(null, sequelize)
 
 export {
   addDocument,
+  addPlan,
   addTopic,
   app,
   boundCreateTestUser as createTestUser,
   boundDeleteTestUser as deleteTestUser,
   boundMakeTestUserPremium as makeTestUserPremium,
+  checkPlans,
   getPersistentAgent,
   server,
   sequelize,

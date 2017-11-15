@@ -1,4 +1,6 @@
-import { app, createTestUser, deleteTestUser, getPersistentAgent, serverReady, test, wrapTest } from './_imports'
+import { app, createTestUser, deleteTestUser, getPersistentAgent, serverReady, stubRecaptcha, test, wrapTest } from './_imports'
+
+stubRecaptcha(test)
 
 test('redirects from http to https on auth page', async t => {
   await serverReady
@@ -25,6 +27,7 @@ test('gets app page', async t => {
   await deleteTestUser()
   await serverReady
   await createTestUser(app)
+
   return wrapTest(t,
     app.get('/app')
     .expect(200)

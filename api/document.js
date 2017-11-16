@@ -159,28 +159,37 @@ module.exports = function (app, passport, db, isPremiumUser) {
     const userId = req.user.id
     const { fileId: documentId, chapters, plans, topics } = req.body
 
-    const updatePromises = []
-
-    topics.forEach(topic => {
-      updatePromises.push(updateTopic(db, userId, documentId, topic))
+    const updateTopicFns = topics.map(topic => () => updateTopic(db, userId, documentId, topic))
+    const updateTopicPromise = orderPromises(updateTopicFns)
+    const updateChapterPromise = updateTopicPromise.then(() => {
+      const updateChapterFns = chapters.map(chapter => () => updateChapter(db, userId, documentId, chapter))
+      return orderPromises(updateChapterFns)
     })
 
-    chapters.forEach(chapter => {
-      updatePromises.push(updateChapter(db, userId, documentId, chapter))
-    })
-
-    plans.forEach(plan => {
-      updatePromises.push(updatePlan(db, userId, documentId, plan))
-      plan.sections.forEach(section => {
-        updatePromises.push(updateSection(db, userId, documentId, plan.id, section))
+    const updatePlanFns = plans.map(
+      plan => () => updatePlan(db, userId, documentId, plan).then(() => {
+        const updateSectionFns = plan.sections.map(section => () => updateSection(db, userId, documentId, plan.id, section))
+        return orderPromises(updateSectionFns)
       })
-    })
+    )
+    const updatePlanPromise = orderPromises(updatePlanFns)
 
-    Promise.all(updatePromises).then(() => {
+    Promise.all([updateChapterPromise, updatePlanPromise]).then(() => {
       res.status(200).send({ documentId, chapters, plans, topics })
     }, err => {
       console.error(err)
       res.status(500).send(err)
     })
+  })
+}
+
+function orderPromises (promiseFns) {
+  return promiseFns[0]().then(() => {
+    if (promiseFns.length > 1) {
+      promiseFns.splice(0, 1)
+      return orderPromises(promiseFns)
+    } else {
+      return promiseFns[0]()
+    }
   })
 }

@@ -21,7 +21,7 @@ module.exports = function (sequelize) {
   const MasterTopic = sequelize.import(path.join(__dirname, 'masterTopic'))
 
   const createAccountType = (name, displayName, description) => ({ name, displayName, description })
-  const limitedMessage = `All data is stored on your computer's hard drive and may be lost if your browsing data is cleared.
+  const limitedMessage = `All data is stored insecurely on your computer's hard drive and may be lost if your browsing data is cleared.
   Most computers have a maximum storage limit of 10MB (about 5,000 pages).`
 
   const accountTypes = {

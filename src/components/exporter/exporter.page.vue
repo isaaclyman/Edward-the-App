@@ -20,15 +20,15 @@
         </button>
       </div>
       <div class="export-option">
-        <h3>Export to JSON</h3>
-        <div>(This is good for making a backup of your work.)</div>
+        <h3>Create a backup</h3>
+        <div>(You can recover your document from this file later.)</div>
         <pulse-loader v-if="loading"></pulse-loader>
         <button v-if="!loading" class="button-green export-button" @click="exportJsonDocument()">
           Export entire document
         </button>
       </div>
       <div class="export-option">
-        <h3>Import from JSON</h3>
+        <h3>Import a backup</h3>
         <div>
           (Warning: This will overwrite the current document completely, including all chapters, plans and outlines.)
         </div>

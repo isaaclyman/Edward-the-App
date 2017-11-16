@@ -70,6 +70,11 @@ button.button-link {
   text-decoration: underline;
 }
 
+button.button-link[disabled] {
+  background-color: transparent;
+  color: #444;
+}
+
 .button-link-icon {
   margin-right: 4px;
 }

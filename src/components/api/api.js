@@ -4,21 +4,13 @@ const route = route => `/api/${route}`
 
 class Api {
   simpleGet (route) {
-    return new Promise((resolve, reject) => {
-      axios.get(route).then(response => {
-        resolve(response.data)
-      }, () => {
-        reject()
-      })
+    return axios.get(route).then(response => {
+      return response.data
     })
   }
   simplePost (route, body) {
-    return new Promise((resolve, reject) => {
-      axios.post(route, body).then(response => {
-        resolve(response.data)
-      }, () => {
-        reject()
-      })
+    return axios.post(route, body).then(response => {
+      return response.data
     })
   }
 

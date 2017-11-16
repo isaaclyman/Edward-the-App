@@ -7,6 +7,7 @@ import DocumentEdit from '../components/documentEdit/documentEdit.page.vue'
 import Exporter from '../components/exporter/exporter.page.vue'
 import Outliner from '../components/outliner/outliner.page.vue'
 import Planner from '../components/planner/planner.page.vue'
+import Settings from '../components/settings/settings.page.vue'
 
 Vue.use(Router)
 
@@ -45,6 +46,11 @@ export default new Router({
       path: '/documentEdit',
       name: 'Document Edit',
       component: DocumentEdit
+    },
+    {
+      path: '/settings',
+      name: 'Settings',
+      component: Settings
     }
   ]
 })

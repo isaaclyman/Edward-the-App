@@ -16,6 +16,11 @@
       </button>
     </div>
     <div class="spacer"></div>
+    <div class="menu-item" v-if="notDemo">
+      <button class="menu-button" @click="showSettings()">
+        Settings
+      </button>
+    </div>
     <div class="menu-item">
       <button class="menu-button" @click="logOut()">
         Log Out
@@ -28,11 +33,16 @@
 import FilePicker from './filePicker.vue'
 import swal from 'sweetalert'
 import { UNLOAD_CURRENT_DOCUMENT } from './file.store'
-import userApi from './userApi'
+import userApi from '../api/userApi'
 
 export default {
   components: {
     FilePicker
+  },
+  computed: {
+    notDemo () {
+      return this.$store.state.user.user.accountType.name !== 'DEMO'
+    }
   },
   data () {
     return {}
@@ -53,6 +63,9 @@ export default {
     },
     showExport () {
       this.$router.push('/export')
+    },
+    showSettings () {
+      this.$router.push('/settings')
     },
     showWizard () {
       this.$store.dispatch(UNLOAD_CURRENT_DOCUMENT)

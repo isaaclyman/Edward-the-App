@@ -1,6 +1,9 @@
+import userApi from '../api/userApi'
+
 export const SET_DEFAULT_USER = 'SET_DEFAULT_USER'
 export const SET_USER = 'SET_USER'
 export const SET_USER_PROMISE = 'SET_USER_PROMISE'
+export const UPDATE_EMAIL = 'SET_USER_EMAIL'
 
 const defaultUser = {
   accountType: {
@@ -42,6 +45,10 @@ const store = {
       }, err => {
         userPromiseResolve(null, err)
       })
+    },
+    [UPDATE_EMAIL] (state, { email }) {
+      state.user.email = email
+      userApi.updateEmail(email)
     }
   }
 }

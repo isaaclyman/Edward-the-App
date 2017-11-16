@@ -382,8 +382,8 @@ export default {
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
-  min-height: 50px;
-  max-height: 50px;
+  min-height: 60px;
+  max-height: 60px;
 }
 
 .plan-switch {

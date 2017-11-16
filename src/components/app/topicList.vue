@@ -26,7 +26,7 @@
             No content yet. Click "Edit" to add some.
           </span>
         </div>
-        <div class="content-editable" v-if="isEditing(index)">
+        <div class="content-editable" v-show="isEditing(index)">
           <quill-editor :content="topic.content" @update:content="updateContent(topic, $event)"></quill-editor>
         </div>
       </div>

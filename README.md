@@ -23,7 +23,10 @@ npm run start
 npm run server
 
 # serve Node server app with auto reload at localhost:3000
-npm run server-dev 
+npm run server-dev
+
+# run integration tests (using Cypress)
+npm run integration
 ```
 
 For local development, you'll need a root-level `.env` file with the following keys:

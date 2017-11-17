@@ -104,8 +104,9 @@
   "private": true,
   "scripts": {
     "build": "node build/build.js",
-    "cypress:open": "cypress open",
+    "cypress": "cypress open",
     "dev": "node build/dev-server.js",
+    "integration": "cypress run",
     "lint": "eslint --ext .js,.vue src",
     "server": "node server.js",
     "start": "npm run server",

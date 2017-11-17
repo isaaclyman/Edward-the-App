@@ -12,4 +12,8 @@ yarn-error.log*
 *.sln
 .vscode/
 
+# Environment variables
 .env
+
+# Test artifacts
+cypress/videos/

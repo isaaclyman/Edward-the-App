@@ -1,5 +1,24 @@
 describe('the landing page', () => {
-  it('loads', () => {
+  beforeEach(() => {
     cy.visit('/')
+  })
+
+  it('includes a screenshot of the app', () => {
+    cy.get('img.screenshot').should('exist').should('be.visible')
+  })
+
+  it('includes an explanation of what Edward is', () => {
+    cy.contains('Edward is a')
+  })
+
+  it('includes at least 2 links to the login page', () => {
+    const authLinks = cy.get('a[href="/auth"]')
+    authLinks.should('be.visible')
+    authLinks.then(authLinks => expect(authLinks).to.have.length.greaterThan(1))
+  })
+
+  it('links to the login page', () => {
+    cy.get('a').contains('Try it').click()
+    cy.url().should('contain', '/auth')
   })
 })

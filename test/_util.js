@@ -1,19 +1,22 @@
-import util from '../models/_util'
+const modelUtil = require('../models/_util')
+const util = {}
 
 /*
   ROUTES
 */
 
 const route = route => `/api/${route}`
+util.route = route
 
 /*
   TEST USER
 */
 
-export const user = { email: 'user.js@test.com__TEST', password: 'thisismysecurepassword', captchaResponse: 'token' }
+const user = { email: 'user.js@test.com__TEST', password: 'thisismysecurepassword', captchaResponse: 'token' }
+util.user = user
 
-function createTestUser (sequelize) {
-  return util.getHash(user.password).then(hash => {
+util.createTestUser = function (sequelize) {
+  return modelUtil.getHash(user.password).then(hash => {
     const query =
     `DO $$
     DECLARE
@@ -28,7 +31,7 @@ function createTestUser (sequelize) {
   })
 }
 
-function deleteTestUser (sequelize) {
+util.deleteTestUser = function (sequelize) {
   return sequelize.query(
     `SELECT id FROM users WHERE email = '${user.email}';`,
     { type: sequelize.QueryTypes.SELECT }
@@ -53,7 +56,7 @@ function deleteTestUser (sequelize) {
   })
 }
 
-function makeTestUserPremium (sequelize) {
+util.makeTestUserPremium = function (sequelize) {
   const query =
   `DO $$
   DECLARE
@@ -70,10 +73,10 @@ function makeTestUserPremium (sequelize) {
   EXTERNAL REQUEST STUBBING
 */
 
-import request from 'request-promise-native'
-import sinon from 'sinon'
+const request = require('request-promise-native')
+const sinon = require('sinon')
 
-const stubRecaptcha = (test) => {
+util.stubRecaptcha = function (test) {
   const sandbox = sinon.sandbox.create()
 
   test.before('stub recaptcha request', t => {
@@ -91,7 +94,7 @@ const stubRecaptcha = (test) => {
   SUPERTEST WRAPPING
 */
 
-const wrapTest = (t, supertest) => {
+util.wrapTest = function (t, supertest) {
   return new Promise((resolve, reject) => {
     supertest.end((err, res) => {
       if (err) {
@@ -103,11 +106,4 @@ const wrapTest = (t, supertest) => {
   })
 }
 
-export {
-  createTestUser,
-  deleteTestUser,
-  makeTestUserPremium,
-  route,
-  stubRecaptcha,
-  wrapTest
-}
+module.exports = util

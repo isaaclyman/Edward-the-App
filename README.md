@@ -32,6 +32,8 @@ npm run integration
 npm run cypress
 ```
 
+## Environment Variables
+
 For local development, you'll need a root-level `.env` file with the following keys:
 
 `DATABASE_URL={connectionString}`: A connection string for a local Postgres database. An empty database with a `public` schema and no tables should be sufficient; the ORM will create the tables and relations automatically.
@@ -40,4 +42,12 @@ For local development, you'll need a root-level `.env` file with the following k
 `RECAPTCHA_SECRET={secret}`: A valid Google Recaptcha site secret. If you're developing locally on /auth, you'll also need to set `window.recaptchaSiteKey` to a valid site key after page load. By default, this is set in `auth.html`.
 `SESSION_COOKIE_SECRET={secret}`: A secret to use for encrypting and decrypting session cookies.
 
-API requests will automatically be proxied from port 8080 to port 3000. For full-stack development, you can run `npm run dev` and `npm run server-dev` side by side.
+## Running the app locally
+
+`npm run dev` serves the front-end site on port 8080. `npm run server-dev` runs the API server on port 3000. Run these in separate console windows, and API requests will automatically be proxied from port 8080 to port 3000.
+
+## Tests
+
+`npm run test` is self-contained. Do not try to run it while a local server is already running. Port 3000 must be available.
+
+The Cypress tests require both `npm run dev` and `npm run server-dev` to be running in order to function.

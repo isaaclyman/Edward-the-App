@@ -27,6 +27,9 @@ npm run server-dev
 
 # run integration tests (using Cypress)
 npm run integration
+
+# run integration tests in interactive mode (Cypress GUI)
+npm run cypress
 ```
 
 For local development, you'll need a root-level `.env` file with the following keys:

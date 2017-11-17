@@ -3,7 +3,7 @@
     <p class="signup-message">
       <strong>Your Hobbyist account is free. You can use it for as long as you like.</strong>
     </p>
-    <div class="signup-section">
+    <div class="signup-section username">
       <div class="signup-field">
         <label class="signup-label" for="signup-email">Email address:</label>
         <input class="signup-input" :class="{ 'invalid': warnEmail }" id="signup-email" type="text"
@@ -12,7 +12,7 @@
       <button class="field-info" :class="{ 'invalid': warnEmail }" v-html="infoSvg" ref="emailInfo"
               :title="emailInfo"></button>
     </div>
-    <div class="signup-section">
+    <div class="signup-section password">
       <div class="signup-field">
         <label class="signup-label" for="signup-password">Password:</label>
         <input class="signup-input" :class="{ 'invalid': warnPassword }" id="signup-password" type="password"
@@ -21,7 +21,7 @@
       <button class="field-info" :class="{ 'invalid': warnPassword }" v-html="infoSvg" ref="passwordInfo"
               :title="passwordInfo"></button>
     </div>
-    <div class="signup-section">
+    <div class="signup-section about">
       <div class="signup-field">
         <label class="signup-label" for="signup-about">Tell us something about yourself, if you'd like:</label>
         <textarea class="signup-textarea" id="signup-about" type="text" v-model="about"></textarea>

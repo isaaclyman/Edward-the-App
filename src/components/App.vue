@@ -30,7 +30,7 @@ import FileMenu from './app/fileMenu.vue'
 import MainMenu from './app/mainMenu.vue'
 import { SET_DEFAULT_USER, SET_USER, SET_USER_PROMISE } from './app/user.store'
 import tooltip from './app/tippyBuilder'
-import userApi from './app/userApi'
+import userApi from './api/userApi'
 import Wizard from './wizard/wizard.vue'
 
 export default {

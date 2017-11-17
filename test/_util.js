@@ -1,3 +1,5 @@
+import util from '../models/_util'
+
 /*
   ROUTES
 */
@@ -8,43 +10,50 @@ const route = route => `/api/${route}`
   TEST USER
 */
 
-const user = { email: 'user.js@test.com__TEST', password: 'thisismysecurepassword', captchaResponse: 'token' }
+export const user = { email: 'user.js@test.com__TEST', password: 'thisismysecurepassword', captchaResponse: 'token' }
 
-async function createTestUser (defaultApp, app) {
-  await (
-    (app || defaultApp).post(route('user/signup'))
-    .send(user)
-    .expect(200)
-    .then(response => {
-      return response.body
-    })
-  )
+function createTestUser (sequelize) {
+  return util.getHash(user.password).then(hash => {
+    const query =
+    `DO $$
+    DECLARE
+      limitedId INTEGER;
+    BEGIN
+      SELECT account_types.id INTO limitedId FROM account_types WHERE name = 'LIMITED';
+      INSERT INTO users (email, password, "accountTypeId", "createdAt", "updatedAt")
+        VALUES ('${user.email}', '${hash}', limitedId, current_timestamp, current_timestamp);
+    END $$;`
 
-  return user
+    return sequelize.query(query)
+  })
 }
 
-async function deleteTestUser (sequelize) {
-  const dbUsers = await sequelize.query(
+function deleteTestUser (sequelize) {
+  return sequelize.query(
     `SELECT id FROM users WHERE email = '${user.email}';`,
     { type: sequelize.QueryTypes.SELECT }
-  )
-  if (dbUsers.length) {
+  ).then(dbUsers => {
+    if (!dbUsers.length) {
+      return
+    }
     const userId = dbUsers[0].id
     const tablesToDeleteFrom = [
       'documents', 'document_orders', 'chapters', 'chapter_orders', 'master_topics', 'master_topic_orders',
       'plans', 'plan_orders', 'sections', 'section_orders', 'chapter_topics'
     ]
 
-    tablesToDeleteFrom.forEach(async table => {
+    const deletePromises = tablesToDeleteFrom.map(table => {
       const deleteQuery = `DELETE FROM ${table} WHERE "userId" = ${userId};`
-      await sequelize.query(deleteQuery)
+      return sequelize.query(deleteQuery)
     })
-  }
 
-  await sequelize.query(`DELETE FROM users WHERE email = '${user.email}';`)
+    return Promise.all(deletePromises)
+  }).then(() => {
+    return sequelize.query(`DELETE FROM users WHERE email = '${user.email}';`)
+  })
 }
 
-async function makeTestUserPremium (sequelize) {
+function makeTestUserPremium (sequelize) {
   const query =
   `DO $$
   DECLARE
@@ -54,7 +63,7 @@ async function makeTestUserPremium (sequelize) {
     UPDATE users SET "accountTypeId" = premiumId WHERE email = '${user.email}';
   END $$;`
 
-  await sequelize.query(query)
+  return sequelize.query(query)
 }
 
 /*

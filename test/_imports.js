@@ -7,13 +7,24 @@ import {
   makeTestUserPremium,
   route,
   stubRecaptcha,
+  user,
   wrapTest
 } from './_util'
 import uuid from 'uuid/v1'
 
 const app = request(server)
 const getPersistentAgent = () => request.agent(server)
-const boundCreateTestUser = createTestUser.bind(null, app)
+const boundCreateTestUser = async (overrideApp) => {
+  await createTestUser(sequelize)
+  return (
+    (overrideApp || app).post(route('user/login'))
+    .send(user)
+    .expect(200)
+    .then(() => {
+      return user
+    })
+  )
+}
 const boundDeleteTestUser = deleteTestUser.bind(null, sequelize)
 const boundMakeTestUserPremium = makeTestUserPremium.bind(null, sequelize)
 
@@ -29,6 +40,7 @@ export {
   serverReady,
   stubRecaptcha,
   test,
+  user,
   uuid,
   wrapTest
 }

@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs')
+const util = require('./_util')
 
 module.exports = function (sequelize, DataTypes) {
   const User = sequelize.define('user', {
@@ -29,7 +30,7 @@ module.exports = function (sequelize, DataTypes) {
   }
 
   User.beforeCreate((user, options) => {
-    return getHash(user.password).then(hash => {
+    return util.getHash(user.password).then(hash => {
       user.password = hash
     }).catch(err => {
       console.log(err)
@@ -37,25 +38,4 @@ module.exports = function (sequelize, DataTypes) {
   })
 
   return User
-}
-
-function getHash (password) {
-  return new Promise((resolve, reject) => {
-    bcrypt.genSalt(10, (err, salt) => {
-      if (err) {
-        reject(err)
-        return
-      }
-
-      bcrypt.hash(password, salt, (err, hash) => {
-        if (err) {
-          reject(err)
-          return
-        }
-
-        resolve(hash)
-        return
-      })
-    })
-  })
 }

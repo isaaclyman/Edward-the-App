@@ -7,6 +7,7 @@ import {
   serverReady,
   stubRecaptcha,
   test,
+  user,
   wrapTest
 } from '../_imports'
 
@@ -15,7 +16,14 @@ stubRecaptcha(test)
 test('sign up and log in', async t => {
   await deleteTestUser()
   await serverReady
-  const user = await createTestUser()
+
+  await (
+    app.post(route('user/signup'))
+    .send(user)
+    .expect(200)
+    .expect('set-cookie', /connect\.sid/)
+  )
+
   return wrapTest(t,
     app.post(route('user/login'))
     .send(user)

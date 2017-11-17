@@ -12,18 +12,18 @@ const api = {
       })
     })
   },
-  logIn ({ email, password, captchaResponse }) {
+  logIn ({ email, password, captchaResponse, integration }) {
     return new Promise((resolve, reject) => {
-      axios.post(route('login'), { email, password, captchaResponse }).then(response => {
+      axios.post(route('login'), { email, password, captchaResponse, integration }).then(response => {
         resolve(response.data)
       }, () => {
         reject()
       })
     })
   },
-  signUp ({ about, email, password, captchaResponse }) {
+  signUp ({ about, email, password, captchaResponse, integration }) {
     return new Promise((resolve, reject) => {
-      axios.post(route('signup'), { about, email, password, captchaResponse }).then(response => {
+      axios.post(route('signup'), { about, email, password, captchaResponse, integration }).then(response => {
         resolve(response.data)
       }, () => {
         reject()

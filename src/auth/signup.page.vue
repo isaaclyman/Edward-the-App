@@ -63,6 +63,9 @@ export default {
         this.validPassword
       )
     },
+    isTest () {
+      return this.email.endsWith('__TEST')
+    },
     warnEmail () {
       return this.email && !this.validEmail
     },
@@ -115,7 +118,7 @@ export default {
     submit () {
       this.message = ''
 
-      if (!this.captchaResponse) {
+      if (!this.captchaResponse && !this.isTest) {
         this.message = 'Please indicate that you are not a robot.'
         return
       }
@@ -126,7 +129,8 @@ export default {
         about: this.about,
         captchaResponse: this.captchaResponse,
         email: this.email,
-        password: this.password
+        password: this.password,
+        integration: this.isTest
       }).then(result => {
         this.loading = false
         goToApp()

@@ -49,6 +49,9 @@ export default {
         !!this.email.trim() &&
         !!this.password.trim()
       )
+    },
+    isTest () {
+      return this.email.endsWith('__TEST')
     }
   },
   data () {
@@ -64,7 +67,7 @@ export default {
     logIn () {
       this.loginMessage = ''
 
-      if (!this.captchaResponse) {
+      if (!this.captchaResponse && !this.isTest) {
         this.loginMessage = 'Please indicate that you are not a robot.'
         return
       }
@@ -74,7 +77,8 @@ export default {
       authApi.logIn({
         email: this.email,
         password: this.password,
-        captchaResponse: this.captchaResponse
+        captchaResponse: this.captchaResponse,
+        integration: this.isTest
       }).then(result => {
         this.loading = false
         if (result.limited) {

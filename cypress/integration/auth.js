@@ -1,6 +1,4 @@
-import {
-  user
-} from '../../test/_util'
+import { user } from '../../test/_util'
 import { createTestUser, deleteTestUser } from '../scripts/_util'
 
 describe('the auth page', () => {

@@ -36,11 +36,11 @@ npm run cypress
 
 For local development, you'll need a root-level `.env` file with the following keys:
 
-`DATABASE_URL={connectionString}`: A connection string for a local Postgres database. An empty database with a `public` schema and no tables should be sufficient; the ORM will create the tables and relations automatically.
-`DEBUG_DB={true|false}`: When true, all database calls will be logged to the server console.
-`INSECURE_COOKIES={true|false}`: When true, the "secure" parameter will not be set for auth cookies. This is required for local development.
-`RECAPTCHA_SECRET={secret}`: A valid Google Recaptcha site secret. If you're developing locally on /auth, you'll also need to set `window.recaptchaSiteKey` to a valid site key after page load. By default, this is set in `auth.html`.
-`SESSION_COOKIE_SECRET={secret}`: A secret to use for encrypting and decrypting session cookies.
+- `DATABASE_URL={connectionString}`: A connection string for a local Postgres database. An empty database with a `public` schema and no tables should be sufficient; the ORM will create the tables and relations automatically.
+- `DEBUG_DB={true|false}`: When true, all database calls will be logged to the server console.
+- `INSECURE_COOKIES={true|false}`: When true, the "secure" parameter will not be set for auth cookies. This is required for local development.
+- `RECAPTCHA_SECRET={secret}`: A valid Google Recaptcha site secret. If you're developing locally on /auth, you'll also need to set `window.recaptchaSiteKey` to a valid site key after page load. By default, this is set in `auth.html`.
+- `SESSION_COOKIE_SECRET={secret}`: A secret to use for encrypting and decrypting session cookies.
 
 ## Running the app locally
 
@@ -49,5 +49,7 @@ For local development, you'll need a root-level `.env` file with the following k
 ## Tests
 
 `npm run test` is self-contained. Do not try to run it while a local server is already running. Port 3000 must be available.
+
+If tests fail on a fresh install of Edward, it's probably due to missing tables. Run the tests a second time.
 
 The Cypress tests require both `npm run dev` and `npm run server-dev` to be running in order to function.

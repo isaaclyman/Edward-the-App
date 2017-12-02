@@ -52,4 +52,4 @@ For local development, you'll need a root-level `.env` file with the following k
 
 If tests fail on a fresh install of Edward, it's probably due to missing tables. Run the tests a second time.
 
-The Cypress tests require both `npm run dev` and `npm run server-dev` to be running in order to function.
+The Cypress tests require both `npm run dev` and `npm run server-dev` to be running in order to function. I recommend that you run these (and `npm run integration`) in the Powershell console or Linux Bash, not in the Git Bash.

@@ -1,3 +1,11 @@
+export function createTestChapter (cy) {
+  cy.exec('node cypress/scripts/createTestChapter.js')
+}
+
+export function createTestDocument (cy) {
+  cy.exec('node cypress/scripts/createTestDocument.js')
+}
+
 export function createTestUser (cy) {
   cy.exec('node cypress/scripts/createTestUser.js')
 }
@@ -14,4 +22,8 @@ export function logIn (cy, email, password) {
       { email, password, integration: true }
     )
   )
+}
+
+export function makeTestUserPremium (cy) {
+  cy.exec('node cypress/scripts/makeTestUserPremium.js')
 }

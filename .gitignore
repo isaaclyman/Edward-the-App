@@ -17,3 +17,4 @@ yarn-error.log*
 
 # Test artifacts
 cypress/videos/
+cypress/screenshots/

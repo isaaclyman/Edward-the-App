@@ -21,12 +21,13 @@ module.exports = function (sequelize) {
   const MasterTopic = sequelize.import(path.join(__dirname, 'masterTopic'))
 
   const createAccountType = (name, displayName, description) => ({ name, displayName, description })
-  const limitedMessage = `All data is stored insecurely on your computer's hard drive and may be lost if your browsing data is cleared.
-  Most computers have a maximum storage limit of 10MB (about 5,000 pages).`
-
+  
   const accountTypes = {
-    DEMO: createAccountType('DEMO', 'Demo Account', limitedMessage),
-    LIMITED: createAccountType('LIMITED', 'Limited Account', limitedMessage),
+    DEMO: createAccountType('DEMO', 'Demo Account',
+      `This is a demo. Your data is not stored and will be lost when you close the current tab.`),
+    LIMITED: createAccountType('LIMITED', 'Limited Account',
+      `All data is stored insecurely on your computer's hard drive and may be lost if your browsing data is cleared.
+      Most computers have a maximum storage limit of 10MB (about 5,000 pages).`),
     PREMIUM: createAccountType('PREMIUM', 'Premium Account',
       `Your data is stored on our servers. Your storage limit is 20MB (about 10,000 pages).`),
     GOLD: createAccountType('GOLD', 'Gold Account',

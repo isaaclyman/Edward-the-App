@@ -10,7 +10,7 @@
       <hr class="vert between" :key="route.name"></hr>
     </template>
     <div class="spacer"></div>
-    <div class="status-wrap">
+    <div class="status-wrap" v-if="!isDemo">
       <div class="status">
         <div class="status-saving" :class="{ 'show': isSaving }">
           Saving...
@@ -47,6 +47,9 @@ export default {
     },
     email () {
       return this.$store.state.user.user.email || ''
+    },
+    isDemo () {
+      return this.accountType.name === 'DEMO'
     },
     saveError () {
       return this.$store.state.status.error

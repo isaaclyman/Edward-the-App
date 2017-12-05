@@ -1,7 +1,7 @@
 import { user } from '../../test/_util'
 import { createTestChapter, createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium } from '../scripts/_util'
 
-describe('the write page', () => {
+describe('the plans page', () => {
   before(() => {
     deleteTestUser(cy)
     createTestUser(cy)
@@ -9,12 +9,11 @@ describe('the write page', () => {
     createTestDocument(cy)
     createTestChapter(cy)
     logIn(cy, user.email, user.password)
-    cy.visit('/app.html#/write')
+    cy.visit('/app.html#/plan')
     cy.get('select.file-dropdown').select('test')
   })
 
-  it('has a text editor with tabs', () => {
-    cy.get('.editor-wrap').get('.tabs')
-    cy.get('.editor-wrap').get('div[contenteditable="true"]').should('be.visible')
+  it('has a plans list', () => {
+    cy.get('h3').contains('Plans')
   })
 })

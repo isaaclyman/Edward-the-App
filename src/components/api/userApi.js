@@ -3,20 +3,21 @@ import axios from 'axios'
 const route = route => `/api/user/${route}`
 
 const api = {
-  getUser () {
-    return new Promise((resolve, reject) => {
-      axios.get(route('current')).then(response => {
-        resolve(response.data)
-      }, () => {
-        reject()
-      })
+  simpleGet (route) {
+    return axios.get(route).then(response => {
+      return response.data
     })
   },
-  logOut () {
-    return new Promise((resolve, reject) => {
-      axios.get(route('logout')).then(() => resolve(), () => reject())
+  simplePost (route, body) {
+    return axios.post(route, body).then(response => {
+      return response.data
     })
-  }
+  },
+
+  getUser () { return this.simpleGet(route('current')) },
+  logOut () { return this.simpleGet(route('logout')) },
+  updateEmail (email) { return this.simplePost(route('email'), { email }) },
+  updatePassword (password) { return this.simplePost(route('password'), { password }) }
 }
 
 export default api

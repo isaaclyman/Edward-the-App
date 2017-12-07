@@ -93,7 +93,7 @@
   },
   "devDependencies": {
     "ava": "^0.23.0",
-    "cypress": "^1.0.3",
+    "cypress": "^1.1.4",
     "nodemon": "^1.12.1",
     "supertest": "^3.0.0"
   },

@@ -4,12 +4,25 @@
     <div class="title">
       <h3>Account</h3>
     </div>
+    <hr>
+    <h4>Email</h4>
     <div class="change-email">
-      <input class="email" v-model="account.email" :disabled="!editingEmail">
+      <input class="account-input" v-model="account.email" :disabled="!editingEmail">
       <button class="button-link" v-if="notDemo" @click="editEmail()" :disabled="editingEmail">
         Edit
       </button>
       <button class="button-green" v-if="notDemo" @click="saveEmail()" :disabled="!editingEmail">
+        Save
+      </button>
+    </div>
+    <hr>
+    <h4>Password</h4>
+    <div class="change-password">
+      <input class="account-input" type="password" v-model="account.password" :disabled="!editingPassword">
+      <button class="button-link" v-if="notDemo" @click="editPassword()" :disabled="editingPassword">
+        Edit
+      </button>
+      <button class="button-green" v-if="notDemo" @click="savePassword()" :disabled="!editingPassword">
         Save
       </button>
     </div>
@@ -18,7 +31,7 @@
 </template>
 
 <script>
-import { UPDATE_EMAIL } from '../app/user.store'
+import { UPDATE_EMAIL, UPDATE_PASSWORD } from '../app/user.store'
 
 export default {
   components: {},
@@ -39,16 +52,25 @@ export default {
         email: '',
         password: '************'
       },
-      editingEmail: false
+      editingEmail: false,
+      editingPassword: false
     }
   },
   methods: {
     editEmail () {
       this.editingEmail = true
     },
+    editPassword () {
+      this.editingPassword = true
+      this.account.password = ''
+    },
     saveEmail () {
       this.$store.commit(UPDATE_EMAIL, { email: this.account.email })
       this.editingEmail = false
+    },
+    savePassword () {
+      this.$store.commit(UPDATE_PASSWORD, { password: this.account.password })
+      this.editingPassword = false
     }
   },
   mounted () {
@@ -76,7 +98,7 @@ export default {
   padding: 15px;
 }
 
-.email {
+.account-input {
   min-width: 250px;
 }
 </style>

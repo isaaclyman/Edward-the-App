@@ -4,12 +4,16 @@
       <file-picker></file-picker>
     </div>
     <div class="menu-item">
-      <button class="menu-button" @click="showEdit()">
-        Edit
-      </button>
-      <button class="menu-button" @click="showExport()">
-        Download / Upload
-      </button>
+      <router-link to="/documentEdit">
+        <button class="menu-button">
+          Edit
+        </button>
+      </router-link>
+      <router-link to="/export">
+        <button class="menu-button">
+          Download / Upload
+        </button>
+      </router-link>
       <hr class="vert-flex">
       <button class="menu-button" @click="showWizard()">
         New
@@ -17,9 +21,11 @@
     </div>
     <div class="spacer"></div>
     <div class="menu-item" v-if="notDemo">
-      <button class="menu-button" @click="showSettings()">
-        Settings
-      </button>
+      <router-link to="/settings">
+        <button class="menu-button">
+          Settings
+        </button>
+      </router-link>
     </div>
     <div class="menu-item">
       <button class="menu-button" @click="logOut()">
@@ -57,15 +63,6 @@ export default {
           text: `Sorry, logout failed. If security is a concern, please clear your cookies and other browsing data and close your browser.`
         })
       })
-    },
-    showEdit () {
-      this.$router.push('/documentEdit')
-    },
-    showExport () {
-      this.$router.push('/export')
-    },
-    showSettings () {
-      this.$router.push('/settings')
     },
     showWizard () {
       this.$store.dispatch(UNLOAD_CURRENT_DOCUMENT)

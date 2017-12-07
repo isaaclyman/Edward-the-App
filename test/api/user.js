@@ -71,3 +71,138 @@ test(`can't log in with wrong password`, async t => {
     .expect(401)
   )
 })
+
+test('log out', async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  const user = await createTestUser(app)
+
+  await (
+    app.get(route('user/current'))
+    .expect(200)
+  )
+
+  await (
+    app.get(route('user/logout'))
+    .expect(200)
+  )
+
+  return wrapTest(t,
+    app.get(route('user/current'))
+    .expect(302)
+  )
+})
+
+test('change user email', async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  const user = await createTestUser(app)
+  const newEmail = `${user.email}-1`
+  
+  await deleteTestUser(newEmail)
+
+  await (
+    app.post(route('user/email'))
+    .send({ email: newEmail })
+    .expect(200)
+  )
+
+  await (
+    app.get(route('user/current'))
+    .expect(200)
+    .expect(res => {
+      const userRes = res.body
+      t.is(userRes.email, newEmail)
+    })
+  )
+
+  await (
+    app.get(route('user/logout'))
+    .expect(200)
+  )
+
+  return wrapTest(t,
+    app.post(route('user/login'))
+    .send({ email: newEmail, password: user.password, captchaResponse: 'token' })
+    .expect(200)
+  )
+})
+
+test('change user password', async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  const user = await createTestUser(app)
+
+  const newPassword = `${user.password}-1`
+  await (
+    app.post(route('user/password'))
+    .send({ password: newPassword })
+    .expect(200)
+  )
+
+  await (
+    app.get(route('user/current'))
+    .expect(200)
+  )
+
+  await (
+    app.get(route('user/logout'))
+    .expect(200)
+  )
+
+  return wrapTest(t,
+    app.post(route('user/login'))
+    .send({ email: user.email, password: newPassword, captchaResponse: 'token' })
+    .expect(200)
+  )
+})
+
+test('change user email and password', async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  const user = await createTestUser(app)
+
+  const newPassword = `${user.password}-1`
+  await (
+    app.post(route('user/password'))
+    .send({ password: newPassword })
+    .expect(200)
+  )
+
+  const newEmail = `${user.email}-1`
+  await deleteTestUser(newEmail)
+
+  await (
+    app.post(route('user/email'))
+    .send({ email: newEmail })
+    .expect(200)
+  )
+
+  await (
+    app.get(route('user/current'))
+    .expect(200)
+    .expect(res => {
+      const userRes = res.body
+      t.is(userRes.email, newEmail)
+    })
+  )
+
+  await (
+    app.get(route('user/logout'))
+    .expect(200)
+  )
+
+  return wrapTest(t,
+    app.post(route('user/login'))
+    .send({ email: newEmail, password: newPassword, captchaResponse: 'token' })
+    .expect(200)
+  )
+})

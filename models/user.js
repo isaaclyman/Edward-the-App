@@ -1,6 +1,18 @@
 const bcrypt = require('bcryptjs')
 const util = require('./_util')
 
+const hashPassword = (user, options) => {
+  if (!user.changed('password')) {
+    return Promise.resolve()
+  }
+
+  return util.getHash(user.password).then(hash => {
+    user.password = hash
+  }).catch(err => {
+    console.log(err)
+  })
+}
+
 module.exports = function (sequelize, DataTypes) {
   const User = sequelize.define('user', {
     email: {
@@ -29,13 +41,8 @@ module.exports = function (sequelize, DataTypes) {
     })
   }
 
-  User.beforeCreate((user, options) => {
-    return util.getHash(user.password).then(hash => {
-      user.password = hash
-    }).catch(err => {
-      console.log(err)
-    })
-  })
+  User.beforeCreate(hashPassword)
+  User.beforeUpdate(hashPassword)
 
   return User
 }

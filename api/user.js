@@ -129,4 +129,37 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
     req.logout()
     res.status(200).send()
   })
+
+  app.post(route('email'), isLoggedIn, (req, res, next) => {
+    return db.User.findOne({
+      where: {
+        email: req.body.email
+      }
+    }).then(dbUser => {
+      if (dbUser) {
+        res.status(500).send('This email address is unavailable.')
+        return false
+      }
+
+      return db.User.findById(req.user.id).then(user => {
+        return user.update({ email: req.body.email })
+      })
+    }).then(() => {
+      res.status(200).send()
+    }, err => {
+      console.error(err)
+      res.status(500).send(err)
+    })
+  })
+
+  app.post(route('password'), isLoggedIn, (req, res, next) => {
+    return db.User.findById(req.user.id).then(user => {
+      return user.update({ password: req.body.password })
+    }).then(() => {
+      res.status(200).send()
+    }, err => {
+      console.error(err)
+      res.status(500).send(err)
+    })
+  })
 }

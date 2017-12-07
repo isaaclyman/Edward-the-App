@@ -8,8 +8,11 @@
     <h4>Email</h4>
     <div class="change-email">
       <input class="account-input" v-model="account.email" :disabled="!editingEmail">
-      <button class="button-link" v-if="notDemo" @click="editEmail()" :disabled="editingEmail">
+      <button class="button-link" v-if="notDemo && !editingEmail" @click="editEmail()">
         Edit
+      </button>
+      <button class="button-link" v-if="editingEmail" @click="cancelEditEmail()">
+        Cancel
       </button>
       <button class="button-green" v-if="notDemo" @click="saveEmail()" :disabled="!editingEmail">
         Save
@@ -19,8 +22,11 @@
     <h4>Password</h4>
     <div class="change-password">
       <input class="account-input" type="password" v-model="account.password" :disabled="!editingPassword">
-      <button class="button-link" v-if="notDemo" @click="editPassword()" :disabled="editingPassword">
+      <button class="button-link" v-if="notDemo && !editingPassword" @click="editPassword()">
         Edit
+      </button>
+      <button class="button-link" v-if="editingPassword" @click="cancelEditPassword()">
+        Cancel
       </button>
       <button class="button-green" v-if="notDemo" @click="savePassword()" :disabled="!editingPassword">
         Save
@@ -32,6 +38,8 @@
 
 <script>
 import { UPDATE_EMAIL, UPDATE_PASSWORD } from '../app/user.store'
+
+const mockPassword = '************'
 
 export default {
   components: {},
@@ -50,13 +58,21 @@ export default {
     return {
       account: {
         email: '',
-        password: '************'
+        password: mockPassword
       },
       editingEmail: false,
       editingPassword: false
     }
   },
   methods: {
+    cancelEditEmail () {
+      this.editingEmail = false
+      this.account.email = this.user.email
+    },
+    cancelEditPassword () {
+      this.editingPassword = false
+      this.account.password = mockPassword
+    },
     editEmail () {
       this.editingEmail = true
     },

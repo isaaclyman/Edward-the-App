@@ -31,9 +31,11 @@ util.createTestUser = function (sequelize) {
   })
 }
 
-util.deleteTestUser = function (sequelize) {
+util.deleteTestUser = function (sequelize, email) {
+  email = email || user.email
+
   return sequelize.query(
-    `SELECT id FROM users WHERE email = '${user.email}';`,
+    `SELECT id FROM users WHERE email = '${email}';`,
     { type: sequelize.QueryTypes.SELECT }
   ).then(dbUsers => {
     if (!dbUsers.length) {
@@ -52,7 +54,7 @@ util.deleteTestUser = function (sequelize) {
 
     return Promise.all(deletePromises)
   }).then(() => {
-    return sequelize.query(`DELETE FROM users WHERE email = '${user.email}';`)
+    return sequelize.query(`DELETE FROM users WHERE email = '${email}';`)
   })
 }
 

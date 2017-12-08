@@ -30,6 +30,30 @@ class ServerStorageApi {
       promise.then(() => done(), () => done(true))
       return promise
     }
+    this.waitUntilDone = () => {
+      console.log(JSON.stringify(store.state.status))
+
+      return new Promise((resolve, reject) => {
+        let counter = 0
+
+        const intervalId = window.setInterval(() => {
+          // Reject after waiting 10 seconds
+          if ((counter / 10) > 10) {
+            reject()
+            return
+          }
+
+          console.log(JSON.stringify(store.state.status))
+          if (store.state.status.saving) {
+            counter++
+            return
+          }
+
+          window.clearInterval(intervalId)
+          resolve()
+        }, 100)
+      })
+    }
   }
 
   // DOCUMENTS
@@ -121,7 +145,9 @@ class ServerStorageApi {
   }
 
   saveAllContent (fileId, { chapters, plans, topics }) {
-    return this.wrapStatus(api.saveAllContent({ fileId, chapters, plans, topics }))
+    return this.waitUntilDone().then(() => {
+      return this.wrapStatus(api.saveAllContent({ fileId, chapters, plans, topics }))
+    })
   }
 }
 

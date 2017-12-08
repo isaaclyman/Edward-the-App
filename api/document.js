@@ -184,6 +184,10 @@ module.exports = function (app, passport, db, isPremiumUser) {
 }
 
 function orderPromises (promiseFns) {
+  if (!promiseFns[0]) {
+    return Promise.resolve()
+  }
+
   return promiseFns[0]().then(() => {
     if (promiseFns.length > 1) {
       promiseFns.splice(0, 1)

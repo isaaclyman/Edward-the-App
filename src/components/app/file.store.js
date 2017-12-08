@@ -69,39 +69,40 @@ const store = {
     },
     [SET_UP_DOCUMENT] ({ commit, dispatch }, { file, type }) {
       commit(ADD_FILE, file)
-      dispatch(CHANGE_FILE, file).then(() => {
-        const plans = type.plans.map(title => ({
-          archived: false,
-          id: guid(),
-          title,
-          sections: [{
-            archived: false,
-            content: null,
-            id: guid(),
-            tags: [],
-            title
-          }]
-        }))
 
-        const chapters = type.chapters.map(title => ({
+      const plans = type.plans.map(title => ({
+        archived: false,
+        id: guid(),
+        title,
+        sections: [{
           archived: false,
           content: null,
           id: guid(),
-          title,
-          topics: {}
-        }))
-
-        const topics = type.topics.map(title => ({
-          archived: false,
-          id: guid(),
+          tags: [],
           title
-        }))
+        }]
+      }))
 
-        commit(LOAD_CONTENT, { plans, chapters, topics })
+      const chapters = type.chapters.map(title => ({
+        archived: false,
+        content: null,
+        id: guid(),
+        title,
+        topics: {}
+      }))
 
-        return storageApiPromise.then(storage => {
-          return storage.saveAllContent(file.id, { chapters, plans, topics })
-        })
+      const topics = type.topics.map(title => ({
+        archived: false,
+        id: guid(),
+        title
+      }))
+
+      return storageApiPromise.then(storage => {
+        return storage.saveAllContent(file.id, { chapters, plans, topics })
+      }).then(() => {
+        return dispatch(CHANGE_FILE, file)
+      }).then(() => {
+        return commit(LOAD_CONTENT, { plans, chapters, topics })
       })
     },
     [UNLOAD_CURRENT_DOCUMENT] ({ commit }) {

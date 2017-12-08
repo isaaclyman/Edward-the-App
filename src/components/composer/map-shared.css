@@ -43,6 +43,7 @@
 mark {
   background-color: transparent;
   cursor: pointer;
+  display: inline-block;
   position: relative;
   z-index: 10;
 }

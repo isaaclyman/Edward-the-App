@@ -31,8 +31,6 @@ class ServerStorageApi {
       return promise
     }
     this.waitUntilDone = () => {
-      console.log(JSON.stringify(store.state.status))
-
       return new Promise((resolve, reject) => {
         let counter = 0
 
@@ -43,7 +41,6 @@ class ServerStorageApi {
             return
           }
 
-          console.log(JSON.stringify(store.state.status))
           if (store.state.status.saving) {
             counter++
             return
@@ -137,7 +134,7 @@ class ServerStorageApi {
   }
 
   updateSection (fileId, planId, sectionId, section) {
-    return this.wrapStatus(api.updatePlan({ fileId, planId, sectionId, section }))
+    return this.wrapStatus(api.updateSection({ fileId, planId, sectionId, section }))
   }
 
   updateTopic (fileId, topicId, topic) {

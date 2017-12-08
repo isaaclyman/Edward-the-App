@@ -66,9 +66,9 @@ export default {
         this.emitSelection(selection)
       }, 500))
     },
-    updateQuill (quill, content) {
+    updateQuill (quill, content, silent) {
       if (content) {
-        quill.setContents(content, 'api')
+        quill.setContents(content, silent ? 'silent' : 'api')
       }
     }
   },
@@ -82,8 +82,7 @@ export default {
       }
     )
 
-    this.updateQuill(this.quill, this.content)
-    this.emitContent(this.quill.getContents())
+    this.updateQuill(this.quill, this.content, true)
     this.listenQuill(this.quill)
   },
   props: {

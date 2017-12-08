@@ -43,12 +43,12 @@
       <div class="sidebar-wrap">
         <div class="sidebar-options">
           <div class="plan-switch">
-            <button class="switch-label" :class="{ 'active': !showPlans }" @click="showPlans = false">
+            <button class="switch-label" :class="{ 'active': !showPlans }" @click="switchOutline()">
               <div class="switch-label-text">Chapter Outline</div>
               <div v-html="outlineSvg"></div>
             </button>
             <hr class="vert">
-            <button class="switch-label" :class="{ 'active': showPlans }" @click="showPlans = true">
+            <button class="switch-label" :class="{ 'active': showPlans }" @click="switchPlans()">
               <div v-html="planSvg"></div>
               <div class="switch-label-text">Document Plans</div>
             </button>
@@ -97,6 +97,7 @@
 
 <script>
 import { ADD_CHAPTER, UPDATE_CHAPTER_CONTENT } from '../app/chapters.store'
+import Cache from '../app/cache'
 import { GetContentString } from '../app/deltaParser'
 import guid from '../app/guid'
 import Octicons from 'octicons'
@@ -109,6 +110,8 @@ import { UPDATE_SELECTION } from './composer.store'
 import { ValidateTitle } from '../app/validate'
 import VueSwitch from 'vue-switches'
 import WordDefine from './wordDefine.vue'
+
+const planSwitch = new Cache('COMPOSER_PLAN_SWITCH')
 
 export default {
   components: {
@@ -274,6 +277,14 @@ export default {
       const masterTopic = this.getMasterTopic(chapterTopic)
       return !masterTopic.archived || this.filters.archived
     },
+    switchOutline () {
+      this.showPlans = false
+      planSwitch.cacheSet(false)
+    },
+    switchPlans () {
+      this.showPlans = true
+      planSwitch.cacheSet(true)
+    },
     unhoverChapter () {
       this.showStats = false
     },
@@ -290,6 +301,7 @@ export default {
   mounted () {
     this.editorContainerNode = this.$refs.editorContainer
     this.editorElement = this.$refs.textEditor
+    this.showPlans = planSwitch.cacheGet()
   }
 }
 </script>

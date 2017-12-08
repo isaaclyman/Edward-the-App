@@ -21,9 +21,16 @@
 </template>
 
 <script>
+import Cache from './cache'
 import Octicons from 'octicons'
 
 export default {
+  created () {
+    const cachedIndex = this.tabCache.cacheGet()
+    if (cachedIndex) {
+      this.selectItem(cachedIndex)
+    }
+  },
   components: {},
   computed: {},
   data () {
@@ -41,7 +48,8 @@ export default {
         height: 14,
         width: 14
       }),
-      showAddItem: false
+      showAddItem: false,
+      tabCache: new Cache(`CURRENT_${this.itemName}_TAB`)
     }
   },
   methods: {
@@ -86,6 +94,11 @@ export default {
     itemName: {
       required: true,
       type: String
+    }
+  },
+  watch: {
+    activeIndex (index) {
+      this.tabCache.cacheSet(index)
     }
   }
 }

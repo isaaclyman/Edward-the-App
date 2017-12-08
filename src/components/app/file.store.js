@@ -1,3 +1,4 @@
+import Cache from './cache'
 import { storageApiPromise } from '../api/storageSwitch'
 import guid from './guid'
 import { LOAD_CONTENT, NUKE_CONTENT } from './chapters.store'
@@ -14,16 +15,8 @@ export const UPDATE_FILE_NAME = 'UPDATE_FILE_NAME'
 const LOAD_FILES = 'LOAD_FILES'
 const UPDATE_FILE_METADATA = 'UPDATE_FILE_METADATA'
 
-// Always use localStorage to store the document currently in progress
-const cacheKey = 'CURRENT_DOCUMENT'
-const cache = {
-  getCurrentFile () {
-    return JSON.parse(window.localStorage.getItem(cacheKey))
-  },
-  setCurrentFile (file) {
-    window.localStorage.setItem(cacheKey, JSON.stringify(file))
-  }
-}
+// Cache the document currently in progress
+const cache = new Cache('CURRENT_DOCUMENT')
 
 const store = {
   state: {
@@ -41,7 +34,7 @@ const store = {
             commit(LOAD_CONTENT, { plans, chapters, topics })
             commit(UPDATE_FILE_METADATA, { id, name })
 
-            cache.setCurrentFile({ id, name })
+            cache.cacheSet({ id, name })
           }, err => {
             throw err
           })
@@ -57,7 +50,7 @@ const store = {
       return storageApiPromise.then(storage => {
         return storage.getAllDocuments().then(documents => {
           commit(LOAD_FILES, documents)
-          const currentFile = cache.getCurrentFile()
+          const currentFile = cache.cacheGet()
 
           if (!currentFile || !state.ownedFiles.some(file => file.id === currentFile.id)) {
             return
@@ -135,7 +128,7 @@ const store = {
     },
     [UPDATE_FILE_NAME] (state, { id, name }) {
       state.currentFile.name = name
-      cache.setCurrentFile({ id, name })
+      cache.cacheSet({ id, name })
 
       state.ownedFiles.some(file => {
         if (file.id === id) {

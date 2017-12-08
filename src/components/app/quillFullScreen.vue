@@ -14,10 +14,13 @@
 </template>
 
 <script>
+import Cache from './cache'
 import createQuill from './quillBuilder'
 import debounce from 'lodash/debounce'
 import Octicons from 'octicons'
 import tooltip from './tooltip.directive'
+
+const width = new Cache('FULL_SCREEN_EDITOR_WIDTH')
 
 export default {
   data () {
@@ -79,9 +82,11 @@ export default {
     },
     showNarrowView () {
       this.isWideView = false
+      width.cacheSet(false)
     },
     showWideView () {
       this.isWideView = true
+      width.cacheSet(true)
     },
     updateQuill (quill, content) {
       if (content) {
@@ -90,6 +95,8 @@ export default {
     }
   },
   mounted () {
+    this.isWideView = width.cacheGet() || false
+
     this.quill = createQuill(
       this.$refs.editor,
       'Write here.',

@@ -21,11 +21,15 @@ import isEqual from 'lodash/isEqual'
 import QuillFullScreen from './quillFullScreen.vue'
 
 export default {
+  beforeDestroy () {
+    this.handlers.forEach(([name, fn]) => this.quill.off(name, fn))
+  },
   components: {
     QuillFullScreen
   },
   data () {
     return {
+      handlers: [],
       quill: null,
       showFullScreen: false
     }
@@ -41,11 +45,13 @@ export default {
       this.showFullScreen = false
     },
     listenQuill (quill) {
-      quill.on('text-change', debounce(() => {
+      const onTextChange = debounce(() => {
         this.emitContent(quill.getContents())
-      }, 1000))
+      }, 700, {
+        maxWait: 1400
+      })
 
-      quill.on('selection-change', debounce((range) => {
+      const onSelectionChange = debounce((range) => {
         if (!range) {
           return
         }
@@ -64,7 +70,12 @@ export default {
         }
 
         this.emitSelection(selection)
-      }, 500))
+      }, 500)
+
+      quill.on('text-change', onTextChange)
+      quill.on('selection-change', onSelectionChange)
+
+      this.handlers.push(['text-change', onTextChange], ['selection-change', onSelectionChange])
     },
     updateQuill (quill, content, silent) {
       if (content) {

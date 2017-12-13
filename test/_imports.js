@@ -26,7 +26,7 @@ const boundCreateTestUser = async (overrideApp) => {
     })
   )
 }
-const boundDeleteTestUser = () => deleteTestUser(knex)
+const boundDeleteTestUser = email => deleteTestUser(knex, email)
 const boundMakeTestUserPremium = () => makeTestUserPremium(knex)
 
 export {

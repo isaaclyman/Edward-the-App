@@ -23,7 +23,7 @@ util.createTestUser = function (knex) {
         email: user.email,
         password: hash,
         'account_type': accountTypes.LIMITED.name
-      }))
+      })).returning(['id', 'email', 'account_type']).then(([user]) => user)
     )
   })
 }

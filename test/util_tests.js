@@ -1,18 +1,20 @@
 import {
   accountTypes,
-  createTestUser,
-  deleteTestUser,
   knex,
   stubRecaptcha,
   test,
-  user,
-  makeTestUserPremium
+  user
 } from './_imports'
+import {
+  createTestUser,
+  deleteTestUser,
+  makeTestUserPremium
+} from './_util'
 
 stubRecaptcha(test)
 
 test('delete test user', async t => {
-  await deleteTestUser()
+  await deleteTestUser(knex)
   await knex('users').where('email', user.email).first().then(user => {
     if (user) {
       t.fail()
@@ -24,8 +26,8 @@ test('delete test user', async t => {
 })
 
 test('create test user', async t => {
-  await deleteTestUser()
-  await createTestUser()
+  await deleteTestUser(knex)
+  await createTestUser(knex)
   await knex('users').where('email', user.email).first().then(user => {
     if (user) {
       t.pass()
@@ -36,10 +38,23 @@ test('create test user', async t => {
   })
 })
 
+test('get test user by id', async t => {
+  await deleteTestUser(knex)
+  const user = await createTestUser(knex)
+  await knex('users').where('id', user.id).first().then(user => {
+    if (user) {
+      t.pass()
+      return
+    }
+
+    t.fail()
+  })
+})
+
 test('make test user premium', async t => {
-  await deleteTestUser()
-  await createTestUser()
-  await makeTestUserPremium()
+  await deleteTestUser(knex)
+  await createTestUser(knex)
+  await makeTestUserPremium(knex)
   await knex('users').where('email', user.email).first().then(user => {
     if (user['account_type'] === accountTypes.PREMIUM.name) {
       t.pass()

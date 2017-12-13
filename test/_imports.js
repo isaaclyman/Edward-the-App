@@ -1,4 +1,4 @@
-import { app as server, sequelize, serverReady } from '../server'
+import { app as server, knex, serverReady } from '../server'
 import request from 'supertest'
 import test from 'ava'
 import {
@@ -15,7 +15,7 @@ import uuid from 'uuid/v1'
 const app = request(server)
 const getPersistentAgent = () => request.agent(server)
 const boundCreateTestUser = async (overrideApp) => {
-  await createTestUser(sequelize)
+  await createTestUser(knex)
   return (
     (overrideApp || app).post(route('user/login'))
     .send(user)
@@ -25,8 +25,8 @@ const boundCreateTestUser = async (overrideApp) => {
     })
   )
 }
-const boundDeleteTestUser = deleteTestUser.bind(null, sequelize)
-const boundMakeTestUserPremium = makeTestUserPremium.bind(null, sequelize)
+const boundDeleteTestUser = deleteTestUser.bind(null, knex)
+const boundMakeTestUserPremium = makeTestUserPremium.bind(null, knex)
 
 export {
   app,
@@ -36,7 +36,7 @@ export {
   getPersistentAgent,
   route,
   server,
-  sequelize,
+  knex,
   serverReady,
   stubRecaptcha,
   test,

@@ -1,16 +1,14 @@
+const accountTypes = require('../models/accountType')
 const LocalAuth = require('passport-local').Strategy
+const util = require('../models/_util')
 
-module.exports = function config (passport, db) {
-  const AccountType = db.AccountType
-  const accountTypes = db.accountTypes
-  const User = db.User
-
+module.exports = function config (passport, knex) {
   passport.serializeUser((user, done) => {
     done(null, user.id)
   })
 
   passport.deserializeUser((id, done) => {
-    User.findById(id).then(user => {
+    knex('users').where('id', id).first().then(user => {
       done(null, user)
     }, err => {
       done(err, false)
@@ -26,34 +24,29 @@ module.exports = function config (passport, db) {
     passReqToCallback: true
   }, (req, email, password, done) => {
     process.nextTick(() => {
-      User.findOne({
-        where: { email }
-      }).then(user => {
+      knex('users').where('email', email).first().then(user => {
         if (user) {
           // User already exists
           return done(null, false)
-        } else {
-          // No user exists; create a new one
-          const newUser = new User()
-          newUser.email = email
-          newUser.password = password
-
-          AccountType.findOne({
-            where: { name: accountTypes.LIMITED.name }
-          }).then(({ id }) => {
-            newUser.accountTypeId = id
-            newUser.save().then(user => {
-              return done(null, user)
-            }, err => {
-              console.log(err)
-              return done(err, false)
-            })
-          })
         }
-      }, err => {
-        // Db error
-        console.log(err)
-        return done(null, false)
+
+        // User doesn't exist
+
+        // Generate password hash
+        return util.getHash(password).then(hash => {
+          // Create new user
+          return knex('users').insert(util.addTimestamps(knex, {
+            email,
+            password: hash,
+            'account_type': accountTypes.LIMITED.name
+          })).returning(['id', 'email', 'password', 'account_type'])
+        }).then(([user]) => {
+          console.log(user)
+          return done(null, user)
+        }, err => {
+          console.log(err)
+          return done(err, false)
+        })
       })
     })
   }))
@@ -66,17 +59,13 @@ module.exports = function config (passport, db) {
     passwordField: 'password',
     passReqToCallback: true
   }, (req, email, password, done) => {
-    User.findOne({
-      where: {
-        email
-      }
-    }).then(user => {
-      // Bad username
+    knex('users').where('email', email).first().then(user => {
       if (!user) {
+        // Email doesn't exist
         return done(null, false)
       }
 
-      user.isCorrectPassword(password).then(() => {
+      util.isCorrectPassword(password, user.password).then(() => {
         // Correct login
         return done(null, user)
       }, () => {
@@ -84,7 +73,6 @@ module.exports = function config (passport, db) {
         return done(null, false)
       })
     }, err => {
-      // Db error
       console.log(err)
       return done(err)
     })

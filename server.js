@@ -5,7 +5,7 @@ const passport = require('passport')
 const path = require('path')
 const timeout = require('connect-timeout')
 const session = require('express-session')
-const SequelizeStore = require('connect-session-sequelize')(session.Store)
+const KnexSessionStore = require('connect-session-knex')(session)
 
 if (!process.env.DATABASE_URL) {
   var env = require('node-env-file')
@@ -27,23 +27,16 @@ app.get('/', (req, res) => {
 })
 
 // Database ORM
-const sequelize = require('./db')
+const knex = require('./db')
+const { db, dbReady } = require('./models/_index')(knex)
 
-sequelize.authenticate().then(() => {
-  console.log('Database connection established')
-}).catch((e) => {
-  console.log(`Couldn't connect to database: `, e)
-})
+const serverReady = dbReady.then(() => {
+  // Configure passport auth
+  require('./passport/config')(passport, knex)
 
-const db = require('./models/_index')(sequelize)
-
-// Configure passport auth
-require('./passport/config')(passport, db)
-
-const serverReady = db.sync.then(() => {
   // Auth sessions
-  const sessionStore = new SequelizeStore({
-    db: sequelize
+  const sessionStore = new KnexSessionStore({
+    knex: knex
   })
 
   app.set('trust proxy', 1)
@@ -58,7 +51,6 @@ const serverReady = db.sync.then(() => {
       secure: process.env.INSECURE_COOKIES !== 'true'
     }
   }))
-  sessionStore.sync()
 
   app.use(passport.initialize())
   app.use(passport.session())
@@ -73,4 +65,4 @@ const serverReady = db.sync.then(() => {
   })
 })
 
-module.exports = { app, sequelize, serverReady }
+module.exports = { app, knex, serverReady }

@@ -1,3 +1,4 @@
+const accountTypes = require('../models/accountType')
 const path = require('path')
 
 module.exports = function (app, passport, db) {
@@ -16,13 +17,13 @@ module.exports = function (app, passport, db) {
 
   // Serve user signup, login, logout, verify, and passreset pages
   require('./user')(app, passport, db, isPremiumUser, isLoggedInMiddleware)
-  require('./document')(app, passport, db, isPremiumUserMiddleware)
-  require('./chapter').registerApis(app, passport, db, isPremiumUserMiddleware)
-  require('./topic').registerApis(app, passport, db, isPremiumUserMiddleware)
-  require('./plan').registerApis(app, passport, db, isPremiumUserMiddleware)
-  require('./section').registerApis(app, passport, db, isPremiumUserMiddleware)
+  // require('./document')(app, passport, db, isPremiumUserMiddleware)
+  // require('./chapter').registerApis(app, passport, db, isPremiumUserMiddleware)
+  // require('./topic').registerApis(app, passport, db, isPremiumUserMiddleware)
+  // require('./plan').registerApis(app, passport, db, isPremiumUserMiddleware)
+  // require('./section').registerApis(app, passport, db, isPremiumUserMiddleware)
 
-  const premiumTypes = [db.accountTypes.PREMIUM.name, db.accountTypes.GOLD.name, db.accountTypes.ADMIN.name]
+  const premiumTypes = [accountTypes.PREMIUM.name, accountTypes.GOLD.name, accountTypes.ADMIN.name]
   function isPremiumUser (accountType) {
     return premiumTypes.includes(accountType.name)
   }
@@ -33,17 +34,19 @@ module.exports = function (app, passport, db) {
       return
     }
 
-    db.User.findOne({
-      where: { id: req.user.id },
-      include: [db.AccountType]
-    }).then(user => {
-      const accountType = user['account_type']
+    console.log(req.user)
 
-      if (!isPremiumUser(accountType)) {
-        res.status(401).send('Attempted a storage API call with a limited account.')
-        return
-      }
-    })
+    // db.User.findOne({
+    //   where: { id: req.user.id },
+    //   include: [db.AccountType]
+    // }).then(user => {
+    //   const accountType = user['account_type']
+
+    //   if (!isPremiumUser(accountType)) {
+    //     res.status(401).send('Attempted a storage API call with a limited account.')
+    //     return
+    //   }
+    // })
 
     return next()
   }

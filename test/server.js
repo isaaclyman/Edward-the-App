@@ -1,4 +1,4 @@
-import { app, server, sequelize, test, wrapTest } from './_imports'
+import { app, server, knex, test, wrapTest } from './_imports'
 
 test('express app was created', t => {
   t.truthy(server)
@@ -14,9 +14,9 @@ test('serves landing page', t => {
 })
 
 test('connects to database', t => {
-  return sequelize.authenticate().then(
+  return knex.raw('SELECT 1 AS test').then(
     () => t.pass(),
-    () => t.fail()
+    err => t.fail(err)
   )
 })
 

@@ -1,4 +1,7 @@
+const accountTypes = require('../models/accountType')
+const modelUtil = require('../models/_util')
 const request = require('request-promise-native')
+const util = require('./utilities')
 
 module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
   const route = route => `/api/user/${route}`
@@ -45,18 +48,15 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
 
   const getUserResponse = user => {
     return new Promise((resolve, reject) => {
-      db.User.findOne({
-        where: { id: user.id },
-        include: [db.AccountType]
-      }).then(user => {
+      db.knex('users').where('id', user.id).first('account_type', 'email').then(user => {
         const accountType = user['account_type']
-        const response = {
-          accountType: db.accountTypes[accountType.name],
+        resolve({
+          accountType: accountTypes[accountType],
           email: user.email,
           isPremium: isPremiumUser(accountType)
-        }
-        resolve(response)
-      }, () => {
+        })
+      }, err => {
+        console.log(err)
         reject()
       })
     })
@@ -131,35 +131,37 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
   })
 
   app.post(route('email'), isLoggedIn, (req, res, next) => {
-    return db.User.findOne({
-      where: {
-        email: req.body.email
-      }
-    }).then(dbUser => {
-      if (dbUser) {
+    const newEmail = req.body.email
+
+    return db.knex('users').where('email', newEmail).first().then(existingUser => {
+      if (existingUser) {
         res.status(500).send('This email address is unavailable.')
         return false
       }
 
-      return db.User.findById(req.user.id).then(user => {
-        return user.update({ email: req.body.email })
-      })
+      return (
+        db.knex('users').where('id', req.user.id).update(modelUtil.addTimestamps(db.knex, {
+          email: newEmail
+        }, true))
+      )
     }).then(() => {
       res.status(200).send()
     }, err => {
       console.error(err)
-      res.status(500).send(err)
+      res.status(500).send()
     })
   })
 
   app.post(route('password'), isLoggedIn, (req, res, next) => {
-    return db.User.findById(req.user.id).then(user => {
-      return user.update({ password: req.body.password })
+    return modelUtil.getHash(req.body.password).then(hash => {
+      return db.knex('users').where('id', req.user.id).update(modelUtil.addTimestamps(db.knex, {
+        password: hash
+      }, true))
     }).then(() => {
       res.status(200).send()
     }, err => {
       console.error(err)
-      res.status(500).send(err)
+      res.status(500).send()
     })
   })
 }

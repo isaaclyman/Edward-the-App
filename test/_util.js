@@ -1,3 +1,4 @@
+const accountTypes = require('../models/accountType')
 const modelUtil = require('../models/_util')
 const util = {}
 
@@ -15,60 +16,49 @@ util.route = route
 const user = { email: 'user.js@test.com__TEST', password: 'thisismysecurepassword', captchaResponse: 'token' }
 util.user = user
 
-util.createTestUser = function (sequelize) {
+util.createTestUser = function (knex) {
   return modelUtil.getHash(user.password).then(hash => {
-    const query =
-    `DO $$
-    DECLARE
-      limitedId INTEGER;
-    BEGIN
-      SELECT account_types.id INTO limitedId FROM account_types WHERE name = 'LIMITED';
-      INSERT INTO users (email, password, "accountTypeId", "createdAt", "updatedAt")
-        VALUES ('${user.email}', '${hash}', limitedId, current_timestamp, current_timestamp);
-    END $$;`
-
-    return sequelize.query(query)
+    return (
+      knex('users').insert(modelUtil.addTimestamps(knex, {
+        email: user.email,
+        password: hash,
+        'account_type': accountTypes.LIMITED.name
+      }))
+    )
   })
 }
 
-util.deleteTestUser = function (sequelize, email) {
+util.deleteTestUser = function (knex, email) {
   email = email || user.email
 
-  return sequelize.query(
-    `SELECT id FROM users WHERE email = '${email}';`,
-    { type: sequelize.QueryTypes.SELECT }
-  ).then(dbUsers => {
-    if (!dbUsers.length) {
-      return
-    }
-    const userId = dbUsers[0].id
-    const tablesToDeleteFrom = [
-      'documents', 'document_orders', 'chapters', 'chapter_orders', 'master_topics', 'master_topic_orders',
-      'plans', 'plan_orders', 'sections', 'section_orders', 'chapter_topics'
-    ]
+  return (
+    knex('users').where('email', email).first('id').then(testUser => {
+      if (testUser === undefined) {
+        return
+      }
 
-    const deletePromises = tablesToDeleteFrom.map(table => {
-      const deleteQuery = `DELETE FROM ${table} WHERE "userId" = ${userId};`
-      return sequelize.query(deleteQuery)
-    })
+      const testUserId = testUser.id
 
-    return Promise.all(deletePromises)
-  }).then(() => {
-    return sequelize.query(`DELETE FROM users WHERE email = '${email}';`)
-  })
+      const tablesToDeleteFrom = [
+        'documents', 'document_orders', 'chapters', 'chapter_orders', 'master_topics', 'master_topic_orders',
+        'plans', 'plan_orders', 'sections', 'section_orders', 'chapter_topics'
+      ]
+
+      const deletePromises = tablesToDeleteFrom.map(table => {
+        return knex(table).where('user_id', testUserId).del()
+      })
+
+      return Promise.all(deletePromises)
+    }).then(() => knex('users').where('email', email).del())
+  )
 }
 
-util.makeTestUserPremium = function (sequelize) {
-  const query =
-  `DO $$
-  DECLARE
-    premiumId INTEGER;
-  BEGIN
-    SELECT account_types.id INTO premiumId FROM account_types WHERE name = 'PREMIUM';
-    UPDATE users SET "accountTypeId" = premiumId WHERE email = '${user.email}';
-  END $$;`
-
-  return sequelize.query(query)
+util.makeTestUserPremium = function (knex) {
+  return (
+    knex('users').where('email', user.email).update({
+      'account_type': accountTypes.PREMIUM.name
+    })
+  )
 }
 
 /*

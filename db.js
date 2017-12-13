@@ -1,11 +1,16 @@
-const Sequelize = require('sequelize')
+const config = {
+  client: 'pg',
+  connection: process.env.DATABASE_URL,
+  debug: process.env.DEBUG_DB === 'true',
+  pool: {
+    afterCreate: function (conn, done) {
+      console.log('Database connection established.')
+      done(null, conn)
+    }
+  },
+  acquireConnectionTimeout: 15000
+}
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: 'postgres',
-  protocol: 'postgres',
-  logging: process.env.DEBUG_DB === 'true' ? console.log : false,
-  pool: { maxConnections: 10, maxIdleTime: 1000 },
-  operatorsAliases: false
-})
+const knex = require('knex')(config)
 
-module.exports = sequelize
+module.exports = knex

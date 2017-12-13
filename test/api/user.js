@@ -24,12 +24,12 @@ test('sign up and log in', async t => {
     .expect('set-cookie', /connect\.sid/)
   )
 
-  // return wrapTest(t,
-  //   app.post(route('user/login'))
-  //   .send(user)
-  //   .expect(200)
-  //   .expect('set-cookie', /connect\.sid/)
-  // )
+  return wrapTest(t,
+    app.post(route('user/login'))
+    .send(user)
+    .expect(200)
+    .expect('set-cookie', /connect\.sid/)
+  )
 })
 
 test('get demo token', async t => {

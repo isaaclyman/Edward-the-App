@@ -1,3 +1,4 @@
+import accountTypes from '../models/accountType'
 import { app as server, knex, serverReady } from '../server'
 import request from 'supertest'
 import test from 'ava'
@@ -25,10 +26,11 @@ const boundCreateTestUser = async (overrideApp) => {
     })
   )
 }
-const boundDeleteTestUser = deleteTestUser.bind(null, knex)
-const boundMakeTestUserPremium = makeTestUserPremium.bind(null, knex)
+const boundDeleteTestUser = () => deleteTestUser(knex)
+const boundMakeTestUserPremium = () => makeTestUserPremium(knex)
 
 export {
+  accountTypes,
   app,
   boundCreateTestUser as createTestUser,
   boundDeleteTestUser as deleteTestUser,

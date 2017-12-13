@@ -1,7 +1,6 @@
 const accountTypes = require('../models/accountType')
 const modelUtil = require('../models/_util')
 const request = require('request-promise-native')
-const util = require('./utilities')
 
 module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
   const route = route => `/api/user/${route}`

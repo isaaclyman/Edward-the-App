@@ -45,3 +45,16 @@ test('access a premium API', async t => {
     .expect(200)
   )
 })
+
+test(`can't access a premium API as a limited user`, async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+
+  return wrapTest(t,
+    app.get(route('documents'))
+    .expect(401)
+  )
+})

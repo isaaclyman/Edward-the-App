@@ -17,7 +17,7 @@ module.exports = function (app, passport, db) {
 
   // Serve user signup, login, logout, verify, and passreset pages
   require('./user')(app, passport, db, isPremiumUser, isLoggedInMiddleware)
-  // require('./document')(app, passport, db, isPremiumUserMiddleware)
+  require('./document')(app, passport, db, isPremiumUserMiddleware)
   // require('./chapter').registerApis(app, passport, db, isPremiumUserMiddleware)
   // require('./topic').registerApis(app, passport, db, isPremiumUserMiddleware)
   // require('./plan').registerApis(app, passport, db, isPremiumUserMiddleware)
@@ -25,30 +25,28 @@ module.exports = function (app, passport, db) {
 
   const premiumTypes = [accountTypes.PREMIUM.name, accountTypes.GOLD.name, accountTypes.ADMIN.name]
   function isPremiumUser (accountType) {
-    return premiumTypes.includes(accountType.name)
+    return premiumTypes.includes(accountType)
   }
 
   function isPremiumUserMiddleware (req, res, next) {
     if (!req.isAuthenticated()) {
-      res.status(401).send('Attempted a storage API call without authentication.')
+      res.status(401).send('Attempted a premium API call without authentication.')
       return
     }
 
-    console.log(req.user)
+    db.knex('users').where('id', req.user.id).first().then(user => {
+      if (!user) {
+        res.status(500).send('User does not exist.')
+        return
+      }
 
-    // db.User.findOne({
-    //   where: { id: req.user.id },
-    //   include: [db.AccountType]
-    // }).then(user => {
-    //   const accountType = user['account_type']
+      if (!isPremiumUser(user['account_type'])) {
+        res.status(401).send('Attempted a premium API call with a limited account.')
+        return
+      }
 
-    //   if (!isPremiumUser(accountType)) {
-    //     res.status(401).send('Attempted a storage API call with a limited account.')
-    //     return
-    //   }
-    // })
-
-    return next()
+      return next()
+    })
   }
 }
 

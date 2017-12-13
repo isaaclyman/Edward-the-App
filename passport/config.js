@@ -41,7 +41,6 @@ module.exports = function config (passport, knex) {
             'account_type': accountTypes.LIMITED.name
           })).returning(['id', 'email', 'password', 'account_type'])
         }).then(([user]) => {
-          console.log(user)
           return done(null, user)
         }, err => {
           console.log(err)

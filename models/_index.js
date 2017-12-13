@@ -24,7 +24,7 @@ module.exports = function (knex) {
         email: demoEmail,
         password: 'DEMO',
         'account_type': accountTypes.DEMO.name
-      })).returning(['id', 'email', 'password', 'account_type'])
+      })).returning(['id', 'email', 'password', 'account_type']).then(([user]) => user)
     )
   }).then(user => {
     db.DemoUser = user

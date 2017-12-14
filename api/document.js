@@ -2,109 +2,104 @@ const updateChapter = require('./chapter').updateChapter
 const updateTopic = require('./topic').updateTopic
 const updatePlan = require('./plan').updatePlan
 const updateSection = require('./section').updateSection
+const modelUtil = require('../models/_util')
 
 module.exports = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
 
   // POST { id, name }
   app.post(route('document/add'), isPremiumUser, (req, res, next) => {
-    // const document = req.body
-    // const userId = req.user.id
-    // db.Doc.findOne({
-    //   where: {
-    //     guid: document.id,
-    //     userId
-    //   }
-    // }).then(doc => {
-    //   if (doc) {
-    //     res.status(409).send('Could not create document. A document with this ID already exists for the current user.')
-    //     return
-    //   }
+    const document = req.body
+    const userId = req.user.id
 
-    //   return db.DocOrder.findCreateFind({
-    //     where: {
-    //       userId
-    //     },
-    //     defaults: {
-    //       order: [],
-    //       userId
-    //     }
-    //   })
-    // }).then(([docOrder]) => {
-    //   docOrder.order.push(document.id)
-    //   return docOrder.update({
-    //     order: docOrder.order
-    //   })
-    // }).then(() => {
-    //   const newDoc = new db.Doc()
-    //   newDoc.guid = document.id
-    //   newDoc.name = document.name
-    //   newDoc.userId = req.user.id
+    db.knex('documents').where({
+      guid: document.id,
+      'user_id': userId
+    }).first().then(doc => {
+      if (doc) {
+        const error = 'Could not create document. A document with this ID already exists for the current user.'
+        res.status(409).send(error)
+        throw new Error(error)
+      }
 
-    //   return newDoc.save()
-    // }).then(() => {
-    //   res.status(200).send(`Document "${document.name}" created.`)
-    // }, err => {
-    //   console.error(err)
-    //   res.status(500).send(err)
-    // })
+      return db.knex('document_orders').where('user_id', userId).first('order')
+    }).then(dbDocOrder => {
+      // Insert or update
+      if (!dbDocOrder) {
+        return db.knex('document_orders').insert(modelUtil.addTimestamps(db.knex, {
+          order: JSON.stringify([document.id]),
+          'user_id': userId
+        }))
+      }
+
+      const order = JSON.parse(dbDocOrder.order || '[]')
+
+      order.push(document.id)
+      return (
+        db.knex('document_orders').where('user_id', userId).update(modelUtil.addTimestamps(db.knex, {
+          order: JSON.stringify(order)
+        }, true))
+      )
+    }).then(() => {
+      return db.knex('documents').insert(modelUtil.addTimestamps(db.knex, {
+        guid: document.id,
+        name: document.name,
+        'user_id': userId
+      }))
+    }).then(() => {
+      res.status(200).send(`Document "${document.name}" created.`)
+    }, err => {
+      console.error(err)
+      res.status(500).send(err)
+    })
   })
 
   // POST { id }
   app.post(route('document/delete'), isPremiumUser, (req, res, next) => {
-    // const document = req.body
-    // const userId = req.user.id
+    const document = req.body
+    const userId = req.user.id
 
-    // db.DocOrder.findOne({
-    //   where: {
-    //     userId
-    //   }
-    // }).then(docOrder => {
-    //   const indexToRemove = docOrder.order.indexOf(document.id)
+    db.knex('document_orders').where('user_id', userId).first().then(dbDocOrder => {
+      const order = JSON.parse(dbDocOrder.order)
+      const indexToRemove = order.indexOf(document.id)
 
-    //   if (~indexToRemove) {
-    //     docOrder.order.splice(indexToRemove, 1)
-    //     return docOrder.update({
-    //       order: docOrder.order
-    //     })
-    //   }
+      if (~indexToRemove) {
+        order.splice(indexToRemove, 1)
+        return db.knex('document_orders').where('user_id', userId).update(modelUtil.addTimestamps(db.knex, {
+          order: JSON.stringify(order)
+        }, true))
+      }
 
-    //   return indexToRemove
-    // }).then(() => {
-    //   return db.Doc.destroy({
-    //     where: {
-    //       guid: document.id,
-    //       userId
-    //     }
-    //   })
-    // }).then(() => {
-    //   res.status(200).send(`Document "${document.id}" deleted.`)
-    // }, err => {
-    //   console.error(err)
-    //   res.status(500).send(err)
-    // })
+      return
+    }).then(() => {
+      return (
+        db.knex('documents').where({
+          guid: document.id,
+          'user_id': userId
+        }).del()
+      )
+    }).then(() => {
+      res.status(200).send(`Document "${document.id}" deleted.`)
+    }, err => {
+      console.error(err)
+      res.status(500).send(err)
+    })
   })
 
   // POST { id, name } UPDATES name
   app.post(route('document/update'), isPremiumUser, (req, res, next) => {
-    // const document = req.body
-    // const userId = req.user.id
+    const document = req.body
+    const userId = req.user.id
 
-    // db.Doc.findOne({
-    //   where: {
-    //     guid: document.id,
-    //     userId
-    //   }
-    // }).then(dbDoc => {
-    //   return dbDoc.update({
-    //     name: document.name
-    //   })
-    // }).then(() => {
-    //   res.status(200).send(`Document "${document.name}" updated.`)
-    // }, err => {
-    //   console.error(err)
-    //   res.status(500).send()
-    // })
+    db.knex('documents').where({
+      guid: document.id,
+      'user_id': userId
+    }).update({ name: document.name }).then(() => {
+      res.status(200).send(`Document "${document.name}" updated.`)
+    }, err => {
+      console.error(err)
+      res.status(500).send(err)
+    })
   })
 
   // GET
@@ -112,12 +107,14 @@ module.exports = function (app, passport, db, isPremiumUser) {
     const userId = req.user.id
 
     let documents, docOrder
+
     db.knex('documents').where('user_id', userId).select().then((dbDocs = []) => {
       documents = dbDocs
       return db.knex('document_orders').where('user_id', userId).first()
-    }).then((dbDocOrder = '[]') => {
+    }).then((dbDocOrder = {}) => {
+      docOrder = JSON.parse(dbDocOrder.order || '[]')
+
       // If there are any document IDs missing from the order, failsafe them in
-      docOrder = JSON.parse(dbDocOrder)
       const missingDocIds = documents.map(doc => doc.guid).filter(guid => !docOrder.includes(guid))
 
       if (missingDocIds.length) {
@@ -130,7 +127,7 @@ module.exports = function (app, passport, db, isPremiumUser) {
       return
     }).then(() => {
       documents.sort((doc1, doc2) => {
-        return docOrder.order.indexOf(doc1.guid) - docOrder.order.indexOf(doc2.guid)
+        return docOrder.indexOf(doc1.guid) - docOrder.indexOf(doc2.guid)
       })
 
       res.status(200).send(documents)

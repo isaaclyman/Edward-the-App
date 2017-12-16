@@ -4,7 +4,7 @@ const ts = require('../models/_util').addTimestamps
 const utilities = require('../api/utilities')
 
 const updateChapter = (db, userId, documentId, chapter) => {
-  let dbChapter, dbDocId, dbChapterTopics
+  let dbChapterId, dbDocId, dbChapterTopics
 
   // Get the document ID
   return db.knex('documents').where({
@@ -18,9 +18,7 @@ const updateChapter = (db, userId, documentId, chapter) => {
       'user_id': userId,
       'document_id': dbDocId
     }).first()
-  }).then(dbChap => {
-    dbChapter = dbChap
-
+  }).then(dbChapter => {
     // Insert or update the chapter
     if (!dbChapter) {
       return db.knex('chapters').insert(ts(db.knex, {
@@ -46,8 +44,10 @@ const updateChapter = (db, userId, documentId, chapter) => {
       guid: chapter.id,
       'user_id': userId,
       'document_id': dbDocId
-    }).update(update).returning('id')
-  }).then(([{ id: dbChapterId }]) => {
+    }).update(ts(db.knex, update, true)).returning('id')
+  }).then(([chapterId]) => {
+    dbChapterId = chapterId
+
     // Get chapter topics
     return db.knex('chapter_topics').where({
       'user_id': userId,
@@ -79,13 +79,13 @@ const updateChapter = (db, userId, documentId, chapter) => {
     const insertPromise = db.knex('chapter_topics').insert(idsToInsert.map(id => ts(db.knex, {
       content: topicDict[id].content,
       'user_id': userId,
-      'chapter_id': dbChapter.id,
+      'chapter_id': dbChapterId,
       'master_topic_id': masterTopics.find(mt => mt.guid === id).id
     })))
 
     const updatePromises = idsToUpdate.map(id => db.knex('chapter_topics').where({
       'user_id': userId,
-      'chapter_id': dbChapter.id,
+      'chapter_id': dbChapterId,
       'master_topic_id': masterTopics.find(mt => mt.guid === id).id
     }).update(ts(db.knex, {
       content: topicDict[id].content
@@ -115,9 +115,9 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       return db.knex('chapter_orders').where({
         'owner_guid': documentId,
         'user_id': userId
-      }).update({
+      }).update(ts(db.knex, {
         order: JSON.stringify(chapterIds)
-      })
+      }), true)
     }).then(() => {
       res.status(200).send()
     }, err => {
@@ -174,7 +174,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
         return db.knex('chapter_orders').where({
           'owner_guid': documentId,
           'user_id': userId
-        }).update({ order })
+        }).update(ts(db.knex, { order }, true))
       }
 
       return
@@ -219,7 +219,13 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       }).first().then(({ order = '[]' } = {}) => { return JSON.parse(order) }),
       db.knex('chapters').where('chapters.user_id', userId)
       .innerJoin('documents', 'chapters.document_id', 'documents.id').where('documents.guid', documentId)
-      .select()
+      .select({
+        archived: 'chapters.archived',
+        content: 'chapters.content',
+        guid: 'chapters.guid',
+        id: 'chapters.id',
+        title: 'chapters.title'
+      })
     ]).then(([chapOrder, chaps]) => {
       chapterOrder = chapOrder
       chapters = chaps
@@ -228,9 +234,9 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       if (missingChapters.length) {
         const order = chapterOrder.concat(missingChapters)
         return db.knex('chapter_orders').where({
-          'document_id': documentId,
+          'owner_guid': documentId,
           'user_id': userId
-        }).update({ order })
+        }).update(ts(db.knex, { order }, true))
       }
 
       return
@@ -253,7 +259,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       }, {})
 
       const chaptersWithTopics = chapters.map(chapter => {
-        chapter.topics = topicsByChapter[chapter.id].reduce((dict, topic) => {
+        chapter.topics = (topicsByChapter[chapter.id] || []).reduce((dict, topic) => {
           dict[topic.id] = topic
           return dict
         }, {})

@@ -18,7 +18,7 @@ module.exports = function (app, passport, db) {
   // Serve user signup, login, logout, verify, and passreset pages
   require('./user')(app, passport, db, isPremiumUser, isLoggedInMiddleware)
   require('./document')(app, passport, db, isPremiumUserMiddleware)
-  // require('./chapter').registerApis(app, passport, db, isPremiumUserMiddleware)
+  require('./chapter').registerApis(app, passport, db, isPremiumUserMiddleware)
   // require('./topic').registerApis(app, passport, db, isPremiumUserMiddleware)
   // require('./plan').registerApis(app, passport, db, isPremiumUserMiddleware)
   // require('./section').registerApis(app, passport, db, isPremiumUserMiddleware)

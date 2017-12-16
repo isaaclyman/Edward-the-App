@@ -40,8 +40,8 @@ util.deleteTestUser = function (knex, email) {
       const testUserId = testUser.id
 
       const tablesToDeleteFrom = [
-        'documents', 'document_orders', 'chapters', 'chapter_orders', 'master_topics', 'master_topic_orders',
-        'plans', 'plan_orders', 'sections', 'section_orders', 'chapter_topics'
+        'section_orders', 'sections', 'plan_orders', 'plans', 'chapter_topics', 'master_topic_orders',
+        'master_topics', 'chapter_orders', 'chapters', 'document_orders', 'documents'
       ]
 
       const deletePromises = tablesToDeleteFrom.map(table => {

@@ -2,7 +2,7 @@ const updateChapter = require('./chapter').updateChapter
 const updateTopic = require('./topic').updateTopic
 const updatePlan = require('./plan').updatePlan
 const updateSection = require('./section').updateSection
-const modelUtil = require('../models/_util')
+const ts = require('../models/_util').addTimestamps
 
 module.exports = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
@@ -26,7 +26,7 @@ module.exports = function (app, passport, db, isPremiumUser) {
     }).then(dbDocOrder => {
       // Insert or update
       if (!dbDocOrder) {
-        return db.knex('document_orders').insert(modelUtil.addTimestamps(db.knex, {
+        return db.knex('document_orders').insert(ts(db.knex, {
           order: JSON.stringify([document.id]),
           'user_id': userId
         }))
@@ -36,12 +36,12 @@ module.exports = function (app, passport, db, isPremiumUser) {
 
       order.push(document.id)
       return (
-        db.knex('document_orders').where('user_id', userId).update(modelUtil.addTimestamps(db.knex, {
+        db.knex('document_orders').where('user_id', userId).update(ts(db.knex, {
           order: JSON.stringify(order)
         }, true))
       )
     }).then(() => {
-      return db.knex('documents').insert(modelUtil.addTimestamps(db.knex, {
+      return db.knex('documents').insert(ts(db.knex, {
         guid: document.id,
         name: document.name,
         'user_id': userId
@@ -65,7 +65,7 @@ module.exports = function (app, passport, db, isPremiumUser) {
 
       if (~indexToRemove) {
         order.splice(indexToRemove, 1)
-        return db.knex('document_orders').where('user_id', userId).update(modelUtil.addTimestamps(db.knex, {
+        return db.knex('document_orders').where('user_id', userId).update(ts(db.knex, {
           order: JSON.stringify(order)
         }, true))
       }
@@ -140,44 +140,44 @@ module.exports = function (app, passport, db, isPremiumUser) {
   // SAVE ALL CONTENT
   // POST { fileId, chapters, plans, topics }
   app.post(route('document/saveAll'), isPremiumUser, (req, res, next) => {
-  //   const userId = req.user.id
-  //   const { fileId: documentId, chapters, plans, topics } = req.body
+    const userId = req.user.id
+    const { fileId: documentId, chapters, plans, topics } = req.body
 
-  //   const updateTopicFns = topics.map(topic => () => updateTopic(db, userId, documentId, topic))
-  //   const updateTopicPromise = orderPromises(updateTopicFns)
-  //   const updateChapterPromise = updateTopicPromise.then(() => {
-  //     const updateChapterFns = chapters.map(chapter => () => updateChapter(db, userId, documentId, chapter))
-  //     return orderPromises(updateChapterFns)
-  //   })
+    const updateTopicFns = topics.map(topic => () => updateTopic(db, userId, documentId, topic))
+    const updateTopicPromise = orderPromises(updateTopicFns)
+    const updateChapterPromise = updateTopicPromise.then(() => {
+      const updateChapterFns = chapters.map(chapter => () => updateChapter(db, userId, documentId, chapter))
+      return orderPromises(updateChapterFns)
+    })
 
-  //   const updatePlanFns = plans.map(
-  //     plan => () => updatePlan(db, userId, documentId, plan).then(() => {
-  //       const updateSectionFns = plan.sections.map(section => () => updateSection(db, userId, documentId, plan.id, section))
-  //       return orderPromises(updateSectionFns)
-  //     })
-  //   )
-  //   const updatePlanPromise = orderPromises(updatePlanFns)
+    const updatePlanFns = plans.map(
+      plan => () => updatePlan(db, userId, documentId, plan).then(() => {
+        const updateSectionFns = plan.sections.map(section => () => updateSection(db, userId, documentId, plan.id, section))
+        return orderPromises(updateSectionFns)
+      })
+    )
+    const updatePlanPromise = orderPromises(updatePlanFns)
 
-  //   Promise.all([updateChapterPromise, updatePlanPromise]).then(() => {
-  //     res.status(200).send({ documentId, chapters, plans, topics })
-  //   }, err => {
-  //     console.error(err)
-  //     res.status(500).send(err)
-  //   })
+    Promise.all([updateChapterPromise, updatePlanPromise]).then(() => {
+      res.status(200).send({ documentId, chapters, plans, topics })
+    }, err => {
+      console.error(err)
+      res.status(500).send(err)
+    })
   })
 }
 
 function orderPromises (promiseFns) {
-  // if (!promiseFns[0]) {
-  //   return Promise.resolve()
-  // }
+  if (!promiseFns[0]) {
+    return Promise.resolve()
+  }
 
-  // return promiseFns[0]().then(() => {
-  //   if (promiseFns.length > 1) {
-  //     promiseFns.splice(0, 1)
-  //     return orderPromises(promiseFns)
-  //   } else {
-  //     return promiseFns[0]()
-  //   }
-  // })
+  return promiseFns[0]().then(() => {
+    if (promiseFns.length > 1) {
+      promiseFns.splice(0, 1)
+      return orderPromises(promiseFns)
+    } else {
+      return promiseFns[0]()
+    }
+  })
 }

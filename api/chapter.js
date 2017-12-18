@@ -92,6 +92,33 @@ const updateChapter = (db, userId, documentId, chapter) => {
     })))
 
     return Promise.all([insertPromise, ...updatePromises])
+  }).then(() => {
+    return db.knex('chapter_orders').where({
+      'owner_guid': documentId,
+      'user_id': userId
+    }).first()
+  }).then(chapterOrder => {
+    // Make sure there's a chapter order and the current chapter is included in it
+    if (!chapterOrder) {
+      return db.knex('chapter_orders').insert(ts(db.knex, {
+        'owner_guid': documentId,
+        order: JSON.stringify([chapter.id]),
+        'user_id': userId
+      }))
+    }
+
+    const order = JSON.parse(chapterOrder.order || '[]')
+    if (!order.includes(chapter.id)) {
+      order.push(chapter.id)
+      return db.knex('chapter_orders').where({
+        'owner_guid': documentId,
+        'user_id': userId
+      }).update(ts(db.knex, {
+        order: JSON.stringify(order)
+      }, true))
+    }
+
+    return
   })
 }
 
@@ -174,7 +201,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
         return db.knex('chapter_orders').where({
           'owner_guid': documentId,
           'user_id': userId
-        }).update(ts(db.knex, { order }, true))
+        }).update(ts(db.knex, { order: JSON.stringify(order) }, true))
       }
 
       return
@@ -267,7 +294,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       })
 
       chaptersWithTopics.sort((chapter1, chapter2) => {
-        return chapterOrder.indexOf(chapter1.id) - chapterOrder.indexOf(chapter2.id)
+        return chapterOrder.indexOf(chapter1.guid) - chapterOrder.indexOf(chapter2.guid)
       })
 
       res.status(200).send(chaptersWithTopics)

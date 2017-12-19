@@ -3,6 +3,7 @@ const updateTopic = require('./topic').updateTopic
 const updatePlan = require('./plan').updatePlan
 const updateSection = require('./section').updateSection
 const ts = require('../models/_util').addTimestamps
+const utilities = require('./utilities')
 
 module.exports = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
@@ -22,24 +23,18 @@ module.exports = function (app, passport, db, isPremiumUser) {
         throw new Error(error)
       }
 
-      return db.knex('document_orders').where('user_id', userId).first('order')
-    }).then(dbDocOrder => {
-      // Insert or update
-      if (!dbDocOrder) {
-        return db.knex('document_orders').insert(ts(db.knex, {
+      return utilities.upsert(db.knex, 'document_orders', {
+        where: { 'user_id': userId },
+        insert: ts(db.knex, {
           order: JSON.stringify([document.id]),
           'user_id': userId
-        }))
-      }
-
-      const order = JSON.parse(dbDocOrder.order || '[]')
-
-      order.push(document.id)
-      return (
-        db.knex('document_orders').where('user_id', userId).update(ts(db.knex, {
-          order: JSON.stringify(order)
-        }, true))
-      )
+        }),
+        getUpdate: dbOrder => {
+          const order = JSON.parse(dbOrder.order || '[]')
+          order.push(document.id)
+          return ts(db.knex, { order: JSON.stringify(order) }, true)
+        }
+      })
     }).then(() => {
       return db.knex('documents').insert(ts(db.knex, {
         guid: document.id,
@@ -106,14 +101,12 @@ module.exports = function (app, passport, db, isPremiumUser) {
   app.get(route('documents'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
 
-    let documents, docOrder
-
-    db.knex('documents').where('user_id', userId).select().then((dbDocs = []) => {
-      documents = dbDocs
-      return db.knex('document_orders').where('user_id', userId).first()
-    }).then((dbDocOrder = {}) => {
-      docOrder = JSON.parse(dbDocOrder.order || '[]')
-
+    Promise.all([
+      db.knex('documents').where('user_id', userId).select().then((dbDocs = []) => dbDocs),
+      db.knex('document_orders').where('user_id', userId).first('order').then(
+        ({ order = '[]' } = {}) => JSON.parse(order)
+      )
+    ]).then(([documents, docOrder]) => {
       // If there are any document IDs missing from the order, failsafe them in
       const missingDocIds = documents.map(doc => doc.guid).filter(guid => !docOrder.includes(guid))
 
@@ -121,11 +114,11 @@ module.exports = function (app, passport, db, isPremiumUser) {
         const newDocOrder = JSON.stringify(docOrder.concat(missingDocIds))
         return db.knex('document_orders').where('user_id', userId).update({
           order: newDocOrder
-        })
+        }).then(() => [documents, newDocOrder])
       }
 
-      return
-    }).then(() => {
+      return [documents, docOrder]
+    }).then(([documents, docOrder]) => {
       documents.sort((doc1, doc2) => {
         return docOrder.indexOf(doc1.guid) - docOrder.indexOf(doc2.guid)
       })

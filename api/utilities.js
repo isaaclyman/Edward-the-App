@@ -40,7 +40,7 @@ module.exports = {
         return knex(table).where(where).update(update).then(() => result.id)
       }
 
-      return Promise.resolve(result.id)
+      return result.id
     })
   }
 }

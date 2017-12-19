@@ -77,6 +77,7 @@ function docTable (knex) {
     t.string('name')
     t.timestamps()
     userIdCol(t)
+    t.unique(['user_id', 'guid'])
   })
 }
 
@@ -86,6 +87,7 @@ function docOrderTable (knex) {
     t.string('order')
     t.timestamps()
     userIdCol(t)
+    t.unique('user_id')
   })
 }
 
@@ -99,6 +101,7 @@ function chapterTable (knex) {
     t.timestamps()
     userIdCol(t)
     docIdCol(t)
+    t.unique(['user_id', 'document_id', 'guid'])
   })
 }
 
@@ -109,6 +112,7 @@ function chapterOrderTable (knex) {
     t.timestamps()
     userIdCol(t)
     docIdCol(t)
+    t.unique(['user_id', 'document_id'])
   })
 }
 
@@ -121,6 +125,7 @@ function masterTopicTable (knex) {
     t.timestamps()
     userIdCol(t)
     docIdCol(t)
+    t.unique(['user_id', 'document_id', 'guid'])
   })
 }
 
@@ -131,6 +136,7 @@ function masterTopicOrderTable (knex) {
     t.timestamps()
     userIdCol(t)
     docIdCol(t)
+    t.unique(['user_id', 'document_id'])
   })
 }
 
@@ -142,6 +148,7 @@ function chapterTopicTable (knex) {
     userIdCol(t)
     chapterIdCol(t)
     masterTopicIdCol(t)
+    t.unique(['user_id', 'chapter_id', 'master_topic_id'])
   })
 }
 
@@ -154,6 +161,7 @@ function planTable (knex) {
     t.timestamps()
     userIdCol(t)
     docIdCol(t)
+    t.unique(['user_id', 'document_id', 'guid'])
   })
 }
 
@@ -164,6 +172,7 @@ function planOrderTable (knex) {
     t.timestamps()
     userIdCol(t)
     docIdCol(t)
+    t.unique(['user_id', 'document_id'])
   })
 }
 
@@ -177,6 +186,7 @@ function sectionTable (knex) {
     t.timestamps()
     userIdCol(t)
     planIdCol(t)
+    t.unique(['user_id', 'plan_id', 'guid'])
   })
 }
 
@@ -187,5 +197,6 @@ function sectionOrderTable (knex) {
     t.timestamps()
     userIdCol(t)
     planIdCol(t)
+    t.unique(['user_id', 'plan_id'])
   })
 }

@@ -1,6 +1,7 @@
 const accountTypes = require('../models/accountType')
 const modelUtil = require('../models/_util')
 const request = require('request-promise-native')
+const ts = modelUtil.addTimestamps
 
 module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
   const route = route => `/api/user/${route}`
@@ -139,7 +140,7 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
       }
 
       return (
-        db.knex('users').where('id', req.user.id).update(modelUtil.addTimestamps(db.knex, {
+        db.knex('users').where('id', req.user.id).update(ts(db.knex, {
           email: newEmail
         }, true))
       )
@@ -153,7 +154,7 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
 
   app.post(route('password'), isLoggedIn, (req, res, next) => {
     return modelUtil.getHash(req.body.password).then(hash => {
-      return db.knex('users').where('id', req.user.id).update(modelUtil.addTimestamps(db.knex, {
+      return db.knex('users').where('id', req.user.id).update(ts(db.knex, {
         password: hash
       }, true))
     }).then(() => {

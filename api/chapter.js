@@ -9,39 +9,31 @@ const updateChapter = (db, userId, docGuid, chapter) => {
   const docId = () => getDocId(docGuid, db.knex)
   const chapId = () => getChapId(chapter.id, db.knex)
 
-  // Get the chapter
-  return db.knex('chapters').where({
-    guid: chapter.id,
-    'document_id': docId(),
-    'user_id': userId
-  }).first().then(dbChapter => {
-    // Insert or update the chapter
-    if (!dbChapter) {
-      return db.knex('chapters').insert(ts(db.knex, {
-        archived: chapter.archived,
-        guid: chapter.id,
-        title: chapter.title,
-        'user_id': userId,
-        'document_id': docId()
-      })).returning('id')
-    }
-
-    const update = {
-      archived: chapter.archived,
-      title: chapter.title
-    }
-
-    // Only update chapter content if it has changed
-    if (!isEqual(dbChapter.content, chapter.content)) {
-      update.content = chapter.content
-    }
-
-    return db.knex('chapters').where({
+  // Upsert the chapter
+  return utilities.upsert(db.knex, 'chapters', {
+    where: {
       guid: chapter.id,
+      'document_id': docId(),
+      'user_id': userId
+    },
+    insert: ts(db.knex, {
+      archived: chapter.archived,
+      guid: chapter.id,
+      title: chapter.title,
       'user_id': userId,
       'document_id': docId()
-    }).update(ts(db.knex, update, true)).returning('id')
-  }).then(([chapterId]) => {
+    }),
+    getUpdate: dbChap => {
+      const update = {
+        archived: chapter.archived,
+        // Only update content if it has changed
+        content: !isEqual(dbChap.content, chapter.content) ? chapter.content : undefined,
+        title: chapter.title
+      }
+
+      return ts(db.knex, update, true)
+    }
+  }).then(chapterId => {
     // Get master topics and chapter topics
     return Promise.all([
       db.knex('chapter_topics').where({
@@ -85,33 +77,29 @@ const updateChapter = (db, userId, docGuid, chapter) => {
 
     return Promise.all([insertPromise, ...updatePromises])
   }).then(() => {
-    // Get chapter order
-    return db.knex('chapter_orders').where({
-      'owner_guid': docGuid,
-      'user_id': userId
-    }).first()
-  }).then(chapterOrder => {
-    // Make sure there's a chapter order and the current chapter is included in it
-    if (!chapterOrder) {
-      return db.knex('chapter_orders').insert(ts(db.knex, {
+    // Make sure a chapter order exists and the current chapter is included
+    return utilities.upsert(db.knex, 'chapter_orders', {
+      where: {
+        'owner_guid': docGuid,
+        'user_id': userId
+      },
+      insert: ts(db.knex, {
         'owner_guid': docGuid,
         order: JSON.stringify([chapter.id]),
         'user_id': userId
-      }))
-    }
+      }),
+      getUpdate: dbOrder => {
+        const order = JSON.parse(dbOrder.order || '[]')
+        if (!order.includes(chapter.id)) {
+          order.push(chapter.id)
+          return ts(db.knex, {
+            order: JSON.stringify(order)
+          }, true)
+        }
 
-    const order = JSON.parse(chapterOrder.order || '[]')
-    if (!order.includes(chapter.id)) {
-      order.push(chapter.id)
-      return db.knex('chapter_orders').where({
-        'owner_guid': docGuid,
-        'user_id': userId
-      }).update(ts(db.knex, {
-        order: JSON.stringify(order)
-      }, true))
-    }
-
-    return
+        return null
+      }
+    })
   })
 }
 
@@ -154,18 +142,16 @@ const registerApis = function (app, passport, db, isPremiumUser) {
 
     const docId = () => getDocId(docGuid, db.knex)
 
-    // Get chapter
-    db.knex('chapters').where({
-      guid: chapterId,
-      'document_id': docId(),
+    // Delete chapter topics
+    return db.knex('chapter_topics').where({
       'user_id': userId
-    }).first().then(chapter => {
-      // Delete chapter topics
-      return db.knex('chapter_topics').where({
-        'chapter_id': chapter.id,
+    }).whereIn('chapter_id', knex => {
+      knex.select('id').from('chapters').where({
+        guid: chapterId,
+        'document_id': docId(),
         'user_id': userId
-      }).del()
-    }).then(() => {
+      })
+    }).del().then(() => {
       // Delete chapter
       return db.knex('chapters').where({
         guid: chapterId,

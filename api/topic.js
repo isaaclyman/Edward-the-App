@@ -1,53 +1,49 @@
+const difference = require('lodash/difference')
+const ts = require('../models/_util').addTimestamps
 const utilities = require('../api/utilities')
+const getDocId = utilities.getDocId
+const getMasterTopicId = utilities.getMasterTopicId
 
 const updateTopic = (db, userId, documentId, topic) => {
-  return db.Doc.findOne({
+  const docId = () => getDocId(db.knex, userId, documentId)
+
+  return utilities.upsert(db.knex, 'master_topics', {
     where: {
-      guid: documentId,
-      userId
-    }
-  }).then(dbDoc => {
-    return db.MasterTopic.findCreateFind({
-      where: {
-        documentId: dbDoc.id,
-        guid: topic.id,
-        userId
-      },
-      defaults: {
-        archived: false,
-        documentId: dbDoc.id,
-        guid: topic.id,
-        title: '',
-        userId
-      }
-    })
-  }).then(([dbMasterTopic]) => {
-    const update = {
+      guid: topic.id,
+      'document_id': docId(),
+      'user_id': userId
+    },
+    insert: ts(db.knex, {
+      archived: topic.archived,
+      guid: topic.id,
+      title: topic.title,
+      'document_id': docId(),
+      'user_id': userId
+    }),
+    update: ts(db.knex, {
       archived: topic.archived,
       title: topic.title
-    }
-
-    return dbMasterTopic.update(update)
+    }, true)
   }).then(() => {
-    return db.MasterTopicOrder.findCreateFind({
+    return utilities.upsert(db.knex, 'master_topic_orders', {
       where: {
-        ownerGuid: documentId,
-        userId
+        'document_id': docId(),
+        'user_id': userId
       },
-      defaults: {
-        order: [],
-        ownerGuid: documentId,
-        userId
-      }
-    })
-  }).then(([dbMasterTopicOrder]) => {
-    if (dbMasterTopicOrder.order.includes(topic.id)) {
-      return topic.id
-    }
+      insert: ts(db.knex, {
+        order: JSON.stringify([topic.id]),
+        'document_id': docId(),
+        'user_id': userId
+      }),
+      getUpdate: dbOrder => {
+        const order = JSON.parse(dbOrder.order || '[]')
+        if (!order.includes(topic.id)) {
+          order.push(topic.id)
+          return ts(db.knex, { order: JSON.stringify(order) }, true)
+        }
 
-    dbMasterTopicOrder.order.push(topic.id)
-    return dbMasterTopicOrder.update({
-      order: dbMasterTopicOrder.order
+        return null
+      }
     })
   })
 }
@@ -61,30 +57,26 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     const topicIds = req.body.topicIds
     const userId = req.user.id
 
-    db.MasterTopicOrder.findOne({
-      where: {
-        ownerGuid: documentId,
-        userId
-      }
-    }).then(dbMasterTopicOrder => {
-      if (!utilities.containSameElements(dbMasterTopicOrder.order, topicIds)) {
-        const err = new Error(`Cannot rearrange topics: an invalid topic array was received.`)
-        res.status(400).send(err)
-        throw err
+    const docId = () => getDocId(db.knex, userId, documentId)
+
+    db.knex('master_topic_orders').where({
+      'document_id': docId(),
+      'user_id': userId
+    }).first('order').then(({ order }) => {
+      if (!utilities.containSameElements(JSON.parse(order), topicIds)) {
+        throw new Error(`Cannot rearrange topics: an invalid topic array was received.`)
       }
 
-      return dbMasterTopicOrder.update({
-        order: topicIds
-      })
+      return db.knex('master_topic_orders').where({
+        'document_id': docId(),
+        'user_id': userId
+      }).update(ts(db.knex, {
+        order: JSON.stringify(topicIds)
+      }, true))
     }).then(() => {
       res.status(200).send()
     }, err => {
       console.error(err)
-
-      if (res.headersSent) {
-        return
-      }
-
       res.status(500).send(err)
     })
   })
@@ -94,55 +86,38 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     const documentId = req.body.fileId
     const topicId = req.body.topicId
     const userId = req.user.id
-    let dbDocId
 
-    db.Doc.findOne({
-      where: {
-        guid: documentId,
-        userId
-      }
-    }).then(dbDoc => {
-      dbDocId = dbDoc.id
-      return db.MasterTopic.findOne({
-        where: {
-          documentId: dbDocId,
-          guid: topicId,
-          userId
-        }
-      })
-    }).then(dbMasterTopic => {
-      return db.ChapterTopic.destroy({
-        where: {
-          masterTopicId: dbMasterTopic.id,
-          userId
-        }
-      })
+    const docId = () => getDocId(db.knex, userId, documentId)
+    const masterTopicId = () => getMasterTopicId(db.knex, userId, documentId, topicId)
+
+    db.knex('chapter_topics').where({
+      'master_topic_id': masterTopicId(),
+      'user_id': userId
+    }).del().then(() => {
+      return db.knex('master_topics').where({
+        guid: topicId,
+        'document_id': docId(),
+        'user_id': userId
+      }).del()
     }).then(() => {
-      return db.MasterTopic.destroy({
-        where: {
-          documentId: dbDocId,
-          guid: topicId,
-          userId
-        }
-      })
-    }).then(() => {
-      return db.MasterTopicOrder.findOne({
-        where: {
-          ownerGuid: documentId,
-          userId
-        }
-      })
-    }).then(dbMasterTopicOrder => {
-      const indexToRemove = dbMasterTopicOrder.order.indexOf(topicId)
+      return db.knex('master_topic_orders').where({
+        'document_id': docId(),
+        'user_id': userId
+      }).first('order')
+    }).then(({ order: topicOrder }) => {
+      // Splice topic from order
+      const order = JSON.parse(topicOrder || '[]')
+      const indexToRemove = order.indexOf(topicId)
 
       if (~indexToRemove) {
-        dbMasterTopicOrder.order.splice(indexToRemove, 1)
-        return dbMasterTopicOrder.update({
-          order: dbMasterTopicOrder.order
-        })
+        order.splice(indexToRemove, 1)
+        return db.knex('master_topic_orders').where({
+          'document_id': docId(),
+          'user_id': userId
+        }).update(ts(db.knex, { order: JSON.stringify(order) }, true))
       }
 
-      return indexToRemove
+      return
     }).then(() => {
       res.status(200).send()
     }, err => {
@@ -173,50 +148,34 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     const userId = req.user.id
     let topicOrder, topics
 
-    db.MasterTopicOrder.findCreateFind({
-      where: {
-        ownerGuid: documentId,
-        userId
-      },
-      defaults: {
-        order: [],
-        ownerGuid: documentId,
-        userId
-      }
-    }).then(([dbMasterTopicOrder]) => {
-      topicOrder = dbMasterTopicOrder
-      return db.MasterTopic.findAll({
-        where: {
-          userId
-        },
-        include: [{
-          model: db.Doc,
-          where: {
-            guid: documentId
-          }
-        }]
-      })
-    }).then(dbTopics => {
-      topics = dbTopics
+    const docId = () => getDocId(db.knex, userId, documentId)
 
-      let orderOutOfDate = false
-      topics.forEach(topic => {
-        if (!topicOrder.order.includes(topic.guid)) {
-          orderOutOfDate = true
-          topicOrder.order.push(topic.guid)
-        }
-      })
+    Promise.all([
+      db.knex('master_topic_orders').where({
+        'document_id': docId(),
+        'user_id': userId
+      }).first('order').then(({ order = '[]' } = {}) => { return JSON.parse(order) }),
+      db.knex('master_topics').where({
+        'document_id': docId(),
+        'user_id': userId
+      }).select()
+    ]).then(([_topicOrder, _topics]) => {
+      topicOrder = _topicOrder
+      topics = _topics
 
-      if (orderOutOfDate) {
-        return topicOrder.update({
-          order: topicOrder.order
-        })
+      const missingTopics = difference(topics.map(c => c.guid), topicOrder)
+      if (missingTopics.length) {
+        const order = topicOrder.concat(missingTopics)
+        return db.knex('master_topic_orders').where({
+          'document_id': docId(),
+          'user_id': userId
+        }).update(ts(db.knex, { order }, true))
       }
 
-      return orderOutOfDate
+      return
     }).then(() => {
       topics.sort((topic1, topic2) => {
-        return topicOrder.order.indexOf(topic1.guid) - topicOrder.order.indexOf(topic2.guid)
+        return topicOrder.indexOf(topic1.guid) - topicOrder.indexOf(topic2.guid)
       })
 
       res.status(200).send(topics)

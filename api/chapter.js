@@ -6,8 +6,8 @@ const getDocId = utilities.getDocId
 const getChapId = utilities.getChapId
 
 const updateChapter = (db, userId, docGuid, chapter) => {
-  const docId = () => getDocId(docGuid, db.knex)
-  const chapId = () => getChapId(chapter.id, db.knex)
+  const docId = () => getDocId(db.knex, userId, docGuid)
+  const chapId = () => getChapId(db.knex, userId, chapter.id)
 
   // Upsert the chapter
   return utilities.upsert(db.knex, 'chapters', {
@@ -92,9 +92,7 @@ const updateChapter = (db, userId, docGuid, chapter) => {
         const order = JSON.parse(dbOrder.order || '[]')
         if (!order.includes(chapter.id)) {
           order.push(chapter.id)
-          return ts(db.knex, {
-            order: JSON.stringify(order)
-          }, true)
+          return ts(db.knex, { order: JSON.stringify(order) }, true)
         }
 
         return null
@@ -112,7 +110,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     const chapterIds = req.body.chapterIds
     const userId = req.user.id
 
-    const docId = () => getDocId(docGuid, db.knex)
+    const docId = () => getDocId(db.knex, userId, docGuid)
 
     db.knex('chapter_orders').where({
       'document_id': docId(),
@@ -142,7 +140,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     const chapterId = req.body.chapterId
     const userId = req.user.id
 
-    const docId = () => getDocId(docGuid, db.knex)
+    const docId = () => getDocId(db.knex, userId, docGuid)
 
     // Delete chapter topics
     return db.knex('chapter_topics').where({
@@ -213,7 +211,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     const docGuid = req.params.documentId
     const userId = req.user.id
 
-    const docId = () => getDocId(docGuid, db.knex)
+    const docId = () => getDocId(db.knex, userId, docGuid)
 
     let chapterOrder, chapters
     Promise.all([
@@ -230,9 +228,9 @@ const registerApis = function (app, passport, db, isPremiumUser) {
         id: 'chapters.id',
         title: 'chapters.title'
       })
-    ]).then(([chapOrder, chaps]) => {
-      chapterOrder = chapOrder
-      chapters = chaps
+    ]).then(([_chapterOrder, _chapters]) => {
+      chapterOrder = _chapterOrder
+      chapters = _chapters
       const missingChapters = difference(chapters.map(c => c.guid), chapterOrder)
 
       if (missingChapters.length) {

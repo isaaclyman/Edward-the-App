@@ -18,4 +18,12 @@ utilities.containSameElements = (arr1, arr2) => {
   return diff.length === 0
 }
 
+utilities.getDocId = (guid, knex) => {
+  return knex.raw('(SELECT id FROM documents WHERE guid = ?)', guid)
+}
+
+utilities.getChapId = (guid, knex) => {
+  return knex.raw('(SELECT id FROM chapters WHERE guid = ?)', guid)
+}
+
 module.exports = utilities

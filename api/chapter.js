@@ -2,23 +2,19 @@ const difference = require('lodash/difference')
 const isEqual = require('lodash/isEqual')
 const ts = require('../models/_util').addTimestamps
 const utilities = require('../api/utilities')
+const getDocId = utilities.getDocId
+const getChapId = utilities.getChapId
 
-const updateChapter = (db, userId, documentId, chapter) => {
-  let dbChapterId, dbDocId, dbChapterTopics
+const updateChapter = (db, userId, docGuid, chapter) => {
+  const docId = () => getDocId(docGuid, db.knex)
+  const chapId = () => getChapId(chapter.id, db.knex)
 
-  // Get the document ID
-  return db.knex('documents').where({
-    guid: documentId,
+  // Get the chapter
+  return db.knex('chapters').where({
+    guid: chapter.id,
+    'document_id': docId(),
     'user_id': userId
-  }).first().then(({ id: docId }) => {
-    // Get the chapter
-    dbDocId = docId
-    return db.knex('chapters').where({
-      guid: chapter.id,
-      'user_id': userId,
-      'document_id': dbDocId
-    }).first()
-  }).then(dbChapter => {
+  }).first().then(dbChapter => {
     // Insert or update the chapter
     if (!dbChapter) {
       return db.knex('chapters').insert(ts(db.knex, {
@@ -26,7 +22,7 @@ const updateChapter = (db, userId, documentId, chapter) => {
         guid: chapter.id,
         title: chapter.title,
         'user_id': userId,
-        'document_id': dbDocId
+        'document_id': docId()
       })).returning('id')
     }
 
@@ -43,25 +39,21 @@ const updateChapter = (db, userId, documentId, chapter) => {
     return db.knex('chapters').where({
       guid: chapter.id,
       'user_id': userId,
-      'document_id': dbDocId
+      'document_id': docId()
     }).update(ts(db.knex, update, true)).returning('id')
   }).then(([chapterId]) => {
-    dbChapterId = chapterId
-
-    // Get chapter topics
-    return db.knex('chapter_topics').where({
-      'user_id': userId,
-      'chapter_id': dbChapterId
-    }).select()
-  }).then(chapterTopics => {
-    dbChapterTopics = chapterTopics
-
-    // Get master topics
-    return db.knex('master_topics').where({
-      'user_id': userId,
-      'document_id': dbDocId
-    }).select()
-  }).then(masterTopics => {
+    // Get master topics and chapter topics
+    return Promise.all([
+      db.knex('chapter_topics').where({
+        'user_id': userId,
+        'chapter_id': chapterId
+      }).select(),
+      db.knex('master_topics').where({
+        'user_id': userId,
+        'document_id': docId()
+      }).select()
+    ])
+  }).then(([chapterTopics, masterTopics]) => {
     // Update chapter topics
     const topicDict = chapter.topics || {}
     const topicIds = Object.keys(topicDict)
@@ -73,19 +65,19 @@ const updateChapter = (db, userId, documentId, chapter) => {
     }
 
     // Determine which chapter topics to insert and which ones to update
-    const idsToInsert = difference(topicIds, dbChapterTopics.map(ct => ct.guid))
+    const idsToInsert = difference(topicIds, chapterTopics.map(ct => ct.guid))
     const idsToUpdate = difference(topicIds, idsToInsert)
 
     const insertPromise = db.knex('chapter_topics').insert(idsToInsert.map(id => ts(db.knex, {
       content: topicDict[id].content,
       'user_id': userId,
-      'chapter_id': dbChapterId,
+      'chapter_id': chapId(),
       'master_topic_id': masterTopics.find(mt => mt.guid === id).id
     })))
 
     const updatePromises = idsToUpdate.map(id => db.knex('chapter_topics').where({
       'user_id': userId,
-      'chapter_id': dbChapterId,
+      'chapter_id': chapId(),
       'master_topic_id': masterTopics.find(mt => mt.guid === id).id
     }).update(ts(db.knex, {
       content: topicDict[id].content
@@ -93,15 +85,16 @@ const updateChapter = (db, userId, documentId, chapter) => {
 
     return Promise.all([insertPromise, ...updatePromises])
   }).then(() => {
+    // Get chapter order
     return db.knex('chapter_orders').where({
-      'owner_guid': documentId,
+      'owner_guid': docGuid,
       'user_id': userId
     }).first()
   }).then(chapterOrder => {
     // Make sure there's a chapter order and the current chapter is included in it
     if (!chapterOrder) {
       return db.knex('chapter_orders').insert(ts(db.knex, {
-        'owner_guid': documentId,
+        'owner_guid': docGuid,
         order: JSON.stringify([chapter.id]),
         'user_id': userId
       }))
@@ -111,7 +104,7 @@ const updateChapter = (db, userId, documentId, chapter) => {
     if (!order.includes(chapter.id)) {
       order.push(chapter.id)
       return db.knex('chapter_orders').where({
-        'owner_guid': documentId,
+        'owner_guid': docGuid,
         'user_id': userId
       }).update(ts(db.knex, {
         order: JSON.stringify(order)
@@ -127,12 +120,12 @@ const registerApis = function (app, passport, db, isPremiumUser) {
 
   // POST { fileId, chapterIds }
   app.post(route('chapter/arrange'), isPremiumUser, (req, res, next) => {
-    const documentId = req.body.fileId
+    const docGuid = req.body.fileId
     const chapterIds = req.body.chapterIds
     const userId = req.user.id
 
     db.knex('chapter_orders').where({
-      'owner_guid': documentId,
+      'owner_guid': docGuid,
       'user_id': userId
     }).first().then(chapterOrder => {
       if (!utilities.containSameElements(JSON.parse(chapterOrder.order), chapterIds)) {
@@ -140,7 +133,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       }
 
       return db.knex('chapter_orders').where({
-        'owner_guid': documentId,
+        'owner_guid': docGuid,
         'user_id': userId
       }).update(ts(db.knex, {
         order: JSON.stringify(chapterIds)
@@ -155,24 +148,18 @@ const registerApis = function (app, passport, db, isPremiumUser) {
 
   // POST { fileId, chapterId }
   app.post(route('chapter/delete'), isPremiumUser, (req, res, next) => {
-    const documentId = req.body.fileId
+    const docGuid = req.body.fileId
     const chapterId = req.body.chapterId
     const userId = req.user.id
 
-    let dbDocId
-    // Get document
-    db.knex('documents').where({
-      guid: documentId,
+    const docId = () => getDocId(docGuid, db.knex)
+
+    // Get chapter
+    db.knex('chapters').where({
+      guid: chapterId,
+      'document_id': docId(),
       'user_id': userId
-    }).first().then(doc => {
-      dbDocId = doc.id
-      // Get chapter
-      return db.knex('chapters').where({
-        guid: chapterId,
-        'document_id': dbDocId,
-        'user_id': userId
-      }).first()
-    }).then(chapter => {
+    }).first().then(chapter => {
       // Delete chapter topics
       return db.knex('chapter_topics').where({
         'chapter_id': chapter.id,
@@ -182,13 +169,13 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       // Delete chapter
       return db.knex('chapters').where({
         guid: chapterId,
-        'document_id': dbDocId,
+        'document_id': docId(),
         'user_id': userId
       }).del()
     }).then(() => {
       // Get chapter order
       return db.knex('chapter_orders').where({
-        'owner_guid': documentId,
+        'owner_guid': docGuid,
         'user_id': userId
       }).first()
     }).then((chapterOrder = {}) => {
@@ -199,7 +186,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       if (~indexToRemove) {
         order.splice(indexToRemove, 1)
         return db.knex('chapter_orders').where({
-          'owner_guid': documentId,
+          'owner_guid': docGuid,
           'user_id': userId
         }).update(ts(db.knex, { order: JSON.stringify(order) }, true))
       }
@@ -222,10 +209,10 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   // } }
   app.post(route('chapter/update'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
-    const documentId = req.body.fileId
+    const docGuid = req.body.fileId
     const chapter = req.body.chapter
 
-    updateChapter(db, userId, documentId, chapter).then(() => {
+    updateChapter(db, userId, docGuid, chapter).then(() => {
       res.status(200).send(`Chapter "${chapter.title}" updated.`)
     }, err => {
       console.error(err)
@@ -235,17 +222,17 @@ const registerApis = function (app, passport, db, isPremiumUser) {
 
   // GET
   app.get(route('chapters/:documentId'), isPremiumUser, (req, res, next) => {
-    const documentId = req.params.documentId
+    const docGuid = req.params.documentId
     const userId = req.user.id
 
     let chapterOrder, chapters
     Promise.all([
       db.knex('chapter_orders').where({
-        'owner_guid': documentId,
+        'owner_guid': docGuid,
         'user_id': userId
       }).first().then(({ order = '[]' } = {}) => { return JSON.parse(order) }),
       db.knex('chapters').where('chapters.user_id', userId)
-      .innerJoin('documents', 'chapters.document_id', 'documents.id').where('documents.guid', documentId)
+      .innerJoin('documents', 'chapters.document_id', 'documents.id').where('documents.guid', docGuid)
       .select({
         archived: 'chapters.archived',
         content: 'chapters.content',
@@ -261,7 +248,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       if (missingChapters.length) {
         const order = chapterOrder.concat(missingChapters)
         return db.knex('chapter_orders').where({
-          'owner_guid': documentId,
+          'owner_guid': docGuid,
           'user_id': userId
         }).update(ts(db.knex, { order }, true))
       }

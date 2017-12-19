@@ -105,10 +105,10 @@ function chapterTable (knex) {
 function chapterOrderTable (knex) {
   return knex.schema.createTable('chapter_orders', t => {
     t.increments('id').primary()
-    t.uuid('owner_guid').notNullable()
     t.string('order')
     t.timestamps()
     userIdCol(t)
+    docIdCol(t)
   })
 }
 
@@ -127,10 +127,10 @@ function masterTopicTable (knex) {
 function masterTopicOrderTable (knex) {
   return knex.schema.createTable('master_topic_orders', t => {
     t.increments('id').primary()
-    t.uuid('owner_guid').notNullable()
     t.string('order')
     t.timestamps()
     userIdCol(t)
+    docIdCol(t)
   })
 }
 
@@ -160,10 +160,10 @@ function planTable (knex) {
 function planOrderTable (knex) {
   return knex.schema.createTable('plan_orders', t => {
     t.increments('id').primary()
-    t.uuid('owner_guid').notNullable()
     t.string('order')
     t.timestamps()
     userIdCol(t)
+    docIdCol(t)
   })
 }
 
@@ -183,9 +183,9 @@ function sectionTable (knex) {
 function sectionOrderTable (knex) {
   return knex.schema.createTable('section_orders', t => {
     t.increments('id').primary()
-    t.uuid('owner_guid').notNullable()
     t.string('order')
     t.timestamps()
     userIdCol(t)
+    planIdCol(t)
   })
 }

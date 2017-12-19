@@ -80,11 +80,11 @@ const updateChapter = (db, userId, docGuid, chapter) => {
     // Make sure a chapter order exists and the current chapter is included
     return utilities.upsert(db.knex, 'chapter_orders', {
       where: {
-        'owner_guid': docGuid,
+        'document_id': docId(),
         'user_id': userId
       },
       insert: ts(db.knex, {
-        'owner_guid': docGuid,
+        'document_id': docId(),
         order: JSON.stringify([chapter.id]),
         'user_id': userId
       }),
@@ -112,16 +112,18 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     const chapterIds = req.body.chapterIds
     const userId = req.user.id
 
+    const docId = () => getDocId(docGuid, db.knex)
+
     db.knex('chapter_orders').where({
-      'owner_guid': docGuid,
+      'document_id': docId(),
       'user_id': userId
-    }).first().then(chapterOrder => {
-      if (!utilities.containSameElements(JSON.parse(chapterOrder.order), chapterIds)) {
+    }).first('order').then(({ order }) => {
+      if (!utilities.containSameElements(JSON.parse(order), chapterIds)) {
         throw new Error(`Cannot rearrange chapters: an invalid chapter array was received.`)
       }
 
       return db.knex('chapter_orders').where({
-        'owner_guid': docGuid,
+        'document_id': docId(),
         'user_id': userId
       }).update(ts(db.knex, {
         order: JSON.stringify(chapterIds)
@@ -161,18 +163,18 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     }).then(() => {
       // Get chapter order
       return db.knex('chapter_orders').where({
-        'owner_guid': docGuid,
+        'document_id': docId(),
         'user_id': userId
-      }).first()
-    }).then((chapterOrder = {}) => {
+      }).first('order')
+    }).then(({ order: chapterOrder }) => {
       // Splice chapter from order
-      const order = JSON.parse(chapterOrder.order || '[]')
+      const order = JSON.parse(chapterOrder || '[]')
       const indexToRemove = order.indexOf(chapterId)
 
       if (~indexToRemove) {
         order.splice(indexToRemove, 1)
         return db.knex('chapter_orders').where({
-          'owner_guid': docGuid,
+          'document_id': docId(),
           'user_id': userId
         }).update(ts(db.knex, { order: JSON.stringify(order) }, true))
       }
@@ -211,12 +213,14 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     const docGuid = req.params.documentId
     const userId = req.user.id
 
+    const docId = () => getDocId(docGuid, db.knex)
+
     let chapterOrder, chapters
     Promise.all([
       db.knex('chapter_orders').where({
-        'owner_guid': docGuid,
+        'document_id': docId(),
         'user_id': userId
-      }).first().then(({ order = '[]' } = {}) => { return JSON.parse(order) }),
+      }).first('order').then(({ order = '[]' } = {}) => { return JSON.parse(order) }),
       db.knex('chapters').where('chapters.user_id', userId)
       .innerJoin('documents', 'chapters.document_id', 'documents.id').where('documents.guid', docGuid)
       .select({
@@ -234,7 +238,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       if (missingChapters.length) {
         const order = chapterOrder.concat(missingChapters)
         return db.knex('chapter_orders').where({
-          'owner_guid': docGuid,
+          'document_id': docId(),
           'user_id': userId
         }).update(ts(db.knex, { order }, true))
       }

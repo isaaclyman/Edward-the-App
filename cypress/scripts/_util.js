@@ -15,13 +15,12 @@ export function deleteTestUser (cy) {
 }
 
 export function logIn (cy, email, password) {
-  return (
-    cy.request(
-      'POST',
-      '/api/user/login',
-      { email, password, integration: true }
-    )
+  cy.request(
+    'POST',
+    '/api/user/login',
+    { email, password, integration: true }
   )
+  cy.getCookie('connect.sid').should('exist')
 }
 
 export function makeTestUserPremium (cy) {

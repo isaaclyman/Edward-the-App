@@ -47,19 +47,16 @@ describe('the wizard page', () => {
     create()
     goToWrite()
 
-    cy.get('div.editor-wrap').get('div.tabs').get('button.button-tab').then(tabs => {
-      expect(tabs).to.have.length.greaterThan(1)
-    })
+    cy.get('div.editor-wrap').get('div.tabs').get('button.button-tab')
+    .should('have.length.above', 1)
 
     showOutline()
-    cy.get('div.topic-list-wrap').get('div.topic').then(topics => {
-      expect(topics).to.have.length.greaterThan(1)
-    })
+    cy.get('div.topic-list-wrap').get('div.topic')
+      .should('have.length.above', 1)
 
     showPlans()
-    cy.get('div.plans-wrap').get('div.tabs').get('button.button-tab').then(tabs => {
-      expect(tabs).to.have.length.greaterThan(1)
-    })
+    cy.get('div.plans-wrap').get('div.tabs').get('button.button-tab')
+      .should('have.length.above', 1)
   })
 
   it('allow creating a blank document', () => {

@@ -1,8 +1,8 @@
 require('./setUp')
 const util = require('../../test/_util')
-const sequelize = require('../../db')
+const knex = require('../../db')
 
-util.createTestUser(sequelize).then(() => {
+util.createTestUser(knex).then(() => {
   process.exit()
 }, err => {
   console.error(err)

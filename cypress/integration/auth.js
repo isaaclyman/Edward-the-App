@@ -4,7 +4,7 @@ import { createTestUser, deleteTestUser } from '../scripts/_util'
 describe('the auth page', () => {
   describe('the login form', () => {
     before(() => {
-      cy.visit('/auth.html')
+      cy.visit('/auth.html#/login')
     })
 
     beforeEach(() => {
@@ -42,7 +42,7 @@ describe('the auth page', () => {
 
   describe('the demo login', () => {
     before(() => {
-      cy.visit('/auth.html')
+      cy.visit('/auth.html#/login')
     })
 
     it('logs in and redirects to the app', () => {
@@ -54,7 +54,7 @@ describe('the auth page', () => {
 
   describe('the signup page', () => {
     before(() => {
-      cy.visit('/auth.html')
+      cy.visit('/auth.html#/login')
       cy.get('button').contains('Sign up').click()
     })
 

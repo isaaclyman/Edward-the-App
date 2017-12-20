@@ -44,13 +44,28 @@ util.deleteTestUser = function (knex, email) {
         'master_topics', 'chapter_orders', 'chapters', 'document_orders', 'documents'
       ]
 
-      const deletePromises = tablesToDeleteFrom.map(table => {
+      const deleteFns = tablesToDeleteFrom.map(table => () => {
         return knex(table).where('user_id', testUserId).del()
       })
 
-      return Promise.all(deletePromises)
+      return orderPromises(deleteFns)
     }).then(() => knex('users').where('email', email).del())
   )
+}
+
+function orderPromises (promiseFns) {
+  if (!promiseFns[0]) {
+    return Promise.resolve()
+  }
+
+  return promiseFns[0]().then(() => {
+    if (promiseFns.length > 1) {
+      promiseFns.splice(0, 1)
+      return orderPromises(promiseFns)
+    } else {
+      return promiseFns[0]()
+    }
+  })
 }
 
 util.makeTestUserPremium = function (knex) {

@@ -107,6 +107,19 @@ test('update chapter', async t => {
   })
 })
 
+test('update chapter with same content', async t => {
+  const chap1 = await addChapter(app, doc.id, 'Test1')
+  const chap2 = await addChapter(app, doc.id, 'Test2')
+  chap2.chapter.archived = true
+  await updateChapter(app, chap2)
+
+  return checkChapters(t, app, doc.id, chapters => {
+    t.is(chapters.length, 2)
+    compareChapters(t, doc.id, chapters[0], chap1)
+    compareChapters(t, doc.id, chapters[1], chap2)
+  })
+})
+
 test('add chapters, then a topic', async t => {
   const chap1 = await addChapter(app, doc.id, 'Test1')
   const chap2 = await addChapter(app, doc.id, 'Test2')

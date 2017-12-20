@@ -1,69 +1,56 @@
 const isEqual = require('lodash/isEqual')
+const ts = require('../models/_util').addTimestamps
 const utilities = require('../api/utilities')
+const getPlanId = utilities.getPlanId
 
-const updateSection = (db, userId, documentId, planId, section) => {
-  return db.Doc.findOne({
+const updateSection = (db, userId, docGuid, planGuid, section) => {
+  const planId = () => getPlanId(db.knex, userId, docGuid, planGuid)
+
+  return utilities.upsert(db.knex, 'sections', {
     where: {
-      guid: documentId,
-      userId
-    }
-  }).then(dbDoc => {
-    return db.Plan.findOne({
-      where: {
-        documentId: dbDoc.id,
-        guid: planId,
-        userId
-      }
-    })
-  }).then(dbPlan => {
-    return db.Section.findCreateFind({
-      where: {
-        guid: section.id,
-        planId: dbPlan.id,
-        userId
-      },
-      defaults: {
-        archived: false,
-        content: null,
-        guid: section.id,
-        planId: dbPlan.id,
-        tags: [],
-        title: '',
-        userId
-      }
-    })
-  }).then(([dbSection]) => {
-    const update = {
+      guid: section.id,
+      'plan_id': planId(),
+      'user_id': userId
+    },
+    insert: ts(db.knex, {
       archived: section.archived,
-      tags: section.tags,
-      title: section.title
-    }
-
-    if (!isEqual(dbSection.content, section.content)) {
-      update.content = section.content
-    }
-
-    return dbSection.update(update)
-  }).then(() => {
-    return db.SectionOrder.findCreateFind({
-      where: {
-        ownerGuid: planId,
-        userId
-      },
-      defaults: {
-        order: [],
-        ownerGuid: planId,
-        userId
+      content: section.content,
+      guid: section.id,
+      tags: JSON.stringify(section.tags),
+      title: section.title,
+      'plan_id': planId(),
+      'user_id': userId
+    }),
+    getUpdate: dbSection => {
+      const update = {
+        archived: section.archived,
+        content: !isEqual(dbSection.content, section.content) ? section.content : undefined,
+        tags: JSON.stringify(section.tags),
+        title: section.title
       }
-    })
-  }).then(([dbSectionOrder]) => {
-    if (dbSectionOrder.order.includes(section.id)) {
-      return section.id
-    }
 
-    dbSectionOrder.order.push(section.id)
-    return dbSectionOrder.update({
-      order: dbSectionOrder.order
+      return ts(db.knex, update, true)
+    }
+  }).then(() => {
+    return utilities.upsert(db.knex, 'section_orders', {
+      where: {
+        'plan_id': planId(),
+        'user_id': userId
+      },
+      insert: ts(db.knex, {
+        order: JSON.stringify([section.id]),
+        'plan_id': planId(),
+        'user_id': userId
+      }),
+      getUpdate: dbOrder => {
+        const order = JSON.parse(dbOrder.order || '[]')
+        if (!order.includes(section.id)) {
+          order.push(section.id)
+          return ts(db.knex, { order: JSON.stringify(order) }, true)
+        }
+
+        return null
+      }
     })
   })
 }
@@ -73,86 +60,67 @@ const registerApis = function (app, passport, db, isPremiumUser) {
 
   // POST { fileId, planId, sectionIds }
   app.post(route('section/arrange'), isPremiumUser, (req, res, next) => {
-    const planId = req.body.planId
-    const sectionIds = req.body.sectionIds
+    const docGuid = req.body.fileId
+    const planGuid = req.body.planId
+    const sectionGuids = req.body.sectionIds
     const userId = req.user.id
 
-    db.SectionOrder.findOne({
-      where: {
-        ownerGuid: planId,
-        userId
-      }
-    }).then(dbSectionOrder => {
-      if (!utilities.containSameElements(dbSectionOrder.order, sectionIds)) {
-        const err = new Error(`Cannot rearrange sections: an invalid section array was received.`)
-        res.status(400).send(err)
-        throw err
+    const planId = () => getPlanId(db.knex, userId, docGuid, planGuid)
+
+    db.knex('section_orders').where({
+      'plan_id': planId(),
+      'user_id': userId
+    }).first('order').then(({ order }) => {
+      if (!utilities.containSameElements(JSON.parse(order), sectionGuids)) {
+        throw new Error(`Cannot rearrange sections: an invalid section array was received.`)
       }
 
-      return dbSectionOrder.update({
-        order: sectionIds
-      })
+      return db.knex('section_orders').where({
+        'plan_id': planId(),
+        'user_id': userId
+      }).update(ts(db.knex, {
+        order: JSON.stringify(sectionGuids)
+      }, true))
     }).then(() => {
       res.status(200).send()
     }, err => {
       console.error(err)
-
-      if (res.headersSent) {
-        return
-      }
-
       res.status(500).send(err)
     })
   })
 
   // POST { fileId, planId, sectionId }
   app.post(route('section/delete'), isPremiumUser, (req, res, next) => {
-    const documentId = req.body.fileId
-    const planId = req.body.planId
-    const sectionId = req.body.sectionId
+    const docGuid = req.body.fileId
+    const planGuid = req.body.planId
+    const sectionGuid = req.body.sectionId
     const userId = req.user.id
-    let dbDocId
 
-    db.Doc.findOne({
-      where: {
-        guid: documentId,
-        userId
-      }
-    }).then(dbDoc => {
-      dbDocId = dbDoc.id
-      return db.Plan.findOne({
-        where: {
-          documentId: dbDocId,
-          guid: planId,
-          userId
-        }
+    const planId = () => getPlanId(db.knex, userId, docGuid, planGuid)
+
+    db.knex('sections').where({
+      guid: sectionGuid,
+      'plan_id': planId(),
+      'user_id': userId
+    }).del().then(() => {
+      return db.knex('section_orders').where({
+        'plan_id': planId(),
+        'user_id': userId
       })
-    }).then(dbPlan => {
-      return db.Section.destroy({
-        where: {
-          guid: sectionId,
-          planId: dbPlan.id,
-          userId
-        }
-      })
-    }).then(() => {
-      return db.SectionOrder.findOne({
-        where: {
-          ownerGuid: planId,
-          userId
-        }
-      })
-    }).then(dbSectionOrder => {
-      const indexToRemove = dbSectionOrder.order.indexOf(sectionId)
+    }).then(({ order: sectionOrder }) => {
+      // Splice section from order
+      const order = JSON.parse(sectionOrder || '[]')
+      const indexToRemove = order.indexOf(sectionGuid)
 
       if (~indexToRemove) {
-        dbSectionOrder.order.splice(indexToRemove, 1)
-        return dbSectionOrder.update({
-          order: dbSectionOrder.order
-        })
+        order.splice(indexToRemove, 1)
+        return db.knex('section_orders').where({
+          'plan_id': planId(),
+          'user_id': userId
+        }).update(ts(db.knex, { order: JSON.stringify(order) }, true))
       }
 
-      return indexToRemove
+      return
     }).then(() => {
       res.status(200).send()
     }, err => {
@@ -165,20 +133,15 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   //   archived, content, id, tags, title
   // } }
   app.post(route('section/update'), isPremiumUser, (req, res, next) => {
-    const documentId = req.body.fileId
-    const planId = req.body.planId
+    const docGuid = req.body.fileId
+    const planGuid = req.body.planId
     const section = req.body.section
     const userId = req.user.id
 
-    updateSection(db, userId, documentId, planId, section).then(() => {
+    updateSection(db, userId, docGuid, planGuid, section).then(() => {
       res.status(200).send(`Section "${section.title}" updated.`)
     }, err => {
       console.error(err)
-
-      if (res.headersSent) {
-        return
-      }
-
       res.status(500).send(err)
     })
   })

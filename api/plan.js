@@ -53,7 +53,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   // POST { fileId, planIds }
   app.post(route('plan/arrange'), isPremiumUser, (req, res, next) => {
     const docGuid = req.body.fileId
-    const planIds = req.body.planIds
+    const planGuids = req.body.planIds
     const userId = req.user.id
 
     const docId = () => getDocId(db.knex, userId, docGuid)
@@ -62,7 +62,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       'document_id': docId(),
       'user_id': userId
     }).first('order').then(({ order }) => {
-      if (!utilities.containSameElements(JSON.parse(order), planIds)) {
+      if (!utilities.containSameElements(JSON.parse(order), planGuids)) {
         throw new Error(`Cannot rearrange plans: an invalid plan array was received.`)
       }
 
@@ -70,8 +70,8 @@ const registerApis = function (app, passport, db, isPremiumUser) {
         'document_id': docId(),
         'user_id': userId
       }).update(ts(db.knex, {
-        order: JSON.stringify(planIds)
-      }), true)
+        order: JSON.stringify(planGuids)
+      }, true))
     }).then(() => {
       res.status(200).send()
     }, err => {
@@ -108,7 +108,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
         'user_id': userId
       }).first('order')
     }).then(({ order: planOrder }) => {
-      // Splice chapter from order
+      // Splice plan from order
       const order = JSON.parse(planOrder || '[]')
       const indexToRemove = order.indexOf(planGuid)
 
@@ -190,11 +190,14 @@ const registerApis = function (app, passport, db, isPremiumUser) {
             'document_id': docId(),
             'user_id': userId
           })
-        }).select()
+        }).select().then(sections => sections.map(section => {
+          section.tags = JSON.parse(section.tags)
+          return section
+        }))
       ])
     }).then(([sectionOrders, sections]) => {
       const sectionOrdersByPlan = sectionOrders.reduce((dict, order) => {
-        dict[order['plan_id']] = order
+        dict[order['plan_id']] = (order.order || [])
         return dict
       }, {})
 

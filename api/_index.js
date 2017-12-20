@@ -21,7 +21,7 @@ module.exports = function (app, passport, db) {
   require('./chapter').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./topic').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./plan').registerApis(app, passport, db, isPremiumUserMiddleware)
-  // require('./section').registerApis(app, passport, db, isPremiumUserMiddleware)
+  require('./section').registerApis(app, passport, db, isPremiumUserMiddleware)
 
   const premiumTypes = [accountTypes.PREMIUM.name, accountTypes.GOLD.name, accountTypes.ADMIN.name]
   function isPremiumUser (accountType) {

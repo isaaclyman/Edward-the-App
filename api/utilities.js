@@ -32,6 +32,19 @@ module.exports = {
       )
     )`, { guid, userId, docGuid })
   },
+  getPlanId: (knex, userId, docGuid, guid) => {
+    return knex.raw(`
+    (
+      SELECT id FROM plans
+      WHERE guid = :guid
+      AND user_id = :userId
+      AND document_id = (
+        SELECT id FROM documents
+        WHERE guid = :docGuid
+        AND user_id = :userId
+      )
+    )`, { guid, userId, docGuid })
+  },
   upsert: (knex, table, { where, insert, update, getUpdate }) => {
     if (!(knex && table && where && insert && (update || getUpdate))) {
       throw new Error('Utilities.upsert was called without all the required arguments.')

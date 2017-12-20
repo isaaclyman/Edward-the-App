@@ -180,6 +180,7 @@ function sectionTable (knex) {
   return knex.schema.createTable('sections', t => {
     t.increments('id').primary()
     t.boolean('archived').notNullable()
+    t.json('content')
     t.uuid('guid').notNullable()
     t.string('tags')
     t.string('title')

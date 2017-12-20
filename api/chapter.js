@@ -125,7 +125,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
         'user_id': userId
       }).update(ts(db.knex, {
         order: JSON.stringify(chapterGuids)
-      }), true)
+      }, true))
     }).then(() => {
       res.status(200).send()
     }, err => {

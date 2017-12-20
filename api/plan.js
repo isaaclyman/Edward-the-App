@@ -1,53 +1,48 @@
+const difference = require('lodash/difference')
+const ts = require('../models/_util').addTimestamps
 const utilities = require('../api/utilities')
+const getDocId = utilities.getDocId
 
-const updatePlan = (db, userId, documentId, plan) => {
-  return db.Doc.findOne({
+const updatePlan = (db, userId, docGuid, plan) => {
+  const docId = () => getDocId(db.knex, userId, docGuid)
+
+  return utilities.upsert(db.knex, 'plans', {
     where: {
-      guid: documentId,
-      userId
-    }
-  }).then(dbDoc => {
-    return db.Plan.findCreateFind({
-      where: {
-        documentId: dbDoc.id,
-        guid: plan.id,
-        userId
-      },
-      defaults: {
-        archived: false,
-        documentId: dbDoc.id,
-        guid: plan.id,
-        title: '',
-        userId
-      }
-    })
-  }).then(([dbPlan]) => {
-    const update = {
+      guid: plan.id,
+      'document_id': docId(),
+      'user_id': userId
+    },
+    insert: ts(db.knex, {
+      archived: plan.archived,
+      guid: plan.id,
+      title: plan.title,
+      'document_id': docId(),
+      'user_id': userId
+    }),
+    update: ts(db.knex, {
       archived: plan.archived,
       title: plan.title
-    }
-
-    return dbPlan.update(update)
+    }, true)
   }).then(() => {
-    return db.PlanOrder.findCreateFind({
+    return utilities.upsert(db.knex, 'plan_orders', {
       where: {
-        ownerGuid: documentId,
-        userId
+        'document_id': docId(),
+        'user_id': userId
       },
-      defaults: {
-        order: [],
-        ownerGuid: documentId,
-        userId
-      }
-    })
-  }).then(([dbPlanOrder]) => {
-    if (dbPlanOrder.order.includes(plan.id)) {
-      return plan.id
-    }
+      insert: ts(db.knex, {
+        order: JSON.stringify([plan.id]),
+        'document_id': docId(),
+        'user_id': userId
+      }),
+      getUpdate: dbOrder => {
+        const order = JSON.parse(dbOrder.order || '[]')
+        if (!order.includes(plan.id)) {
+          order.push(plan.id)
+          return ts(db.knex, { order: JSON.stringify(order) }, true)
+        }
 
-    dbPlanOrder.order.push(plan.id)
-    return dbPlanOrder.update({
-      order: dbPlanOrder.order
+        return null
+      }
     })
   })
 }
@@ -57,92 +52,75 @@ const registerApis = function (app, passport, db, isPremiumUser) {
 
   // POST { fileId, planIds }
   app.post(route('plan/arrange'), isPremiumUser, (req, res, next) => {
-    const documentId = req.body.fileId
+    const docGuid = req.body.fileId
     const planIds = req.body.planIds
     const userId = req.user.id
 
-    db.PlanOrder.findOne({
-      where: {
-        ownerGuid: documentId,
-        userId
-      }
-    }).then(dbPlanOrder => {
-      if (!utilities.containSameElements(dbPlanOrder.order, planIds)) {
-        const err = new Error(`Cannot rearrange plans: an invalid plan array was received.`)
-        res.status(400).send(err)
-        throw err
+    const docId = () => getDocId(db.knex, userId, docGuid)
+
+    db.knex('plan_orders').where({
+      'document_id': docId(),
+      'user_id': userId
+    }).first('order').then(({ order }) => {
+      if (!utilities.containSameElements(JSON.parse(order), planIds)) {
+        throw new Error(`Cannot rearrange plans: an invalid plan array was received.`)
       }
 
-      return dbPlanOrder.update({
-        order: planIds
-      })
+      return db.knex('plan_orders').where({
+        'document_id': docId(),
+        'user_id': userId
+      }).update(ts(db.knex, {
+        order: JSON.stringify(planIds)
+      }), true)
     }).then(() => {
       res.status(200).send()
     }, err => {
       console.error(err)
-
-      if (res.headersSent) {
-        return
-      }
-
       res.status(500).send(err)
     })
   })
 
   // POST { fileId, planId }
   app.post(route('plan/delete'), isPremiumUser, (req, res, next) => {
-    const documentId = req.body.fileId
-    const planId = req.body.planId
+    const docGuid = req.body.fileId
+    const planGuid = req.body.planId
     const userId = req.user.id
-    let dbDocId
 
-    db.Doc.findOne({
-      where: {
-        guid: documentId,
-        userId
-      }
-    }).then(dbDoc => {
-      dbDocId = dbDoc.id
-      return db.Plan.findOne({
-        where: {
-          documentId: dbDocId,
-          guid: planId,
-          userId
-        }
+    const docId = () => getDocId(db.knex, userId, docGuid)
+
+    db.knex('sections').where({
+      'user_id': userId
+    }).whereIn('plan_id', knex => {
+      knex.select('id').from('plans').where({
+        guid: planGuid,
+        'document_id': docId(),
+        'user_id': userId
       })
-    }).then(dbPlan => {
-      return db.Section.destroy({
-        where: {
-          planId: dbPlan.id,
-          userId
-        }
-      })
+    }).del().then(() => {
+      return db.knex('plans').where({
+        guid: planGuid,
+        'document_id': docId(),
+        'user_id': userId
+      }).del()
     }).then(() => {
-      return db.Plan.destroy({
-        where: {
-          documentId: dbDocId,
-          guid: planId,
-          userId
-        }
-      })
-    }).then(() => {
-      return db.PlanOrder.findOne({
-        where: {
-          ownerGuid: documentId,
-          userId
-        }
-      })
-    }).then(dbPlanOrder => {
-      const indexToRemove = dbPlanOrder.order.indexOf(planId)
+      return db.knex('plan_orders').where({
+        'document_id': docId(),
+        'user_id': userId
+      }).first('order')
+    }).then(({ order: planOrder }) => {
+      // Splice chapter from order
+      const order = JSON.parse(planOrder || '[]')
+      const indexToRemove = order.indexOf(planGuid)
 
       if (~indexToRemove) {
-        dbPlanOrder.order.splice(indexToRemove, 1)
-        return dbPlanOrder.update({
-          order: dbPlanOrder.order
-        })
+        order.splice(indexToRemove, 1)
+        return db.knex('plan_orders').where({
+          'document_id': docId(),
+          'user_id': userId
+        }).update(ts(db.knex, { order: JSON.stringify(order) }, true))
       }
 
-      return indexToRemove
+      return
     }).then(() => {
       res.status(200).send()
     }, err => {
@@ -165,120 +143,87 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       res.status(200).send(`Plan "${plan.title}" updated.`)
     }, err => {
       console.error(err)
-
-      if (res.headersSent) {
-        return
-      }
-
       res.status(500).send(err)
     })
   })
 
   // GET
   app.get(route('plans/:documentId'), isPremiumUser, (req, res, next) => {
-    const documentId = req.params.documentId
+    const docGuid = req.params.documentId
     const userId = req.user.id
     let planOrder, plans
 
-    db.PlanOrder.findCreateFind({
-      where: {
-        ownerGuid: documentId,
-        userId
-      },
-      defaults: {
-        order: [],
-        ownerGuid: documentId,
-        userId
-      }
-    }).then(([dbPlanOrder]) => {
-      planOrder = dbPlanOrder
-      return db.Plan.findAll({
-        where: {
-          userId
-        },
-        include: [{
-          model: db.Doc,
-          where: {
-            guid: documentId
-          }
-        }]
-      })
-    }).then(dbPlans => {
-      plans = dbPlans
+    const docId = () => getDocId(db.knex, userId, docGuid)
 
-      let orderOutOfDate = false
-      plans.forEach(plan => {
-        if (!planOrder.order.includes(plan.guid)) {
-          orderOutOfDate = true
-          planOrder.order.push(plan.guid)
-        }
-      })
+    Promise.all([
+      db.knex('plan_orders').where({
+        'document_id': docId(),
+        'user_id': userId
+      }).first('order').then(({ order = '[]' } = {}) => { return JSON.parse(order) }),
+      db.knex('plans').where({
+        'document_id': docId(),
+        'user_id': userId
+      }).select()
+    ]).then(([_planOrder, _plans]) => {
+      planOrder = _planOrder
+      plans = _plans
 
-      if (orderOutOfDate) {
-        return planOrder.update({
-          order: planOrder.order
-        })
+      const missingPlans = difference(plans.map(p => p.guid), planOrder)
+      if (missingPlans.length) {
+        const order = planOrder.concat(missingPlans)
+        return db.knex('plan_orders').where({
+          'document_id': docId(),
+          'user_id': userId
+        }).update(ts(db.knex, { order }, true))
       }
 
-      return orderOutOfDate
+      return
     }).then(() => {
-      const planPromises = plans.map(plan => {
-        let sectionOrder, sections
-
-        return db.SectionOrder.findCreateFind({
-          where: {
-            ownerGuid: plan.guid,
-            userId
-          },
-          defaults: {
-            order: [],
-            ownerGuid: plan.guid,
-            userId
-          }
-        }).then(([dbSectionOrder]) => {
-          sectionOrder = dbSectionOrder
-          return db.Section.findAll({
-            where: {
-              planId: plan.id,
-              userId
-            }
+      return Promise.all([
+        db.knex('section_orders').where({
+          'user_id': userId
+        }).whereIn('plan_id', plans.map(p => p.id)).select(),
+        db.knex('sections').where({
+          'user_id': userId
+        }).whereIn('plan_id', knex => {
+          knex.select('id').from('plans').where({
+            'document_id': docId(),
+            'user_id': userId
           })
-        }).then(dbSections => {
-          sections = dbSections
+        }).select()
+      ])
+    }).then(([sectionOrders, sections]) => {
+      const sectionOrdersByPlan = sectionOrders.reduce((dict, order) => {
+        dict[order['plan_id']] = order
+        return dict
+      }, {})
 
-          let orderOutOfDate = false
-          sections.forEach(section => {
-            if (!sectionOrder.order.includes(section.guid)) {
-              orderOutOfDate = true
-              sectionOrder.order.push(section.guid)
-            }
-          })
+      const sectionsByPlan = sections.reduce((dict, section) => {
+        const sections = dict[section['plan_id']] || []
+        sections.push(section)
+        dict[section['plan_id']] = sections
+        return dict
+      }, {})
 
-          if (orderOutOfDate) {
-            return sectionOrder.update({
-              order: sectionOrder.order
-            })
-          }
+      for (const planId in sectionsByPlan) {
+        const order = sectionOrdersByPlan[planId] || []
 
-          return orderOutOfDate
-        }).then(() => {
-          sections.sort((section1, section2) => {
-            return sectionOrder.order.indexOf(section1.guid) - sectionOrder.order.indexOf(section2.guid)
-          })
-
-          plan.setDataValue('sections', sections)
-
-          return plan
+        sectionsByPlan[planId].sort((section1, section2) => {
+          return order.indexOf(section1.guid) - order.indexOf(section2.guid)
         })
+      }
+
+      for (const plan of plans) {
+        plan.sections = (sectionsByPlan[plan.id] || [])
+      }
+
+      plans.sort((plan1, plan2) => {
+        return planOrder.indexOf(plan1.guid) - planOrder.indexOf(plan2.guid)
       })
 
-      return Promise.all(planPromises)
-    }).then(plansWithSections => {
-      plansWithSections.sort((plan1, plan2) => {
-        return planOrder.order.indexOf(plan1.guid) - planOrder.order.indexOf(plan2.guid)
-      })
-
-      res.status(200).send(plansWithSections)
+      return plans
+    }).then(plans => {
+      res.status(200).send(plans)
     }, err => {
       console.error(err)
       res.status(500).send(err)

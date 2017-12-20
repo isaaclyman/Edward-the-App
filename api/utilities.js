@@ -19,22 +19,18 @@ module.exports = {
   getDocId: (knex, userId, guid) => {
     return knex.raw('(SELECT id FROM documents WHERE guid = :guid AND user_id = :userId)', { guid, userId })
   },
-  getChapId: (knex, userId, guid) => {
-    return knex.raw('(SELECT id FROM chapters WHERE guid = :guid AND user_id = :userId)', { guid, userId })
-  },
-  getMasterTopicId: (knex, userId, docId, guid) => {
+  getChapId: (knex, userId, docGuid, guid) => {
     return knex.raw(`
     (
-      SELECT id FROM master_topics
+      SELECT id FROM chapters
       WHERE guid = :guid
       AND user_id = :userId
       AND document_id = (
         SELECT id FROM documents
-        WHERE guid = :docId
+        WHERE guid = :docGuid
         AND user_id = :userId
       )
-    )
-  `, { guid, userId, docId })
+    )`, { guid, userId, docGuid })
   },
   upsert: (knex, table, { where, insert, update, getUpdate }) => {
     if (!(knex && table && where && insert && (update || getUpdate))) {

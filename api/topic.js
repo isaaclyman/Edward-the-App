@@ -2,7 +2,6 @@ const difference = require('lodash/difference')
 const ts = require('../models/_util').addTimestamps
 const utilities = require('../api/utilities')
 const getDocId = utilities.getDocId
-const getMasterTopicId = utilities.getMasterTopicId
 
 const updateTopic = (db, userId, documentId, topic) => {
   const docId = () => getDocId(db.knex, userId, documentId)
@@ -53,17 +52,17 @@ const registerApis = function (app, passport, db, isPremiumUser) {
 
   // POST { fileId, topicIds }
   app.post(route('topic/arrange'), isPremiumUser, (req, res, next) => {
-    const documentId = req.body.fileId
-    const topicIds = req.body.topicIds
+    const documentGuid = req.body.fileId
+    const topicGuids = req.body.topicIds
     const userId = req.user.id
 
-    const docId = () => getDocId(db.knex, userId, documentId)
+    const docId = () => getDocId(db.knex, userId, documentGuid)
 
     db.knex('master_topic_orders').where({
       'document_id': docId(),
       'user_id': userId
     }).first('order').then(({ order }) => {
-      if (!utilities.containSameElements(JSON.parse(order), topicIds)) {
+      if (!utilities.containSameElements(JSON.parse(order), topicGuids)) {
         throw new Error(`Cannot rearrange topics: an invalid topic array was received.`)
       }
 
@@ -71,7 +70,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
         'document_id': docId(),
         'user_id': userId
       }).update(ts(db.knex, {
-        order: JSON.stringify(topicIds)
+        order: JSON.stringify(topicGuids)
       }, true))
     }).then(() => {
       res.status(200).send()
@@ -83,19 +82,23 @@ const registerApis = function (app, passport, db, isPremiumUser) {
 
   // POST { fileId, topicId }
   app.post(route('topic/delete'), isPremiumUser, (req, res, next) => {
-    const documentId = req.body.fileId
-    const topicId = req.body.topicId
+    const documentGuid = req.body.fileId
+    const topicGuid = req.body.topicId
     const userId = req.user.id
 
-    const docId = () => getDocId(db.knex, userId, documentId)
-    const masterTopicId = () => getMasterTopicId(db.knex, userId, documentId, topicId)
+    const docId = () => getDocId(db.knex, userId, documentGuid)
 
     db.knex('chapter_topics').where({
-      'master_topic_id': masterTopicId(),
       'user_id': userId
+    }).whereIn('master_topic_id', knex => {
+      knex.select('id').from('master_topics').where({
+        guid: topicGuid,
+        'document_id': docId(),
+        'user_id': userId
+      })
     }).del().then(() => {
       return db.knex('master_topics').where({
-        guid: topicId,
+        guid: topicGuid,
         'document_id': docId(),
         'user_id': userId
       }).del()
@@ -107,7 +110,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     }).then(({ order: topicOrder }) => {
       // Splice topic from order
       const order = JSON.parse(topicOrder || '[]')
-      const indexToRemove = order.indexOf(topicId)
+      const indexToRemove = order.indexOf(topicGuid)
 
       if (~indexToRemove) {
         order.splice(indexToRemove, 1)
@@ -131,10 +134,10 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   // } }
   app.post(route('topic/update'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
-    const documentId = req.body.fileId
+    const documentGuid = req.body.fileId
     const topic = req.body.topic
 
-    updateTopic(db, userId, documentId, topic).then(() => {
+    updateTopic(db, userId, documentGuid, topic).then(() => {
       res.status(200).send(`Topic "${topic.title}" updated.`)
     }, err => {
       console.error(err)
@@ -144,11 +147,11 @@ const registerApis = function (app, passport, db, isPremiumUser) {
 
   // GET
   app.get(route('topics/:documentId'), isPremiumUser, (req, res, next) => {
-    const documentId = req.params.documentId
+    const documentGuid = req.params.documentId
     const userId = req.user.id
     let topicOrder, topics
 
-    const docId = () => getDocId(db.knex, userId, documentId)
+    const docId = () => getDocId(db.knex, userId, documentGuid)
 
     Promise.all([
       db.knex('master_topic_orders').where({
@@ -163,7 +166,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       topicOrder = _topicOrder
       topics = _topics
 
-      const missingTopics = difference(topics.map(c => c.guid), topicOrder)
+      const missingTopics = difference(topics.map(t => t.guid), topicOrder)
       if (missingTopics.length) {
         const order = topicOrder.concat(missingTopics)
         return db.knex('master_topic_orders').where({

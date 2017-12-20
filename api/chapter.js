@@ -247,7 +247,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
         db.knex('chapter_topics').where('chapter_topics.user_id', userId).whereIn('chapter_topics.chapter_id', chapters.map(c => c.id))
         .innerJoin('master_topics', 'chapter_topics.master_topic_id', 'master_topics.id').select({
           archived: 'master_topics.archived',
-          'chapter_id': 'chapter_topics.chapter_id',
+          chapterId: 'chapter_topics.chapter_id',
           content: 'chapter_topics.content',
           id: 'master_topics.guid',
           title: 'master_topics.title'
@@ -255,8 +255,9 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       )
     }).then(chapterTopics => {
       const topicsByChapter = chapterTopics.reduce((dict, topic) => {
-        const topics = dict[topic['chapter_id']] || []
+        const topics = dict[topic.chapterId] || []
         topics.push(topic)
+        dict[topic.chapterId] = topics
         return dict
       }, {})
 

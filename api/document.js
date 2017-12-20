@@ -134,25 +134,25 @@ module.exports = function (app, passport, db, isPremiumUser) {
   // POST { fileId, chapters, plans, topics }
   app.post(route('document/saveAll'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
-    const { fileId: documentId, chapters, plans, topics } = req.body
+    const { fileId: docGuid, chapters, plans, topics } = req.body
 
-    const updateTopicFns = topics.map(topic => () => updateTopic(db, userId, documentId, topic))
+    const updateTopicFns = topics.map(topic => () => updateTopic(db, userId, docGuid, topic))
     const updateTopicPromise = orderPromises(updateTopicFns)
     const updateChapterPromise = updateTopicPromise.then(() => {
-      const updateChapterFns = chapters.map(chapter => () => updateChapter(db, userId, documentId, chapter))
+      const updateChapterFns = chapters.map(chapter => () => updateChapter(db, userId, docGuid, chapter))
       return orderPromises(updateChapterFns)
     })
 
     const updatePlanFns = plans.map(
-      plan => () => updatePlan(db, userId, documentId, plan).then(() => {
-        const updateSectionFns = plan.sections.map(section => () => updateSection(db, userId, documentId, plan.id, section))
+      plan => () => updatePlan(db, userId, docGuid, plan).then(() => {
+        const updateSectionFns = plan.sections.map(section => () => updateSection(db, userId, docGuid, plan.id, section))
         return orderPromises(updateSectionFns)
       })
     )
     const updatePlanPromise = orderPromises(updatePlanFns)
 
     Promise.all([updateChapterPromise, updatePlanPromise]).then(() => {
-      res.status(200).send({ documentId, chapters, plans, topics })
+      res.status(200).send({ docGuid, chapters, plans, topics })
     }, err => {
       console.error(err)
       res.status(500).send(err)

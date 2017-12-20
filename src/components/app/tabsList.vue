@@ -7,7 +7,7 @@
             @mouseout="unhoverItem()">
       {{ item.title }}
     </button>
-    <button @click="showNewItem" class="button-tab" v-show="!showAddItem" v-html="addSvg"></button>
+    <button @click="showNewItem" class="button-tab add-button" v-show="!showAddItem" v-html="addSvg"></button>
     <div class="button-tab add-tab" v-show="showAddItem">
       <input class="tab-input" v-model="newItem" :placeholder="`New ${itemName}...`">
       <button class="button-green tab-internal-button" @click="addItem">

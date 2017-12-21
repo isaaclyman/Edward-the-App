@@ -15,13 +15,14 @@ const tests = isPremium => () => {
 
   beforeEach(() => {
     logIn(cy, user.email, user.password)
-    cy.visit('/app.html#/plan')
-    cy.get('select.file-dropdown').select('test')
 
     if (!isPremium) {
       const docId = createTestDocument(cy, isPremium)
       createTestChapter(cy, isPremium, docId)
     }
+
+    cy.visit('/app.html#/plan')
+    cy.get('select.file-dropdown').select('test')
   })
 
   it('has a plans list', () => {

@@ -1,17 +1,26 @@
 import { user } from '../../test/_util'
 import { createTestChapter, createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium } from '../scripts/_util'
 
-describe('the write page', () => {
+const tests = isPremium => () => {
   before(() => {
     deleteTestUser(cy)
     createTestUser(cy)
-    makeTestUserPremium(cy)
-    createTestDocument(cy)
-    createTestChapter(cy)
+
+    if (isPremium) {
+      makeTestUserPremium(cy)
+      createTestDocument(cy, isPremium)
+      createTestChapter(cy, isPremium)
+    }
   })
 
   beforeEach(() => {
     logIn(cy, user.email, user.password)
+
+    if (!isPremium) {
+      const docId = createTestDocument(cy, isPremium)
+      createTestChapter(cy, isPremium, docId)
+    }
+
     cy.visit('/app.html#/write')
     cy.get('select.file-dropdown').select('test')
     cy.get('.editor-wrap').find('div.ql-editor').as('chapterEditor')
@@ -89,4 +98,7 @@ describe('the write page', () => {
     selectChapter(cy, 4)
     cy.get('@chapterEditor').should('contain', chapterName)
   })
-})
+}
+
+describe('the write page (limited)', tests(false))
+describe('the write page (premium)', tests(true))

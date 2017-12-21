@@ -8,21 +8,24 @@ export function createTestChapter (cy, isPremium, fileId) {
     return
   }
 
-  const id = guid()
-
-  lsa.updateChapter(fileId, id, {
+  const chapGuids = [guid(), guid(), guid()]
+  const chapter = index => ({
     archived: false,
     content: {
       ops: [{
-        insert: 'This is a test chapter'
+        insert: `test chapter ${index}`
       }]
     },
-    id,
-    title: 'test chapter 1',
+    id: chapGuids[index - 1],
+    title: `test chapter ${index}`,
     topics: {}
   })
 
-  return id
+  lsa.updateChapter(fileId, chapGuids[0], chapter(1))
+  lsa.updateChapter(fileId, chapGuids[1], chapter(2))
+  lsa.updateChapter(fileId, chapGuids[2], chapter(3))
+
+  return chapGuids
 }
 
 export function createTestDocument (cy, isPremium) {

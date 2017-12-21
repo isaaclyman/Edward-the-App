@@ -11,11 +11,7 @@ export function createTestChapter (cy, isPremium, fileId) {
   const chapGuids = [guid(), guid(), guid()]
   const chapter = index => ({
     archived: false,
-    content: {
-      ops: [{
-        insert: `test chapter ${index}`
-      }]
-    },
+    content: null,
     id: chapGuids[index - 1],
     title: `test chapter ${index}`,
     topics: {}
@@ -38,6 +34,39 @@ export function createTestDocument (cy, isPremium) {
 
   lsa.addDocument({ id, name: 'test' })
   return id
+}
+
+export function createTestPlan (cy, isPremium, fileId) {
+  if (isPremium) {
+    cy.exec('node cypress/scripts/createTestPlan.js')
+    return
+  }
+
+  const planGuids = [guid(), guid()]
+  const plan = index => ({
+    archived: false,
+    id: planGuids[index - 1],
+    title: `test plan ${index}`,
+    sections: null
+  })
+
+  const sectionGuids = [guid(), guid(), guid()]
+  const section = index => ({
+    archived: false,
+    content: null,
+    id: sectionGuids[index - 1],
+    tags: [],
+    title: `test section ${index}`
+  })
+
+  lsa.updatePlan(fileId, planGuids[0], plan(1))
+  lsa.updateSection(fileId, planGuids[0], sectionGuids[0], section(1))
+
+  lsa.updatePlan(fileId, planGuids[1], plan(2))
+  lsa.updateSection(fileId, planGuids[1], sectionGuids[1], section(2))
+  lsa.updateSection(fileId, planGuids[1], sectionGuids[2], section(3))
+
+  return planGuids
 }
 
 export function createTestUser (cy) {

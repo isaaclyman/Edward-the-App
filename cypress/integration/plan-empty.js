@@ -62,6 +62,7 @@ const tests = isPremium => () => {
   }
 
   it('has a plans list and allows adding plans and sections', () => {
+    // Make sure there are no plans, then add two
     cy.get('h3').contains('Plans')
     cy.get('.plans-wrap').should('not.be.visible')
     const plans = ['plan 1', 'plan 2']
@@ -74,6 +75,8 @@ const tests = isPremium => () => {
     cy.get('.plans-wrap').within(() => {
       cy.get('.button-tab:not(.add-button):not(.add-tab)').as('planTab')
 
+      // Make sure the right number of plan tabs are there, actions are present, there are no sections,
+      //  and add a section
       cy.get('.plan').should('be.visible')
       cy.get('.plan-header').should('contain', plans[0])
       cy.get('.plan-actions').find('.plan-action').contains('Archive').should('exist')
@@ -81,25 +84,28 @@ const tests = isPremium => () => {
       cy.get('.chip-list').find('.chip').should('not.exist')
       addSection(p1section)
 
+      // Check the second plan and add two sections
       cy.get('@planTab').contains(plans[1]).click()
       cy.get('.plan').should('be.visible')
       cy.get('.plan-header').should('contain', plans[1])
       cy.get('.plan-actions').find('.plan-action').contains('Archive').should('exist')
       cy.get('.chip-list').find('.chip').should('not.exist')
-
       cy.get('.section-chips').find('h3').contains('Sections')
       addSection(p2sections[0])
       addSection(p2sections[1])
     })
 
+    // Reload
     cy.reload()
 
+    // Make sure both plans still exist and the first one has a section
     cy.get('@planTab').contains(plans[0]).click()
     cy.get('.plan-header').should('contain', plans[0])
     checkPlan(plans[0])
     checkPlan(plans[1])
     checkSection(p1section)
 
+    // Make sure the second plan has two sections
     cy.get('@planTab').contains(plans[1]).click()
     cy.get('.plan-header').should('contain', plans[1])
     cy.get('.sections').find('.section').should('have.length', 2)

@@ -1,16 +1,27 @@
 import { user } from '../../test/_util'
 import { createTestChapter, createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium } from '../scripts/_util'
 
-describe('the outline page', () => {
+const tests = isPremium => () => {
   before(() => {
     deleteTestUser(cy)
     createTestUser(cy)
-    makeTestUserPremium(cy)
-    createTestDocument(cy)
-    createTestChapter(cy)
+
+    if (isPremium) {
+      makeTestUserPremium(cy)
+      createTestDocument(cy, isPremium)
+      createTestChapter(cy, isPremium)
+    }
+  })
+
+  beforeEach(() => {
     logIn(cy, user.email, user.password)
     cy.visit('/app.html#/outline')
     cy.get('select.file-dropdown').select('test')
+
+    if (!isPremium) {
+      const docId = createTestDocument(cy, isPremium)
+      createTestChapter(cy, isPremium, docId)
+    }
   })
 
   it('has a chapters list', () => {
@@ -30,4 +41,7 @@ describe('the outline page', () => {
     cy.get('div.chapters').find('div.tabs').find('button.button-tab')
     cy.get('div.chapters').find('div.chapter').contains('test')
   })
-})
+}
+
+describe('the outline page (limited)', tests(false))
+describe('the outline page (premium)', tests(true))

@@ -27,7 +27,7 @@ describe('the outline page', () => {
   })
 
   it('has an outline view with tabs', () => {
-    cy.get('div.chapters').get('div.tabs').get('button.button-tab')
-    cy.get('div.chapters').get('div.chapter').contains('test')
+    cy.get('div.chapters').find('div.tabs').find('button.button-tab')
+    cy.get('div.chapters').find('div.chapter').contains('test')
   })
 })

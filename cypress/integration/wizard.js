@@ -1,11 +1,17 @@
 import { user } from '../../test/_util'
 import { createTestUser, deleteTestUser, logIn, makeTestUserPremium } from '../scripts/_util'
 
-describe('the wizard page', () => {
-  beforeEach(() => {
+const tests = isPremium => () => {
+  before(() => {
     deleteTestUser(cy)
     createTestUser(cy)
-    makeTestUserPremium(cy)
+
+    if (isPremium) {
+      makeTestUserPremium(cy)
+    }
+  })
+
+  beforeEach(() => {
     logIn(cy, user.email, user.password)
     cy.visit('/app.html')
   })
@@ -15,15 +21,15 @@ describe('the wizard page', () => {
   }
 
   function setTitle (title) {
-    cy.get('div.title').get('input').type(title)
+    cy.get('div.title').find('input').type(title)
   }
 
   function create () {
-    cy.get('div.actions').get('button.button-green').click()
+    cy.get('div.actions').find('button.button-green').click()
   }
 
   function goToWrite () {
-    cy.get('div.main-menu').get('a').contains('Write').click()
+    cy.get('div.main-menu').find('a').contains('Write').click()
   }
 
   function showOutline () {
@@ -47,15 +53,15 @@ describe('the wizard page', () => {
     create()
     goToWrite()
 
-    cy.get('div.editor-wrap').get('div.tabs').get('button.button-tab')
-    .should('have.length.above', 1)
+    cy.get('div.editor-wrap').find('div.tabs').find('button.button-tab')
+      .should('have.length.above', 1)
 
     showOutline()
-    cy.get('div.topic-list-wrap').get('div.topic')
+    cy.get('div.topic-list-wrap').find('div.topic')
       .should('have.length.above', 1)
 
     showPlans()
-    cy.get('div.plans-wrap').get('div.tabs').get('button.button-tab')
+    cy.get('div.plans-wrap').find('div.tabs').find('button.button-tab')
       .should('have.length.above', 1)
   })
 
@@ -71,4 +77,7 @@ describe('the wizard page', () => {
     showPlans()
     cy.get('div.sidebar-content').contains('No plans')
   })
-})
+}
+
+describe('the wizard page (limited)', tests(false))
+describe('the wizard page (premium)', tests(true))

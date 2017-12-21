@@ -55,6 +55,10 @@ const tests = isPremium => () => {
       cy.get('.chip-list').should('exist')
       cy.get('.chip').contains(title)
     })
+
+    cy.get('.sections').within(() => {
+      cy.get('.section-title').contains(title)
+    })
   }
 
   it('has a plans list and allows adding plans and sections', () => {
@@ -98,6 +102,7 @@ const tests = isPremium => () => {
 
     cy.get('@planTab').contains(plans[1]).click()
     cy.get('.plan-header').should('contain', plans[1])
+    cy.get('.sections').find('.section').should('have.length', 2)
     checkSection(p2sections[0])
     checkSection(p2sections[1])
   })

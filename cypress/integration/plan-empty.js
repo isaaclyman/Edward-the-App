@@ -25,10 +25,22 @@ const tests = isPremium => () => {
     cy.get('select.file-dropdown').select('test')
   })
 
-  it('has a plans list', () => {
+  const addPlan = title => {
+    cy.get('.plan-chips').within(() => {
+      cy.get('.chip-list').should('exist')
+      cy.get('.chip-input').type(title)
+      cy.get('.chip-add-button').click()
+      cy.get('.chip').contains(title)
+    })
+  }
+
+  it('has a plans list and allows adding plans', () => {
     cy.get('h3').contains('Plans')
+    const plans = ['plan 1', 'plan 2']
+    addPlan(plans[0])
+    addPlan(plans[1])
   })
 }
 
-describe('the plans page (limited)', tests(false))
-describe('the plans page (premium)', tests(true))
+describe('the empty plans page (limited)', tests(false))
+describe('the empty plans page (premium)', tests(true))

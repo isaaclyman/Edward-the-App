@@ -8,7 +8,7 @@
       </div>
       <hr>
       <!-- Plan Chips -->
-      <div class="chips-wrap">
+      <div class="chips-wrap plan-chips">
         <div class="section-title">
           <h3>Plans</h3>
           <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpPlanChipsModal, 'Plan List')"></button>

@@ -1,11 +1,11 @@
 <template>
-  <div class="wrap">
+  <div class="wrap full-screen">
     <div class="actions">
-      <button v-show="!isWideView" class="action" v-html="wideSvg" @click="showWideView()"
+      <button v-show="!isWideView" class="action wide-view" v-html="wideSvg" @click="showWideView()"
         title="Wide view" v-tooltip></button>
-      <button v-show="isWideView" class="action" v-html="narrowSvg" @click="showNarrowView()"
+      <button v-show="isWideView" class="action narrow-view" v-html="narrowSvg" @click="showNarrowView()"
         title="Book-width view" v-tooltip></button>
-      <button class="action" v-html="exitSvg" @click="close()"></button>
+      <button class="action close" v-html="exitSvg" @click="close()"></button>
     </div>
     <div class="container" :class="{ 'wide': isWideView }" ref="container">
       <div class="editor" ref="editor"></div>

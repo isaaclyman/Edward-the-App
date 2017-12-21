@@ -100,5 +100,5 @@ const tests = isPremium => () => {
   })
 }
 
-describe('the write page (limited)', tests(false))
-describe('the write page (premium)', tests(true))
+describe('the write page composer (limited)', tests(false))
+describe('the write page composer (premium)', tests(true))

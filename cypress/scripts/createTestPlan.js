@@ -27,12 +27,12 @@ const section = (index, planId) => ({
   'plan_id': planId
 })
 
-knex('plans').insert([plan(1), plan(2)]).returning('id').then(plans => {
+knex('plans').insert([plan(1), plan(2)]).returning('id').then(ids => {
   return knex('plan_orders').insert({
     order: JSON.stringify(planGuids),
     'document_id': docId,
     'user_id': userId
-  }).then(() => plans.map(p => p.id))
+  }).then(() => ids)
 }).then(ids => {
   return knex('sections').insert([
     section(1, ids[0]),

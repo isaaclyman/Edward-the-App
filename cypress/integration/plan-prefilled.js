@@ -43,7 +43,7 @@ const tests = isPremium => () => {
     })
   }
 
-  it.skip('allows adding an additional plan and section', () => {
+  it('allows adding an additional plan and section', () => {
     addPlan('plan 3')
     cy.get('.button-tab:not(.add-button):not(.add-tab)').as('planTab')
     cy.get('@planTab').should('have.length', 3)
@@ -51,6 +51,23 @@ const tests = isPremium => () => {
     cy.get('.sections').find('.section').should('have.length', 2)
     cy.get('@planTab').last().click()
     cy.get('.plan-actions').find('.plan-action').contains('Archive').click()
+  })
+
+  it('allows archiving and restoring a plan from the chips list', () => {
+    cy.get('.plan-chips').within(() => {
+      cy.get('.chip').first().find('.action-delete').click()
+      cy.get('.chip').contains('1').should('not.be.visible')
+    })
+
+    cy.get('.show-archived').check()
+
+    cy.get('.plan-chips').within(() => {
+      cy.get('.chip').contains('1').should('be.visible')
+      cy.get('.chip').first().find('.action-restore').click()
+    })
+
+    cy.get('.show-archived').uncheck()
+    cy.get('.plan-chips').find('.chip').contains('1').should('be.visible')
   })
 }
 

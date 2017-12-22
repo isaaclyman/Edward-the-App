@@ -8,9 +8,9 @@
             <span class="chip-draggable">
               {{ chip[nameProp] }}
             </span>
-            <button v-show="isDeletable(chip)" class="button-icon chip-action-button" @click="renameChip(index)" v-html="editSvg"></button>
-            <button v-show="isDeletable(chip)" class="button-icon chip-action-button" @click="deleteChip(index)" v-html="deleteSvg"></button>
-            <button v-show="!isDeletable(chip)" class="button-icon chip-action-button" @click="restoreChip(index)" v-html="addSvg"></button>
+            <button v-show="isDeletable(chip)" class="button-icon chip-action-button action-rename" @click="renameChip(index)" v-html="editSvg"></button>
+            <button v-show="isDeletable(chip)" class="button-icon chip-action-button action-delete" @click="deleteChip(index)" v-html="deleteSvg"></button>
+            <button v-show="!isDeletable(chip)" class="button-icon chip-action-button action-restore" @click="restoreChip(index)" v-html="addSvg"></button>
           </div>
           <div class="chip-content" v-if="showChipInput(index)">
             <input class="chip-input" v-model="chipValues[index]" :placeholder="chip[nameProp]">

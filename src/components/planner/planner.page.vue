@@ -3,7 +3,7 @@
     <div class="planner">
       <!-- 'Show Archived' checkbox -->
       <div class="filters">
-        <input id="showArchivedCheckbox" type="checkbox" v-model="filters.archived" />
+        <input class="show-archived" id="showArchivedCheckbox" type="checkbox" v-model="filters.archived" />
         <label for="showArchivedCheckbox">Show Archived</label>
       </div>
       <hr>

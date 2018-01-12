@@ -41,6 +41,9 @@ For local development, you'll need a root-level `.env` file with the following k
 - `INSECURE_COOKIES={true|false}`: When true, the "secure" parameter will not be set for auth cookies. This is required for local development.
 - `RECAPTCHA_SECRET={secret}`: A valid Google Recaptcha site secret. If you're developing locally on /auth, you'll also need to set `window.recaptchaSiteKey` to a valid site key after page load. By default, this is set in `auth.html`.
 - `SESSION_COOKIE_SECRET={secret}`: A secret to use for encrypting and decrypting session cookies.
+- `SMTP_HOST={hostname}`: A host for sending emails via SMTP. For development, you might consider using `smtp.ethereal.email`. NOTE: you can leave the SMTP attributes blank if you're not developing email or signup functionality.
+- `SMTP_USER={username}`: Your username for accessing the SMTP server.
+- `SMTP_PASS={password}`: Your password for accessing the SMTP server.
 
 ## Running the app locally
 

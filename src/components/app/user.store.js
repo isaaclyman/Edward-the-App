@@ -13,7 +13,8 @@ const defaultUser = {
     name: 'ERROR'
   },
   email: 'ERROR',
-  isPremium: false
+  isPremium: false,
+  verified: true
 }
 
 // We provide a userPromise from the beginning to prevent race conditions,

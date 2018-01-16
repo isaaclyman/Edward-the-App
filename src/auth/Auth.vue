@@ -47,7 +47,7 @@ export default {
   align-items: center;
   cursor: pointer;
   display: flex;
-  height: 56px;
+  height: 77px;
   justify-content: center;
   margin-top: 20px;
 }

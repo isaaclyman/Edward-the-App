@@ -9,12 +9,8 @@
 
 <script>
 import { CHANGE_FILE } from './file.store'
-import FilePicker from './filePicker.vue'
 
 export default {
-  components: {
-    FilePicker
-  },
   computed: {
     allFiles () {
       return this.$store.state.file.ownedFiles

@@ -1,4 +1,5 @@
 const accountTypes = require('../models/accountType')
+const Email = require('./email.helper')
 const modelUtil = require('../models/_util')
 const request = require('request-promise-native')
 const ts = modelUtil.addTimestamps
@@ -48,12 +49,13 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
 
   const getUserResponse = user => {
     return new Promise((resolve, reject) => {
-      db.knex('users').where('id', user.id).first('account_type', 'email').then(user => {
+      db.knex('users').where('id', user.id).first('account_type', 'email', 'verified').then(user => {
         const accountType = user['account_type']
         resolve({
           accountType: accountTypes[accountType],
           email: user.email,
-          isPremium: isPremiumUser(accountType)
+          isPremium: isPremiumUser(accountType),
+          verified: user.verified
         })
       }, err => {
         console.log(err)
@@ -65,6 +67,7 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
   app.get(route('current'), isLoggedIn, (req, res, next) => {
     if (!req.user) {
       res.status(401).send('User not found.')
+      return false
     }
 
     getUserResponse(req.user).then(response => {
@@ -110,7 +113,10 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
           return next(err)
         }
 
-        return res.status(200).send()
+        return res.status(200).send({
+          isPremium: isPremiumUser(user['account_type']),
+          verified: user.verified
+        })
       })
     })(req, res, next)
   })
@@ -122,6 +128,52 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
       }
 
       return res.status(200).send()
+    })
+  })
+
+  app.post(route('send-verify-link'), (req, res, next) => {
+    if (!req.user) {
+      res.status(401).send('User not found.')
+      return false
+    }
+
+    db.knex('users').where('id', req.user.id).first().then(user => {
+      const key = user['verify_key']
+      const message = new Email(
+        [user.email],
+        'Verify your account',
+        `Thanks for signing up for an account with Edward. Use the link below to verify your email address:
+        
+        ${process.env.BASE_URL}/auth#/verify/${encodeURIComponent(user.email)}/${key}`
+      ).send()
+      res.status(200).send()
+    })
+  })
+
+  app.post(route('verify'), (req, res, next) => {
+    const { email, key } = req.body
+    db.knex('users').where({
+      email,
+      'verify_key': key
+    }).first().then(user => {
+      if (!user) {
+        res.status(400).send('Email address or verification key is incorrect.')
+        return false
+      }
+
+      return db.knex('users').where('id', user.id).update(ts(db.knex, {
+        verified: true,
+        'verify_key': null
+      }, true)).then(() => {
+        req.login(user, err => {
+          if (err) {
+            res.status(500).send('An error occurred while logging in.')
+            return false
+          }
+
+          return res.status(200).send()
+        })
+      })
     })
   })
 

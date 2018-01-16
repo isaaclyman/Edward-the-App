@@ -37,6 +37,11 @@ export default {
   beforeCreate () {
     const userPromise = userApi.getUser()
     userPromise.then(user => {
+      if (!user.verified) {
+        window.location.href = '/auth#/verification'
+        return
+      }
+
       this.$store.commit(SET_USER, user)
     }, () => {
       this.$store.commit(SET_DEFAULT_USER)

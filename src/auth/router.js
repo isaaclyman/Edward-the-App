@@ -7,6 +7,8 @@ import Limited from './limited.page.vue'
 import Login from './login.page.vue'
 import Premium from './premium.page.vue'
 import Signup from './signup.page.vue'
+import Verification from './verification.page.vue'
+import Verify from './verify.page.vue'
 
 const assertSignedIn = () => {
   // Figure out if the user is signed in
@@ -33,7 +35,7 @@ export default new Router({
       component: Login
     },
     {
-      path: '/premium',
+      path: '/gopremium',
       name: 'Premium Account',
       component: Premium,
       beforeEnter: (to, from, next) => {
@@ -44,6 +46,16 @@ export default new Router({
       path: '/signup',
       name: 'Sign Up',
       component: Signup
+    },
+    {
+      path: '/verification',
+      name: 'Verify Account',
+      component: Verification
+    },
+    {
+      path: '/verify/:email/:key',
+      name: 'Verify Link',
+      component: Verify
     },
     {
       path: '*',

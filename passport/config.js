@@ -1,4 +1,5 @@
 const accountTypes = require('../models/accountType')
+const guid = require('uuid/v4')
 const LocalAuth = require('passport-local').Strategy
 const util = require('../models/_util')
 
@@ -38,8 +39,10 @@ module.exports = function config (passport, knex) {
           return knex('users').insert(util.addTimestamps(knex, {
             email,
             password: hash,
-            'account_type': accountTypes.LIMITED.name
-          })).returning(['id', 'email', 'password', 'account_type'])
+            'account_type': accountTypes.LIMITED.name,
+            verified: false,
+            'verify_key': guid()
+          })).returning(['id', 'email', 'password', 'account_type', 'verified'])
         }).then(([user]) => {
           return done(null, user)
         }, err => {

@@ -81,8 +81,12 @@ export default {
         integration: this.isTest
       }).then(result => {
         this.loading = false
-        if (result.limited) {
-          this.$router.push('/limited')
+
+        if (!result.verified) {
+          this.$router.push('/verification')
+        } else if (!result.isPremium) {
+          // this.$router.push('/limited')
+          goToApp()
         } else {
           goToApp()
         }

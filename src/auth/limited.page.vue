@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <div class="warning">
-      <h1>Welcome.</h1>
+      <h1>Just so you know...</h1>
       <p>
         <strong>This is a limited account.</strong>
       </p>
@@ -9,7 +9,7 @@
         Your data is stored on your computer, not on our servers. You won't be able to access it on multiple computers, and it will be deleted if you reinstall your browser, clear your browsing data, or wipe your hard drive.
       </p>
       <p>
-        You can use your limited account for as long as you want and export as many documents as you want. A premium Author account costs $2.46 a month and includes permanent storage on our servers.
+        You can use your limited account for as long as you want and export as many documents as you want. A Premium account costs $2.46 a month and includes permanent storage on our servers.
       </p>
     </div>
     <div class="fill"></div>
@@ -18,7 +18,7 @@
         Continue to the app
       </button>
       <button class="button-link" @click="goPremium()">
-        Upgrade to an Author account
+        Upgrade to a Premium account
       </button>
     </div>
   </div>
@@ -28,14 +28,12 @@
 import { goToApp } from './shared'
 
 export default {
-  components: {},
-  computed: {},
   data () {
     return {}
   },
   methods: {
     goPremium () {
-      this.$router.push('/premium')
+      this.$router.push('/gopremium')
     },
     noPremium () {
       goToApp()

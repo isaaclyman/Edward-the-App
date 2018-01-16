@@ -44,7 +44,6 @@
 <script>
 import authApi from './authApi'
 import Captcha from './captcha.vue'
-import { goToApp } from './shared'
 import Octicons from 'octicons'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import tippy from 'tippy.js'
@@ -133,7 +132,7 @@ export default {
         integration: this.isTest
       }).then(result => {
         this.loading = false
-        goToApp()
+        this.$router.push('/verification')
       }, () => {
         this.loading = false
         this.$refs.captcha.reset()

@@ -13,12 +13,6 @@ const tablesToCheck = [
 ]
 
 function getUsersOverLimit (accountType, limit) {
-  // const spaceUsed = knex.raw(`(${
-  //   tablesToCheck.map(table =>
-  //     table.columns.map(col => `COALESCE(pg_column_size(${table.table}.${col}), 0)`).join(' + ')
-  //   ).join(' + ')
-  // })`)
-
   const sumCte = knex('users')
   .select(knex.raw(`
     users.id AS id, users.email AS email,

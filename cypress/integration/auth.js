@@ -1,5 +1,5 @@
 import { user } from '../../test/_util'
-import { createTestUser, deleteTestUser } from '../scripts/_util'
+import { createTestUser, deleteTestUser, setTestUserVerifyKey } from '../scripts/_util'
 
 describe('the auth page', () => {
   describe('the login form', () => {
@@ -53,12 +53,9 @@ describe('the auth page', () => {
   })
 
   describe('the signup page', () => {
-    before(() => {
+    beforeEach(() => {
       cy.visit('/auth.html#/login')
       cy.get('button').contains('Sign up').click()
-    })
-
-    beforeEach(() => {
       cy.get('div.username input').as('username')
       cy.get('div.password input').as('password')
       cy.get('div.about textarea').as('about')
@@ -79,8 +76,19 @@ describe('the auth page', () => {
       cy.get('@password').type(user.password)
       cy.get('@about').type('TESTING')
       cy.get('@signUp').click()
-      cy.url().should('contain', '/app')
+      cy.url().should('contain', '/verification')
       cy.getCookie('connect.sid').should('exist')
+    })
+
+    it('allows verifying your account', () => {
+      deleteTestUser(cy)
+      cy.get('@username').type(user.email)
+      cy.get('@password').type(user.password)
+      cy.get('@about').type('TESTING')
+      cy.get('@signUp').click()
+      setTestUserVerifyKey(cy)
+      cy.visit(`/auth.html#/verify/${encodeURIComponent(user.email)}/${user.verifyKey}`)
+      cy.url().should('contain', '/app')
     })
   })
 })

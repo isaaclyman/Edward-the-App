@@ -90,3 +90,7 @@ export function logIn (cy, email, password) {
 export function makeTestUserPremium (cy) {
   cy.exec('node cypress/scripts/makeTestUserPremium.js')
 }
+
+export function setTestUserVerifyKey (cy) {
+  cy.exec('node cypress/scripts/setTestUserVerifyKey.js')
+}

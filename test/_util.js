@@ -13,7 +13,12 @@ util.route = route
   TEST USER
 */
 
-const user = { email: 'user.js@test.com__TEST', password: 'thisismysecurepassword', captchaResponse: 'token' }
+const user = {
+  email: 'user.js@test.com__TEST',
+  password: 'thisismysecurepassword',
+  captchaResponse: 'token',
+  verifyKey: '5cf197a4-1029-4250-91cc-6f0ef75bca77'
+}
 util.user = user
 
 util.createTestUser = function (knex) {
@@ -22,7 +27,8 @@ util.createTestUser = function (knex) {
       knex('users').insert(modelUtil.addTimestamps(knex, {
         email: user.email,
         password: hash,
-        'account_type': accountTypes.LIMITED.name
+        'account_type': accountTypes.LIMITED.name,
+        verified: true
       })).returning(['id', 'email', 'account_type']).then(([user]) => user)
     )
   })
@@ -72,6 +78,14 @@ util.makeTestUserPremium = function (knex) {
   return (
     knex('users').where('email', user.email).update({
       'account_type': accountTypes.PREMIUM.name
+    })
+  )
+}
+
+util.setTestUserVerifyKey = function (knex) {
+  return (
+    knex('users').where('email', user.email).update({
+      'verify_key': user.verifyKey
     })
   )
 }

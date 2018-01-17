@@ -53,6 +53,13 @@ describe('the auth page', () => {
   })
 
   describe('the signup page', () => {
+    function signUp() {
+      cy.get('@username').type(user.email)
+      cy.get('@password').type(user.password)
+      cy.get('@about').type('TESTING')
+      cy.get('@signUp').click()
+    }
+
     beforeEach(() => {
       cy.visit('/auth.html#/login')
       cy.get('button').contains('Sign up').click()
@@ -72,20 +79,27 @@ describe('the auth page', () => {
 
     it('allows signing up', () => {
       deleteTestUser(cy)
-      cy.get('@username').type(user.email)
-      cy.get('@password').type(user.password)
-      cy.get('@about').type('TESTING')
-      cy.get('@signUp').click()
+      signUp()
       cy.url().should('contain', '/verification')
       cy.getCookie('connect.sid').should('exist')
     })
 
-    it('allows verifying your account', () => {
+    it(`doesn't allow unverified users to visit the app`, () => {
       deleteTestUser(cy)
+      signUp()
+      cy.contains('Log out').click()
+      cy.url().should('contain', '/login')
       cy.get('@username').type(user.email)
       cy.get('@password').type(user.password)
-      cy.get('@about').type('TESTING')
-      cy.get('@signUp').click()
+      cy.get('button').contains('Log In').click()
+      cy.url().should('contain', '/verification')
+      cy.visit('/app.html#/compose')
+      cy.url().should('contain', '/verification')
+    })
+
+    it('allows verifying your account', () => {
+      deleteTestUser(cy)
+      signUp()
       setTestUserVerifyKey(cy)
       cy.visit(`/auth.html#/verify/${encodeURIComponent(user.email)}/${user.verifyKey}`)
       cy.url().should('contain', '/app')

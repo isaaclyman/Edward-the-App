@@ -3,6 +3,7 @@ import { app as server, knex, serverReady } from '../server'
 import request from 'supertest'
 import test from 'ava'
 import {
+  createTestChapter,
   createTestDocument,
   createTestUser,
   deleteTestUser,
@@ -30,10 +31,12 @@ const boundCreateTestUser = async (overrideApp) => {
 const boundDeleteTestUser = email => deleteTestUser(knex, email)
 const boundMakeTestUserPremium = () => makeTestUserPremium(knex)
 const boundCreateTestDocument = () => createTestDocument(knex)
+const boundCreateTestChapter = () => createTestChapter(knex)
 
 export {
   accountTypes,
   app,
+  boundCreateTestChapter as createTestChapter,
   boundCreateTestDocument as createTestDocument,
   boundCreateTestUser as createTestUser,
   boundDeleteTestUser as deleteTestUser,

@@ -1,4 +1,5 @@
 import {
+  createTestChapter,
   createTestDocument,
   createTestUser,
   deleteTestUser,
@@ -18,6 +19,7 @@ test('get users who are using any space', async t => {
   await createTestUser(app)
   await makeTestUserPremium()
   await createTestDocument()
+  await createTestChapter()
 
   return getUsersOverLimit('PREMIUM', 1).then(users => {
     t.true(users.length > 0)

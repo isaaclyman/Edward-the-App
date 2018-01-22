@@ -2,7 +2,7 @@
 
 html, body {
   font-family: 'Asap Condensed', sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   margin: 0;
   padding: 0;
 }
@@ -14,7 +14,7 @@ html, body {
 /* FONTS */
 a, button, div, input, optgroup, select, span, textarea,
 h1, h2, h3, h4, h5, h6, p, li {
-  font-family: 'Libre Baskerville', serif;
+  font-family: 'Asap', sans-serif;
 }
 
 
@@ -51,7 +51,7 @@ h3 {
 }
 
 h4 {
-  font-size: 18px;
+  font-size: 22px;
 }
 
 ul li {

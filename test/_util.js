@@ -123,6 +123,14 @@ function orderPromises (promiseFns) {
   })
 }
 
+util.makeTestUserAdmin = function (knex) {
+  return (
+    knex('users').where('email', user.email).update({
+      'account_type': accountTypes.ADMIN.name
+    })
+  )
+}
+
 util.makeTestUserPremium = function (knex) {
   return (
     knex('users').where('email', user.email).update({

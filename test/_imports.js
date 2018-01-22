@@ -7,6 +7,7 @@ import {
   createTestDocument,
   createTestUser,
   deleteTestUser,
+  makeTestUserAdmin,
   makeTestUserPremium,
   route,
   stubRecaptcha,
@@ -29,6 +30,7 @@ const boundCreateTestUser = async (overrideApp) => {
   )
 }
 const boundDeleteTestUser = email => deleteTestUser(knex, email)
+const boundMakeTestUserAdmin = () => makeTestUserAdmin(knex)
 const boundMakeTestUserPremium = () => makeTestUserPremium(knex)
 const boundCreateTestDocument = () => createTestDocument(knex)
 const boundCreateTestChapter = () => createTestChapter(knex)
@@ -40,6 +42,7 @@ export {
   boundCreateTestDocument as createTestDocument,
   boundCreateTestUser as createTestUser,
   boundDeleteTestUser as deleteTestUser,
+  boundMakeTestUserAdmin as makeTestUserAdmin,
   boundMakeTestUserPremium as makeTestUserPremium,
   getPersistentAgent,
   route,

@@ -23,6 +23,7 @@ function getUsersOverLimit (accountType, limit) {
           'id': 'users.id',
           'space_used': knex.raw(`COALESCE(SUM(pg_column_size(${table.table}.${col})), 0)`)
         })
+        .where('users.account_type', accountType)
         .leftJoin(table.table, `${table.table}.user_id`, 'users.id')
         .groupBy('users.id')
       )

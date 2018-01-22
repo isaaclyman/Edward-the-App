@@ -15,13 +15,41 @@ module.exports = function (app, passport, db) {
     res.sendFile(path.join(__dirname, '../dist/app.html'))
   })
 
-  // Serve user signup, login, logout, verify, and passreset pages
+  // Serve user-facing APIs
   require('./user')(app, passport, db, isPremiumUser, isLoggedInMiddleware)
   require('./document')(app, passport, db, isPremiumUserMiddleware)
   require('./chapter').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./topic').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./plan').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./section').registerApis(app, passport, db, isPremiumUserMiddleware)
+
+  // Serve admin-facing APIs
+  require('./admin')(app, passport, db, isAdminMiddleware)
+
+  function isAdmin (accountType) {
+    return accountType === accountTypes.ADMIN.name
+  }
+
+  function isAdminMiddleware (req, res, next) {
+    if (!req.isAuthenticated()) {
+      res.status(401).send('Attempted an admin API call without authentication.')
+      return
+    }
+
+    db.knex('users').where('id', req.user.id).first().then(user => {
+      if (!user) {
+        res.status(500).send('User does not exist.')
+        return
+      }
+
+      if (!isAdmin(user['account_type'])) {
+        res.status(401).send('Attempted an admin API call without an admin account.')
+        return
+      }
+
+      return next()
+    })
+  }
 
   const premiumTypes = [accountTypes.PREMIUM.name, accountTypes.GOLD.name, accountTypes.ADMIN.name]
   function isPremiumUser (accountType) {

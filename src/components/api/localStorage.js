@@ -271,6 +271,47 @@ class LocalStorageApi {
       this.arrangeTopics(fileId, sortOrder)
     }
   }
+
+  /*
+    FULL EXPORT / IMPORT
+  */
+
+  getFullExport () {
+    const documents = this._getAllDocuments().map(doc => {
+      doc.chapters = this._getAllChapters(doc.id)
+      doc.topics = this._getAllTopics(doc.id)
+      doc.plans = this._getAllPlans(doc.id).map(plan => {
+        plan.sections = this._getAllSections(doc.id, plan.id)
+        return plan
+      })
+      return doc
+    })
+
+    const json = JSON.stringify(documents)
+    return Promise.resolve(json)
+  }
+
+  doFullImport (json) {
+    const backup = JSON.parse(JSON.stringify(this.storage))
+    try {
+      this.storage.clear()
+      const documents = JSON.parse(json)
+
+      if (!documents || !Array.isArray(documents) || !documents.length) {
+        throw new Error('Attempted to import an empty backup.')
+      }
+
+      for (const doc of documents) {
+        this.addDocument(doc)
+        this.saveAllContent(doc.id, doc)
+      }
+    } catch (err) {
+      Object.keys(backup).forEach(key => {
+        this.storage.setItem(key, backup[key])
+      })
+      throw err
+    }
+  }
 }
 
 export default LocalStorageApi

@@ -82,6 +82,10 @@ class Api {
   deleteSection (data) { return this.simplePost(route('section/delete'), data) }
   // No get method; sections are returned with their associated plans
   updateSection (data) { return this.simplePost(route('section/update'), data) }
+
+  // FULL EXPORT/IMPORT
+  fullExport () { return this.simpleGet(route('backup/export')) }
+  fullImport (data) { return this.simplePost(route('backup/import'), data) }
 }
 
 export default new Api()

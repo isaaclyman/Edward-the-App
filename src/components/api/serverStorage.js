@@ -146,6 +146,17 @@ class ServerStorageApi {
       return this.wrapStatus(api.saveAllContent({ fileId, chapters, plans, topics }))
     })
   }
+
+  // FULL EXPORT/IMPORT
+
+  fullExport () {
+    return api.fullExport()
+  }
+
+  fullImport (json) {
+    const data = JSON.parse(json)
+    return api.fullImport(data)
+  }
 }
 
 export default ServerStorageApi

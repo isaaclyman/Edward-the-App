@@ -9,7 +9,8 @@ import {
   test,
   wrapTest
 } from '../_imports'
-import { addDocument, addChapter, checkDocuments } from './_document.helper'
+import { addDocument, checkDocuments } from './_document.helper'
+import { addChapter } from './_chapter.helper'
 
 stubRecaptcha(test)
 
@@ -62,7 +63,7 @@ test('delete a document', async t => {
 
 test('delete a document that has content', async t => {
   const doc = await addDocument(app, 'Test')
-  const chap = await addChapter(app, 'Test Chapter', doc.id)
+  const chap = await addChapter(app, doc.id, 'Test Chapter')
   await (
     app.post(route('document/delete'))
     .send({ id: doc.id })

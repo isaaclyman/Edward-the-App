@@ -1,7 +1,7 @@
-import { addDocument, deleteDocument, getDocuments, saveAllContent } from './document'
-import { getChapters } from './chapter'
-import { getTopics } from './topic'
-import { getPlans } from './plan'
+const { addDocument, deleteDocument, getDocuments, saveAllContent } = require('./document')
+const { getChapters } = require('./chapter')
+const { getTopics } = require('./topic')
+const { getPlans } = require('./plan')
 
 const getFullExport = (db, userId) => {
   return getDocuments(db, userId).then(docs => {
@@ -25,8 +25,9 @@ const getFullExport = (db, userId) => {
 const importFull = (db, userId, docs) => {
   return Promise.all(
     docs.map(doc => {
-      addDocument(db, userId, doc).then(
-        () => saveAllContent(db, userId, doc.id, doc.chapters, doc.topics, doc.plans)
+      doc.id = doc.guid
+      return addDocument(db, userId, doc).then(
+        () => saveAllContent(db, userId, doc.guid, doc.chapters, doc.topics, doc.plans)
       )
     })
   )
@@ -35,7 +36,7 @@ const importFull = (db, userId, docs) => {
 const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/backup/${route}`
 
-  // POST { id, guid, name, chapters, topics, plans }
+  // POST [{ id, guid, name, chapters, topics, plans }]
   app.post(route('import'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
     const newDocs = req.body
@@ -44,17 +45,19 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     getFullExport(db, userId).then(docs => {
       oldDocs = docs
     }).then(
-      () => importFull(db, userId, newDocs)
-    ).then(
       () => Promise.all(oldDocs.map(doc => deleteDocument(db, userId, doc.guid)))
+    ).then(
+      () => importFull(db, userId, newDocs)
     ).then(() => {
       res.status(200).send()
     }, err => {
       console.error(err)
-      Promise.all(newDocs.map(doc => deleteDocument(db, userId, doc.id))).then(() => {
+      Promise.all(newDocs.map(doc => deleteDocument(db, userId, doc.guid))).then(() => {
         return importFull(db, userId, oldDocs)
       }).then(() => {
-        res.status(500).send(`IMPORT REVERTED. ${err}`)
+        res.status(500).send(`[IMPORT REVERTED.] ${err}`)
+      }, err => {
+        res.status(500).send(`[IMPORT REVERT FAILED.] ${err}`)
       })
     })
   })

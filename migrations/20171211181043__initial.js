@@ -37,27 +37,27 @@ exports.down = function (knex, Promise) {
 
 function userIdCol (t) {
   t.integer('user_id').notNullable()
-  t.foreign('user_id').references('users.id')
+  t.foreign('user_id').references('users.id').onDelete('CASCADE')
 }
 
 function docIdCol (t) {
   t.integer('document_id').notNullable()
-  t.foreign('document_id').references('documents.id')
+  t.foreign('document_id').references('documents.id').onDelete('CASCADE')
 }
 
 function chapterIdCol (t) {
   t.integer('chapter_id').notNullable()
-  t.foreign('chapter_id').references('chapters.id')
+  t.foreign('chapter_id').references('chapters.id').onDelete('CASCADE')
 }
 
 function masterTopicIdCol (t) {
   t.integer('master_topic_id').notNullable()
-  t.foreign('master_topic_id').references('master_topics.id')
+  t.foreign('master_topic_id').references('master_topics.id').onDelete('CASCADE')
 }
 
 function planIdCol (t) {
   t.integer('plan_id').notNullable()
-  t.foreign('plan_id').references('plans.id')
+  t.foreign('plan_id').references('plans.id').onDelete('CASCADE')
 }
 
 function userTable (knex) {

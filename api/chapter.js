@@ -101,6 +101,73 @@ const updateChapter = (db, userId, docGuid, chapter) => {
   })
 }
 
+const getChapters = (db, userId, docGuid) => {
+  const docId = () => getDocId(db.knex, userId, docGuid)
+
+  let chapterOrder, chapters
+  return Promise.all([
+    db.knex('chapter_orders').where({
+      'document_id': docId(),
+      'user_id': userId
+    }).first('order').then(({ order = '[]' } = {}) => { return JSON.parse(order) }),
+    db.knex('chapters').where('chapters.user_id', userId)
+    .innerJoin('documents', 'chapters.document_id', 'documents.id').where('documents.guid', docGuid)
+    .select({
+      archived: 'chapters.archived',
+      content: 'chapters.content',
+      guid: 'chapters.guid',
+      id: 'chapters.id',
+      title: 'chapters.title'
+    })
+  ]).then(([_chapterOrder, _chapters]) => {
+    chapterOrder = _chapterOrder
+    chapters = _chapters
+    const missingChapters = difference(chapters.map(c => c.guid), chapterOrder)
+
+    if (missingChapters.length) {
+      const order = chapterOrder.concat(missingChapters)
+      return db.knex('chapter_orders').where({
+        'document_id': docId(),
+        'user_id': userId
+      }).update(ts(db.knex, { order }, true))
+    }
+
+    return
+  }).then(() => {
+    return (
+      db.knex('chapter_topics').where('chapter_topics.user_id', userId).whereIn('chapter_topics.chapter_id', chapters.map(c => c.id))
+      .innerJoin('master_topics', 'chapter_topics.master_topic_id', 'master_topics.id').select({
+        archived: 'master_topics.archived',
+        chapterId: 'chapter_topics.chapter_id',
+        content: 'chapter_topics.content',
+        id: 'master_topics.guid',
+        title: 'master_topics.title'
+      })
+    )
+  }).then(chapterTopics => {
+    const topicsByChapter = chapterTopics.reduce((dict, topic) => {
+      const topics = dict[topic.chapterId] || []
+      topics.push(topic)
+      dict[topic.chapterId] = topics
+      return dict
+    }, {})
+
+    const chaptersWithTopics = chapters.map(chapter => {
+      chapter.topics = (topicsByChapter[chapter.id] || []).reduce((dict, topic) => {
+        dict[topic.id] = topic
+        return dict
+      }, {})
+      return chapter
+    })
+
+    chaptersWithTopics.sort((chapter1, chapter2) => {
+      return chapterOrder.indexOf(chapter1.guid) - chapterOrder.indexOf(chapter2.guid)
+    })
+
+    return chaptersWithTopics
+  })
+}
+
 const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
 
@@ -210,70 +277,8 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   app.get(route('chapters/:documentId'), isPremiumUser, (req, res, next) => {
     const docGuid = req.params.documentId
     const userId = req.user.id
-
-    const docId = () => getDocId(db.knex, userId, docGuid)
-
-    let chapterOrder, chapters
-    Promise.all([
-      db.knex('chapter_orders').where({
-        'document_id': docId(),
-        'user_id': userId
-      }).first('order').then(({ order = '[]' } = {}) => { return JSON.parse(order) }),
-      db.knex('chapters').where('chapters.user_id', userId)
-      .innerJoin('documents', 'chapters.document_id', 'documents.id').where('documents.guid', docGuid)
-      .select({
-        archived: 'chapters.archived',
-        content: 'chapters.content',
-        guid: 'chapters.guid',
-        id: 'chapters.id',
-        title: 'chapters.title'
-      })
-    ]).then(([_chapterOrder, _chapters]) => {
-      chapterOrder = _chapterOrder
-      chapters = _chapters
-      const missingChapters = difference(chapters.map(c => c.guid), chapterOrder)
-
-      if (missingChapters.length) {
-        const order = chapterOrder.concat(missingChapters)
-        return db.knex('chapter_orders').where({
-          'document_id': docId(),
-          'user_id': userId
-        }).update(ts(db.knex, { order }, true))
-      }
-
-      return
-    }).then(() => {
-      return (
-        db.knex('chapter_topics').where('chapter_topics.user_id', userId).whereIn('chapter_topics.chapter_id', chapters.map(c => c.id))
-        .innerJoin('master_topics', 'chapter_topics.master_topic_id', 'master_topics.id').select({
-          archived: 'master_topics.archived',
-          chapterId: 'chapter_topics.chapter_id',
-          content: 'chapter_topics.content',
-          id: 'master_topics.guid',
-          title: 'master_topics.title'
-        })
-      )
-    }).then(chapterTopics => {
-      const topicsByChapter = chapterTopics.reduce((dict, topic) => {
-        const topics = dict[topic.chapterId] || []
-        topics.push(topic)
-        dict[topic.chapterId] = topics
-        return dict
-      }, {})
-
-      const chaptersWithTopics = chapters.map(chapter => {
-        chapter.topics = (topicsByChapter[chapter.id] || []).reduce((dict, topic) => {
-          dict[topic.id] = topic
-          return dict
-        }, {})
-        return chapter
-      })
-
-      chaptersWithTopics.sort((chapter1, chapter2) => {
-        return chapterOrder.indexOf(chapter1.guid) - chapterOrder.indexOf(chapter2.guid)
-      })
-
-      res.status(200).send(chaptersWithTopics)
+    getChapters(db, userId, docGuid).then(chapters => {
+      res.status(200).send(chapters)
     }, err => {
       console.error(err)
       res.status(500).send(err)
@@ -281,4 +286,4 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   })
 }
 
-module.exports = { registerApis, updateChapter }
+module.exports = { getChapters, registerApis, updateChapter }

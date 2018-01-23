@@ -47,6 +47,41 @@ const updateTopic = (db, userId, documentId, topic) => {
   })
 }
 
+const getTopics = (db, userId, documentGuid) => {
+  const docId = () => getDocId(db.knex, userId, documentGuid)
+  
+  let topicOrder, topics
+  return Promise.all([
+    db.knex('master_topic_orders').where({
+      'document_id': docId(),
+      'user_id': userId
+    }).first('order').then(({ order = '[]' } = {}) => { return JSON.parse(order) }),
+    db.knex('master_topics').where({
+      'document_id': docId(),
+      'user_id': userId
+    }).select()
+  ]).then(([_topicOrder, _topics]) => {
+    topicOrder = _topicOrder
+    topics = _topics
+
+    const missingTopics = difference(topics.map(t => t.guid), topicOrder)
+    if (missingTopics.length) {
+      const order = topicOrder.concat(missingTopics)
+      return db.knex('master_topic_orders').where({
+        'document_id': docId(),
+        'user_id': userId
+      }).update(ts(db.knex, { order }, true))
+    }
+
+    return
+  }).then(() => {
+    topics.sort((topic1, topic2) => {
+      return topicOrder.indexOf(topic1.guid) - topicOrder.indexOf(topic2.guid)
+    })
+    return topics
+  })
+}
+
 const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
 
@@ -149,38 +184,8 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   app.get(route('topics/:documentId'), isPremiumUser, (req, res, next) => {
     const documentGuid = req.params.documentId
     const userId = req.user.id
-    let topicOrder, topics
-
-    const docId = () => getDocId(db.knex, userId, documentGuid)
-
-    Promise.all([
-      db.knex('master_topic_orders').where({
-        'document_id': docId(),
-        'user_id': userId
-      }).first('order').then(({ order = '[]' } = {}) => { return JSON.parse(order) }),
-      db.knex('master_topics').where({
-        'document_id': docId(),
-        'user_id': userId
-      }).select()
-    ]).then(([_topicOrder, _topics]) => {
-      topicOrder = _topicOrder
-      topics = _topics
-
-      const missingTopics = difference(topics.map(t => t.guid), topicOrder)
-      if (missingTopics.length) {
-        const order = topicOrder.concat(missingTopics)
-        return db.knex('master_topic_orders').where({
-          'document_id': docId(),
-          'user_id': userId
-        }).update(ts(db.knex, { order }, true))
-      }
-
-      return
-    }).then(() => {
-      topics.sort((topic1, topic2) => {
-        return topicOrder.indexOf(topic1.guid) - topicOrder.indexOf(topic2.guid)
-      })
-
+    
+    getTopics(db, userId, documentGuid).then(topics => {
       res.status(200).send(topics)
     }, err => {
       console.error(err)
@@ -189,4 +194,4 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   })
 }
 
-module.exports = { registerApis, updateTopic }
+module.exports = { getTopics, registerApis, updateTopic }

@@ -47,6 +47,84 @@ const updatePlan = (db, userId, docGuid, plan) => {
   })
 }
 
+const getPlans = (db, userId, docGuid) => {
+  let planOrder, plans
+
+  const docId = () => getDocId(db.knex, userId, docGuid)
+
+  return Promise.all([
+    db.knex('plan_orders').where({
+      'document_id': docId(),
+      'user_id': userId
+    }).first('order').then(({ order = '[]' } = {}) => { return JSON.parse(order) }),
+    db.knex('plans').where({
+      'document_id': docId(),
+      'user_id': userId
+    }).select()
+  ]).then(([_planOrder, _plans]) => {
+    planOrder = _planOrder
+    plans = _plans
+
+    const missingPlans = difference(plans.map(p => p.guid), planOrder)
+    if (missingPlans.length) {
+      const order = planOrder.concat(missingPlans)
+      return db.knex('plan_orders').where({
+        'document_id': docId(),
+        'user_id': userId
+      }).update(ts(db.knex, { order }, true))
+    }
+
+    return
+  }).then(() => {
+    return Promise.all([
+      db.knex('section_orders').where({
+        'user_id': userId
+      }).whereIn('plan_id', plans.map(p => p.id)).select(),
+      db.knex('sections').where({
+        'user_id': userId
+      }).whereIn('plan_id', knex => {
+        knex.select('id').from('plans').where({
+          'document_id': docId(),
+          'user_id': userId
+        })
+      }).select().then(sections => sections.map(section => {
+        section.tags = JSON.parse(section.tags)
+        return section
+      }))
+    ])
+  }).then(([sectionOrders, sections]) => {
+    const sectionOrdersByPlan = sectionOrders.reduce((dict, order) => {
+      dict[order['plan_id']] = (order.order || [])
+      return dict
+    }, {})
+
+    const sectionsByPlan = sections.reduce((dict, section) => {
+      const sections = dict[section['plan_id']] || []
+      sections.push(section)
+      dict[section['plan_id']] = sections
+      return dict
+    }, {})
+
+    for (const planId in sectionsByPlan) {
+      const order = sectionOrdersByPlan[planId] || []
+
+      sectionsByPlan[planId].sort((section1, section2) => {
+        return order.indexOf(section1.guid) - order.indexOf(section2.guid)
+      })
+    }
+
+    for (const plan of plans) {
+      plan.sections = (sectionsByPlan[plan.id] || [])
+    }
+
+    plans.sort((plan1, plan2) => {
+      return planOrder.indexOf(plan1.guid) - planOrder.indexOf(plan2.guid)
+    })
+
+    return plans
+  })
+}
+
 const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
 
@@ -151,81 +229,8 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   app.get(route('plans/:documentId'), isPremiumUser, (req, res, next) => {
     const docGuid = req.params.documentId
     const userId = req.user.id
-    let planOrder, plans
 
-    const docId = () => getDocId(db.knex, userId, docGuid)
-
-    Promise.all([
-      db.knex('plan_orders').where({
-        'document_id': docId(),
-        'user_id': userId
-      }).first('order').then(({ order = '[]' } = {}) => { return JSON.parse(order) }),
-      db.knex('plans').where({
-        'document_id': docId(),
-        'user_id': userId
-      }).select()
-    ]).then(([_planOrder, _plans]) => {
-      planOrder = _planOrder
-      plans = _plans
-
-      const missingPlans = difference(plans.map(p => p.guid), planOrder)
-      if (missingPlans.length) {
-        const order = planOrder.concat(missingPlans)
-        return db.knex('plan_orders').where({
-          'document_id': docId(),
-          'user_id': userId
-        }).update(ts(db.knex, { order }, true))
-      }
-
-      return
-    }).then(() => {
-      return Promise.all([
-        db.knex('section_orders').where({
-          'user_id': userId
-        }).whereIn('plan_id', plans.map(p => p.id)).select(),
-        db.knex('sections').where({
-          'user_id': userId
-        }).whereIn('plan_id', knex => {
-          knex.select('id').from('plans').where({
-            'document_id': docId(),
-            'user_id': userId
-          })
-        }).select().then(sections => sections.map(section => {
-          section.tags = JSON.parse(section.tags)
-          return section
-        }))
-      ])
-    }).then(([sectionOrders, sections]) => {
-      const sectionOrdersByPlan = sectionOrders.reduce((dict, order) => {
-        dict[order['plan_id']] = (order.order || [])
-        return dict
-      }, {})
-
-      const sectionsByPlan = sections.reduce((dict, section) => {
-        const sections = dict[section['plan_id']] || []
-        sections.push(section)
-        dict[section['plan_id']] = sections
-        return dict
-      }, {})
-
-      for (const planId in sectionsByPlan) {
-        const order = sectionOrdersByPlan[planId] || []
-
-        sectionsByPlan[planId].sort((section1, section2) => {
-          return order.indexOf(section1.guid) - order.indexOf(section2.guid)
-        })
-      }
-
-      for (const plan of plans) {
-        plan.sections = (sectionsByPlan[plan.id] || [])
-      }
-
-      plans.sort((plan1, plan2) => {
-        return planOrder.indexOf(plan1.guid) - planOrder.indexOf(plan2.guid)
-      })
-
-      return plans
-    }).then(plans => {
+    getPlans(db, userId, docGuid).then(plans => {
       res.status(200).send(plans)
     }, err => {
       console.error(err)
@@ -234,4 +239,4 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   })
 }
 
-module.exports = { registerApis, updatePlan }
+module.exports = { getPlans, registerApis, updatePlan }

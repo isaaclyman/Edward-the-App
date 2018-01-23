@@ -9,7 +9,7 @@ import {
   test,
   wrapTest
 } from '../_imports'
-import { addDocument, checkDocuments } from './_document.helper'
+import { addDocument, addChapter, checkDocuments } from './_document.helper'
 
 stubRecaptcha(test)
 
@@ -57,6 +57,19 @@ test('delete a document', async t => {
     t.is(docs.length, 1)
     t.is(docs[0].guid, doc2.id)
     t.is(docs[0].name, doc2.name)
+  })
+})
+
+test('delete a document that has content', async t => {
+  const doc = await addDocument(app, 'Test')
+  const chap = await addChapter(app, 'Test Chapter', doc.id)
+  await (
+    app.post(route('document/delete'))
+    .send({ id: doc.id })
+    .expect(200)
+  )
+  return checkDocuments(t, app, docs => {
+    t.is(docs.length, 0)
   })
 })
 

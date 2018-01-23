@@ -17,8 +17,8 @@ module.exports = function (app, passport, db) {
 
   // Serve user-facing APIs
   require('./user')(app, passport, db, isPremiumUser, isLoggedInMiddleware)
-  require('./document')(app, passport, db, isPremiumUserMiddleware)
-  require('./backup')(app, passport, db, isPremiumUserMiddleware)
+  require('./document').registerApis(app, passport, db, isPremiumUserMiddleware)
+  // require('./backup').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./chapter').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./topic').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./plan').registerApis(app, passport, db, isPremiumUserMiddleware)

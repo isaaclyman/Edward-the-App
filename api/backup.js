@@ -26,9 +26,18 @@ const importFull = (db, userId, docs) => {
   return Promise.all(
     docs.map(doc => {
       doc.id = doc.guid
-      return addDocument(db, userId, doc).then(
-        () => saveAllContent(db, userId, doc.guid, doc.chapters, doc.topics, doc.plans)
-      )
+      return addDocument(db, userId, doc).then(() => {
+        [
+          ...doc.chapters,
+          ...doc.topics,
+          ...doc.plans,
+        ]
+        .concat(...doc.plans.map(plan => plan.sections))
+        .forEach(item => {
+          item.id = item.guid
+        })
+        return saveAllContent(db, userId, doc.guid, doc.chapters, doc.topics, doc.plans)
+      })
     })
   )
 }

@@ -38,7 +38,7 @@ async function expectOneItemArray(t, supertest, callback) {
     supertest
     .expect(200)
     .expect(response => {
-      t.truthy(Array.isArray(response.body))
+      t.true(Array.isArray(response.body))
       t.is(response.body.length, 1)
       
       if (callback) {
@@ -78,7 +78,7 @@ test('import a hand-made export', async t => {
     .expect(200)
     .expect(response => {
       const docs = response.body
-      t.truthy(Array.isArray(docs))
+      t.true(Array.isArray(docs))
       t.is(docs.length, 2)
       t.deepEqual(docs, importable)
     })
@@ -128,7 +128,7 @@ test('immediately import an export with content', async t => {
   await expectOneItemArray(t, app.get(route('documents')))
   await expectOneItemArray(t, app.get(route(`plans/${doc.id}`)), response => {
     const sections = response.body[0].sections
-    t.truthy(Array.isArray(sections))
+    t.true(Array.isArray(sections))
     t.is(sections.length, 1)
   })
   await expectOneItemArray(t, app.get(route(`chapters/${doc.id}`)))
@@ -142,6 +142,39 @@ test('immediately import an export with content', async t => {
   })
 })
 
-// test('when the import breaks, it is reverted', async t => {
+test('when the import breaks, it is reverted', async t => {
+  const console_err = console.error
+  console.error = function () {}
 
-// })
+  const importable = [{
+    guid: uuid(),
+    name: 'Doc 1',
+    chapters: [],
+    topics: [],
+    plans: []
+  }, {
+    guid: 'Not a guid',
+    name: {},
+    chapters: [],
+    topics: [],
+    plans: []
+  }]
+
+  await (
+    app.post(route('backup/import'))
+    .send(importable)
+    .expect(500)
+    .expect(response => {
+      t.true(response.text.includes('REVERTED'))
+      t.false(response.text.includes('FAIL'))
+    })
+  )
+
+  await expectOneItemArray(t, app.get(route('documents')))
+
+  await expectOneItemArray(t, app.get(route('backup/export')), response => {
+    t.is(response.body[0].name, doc.name)
+  })
+
+  console.error = console_err
+})

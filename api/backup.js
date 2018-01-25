@@ -23,25 +23,31 @@ const getFullExport = (db, userId) => {
 }
 
 const importFull = (db, userId, docs) => {
-  return Promise.all(
-    docs.map(doc => {
-      doc.id = doc.guid
-      return addDocument(db, userId, doc).then(() => {
-        [
-          ...doc.chapters,
-          ...doc.topics,
-          ...doc.plans,
-        ]
-        .concat(...doc.plans.map(plan => plan.sections))
-        .forEach(item => {
-          item.id = item.guid
-        })
-        return saveAllContent(db, userId, doc.guid, doc.chapters, doc.topics, doc.plans)
+  const addPromises = docs.map(doc => {
+    doc.id = doc.guid
+    return addDocument(db, userId, doc).then(() => {
+      [
+        ...doc.chapters,
+        ...doc.topics,
+        ...doc.plans,
+      ]
+      .concat(...doc.plans.map(plan => plan.sections))
+      .forEach(item => {
+        item.id = item.guid
       })
-    })
-  )
+      return saveAllContent(db, userId, doc.guid, doc.chapters, doc.topics, doc.plans)
+    }).then(result => ({ result, success: true }), err => ({ err, success: false }))
+  })
+
+  return Promise.all(addPromises).then(results => {
+    const failures = results.filter(res => !res.success)
+    if (failures.length) {
+      throw new Error(`Unable to add document. ${JSON.stringify(failures.map(f => f.err))}`)
+    }
+  })
 }
 
+const uuidRx = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/backup/${route}`
 
@@ -60,13 +66,18 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     ).then(() => {
       res.status(200).send()
     }, err => {
-      console.error(err)
-      Promise.all(newDocs.map(doc => deleteDocument(db, userId, doc.guid))).then(() => {
+      console.error('[BACKUP IMPORT ERROR.]', err)
+      const docsToDelete = [...oldDocs, ...newDocs].filter(doc => doc && uuidRx.test(doc.guid))
+
+      Promise.all(
+        docsToDelete.map(doc => deleteDocument(db, userId, doc.guid))
+      ).then(() => {
         return importFull(db, userId, oldDocs)
-      }).then(() => {
+      }).then(docs => {
         res.status(500).send(`[IMPORT REVERTED.] ${err}`)
-      }, err => {
-        res.status(500).send(`[IMPORT REVERT FAILED.] ${err}`)
+      }, revertErr => {
+        console.error('[IMPORT REVERT ERROR.]', revertErr)
+        res.status(500).send(`[IMPORT REVERT FAILED.] ${revertErr}`)
       })
     })
   })

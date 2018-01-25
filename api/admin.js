@@ -9,6 +9,8 @@ module.exports = function (app, passport, db, isAdmin) {
     const goldsQuery = getUsersOverLimit(accountTypes.GOLD.name, 263000000)
     Promise.all([premiumsQuery, goldsQuery]).then(([premiums, golds]) => {
       res.status(200).send({ premiums, golds })
+    }, err => {
+      res.status(500).send(err)
     })
   })
 }

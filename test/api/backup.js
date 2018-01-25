@@ -173,7 +173,9 @@ test('when the import breaks, it is reverted', async t => {
   await expectOneItemArray(t, app.get(route('documents')))
 
   await expectOneItemArray(t, app.get(route('backup/export')), response => {
-    t.is(response.body[0].name, doc.name)
+    const exported = repsonse.body[0]
+    t.is(exported.name, doc.name)
+    t.is(exported.guid, doc.guid)
   })
 
   console.error = console_err

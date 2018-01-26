@@ -287,15 +287,13 @@ class LocalStorageApi {
       return doc
     })
 
-    const json = JSON.stringify(documents)
-    return Promise.resolve(json)
+    return Promise.resolve(documents)
   }
 
-  doFullImport (json) {
+  doFullImport (documents) {
     const backup = JSON.parse(JSON.stringify(this.storage))
     try {
       this.storage.clear()
-      const documents = JSON.parse(json)
 
       if (!documents || !Array.isArray(documents) || !documents.length) {
         throw new Error('Attempted to import an empty backup.')

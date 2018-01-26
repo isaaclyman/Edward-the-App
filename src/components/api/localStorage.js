@@ -291,6 +291,25 @@ class LocalStorageApi {
   }
 
   doFullImport (documents) {
+    documents.forEach(doc => {
+      if (doc.guid) {
+        doc.id = doc.guid
+        delete doc.guid
+      }
+
+      [
+        ...(doc.chapters || []),
+        ...(doc.topics || []),
+        ...(doc.plans || [])
+      ].concat(...doc.plans.map(plan => plan.sections || []))
+      .forEach(item => {
+        if (item.guid) {
+          item.id = item.guid
+          delete item.guid
+        }
+      })
+    })
+
     const backup = JSON.parse(JSON.stringify(this.storage))
     try {
       this.storage.clear()

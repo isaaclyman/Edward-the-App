@@ -50,38 +50,29 @@ test('do a full localStorage export with no content', async t => {
   await expectOneItemArray(t, storage.getFullExport())
 })
 
-// test('import a hand-made export', async t => {
-//   const importable = [{
-//     guid: uuid(),
-//     name: 'Doc 1',
-//     chapters: [],
-//     topics: [],
-//     plans: []
-//   }, {
-//     guid: uuid(),
-//     name: 'Doc 1',
-//     chapters: [],
-//     topics: [],
-//     plans: []
-//   }]
+test('import a hand-made export to localStorage', async t => {
+  const importable = [{
+    guid: uuid(),
+    name: 'Doc 1',
+    chapters: [],
+    topics: [],
+    plans: []
+  }, {
+    guid: uuid(),
+    name: 'Doc 1',
+    chapters: [],
+    topics: [],
+    plans: []
+  }]
 
-//   await (
-//     app.post(route('backup/import'))
-//     .send(importable)
-//     .expect(200)
-//   )
+  storage.doFullImport(importable)
 
-//   wrapTest(t,
-//     app.get(route('backup/export'))
-//     .expect(200)
-//     .expect(response => {
-//       const docs = response.body
-//       t.true(Array.isArray(docs))
-//       t.is(docs.length, 2)
-//       t.deepEqual(docs, importable)
-//     })
-//   )
-// })
+  storage.getFullExport().then(docs => {
+    t.true(Array.isArray(docs))
+    t.is(docs.length, 2)
+    t.deepEqual(docs, importable)
+  })
+})
 
 // test('immediately import an export with no content', async t => {
 //   const exported = await app.get(route('backup/export')).then(response => response.body)

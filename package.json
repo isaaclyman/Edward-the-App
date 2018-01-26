@@ -125,7 +125,7 @@
       "!dist/**/*",
       "!node_modules/**/*"
     ],
-    "require": [],
+    "require": ["babel-register"],
     "failWithoutAssertions": false
   }
 }

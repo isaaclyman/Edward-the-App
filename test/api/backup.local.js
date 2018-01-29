@@ -33,6 +33,10 @@ test.beforeEach('set up a limited user and document', async t => {
   storage.addDocument(doc)
 })
 
+test.afterEach('clear localStorage', async t => {
+  window.localStorage.clear()
+})
+
 async function expectOneItemArray(t, promise, callback) {
   await (
     promise.then(arr => {
@@ -59,12 +63,13 @@ test('import a hand-made export to localStorage', async t => {
     plans: []
   }, {
     guid: uuid(),
-    name: 'Doc 1',
+    name: 'Doc 2',
     chapters: [],
     topics: [],
     plans: []
   }]
 
+  window.localStorage.clear()
   storage.doFullImport(importable)
 
   storage.getFullExport().then(docs => {
@@ -74,32 +79,53 @@ test('import a hand-made export to localStorage', async t => {
   })
 })
 
-// test('immediately import an export with no content', async t => {
-//   const exported = await app.get(route('backup/export')).then(response => response.body)
-//   await (
-//     app.post(route('backup/import'))
-//     .send(exported)
-//     .expect(200)
-//   )
+test('immediately import an export with no content to localStorage', async t => {
+  const exported = await storage.getFullExport()
+  window.localStorage.clear()
+  storage.doFullImport(exported)
+  await expectOneItemArray(t, storage.getFullExport())
+})
 
-//   await expectOneItemArray(t, app.get(route('documents')))
-//   await expectOneItemArray(t, app.get(route('backup/export')))
-// })
+test('do a full export with content from localStorage', async t => {
+  const topicId = uuid()
+  storage.updateTopic(doc.id, topicId, { archived: true, id: topicId, title: 'Test Topic' })
+  const chapterId = uuid()
+  storage.updateChapter(doc.id, chapterId, {
+    archived: false,
+    content: { ops: [] },
+    id: chapterId,
+    title: 'Test Chapter',
+    topics: {
+      [topicId]: {
+        id: topicId,
+        content: { ops: [] }
+      }
+    }
+  })
+  const planId = uuid()
+  storage.updatePlan(doc.id, planId, {
+    archived: true,
+    id: planId,
+    title: 'Test Plan',
+    sections: []
+  })
+  const sectionId = uuid()
+  storage.updateSection(doc.id, planId, sectionId, {
+    archived: false,
+    content: { ops: [] },
+    id: sectionId,
+    tags: [],
+    title: 'Test Section'
+  })
 
-// test('do a full export with content', async t => {
-//   await addTopic(app, doc.id, 'Test Topic')
-//   await addChapter(app, doc.id, 'Test Chapter')
-//   const plan = await addPlan(app, doc.id, 'Test Plan')
-//   await addSection(app, doc.id, plan.planId, 'Test Section')
-
-//   await expectOneItemArray(t, app.get(route('backup/export')), response => {
-//     const doc = response.body[0]
-//     t.is(doc.chapters.length, 1)
-//     t.is(doc.topics.length, 1)
-//     t.is(doc.plans.length, 1)
-//     t.is(doc.plans[0].sections.length, 1)
-//   })
-// })
+  await expectOneItemArray(t, storage.getFullExport(), docs => {
+    const doc = docs[0]
+    t.is(doc.chapters.length, 1)
+    t.is(doc.topics.length, 1)
+    t.is(doc.plans.length, 1)
+    t.is(doc.plans[0].sections.length, 1)
+  })
+})
 
 // test('immediately import an export with content', async t => {
 //   await addTopic(app, doc.id, 'Test Topic')

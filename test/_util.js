@@ -114,12 +114,8 @@ function orderPromises (promiseFns) {
   }
 
   return promiseFns[0]().then(() => {
-    if (promiseFns.length > 1) {
-      promiseFns.splice(0, 1)
-      return orderPromises(promiseFns)
-    } else {
-      return promiseFns[0]()
-    }
+    promiseFns.splice(0, 1)
+    return orderPromises(promiseFns)
   })
 }
 

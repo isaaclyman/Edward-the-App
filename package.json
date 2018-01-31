@@ -95,8 +95,9 @@
     "@types/knex": "0.0.67",
     "ava": "^0.23.0",
     "cypress": "^1.4.0",
+    "mock-local-storage": "^1.0.5",
     "nodemon": "^1.12.1",
-    "sinon": "^4.1.2",    
+    "sinon": "^4.1.2",
     "supertest": "^3.0.0"
   },
   "engines": {
@@ -125,7 +126,9 @@
       "!dist/**/*",
       "!node_modules/**/*"
     ],
-    "require": ["babel-register"],
+    "require": [
+      "babel-register"
+    ],
     "failWithoutAssertions": false
   }
 }

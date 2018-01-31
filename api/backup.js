@@ -24,7 +24,7 @@ const getFullExport = (db, userId) => {
 
 const importFull = (db, userId, docs) => {
   const addPromises = docs.map(doc => {
-    doc.id = doc.guid
+    doc.id = doc.guid || doc.id
     return addDocument(db, userId, doc).then(() => {
       [
         ...doc.chapters,
@@ -33,16 +33,16 @@ const importFull = (db, userId, docs) => {
       ]
       .concat(...doc.plans.map(plan => plan.sections))
       .forEach(item => {
-        item.id = item.guid
+        item.id = item.guid || item.id
       })
-      return saveAllContent(db, userId, doc.guid, doc.chapters, doc.topics, doc.plans)
+      return saveAllContent(db, userId, doc.id, doc.chapters, doc.topics, doc.plans)
     }).then(result => ({ result, success: true }), err => ({ err, success: false }))
   })
 
   return Promise.all(addPromises).then(results => {
     const failures = results.filter(res => !res.success)
     if (failures.length) {
-      throw new Error(`Unable to add document. ${JSON.stringify(failures.map(f => f.err))}`)
+      throw new Error(`Unable to add document. ${failures.map(f => f.err)}`)
     }
   })
 }

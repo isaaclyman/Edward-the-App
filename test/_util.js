@@ -1,14 +1,12 @@
 const accountTypes = require('../models/accountType')
 const guid = require('uuid/v1')
 const modelUtil = require('../models/_util')
-const util = {}
 
 /*
   ROUTES
 */
 
 const route = route => `/api/${route}`
-util.route = route
 
 /*
   TEST USER
@@ -20,9 +18,8 @@ const user = {
   captchaResponse: 'token',
   verifyKey: '5cf197a4-1029-4250-91cc-6f0ef75bca77'
 }
-util.user = user
 
-util.createTestUser = function (knex) {
+function createTestUser (knex) {
   return modelUtil.getHash(user.password).then(hash => {
     return (
       knex('users').insert(modelUtil.addTimestamps(knex, {
@@ -35,11 +32,11 @@ util.createTestUser = function (knex) {
   })
 }
 
-util.createTestDocument = function (knex) {
+function createTestDocument (knex) {
   const docGuid1 = guid()
   const docGuid2 = guid()
 
-  const userQuery = `(SELECT id FROM users WHERE email = '${util.user.email}' LIMIT 1)`
+  const userQuery = `(SELECT id FROM users WHERE email = '${user.email}' LIMIT 1)`
   const userId = knex.raw(userQuery)
 
   return knex('documents').insert([{
@@ -58,10 +55,10 @@ util.createTestDocument = function (knex) {
   })
 }
 
-util.createTestChapter = function (knex) {
+function createTestChapter (knex) {
   const chapGuids = [guid(), guid(), guid()]
 
-  const userQuery = `(SELECT id FROM users WHERE email = '${util.user.email}' LIMIT 1)`
+  const userQuery = `(SELECT id FROM users WHERE email = '${user.email}' LIMIT 1)`
   const userId = knex.raw(userQuery)
   const docId = knex.raw(`(SELECT id FROM documents WHERE user_id = ${userQuery} LIMIT 1)`)
 
@@ -83,7 +80,7 @@ util.createTestChapter = function (knex) {
   })
 }
 
-util.deleteTestUser = function (knex, email) {
+function deleteTestUser(knex, email) {
   email = email || user.email
 
   return (
@@ -119,7 +116,7 @@ function orderPromises (promiseFns) {
   })
 }
 
-util.makeTestUserAdmin = function (knex) {
+function makeTestUserAdmin(knex) {
   return (
     knex('users').where('email', user.email).update({
       'account_type': accountTypes.ADMIN.name
@@ -127,7 +124,7 @@ util.makeTestUserAdmin = function (knex) {
   )
 }
 
-util.makeTestUserPremium = function (knex) {
+function makeTestUserPremium(knex) {
   return (
     knex('users').where('email', user.email).update({
       'account_type': accountTypes.PREMIUM.name
@@ -135,7 +132,7 @@ util.makeTestUserPremium = function (knex) {
   )
 }
 
-util.setTestUserVerifyKey = function (knex) {
+function setTestUserVerifyKey(knex) {
   return (
     knex('users').where('email', user.email).update({
       'verify_key': user.verifyKey
@@ -150,7 +147,7 @@ util.setTestUserVerifyKey = function (knex) {
 const request = require('request-promise-native')
 const sinon = require('sinon')
 
-util.stubRecaptcha = function (test) {
+function stubRecaptcha(test) {
   const sandbox = sinon.sandbox.create()
 
   test.before('stub recaptcha request', t => {
@@ -168,7 +165,7 @@ util.stubRecaptcha = function (test) {
   SUPERTEST WRAPPING
 */
 
-util.wrapTest = function (t, supertest) {
+function wrapTest(t, supertest) {
   return new Promise((resolve, reject) => {
     supertest.end((err, res) => {
       if (err) {
@@ -180,4 +177,16 @@ util.wrapTest = function (t, supertest) {
   })
 }
 
-module.exports = util
+module.exports = {
+  user,
+  createTestUser,
+  createTestDocument,
+  createTestChapter,
+  deleteTestUser,
+  makeTestUserAdmin,
+  makeTestUserPremium,
+  route,
+  setTestUserVerifyKey,
+  stubRecaptcha,
+  wrapTest
+}

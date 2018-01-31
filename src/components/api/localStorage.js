@@ -326,7 +326,7 @@ class LocalStorageApi {
       Object.keys(backup).forEach(key => {
         this.storage.setItem(key, backup[key])
       })
-      throw err
+      console.error(err)
     }
   }
 }

@@ -50,6 +50,39 @@ async function expectOneItemArray(t, promise, callback) {
   )
 }
 
+function addContent() {
+  const topicId = uuid()
+  storage.updateTopic(doc.id, topicId, { archived: true, id: topicId, title: 'Test Topic' })
+  const chapterId = uuid()
+  storage.updateChapter(doc.id, chapterId, {
+    archived: false,
+    content: { ops: [] },
+    id: chapterId,
+    title: 'Test Chapter',
+    topics: {
+      [topicId]: {
+        id: topicId,
+        content: { ops: [] }
+      }
+    }
+  })
+  const planId = uuid()
+  storage.updatePlan(doc.id, planId, {
+    archived: true,
+    id: planId,
+    title: 'Test Plan',
+    sections: []
+  })
+  const sectionId = uuid()
+  storage.updateSection(doc.id, planId, sectionId, {
+    archived: false,
+    content: { ops: [] },
+    id: sectionId,
+    tags: [],
+    title: 'Test Section'
+  })
+}
+
 test('do a full localStorage export with no content', async t => {
   await expectOneItemArray(t, storage.getFullExport())
 })
@@ -87,36 +120,7 @@ test('immediately import an export with no content to localStorage', async t => 
 })
 
 test('do a full export with content from localStorage', async t => {
-  const topicId = uuid()
-  storage.updateTopic(doc.id, topicId, { archived: true, id: topicId, title: 'Test Topic' })
-  const chapterId = uuid()
-  storage.updateChapter(doc.id, chapterId, {
-    archived: false,
-    content: { ops: [] },
-    id: chapterId,
-    title: 'Test Chapter',
-    topics: {
-      [topicId]: {
-        id: topicId,
-        content: { ops: [] }
-      }
-    }
-  })
-  const planId = uuid()
-  storage.updatePlan(doc.id, planId, {
-    archived: true,
-    id: planId,
-    title: 'Test Plan',
-    sections: []
-  })
-  const sectionId = uuid()
-  storage.updateSection(doc.id, planId, sectionId, {
-    archived: false,
-    content: { ops: [] },
-    id: sectionId,
-    tags: [],
-    title: 'Test Section'
-  })
+  addContent()
 
   await expectOneItemArray(t, storage.getFullExport(), docs => {
     const doc = docs[0]
@@ -127,71 +131,44 @@ test('do a full export with content from localStorage', async t => {
   })
 })
 
-// test('immediately import an export with content', async t => {
-//   await addTopic(app, doc.id, 'Test Topic')
-//   await addChapter(app, doc.id, 'Test Chapter')
-//   const plan = await addPlan(app, doc.id, 'Test Plan')
-//   await addSection(app, doc.id, plan.planId, 'Test Section')
+test('immediately import an export with content to localStorage', async t => {
+  addContent()
 
-//   const exported = await app.get(route('backup/export')).then(response => response.body)
-//   await (
-//     app.post(route('backup/import'))
-//     .send(exported)
-//     .expect(200)
-//   )
+  const exported = await storage.getFullExport()
+  storage.doFullImport(exported)
 
-//   await expectOneItemArray(t, app.get(route('documents')))
-//   await expectOneItemArray(t, app.get(route(`plans/${doc.id}`)), response => {
-//     const sections = response.body[0].sections
-//     t.true(Array.isArray(sections))
-//     t.is(sections.length, 1)
-//   })
-//   await expectOneItemArray(t, app.get(route(`chapters/${doc.id}`)))
-//   await expectOneItemArray(t, app.get(route(`topics/${doc.id}`)))
-//   await expectOneItemArray(t, app.get(route('backup/export')), response => {
-//     const doc = response.body[0]
-//     t.is(doc.chapters.length, 1)
-//     t.is(doc.topics.length, 1)
-//     t.is(doc.plans.length, 1)
-//     t.is(doc.plans[0].sections.length, 1)
-//   })
-// })
+  await expectOneItemArray(t, storage.getAllDocuments())
+  await expectOneItemArray(t, storage.getAllPlans(doc.id), plans => {
+    const sections = plans[0].sections
+    t.true(Array.isArray(sections))
+    t.is(sections.length, 1)
+  })
+  await expectOneItemArray(t, storage.getAllChapters(doc.id))
+  await expectOneItemArray(t, storage.getAllTopics(doc.id))
 
-// test('when the import breaks, it is reverted', async t => {
-//   const console_err = console.error
-//   console.error = function () {}
+  await expectOneItemArray(t, storage.getFullExport(), docs => {
+    const doc = docs[0]
+    t.is(doc.chapters.length, 1)
+    t.is(doc.topics.length, 1)
+    t.is(doc.plans.length, 1)
+    t.is(doc.plans[0].sections.length, 1)
+  })
+})
 
-//   const importable = [{
-//     guid: uuid(),
-//     name: 'Doc 1',
-//     chapters: [],
-//     topics: [],
-//     plans: []
-//   }, {
-//     guid: 'Not a guid',
-//     name: {},
-//     chapters: [],
-//     topics: [],
-//     plans: []
-//   }]
+test('when the import to localStorage breaks, it is reverted', async t => {
+  const console_err = console.error
+  console.error = function () {}
 
-//   await (
-//     app.post(route('backup/import'))
-//     .send(importable)
-//     .expect(500)
-//     .expect(response => {
-//       t.true(response.text.includes('REVERTED'))
-//       t.false(response.text.includes('FAIL'))
-//     })
-//   )
+  const importable = []
 
-//   await expectOneItemArray(t, app.get(route('documents')))
+  storage.doFullImport(importable)
 
-//   await expectOneItemArray(t, app.get(route('backup/export')), response => {
-//     const exported = repsonse.body[0]
-//     t.is(exported.name, doc.name)
-//     t.is(exported.guid, doc.guid)
-//   })
+  await expectOneItemArray(t, storage.getAllDocuments())
+  await expectOneItemArray(t, storage.getFullExport(), docs => {
+    const exported = docs[0]
+    t.is(exported.name, doc.name)
+    t.is(exported.id, doc.id)
+  })
 
-//   console.error = console_err
-// })
+  console.error = console_err
+})

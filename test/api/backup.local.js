@@ -9,7 +9,7 @@ import {
 } from '../_imports'
 
 
-import Storage from '../../src/components/api/localStorage'
+import Storage from '../../src/app/api/localStorage'
 import localStorage from 'mock-local-storage'
 
 global.window = {}

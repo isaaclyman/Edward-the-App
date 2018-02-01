@@ -35,7 +35,7 @@
 
 <script>
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
-import userApi from '../components/api/userApi'
+import userApi from '../app/api/userApi'
 
 export default {
   beforeCreate () {

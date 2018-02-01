@@ -3,12 +3,12 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-import { chapterAutosaverPlugin } from './components/api/chapters.persist'
-import composer from './components/composer/composer.store.js'
-import chapters from './components/app/chapters.store.js'
-import file, { INIT_FILES } from './components/app/file.store.js'
-import status from './components/app/status.store'
-import user from './components/app/user.store'
+import { chapterAutosaverPlugin } from './app/api/chapters.persist'
+import composer from './app/composer/composer.store.js'
+import chapters from './app/shared/chapters.store.js'
+import file, { INIT_FILES } from './app/shared/file.store.js'
+import status from './app/shared/status.store'
+import user from './app/shared/user.store'
 
 const store = new Vuex.Store({
   modules: {

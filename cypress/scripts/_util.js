@@ -1,4 +1,4 @@
-const LocalStorageApi = require('../../src/components/api/localStorage')
+const LocalStorageApi = require('../../src/app/api/localStorage')
 const lsa = new LocalStorageApi()
 const guid = require('uuid/v1')
 

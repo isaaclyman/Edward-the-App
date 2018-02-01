@@ -17,7 +17,7 @@ import { addTopic } from './_topic.helper'
 import { addPlan } from './_plan.helper'
 import { addSection } from './_section.helper'
 
-import Storage from '../../src/components/api/localStorage'
+import Storage from '../../src/app/api/localStorage'
 import localStorage from 'mock-local-storage'
 
 global.window = {}

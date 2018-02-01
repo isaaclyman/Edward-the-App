@@ -102,7 +102,6 @@ export default {
     )
 
     this.updateQuill(this.quill, this.content)
-    this.emitContent(this.quill.getContents())
     this.listenQuill(this.quill)
   },
   props: {

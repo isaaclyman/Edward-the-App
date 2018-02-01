@@ -13,7 +13,7 @@ function orderPromises (promiseFns) {
     throw new TypeError(`A function in the array passed to orderPromises did not return a promise. Returned: ${promise}`)
   }
 
-  return promiseFns[0]().then(() => {
+  return promise.then(() => {
     return orderPromises(promiseFns.slice(1))
   })
 }

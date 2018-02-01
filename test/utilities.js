@@ -54,6 +54,18 @@ test(`executes an array of 4 functions in order`, async t => {
   t.true(resolved.every(didResolve => didResolve === true))
 })
 
+test(`executes each function only once`, async t => {
+  let resolved = [0, 0, 0, 0]
+  const promiseFns = [
+    getPromiseFn(() => { resolved[0]++ }),
+    getPromiseFn(() => { resolved[1]++ }),
+    getPromiseFn(() => { resolved[2]++ }),
+    getPromiseFn(() => { resolved[3]++ })
+  ]
+  await orderPromises(promiseFns).then(undefined, t.fail)
+  t.true(resolved.every(times => times === 1))
+})
+
 test(`fails if an array is not passed`, async t => {
   try {
     await orderPromises(null)

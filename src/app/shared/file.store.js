@@ -61,8 +61,6 @@ const store = {
       })
     },
     [SET_UP_DOCUMENT] ({ commit, dispatch }, { file, type }) {
-      commit(ADD_FILE, file)
-
       const plans = type.plans.map(title => ({
         archived: false,
         id: guid(),
@@ -91,8 +89,11 @@ const store = {
       }))
 
       return storageApiPromise.then(storage => {
+        return storage.addDocument(file).then(() => storage)
+      }).then(storage => {
         return storage.saveAllContent(file.id, { chapters, plans, topics })
       }).then(() => {
+        commit(ADD_FILE, file)
         return dispatch(CHANGE_FILE, file)
       }).then(() => {
         return commit(LOAD_CONTENT, { plans, chapters, topics })

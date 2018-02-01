@@ -48,17 +48,21 @@ const updateChapter = (db, userId, docGuid, chapter) => {
   }).then(([chapterTopics, masterTopics]) => {
     // Update chapter topics
     const topicDict = chapter.topics || {}
-    const topicIds = Object.keys(topicDict)
+    const incomingTopicIds = Object.keys(topicDict)
 
     // Ensure that all submitted chapter topics correspond to a master topic
-    const badIds = difference(topicIds, masterTopics.map(mt => mt.guid))
+    const badIds = difference(incomingTopicIds, masterTopics.map(mt => mt.guid))
     if (badIds.length) {
       throw new Error(`MasterTopics ${JSON.stringify(badIds)} were not found.`)
     }
 
     // Determine which chapter topics to insert and which ones to update
-    const idsToInsert = difference(topicIds, chapterTopics.map(ct => ct.guid))
-    const idsToUpdate = difference(topicIds, idsToInsert)
+    const existingTopicIds = chapterTopics.map(ct => {
+      return masterTopics.find(mt => mt.id === ct.master_topic_id).guid
+    })
+
+    const idsToInsert = difference(incomingTopicIds, existingTopicIds)
+    const idsToUpdate = difference(incomingTopicIds, idsToInsert)
 
     const insertPromise = db.knex('chapter_topics').insert(idsToInsert.map(id => ts(db.knex, {
       content: topicDict[id].content,

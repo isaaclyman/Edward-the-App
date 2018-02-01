@@ -45,11 +45,7 @@ export default {
       this.showFullScreen = false
     },
     listenQuill (quill) {
-      const onTextChange = debounce(() => {
-        this.emitContent(quill.getContents())
-      }, 700, {
-        maxWait: 1400
-      })
+      const onTextChange = () => this.emitContent(quill.getContents())
 
       const onSelectionChange = debounce((range) => {
         if (!range) {

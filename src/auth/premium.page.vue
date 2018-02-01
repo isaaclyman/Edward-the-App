@@ -1,10 +1,10 @@
 <template>
   <div class="wrap">
     <div class="content">
-      <p>Getting a premium Author account is a great idea. You'll get:</p>
+      <p>Getting a premium account is a great idea. You'll get:</p>
       <ul>
-        <li>Permanent storage of all your documents on our servers.</li>
-        <li>Unlimited access to all your documents, from any computer.</li>
+        <li>Permanent storage of all your novels on our servers, up to 10,000 pages.</li>
+        <li>Unlimited access to your novels from any computer, anywhere.</li>
         <li>The warm, fuzzy feeling of supporting an app you love.</li>
       </ul>
       <p>We'll get:</p>

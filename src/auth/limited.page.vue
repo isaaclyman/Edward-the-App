@@ -6,10 +6,11 @@
         <strong>This is a limited account.</strong>
       </p>
       <p>
-        Your data is stored on your computer, not on our servers. You won't be able to access it on multiple computers, and it will be deleted if you reinstall your browser, clear your browsing data, or wipe your hard drive.
+        All your novels are stored insecurely on your computer. You won't be able to access it on multiple computers, and it will be deleted if you reinstall your browser, clear your browsing data, or wipe your hard drive. If you exceed the storage space your browser is allowed to use, it may erase all your data without warning.
       </p>
       <p>
-        You can use your limited account for as long as you want and export as many documents as you want. A Premium account costs $2.46 a month and includes permanent storage on our servers.
+        You can use your limited account for as long as you want and export as many novels as you want.
+        <strong>Or upgrade to a Premium account</strong> to get instant, permanent storage on our servers.
       </p>
     </div>
     <div class="fill"></div>

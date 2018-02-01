@@ -89,7 +89,7 @@ const store = {
       }))
 
       return storageApiPromise.then(storage => {
-        return storage.addDocument(document).then(() => storage)
+        return Promise.resolve(storage.addDocument(document)).then(() => storage)
       }).then(storage => {
         return storage.saveAllContent(document.guid, { chapters, plans, topics })
       }).then(() => {

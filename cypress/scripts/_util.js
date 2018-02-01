@@ -1,6 +1,6 @@
 const LocalStorageApi = require('../../src/app/api/localStorage')
 const lsa = new LocalStorageApi()
-const guid = require('uuid/v1')
+const newGuid = require('uuid/v1')
 
 export function createTestChapter (cy, isPremium, documentGuid) {
   if (isPremium) {
@@ -8,11 +8,11 @@ export function createTestChapter (cy, isPremium, documentGuid) {
     return
   }
 
-  const chapGuids = [guid(), guid(), guid()]
+  const chapGuids = [newGuid(), newGuid(), newGuid()]
   const chapter = index => ({
     archived: false,
     content: null,
-    id: chapGuids[index - 1],
+    guid: chapGuids[index - 1],
     title: `test chapter ${index}`,
     topics: {}
   })
@@ -30,10 +30,10 @@ export function createTestDocument (cy, isPremium) {
     return
   }
 
-  const id = guid()
+  const guid = newGuid()
 
-  lsa.addDocument({ id, name: 'test' })
-  return id
+  lsa.addDocument({ guid, name: 'test' })
+  return guid
 }
 
 export function createTestPlan (cy, isPremium, documentGuid) {
@@ -42,19 +42,19 @@ export function createTestPlan (cy, isPremium, documentGuid) {
     return
   }
 
-  const planGuids = [guid(), guid()]
+  const planGuids = [newGuid(), newGuid()]
   const plan = index => ({
     archived: false,
-    id: planGuids[index - 1],
+    guid: planGuids[index - 1],
     title: `test plan ${index}`,
     sections: null
   })
 
-  const sectionGuids = [guid(), guid(), guid()]
+  const sectionGuids = [newGuid(), newGuid(), newGuid()]
   const section = index => ({
     archived: false,
     content: null,
-    id: sectionGuids[index - 1],
+    guid: sectionGuids[index - 1],
     tags: [],
     title: `test section ${index}`
   })

@@ -24,18 +24,8 @@ const getFullExport = (db, userId) => {
 
 const importFull = (db, userId, docs) => {
   const addPromises = docs.map(doc => {
-    doc.id = doc.guid || doc.id
     return addDocument(db, userId, doc).then(() => {
-      [
-        ...doc.chapters,
-        ...doc.topics,
-        ...doc.plans,
-      ]
-      .concat(...doc.plans.map(plan => plan.sections))
-      .forEach(item => {
-        item.id = item.guid || item.id
-      })
-      return saveAllContent(db, userId, doc.id, doc.chapters, doc.topics, doc.plans)
+      return saveAllContent(db, userId, doc.guid, doc.chapters, doc.topics, doc.plans)
     }).then(result => ({ result, success: true }), err => ({ err, success: false }))
   })
 
@@ -51,7 +41,7 @@ const uuidRx = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9
 const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/backup/${route}`
 
-  // POST [{ id, guid, name, chapters, topics, plans }]
+  // POST [{ guid, name, chapters, topics, plans }]
   app.post(route('import'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
     const newDocs = req.body

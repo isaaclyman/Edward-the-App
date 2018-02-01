@@ -8,7 +8,7 @@ export const addPlan = async (app, docId, title) => {
   const planId = uuid()
 
   const plan = {
-    fileId: docId,
+    documentGuid: docId,
     planId: planId,
     plan: {
       archived: false,
@@ -40,7 +40,7 @@ export const checkPlans = (t, app, docId, expectFn) => {
 
 export const comparePlans = (t, docId, apiPlan, plan) => {
   t.deepEqual({
-    fileId: docId,
+    documentGuid: docId,
     planId: apiPlan.guid,
     plan: {
       archived: apiPlan.archived,

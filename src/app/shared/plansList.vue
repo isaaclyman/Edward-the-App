@@ -34,7 +34,7 @@
       </div>
 
       <div class="sections">
-        <div class="section" v-for="(section, index) in activePlan.sections" :key="section.id" v-show="filterSections(section)">
+        <div class="section" v-for="(section, index) in activePlan.sections" :key="section.guid" v-show="filterSections(section)">
           <div class="section-header">
             <h5 class="section-title">
               {{ section.title }}
@@ -150,7 +150,7 @@ export default {
 
       const plan = {
         archived: false,
-        id: guid(),
+        guid: guid(),
         title,
         sections: []
       }
@@ -165,7 +165,7 @@ export default {
       const section = {
         archived: false,
         content: null,
-        id: guid(),
+        guid: guid(),
         tags: [],
         title
       }

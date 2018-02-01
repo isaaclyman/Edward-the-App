@@ -3,19 +3,19 @@
   <div class="document">
     <div class="title">
       <h3>
-        "{{ fileName }}"
+        "{{ documentName }}"
       </h3>
     </div>
     <div class="actions">
-      <label class="name-label" for="fileNameInput">Change document name:</label>
+      <label class="name-label" for="documentNameInput">Change document name:</label>
       <div>
-        <input class="name-input" id="fileNameInput" type="text" v-model="newFileName">
-        <button class="button-green" @click="saveFileName()">Save</button>
+        <input class="name-input" id="documentNameInput" type="text" v-model="newDocumentName">
+        <button class="button-green" @click="saveDocumentName()">Save</button>
       </div>
     </div>
     <hr>
     <div class="actions">
-      <button class="button-red" @click="deleteFile()">Delete Document</button>
+      <button class="button-red" @click="deleteDocument()">Delete Document</button>
     </div>
   </div>
 </div>
@@ -23,25 +23,25 @@
 
 <script>
 import swal from 'sweetalert'
-import { DELETE_DOCUMENT, UPDATE_FILE_NAME } from '../shared/file.store'
+import { DELETE_DOCUMENT, UPDATE_DOCUMENT_NAME } from '../shared/document.store'
 
 export default {
   components: {},
   computed: {
-    fileId () {
-      return this.$store.state.file.currentFile.id
+    documentGuid () {
+      return this.$store.state.document.currentDocument.guid
     },
-    fileName () {
-      return this.$store.state.file.currentFile.name
+    documentName () {
+      return this.$store.state.document.currentDocument.name
     }
   },
   data () {
     return {
-      newFileName: ''
+      newDocumentName: ''
     }
   },
   methods: {
-    deleteFile () {
+    deleteDocument () {
       swal({
         buttons: true,
         dangerMode: true,
@@ -53,15 +53,15 @@ export default {
           return
         }
 
-        this.$store.dispatch(DELETE_DOCUMENT, { id: this.fileId })
+        this.$store.dispatch(DELETE_DOCUMENT, { guid: this.documentGuid })
       })
     },
-    saveFileName () {
-      this.$store.commit(UPDATE_FILE_NAME, { id: this.fileId, name: this.newFileName })
+    saveDocumentName () {
+      this.$store.commit(UPDATE_DOCUMENT_NAME, { guid: this.documentGuid, name: this.newDocumentName })
     }
   },
   mounted () {
-    this.newFileName = this.fileName
+    this.newDocumentName = this.documentName
   }
 }
 </script>

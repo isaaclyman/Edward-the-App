@@ -88,7 +88,7 @@ export default {
 
       const plan = {
         archived: false,
-        id: guid(),
+        guid: guid(),
         title,
         sections: []
       }

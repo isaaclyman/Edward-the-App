@@ -7,18 +7,18 @@ const getChapId = utilities.getChapId
 
 const updateChapter = (db, userId, docGuid, chapter) => {
   const docId = () => getDocId(db.knex, userId, docGuid)
-  const chapId = () => getChapId(db.knex, userId, docGuid, chapter.id)
+  const chapId = () => getChapId(db.knex, userId, docGuid, chapter.guid)
 
   // Upsert the chapter
   return utilities.upsert(db.knex, 'chapters', {
     where: {
-      guid: chapter.id,
+      guid: chapter.guid,
       'document_id': docId(),
       'user_id': userId
     },
     insert: ts(db.knex, {
       archived: chapter.archived,
-      guid: chapter.id,
+      guid: chapter.guid,
       title: chapter.title,
       'user_id': userId,
       'document_id': docId()
@@ -48,35 +48,35 @@ const updateChapter = (db, userId, docGuid, chapter) => {
   }).then(([chapterTopics, masterTopics]) => {
     // Update chapter topics
     const topicDict = chapter.topics || {}
-    const incomingTopicIds = Object.keys(topicDict)
+    const incomingTopicGuids = Object.keys(topicDict)
 
     // Ensure that all submitted chapter topics correspond to a master topic
-    const badIds = difference(incomingTopicIds, masterTopics.map(mt => mt.guid))
-    if (badIds.length) {
-      throw new Error(`MasterTopics ${JSON.stringify(badIds)} were not found.`)
+    const badGuids = difference(incomingTopicGuids, masterTopics.map(mt => mt.guid))
+    if (badGuids.length) {
+      throw new Error(`MasterTopics ${JSON.stringify(badGuids)} were not found.`)
     }
 
     // Determine which chapter topics to insert and which ones to update
-    const existingTopicIds = chapterTopics.map(ct => {
+    const existingTopicGuids = chapterTopics.map(ct => {
       return masterTopics.find(mt => mt.id === ct.master_topic_id).guid
     })
 
-    const idsToInsert = difference(incomingTopicIds, existingTopicIds)
-    const idsToUpdate = difference(incomingTopicIds, idsToInsert)
+    const guidsToInsert = difference(incomingTopicGuids, existingTopicGuids)
+    const guidsToUpdate = difference(incomingTopicGuids, guidsToInsert)
 
-    const insertPromise = db.knex('chapter_topics').insert(idsToInsert.map(id => ts(db.knex, {
-      content: topicDict[id].content,
+    const insertPromise = db.knex('chapter_topics').insert(guidsToInsert.map(guid => ts(db.knex, {
+      content: topicDict[guid].content,
       'user_id': userId,
       'chapter_id': chapId(),
-      'master_topic_id': masterTopics.find(mt => mt.guid === id).id
+      'master_topic_id': masterTopics.find(mt => mt.guid === guid).id
     })))
 
-    const updatePromises = idsToUpdate.map(id => db.knex('chapter_topics').where({
+    const updatePromises = guidsToUpdate.map(guid => db.knex('chapter_topics').where({
       'user_id': userId,
       'chapter_id': chapId(),
-      'master_topic_id': masterTopics.find(mt => mt.guid === id).id
+      'master_topic_id': masterTopics.find(mt => mt.guid === guid).id
     }).update(ts(db.knex, {
-      content: topicDict[id].content
+      content: topicDict[guid].content
     })))
 
     return Promise.all([insertPromise, ...updatePromises])
@@ -89,13 +89,13 @@ const updateChapter = (db, userId, docGuid, chapter) => {
       },
       insert: ts(db.knex, {
         'document_id': docId(),
-        order: JSON.stringify([chapter.id]),
+        order: JSON.stringify([chapter.guid]),
         'user_id': userId
       }),
       getUpdate: dbOrder => {
         const order = JSON.parse(dbOrder.order || '[]')
-        if (!order.includes(chapter.id)) {
-          order.push(chapter.id)
+        if (!order.includes(chapter.guid)) {
+          order.push(chapter.guid)
           return ts(db.knex, { order: JSON.stringify(order) }, true)
         }
 
@@ -144,7 +144,7 @@ const getChapters = (db, userId, docGuid) => {
         archived: 'master_topics.archived',
         chapterId: 'chapter_topics.chapter_id',
         content: 'chapter_topics.content',
-        id: 'master_topics.guid',
+        guid: 'master_topics.guid',
         title: 'master_topics.title'
       })
     )
@@ -158,7 +158,7 @@ const getChapters = (db, userId, docGuid) => {
 
     const chaptersWithTopics = chapters.map(chapter => {
       chapter.topics = (topicsByChapter[chapter.id] || []).reduce((dict, topic) => {
-        dict[topic.id] = topic
+        dict[topic.guid] = topic
         return dict
       }, {})
       return chapter
@@ -175,10 +175,10 @@ const getChapters = (db, userId, docGuid) => {
 const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
 
-  // POST { fileId, chapterIds }
+  // POST { documentGuid, chapterGuids }
   app.post(route('chapter/arrange'), isPremiumUser, (req, res, next) => {
-    const docGuid = req.body.fileId
-    const chapterGuids = req.body.chapterIds
+    const docGuid = req.body.documentGuid
+    const chapterGuids = req.body.chapterGuids
     const userId = req.user.id
 
     const docId = () => getDocId(db.knex, userId, docGuid)
@@ -205,10 +205,10 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     })
   })
 
-  // POST { fileId, chapterId }
+  // POST { documentGuid, chapterGuid }
   app.post(route('chapter/delete'), isPremiumUser, (req, res, next) => {
-    const docGuid = req.body.fileId
-    const chapterGuid = req.body.chapterId
+    const docGuid = req.body.documentGuid
+    const chapterGuid = req.body.chapterGuid
     const userId = req.user.id
 
     const docId = () => getDocId(db.knex, userId, docGuid)
@@ -257,16 +257,16 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     })
   })
 
-  // POST { fileId, chapterId, chapter: {
-  //   archived, content, id, title, topics: {
-  //     [id]: chapterTopic {
-  //       content, id
+  // POST { documentGuid, chapterGuid, chapter: {
+  //   archived, content, guid, title, topics: {
+  //     [guid]: chapterTopic {
+  //       content, guid
   //     }
   //   }
   // } }
   app.post(route('chapter/update'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
-    const docGuid = req.body.fileId
+    const docGuid = req.body.documentGuid
     const chapter = req.body.chapter
 
     updateChapter(db, userId, docGuid, chapter).then(() => {
@@ -278,8 +278,8 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   })
 
   // GET
-  app.get(route('chapters/:documentId'), isPremiumUser, (req, res, next) => {
-    const docGuid = req.params.documentId
+  app.get(route('chapters/:documentGuid'), isPremiumUser, (req, res, next) => {
+    const docGuid = req.params.documentGuid
     const userId = req.user.id
     getChapters(db, userId, docGuid).then(chapters => {
       res.status(200).send(chapters)

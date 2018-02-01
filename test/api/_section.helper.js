@@ -7,7 +7,7 @@ export const addSection = async (app, docId, planId, title) => {
   const sectionId = uuid()
 
   const section = {
-    fileId: docId,
+    documentGuid: docId,
     planId,
     sectionId,
     section: {
@@ -30,7 +30,7 @@ export const addSection = async (app, docId, planId, title) => {
 
 export const compareSections = async (t, docId, planId, apiSection, section) => {
   t.deepEqual({
-    fileId: docId,
+    documentGuid: docId,
     planId: planId,
     sectionId: apiSection.guid,
     section: {

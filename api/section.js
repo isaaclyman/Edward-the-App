@@ -8,14 +8,14 @@ const updateSection = (db, userId, docGuid, planGuid, section) => {
 
   return utilities.upsert(db.knex, 'sections', {
     where: {
-      guid: section.id,
+      guid: section.guid,
       'plan_id': planId(),
       'user_id': userId
     },
     insert: ts(db.knex, {
       archived: section.archived,
       content: section.content,
-      guid: section.id,
+      guid: section.guid,
       tags: JSON.stringify(section.tags),
       title: section.title,
       'plan_id': planId(),
@@ -38,14 +38,14 @@ const updateSection = (db, userId, docGuid, planGuid, section) => {
         'user_id': userId
       },
       insert: ts(db.knex, {
-        order: JSON.stringify([section.id]),
+        order: JSON.stringify([section.guid]),
         'plan_id': planId(),
         'user_id': userId
       }),
       getUpdate: dbOrder => {
         const order = JSON.parse(dbOrder.order || '[]')
-        if (!order.includes(section.id)) {
-          order.push(section.id)
+        if (!order.includes(section.guid)) {
+          order.push(section.guid)
           return ts(db.knex, { order: JSON.stringify(order) }, true)
         }
 
@@ -58,11 +58,11 @@ const updateSection = (db, userId, docGuid, planGuid, section) => {
 const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
 
-  // POST { fileId, planId, sectionIds }
+  // POST { documentGuid, planGuid, sectionGuids }
   app.post(route('section/arrange'), isPremiumUser, (req, res, next) => {
-    const docGuid = req.body.fileId
-    const planGuid = req.body.planId
-    const sectionGuids = req.body.sectionIds
+    const docGuid = req.body.documentGuid
+    const planGuid = req.body.planGuid
+    const sectionGuids = req.body.sectionGuids
     const userId = req.user.id
 
     const planId = () => getPlanId(db.knex, userId, docGuid, planGuid)
@@ -89,11 +89,11 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     })
   })
 
-  // POST { fileId, planId, sectionId }
+  // POST { documentGuid, planGuid, sectionGuid }
   app.post(route('section/delete'), isPremiumUser, (req, res, next) => {
-    const docGuid = req.body.fileId
-    const planGuid = req.body.planId
-    const sectionGuid = req.body.sectionId
+    const docGuid = req.body.documentGuid
+    const planGuid = req.body.planGuid
+    const sectionGuid = req.body.sectionGuid
     const userId = req.user.id
 
     const planId = () => getPlanId(db.knex, userId, docGuid, planGuid)
@@ -129,12 +129,12 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     })
   })
 
-  // POST { fileId, planId, sectionId, section: {
-  //   archived, content, id, tags, title
+  // POST { documentGuid, planGuid, sectionGuid, section: {
+  //   archived, content, guid, tags, title
   // } }
   app.post(route('section/update'), isPremiumUser, (req, res, next) => {
-    const docGuid = req.body.fileId
-    const planGuid = req.body.planId
+    const docGuid = req.body.documentGuid
+    const planGuid = req.body.planGuid
     const section = req.body.section
     const userId = req.user.id
 

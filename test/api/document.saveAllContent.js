@@ -57,7 +57,7 @@ test('save all content', async t => {
   await (
     app.post(route('document/saveAll'))
     .send({
-      fileId: doc.id,
+      documentGuid: doc.id,
       chapters,
       plans,
       topics
@@ -69,12 +69,12 @@ test('save all content', async t => {
     t.is(apiChapters.length, 2)
     compareChapters(t, doc.id, apiChapters[0], {
       chapterId: chapters[0].id,
-      fileId: doc.id,
+      documentGuid: doc.id,
       chapter: chapters[0]
     })
     compareChapters(t, doc.id, apiChapters[1], {
       chapterId: chapters[1].id,
-      fileId: doc.id,
+      documentGuid: doc.id,
       chapter: chapters[1]
     })
   })
@@ -83,12 +83,12 @@ test('save all content', async t => {
     t.is(apiTopics.length, 2)
     compareTopics(t, doc.id, apiTopics[0], {
       topicId: topics[0].id,
-      fileId: doc.id,
+      documentGuid: doc.id,
       topic: topics[0]
     })
     compareTopics(t, doc.id, apiTopics[1], {
       topicId: topics[1].id,
-      fileId: doc.id,
+      documentGuid: doc.id,
       topic: topics[1]
     })
   })
@@ -99,7 +99,7 @@ test('save all content', async t => {
     apiPlans.forEach((apiPlan, planIndex) => {
       comparePlans(t, doc.id, apiPlan, {
         planId: plans[planIndex].id,
-        fileId: doc.id,
+        documentGuid: doc.id,
         plan: plans[planIndex]
       })
       apiPlan.sections.forEach((apiSection, sectionIndex) => {
@@ -107,7 +107,7 @@ test('save all content', async t => {
         compareSections(t, doc.id, apiPlan.guid, apiSection, {
           sectionId: section.id,
           planId: plans[planIndex].id,
-          fileId: doc.id,
+          documentGuid: doc.id,
           section
         })
       })

@@ -6,7 +6,7 @@ export const LOAD_CONTENT = 'LOAD_CONTENT'
 
 // PLANS have SECTIONS
 // CHAPTERS have TOPICS (chapterTopics)
-// FILES have TOPICS (masterTopics)
+// DOCUMENTS have TOPICS (masterTopics)
 // Each masterTopic has a corresponding chapterTopic in each chapter
 
 export const ADD_PLAN = 'ADD_PLAN'
@@ -44,14 +44,14 @@ export const UPDATE_TOPIC_CONTENT = 'UPDATE_TOPIC_CONTENT'
 
 const store = {
   state: {
-    // plan [{ archived bool false, id Guid, title string, sections [section] }]
-    // section { archived bool false, content Delta null, id Guid, tags [string], title string }
+    // plan [{ archived bool false, guid Guid, title string, sections [section] }]
+    // section { archived bool false, content Delta null, guid Guid, tags [string], title string }
     plans: [],
-    // chapters [{ archived bool false, content Delta null, id Guid, title string, topics topicDict {} }]
-    // topicDict { [id]: chapterTopic }
-    // chapterTopic { content Delta null, id Guid }
+    // chapters [{ archived bool false, content Delta null, guid Guid, title string, topics topicDict {} }]
+    // topicDict { [guid]: chapterTopic }
+    // chapterTopic { content Delta null, guid Guid }
     chapters: [],
-    // topic [{ archived bool false, id Guid, title string }]
+    // topic [{ archived bool false, guid Guid, title string }]
     topics: []
   },
   mutations: {
@@ -203,9 +203,9 @@ const store = {
         throw new Error(`ADD_TOPIC_TO_CHAPTER: Cannot include topic "${topic.title}": does not exist.`)
       }
 
-      chapter.topics[topic.id] = {
+      chapter.topics[topic.guid] = {
         content: null,
-        id: topic.id
+        guid: topic.guid
       }
     },
     [ARCHIVE_CHAPTER] (state, { chapter }) {
@@ -269,8 +269,8 @@ const store = {
       state.topics.splice(state.topics.indexOf(topic), 1)
 
       state.chapters = state.chapters.map(chapter => {
-        if (chapter.topics[topic.id]) {
-          delete chapter.topics[topic.id]
+        if (chapter.topics[topic.guid]) {
+          delete chapter.topics[topic.guid]
         }
 
         return chapter
@@ -302,7 +302,7 @@ const store = {
         throw new Error(`UPDATE_TOPIC_CONTENT: Cannot update topic content for chapter "${chapter.title}": does not exist.`)
       }
 
-      if (!state.topics.find(masterTopic => masterTopic.id === topic.id)) {
+      if (!state.topics.find(masterTopic => masterTopic.guid === topic.guid)) {
         throw new Error(`UPDATE_TOPIC_CONTENT: Cannot update content of topic "${topic.title}": does not exist.`)
       }
 

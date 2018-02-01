@@ -2,7 +2,7 @@ const LocalStorageApi = require('../../src/app/api/localStorage')
 const lsa = new LocalStorageApi()
 const guid = require('uuid/v1')
 
-export function createTestChapter (cy, isPremium, fileId) {
+export function createTestChapter (cy, isPremium, documentGuid) {
   if (isPremium) {
     cy.exec('node cypress/scripts/createTestChapter.js')
     return
@@ -17,9 +17,9 @@ export function createTestChapter (cy, isPremium, fileId) {
     topics: {}
   })
 
-  lsa.updateChapter(fileId, chapGuids[0], chapter(1))
-  lsa.updateChapter(fileId, chapGuids[1], chapter(2))
-  lsa.updateChapter(fileId, chapGuids[2], chapter(3))
+  lsa.updateChapter(documentGuid, chapGuids[0], chapter(1))
+  lsa.updateChapter(documentGuid, chapGuids[1], chapter(2))
+  lsa.updateChapter(documentGuid, chapGuids[2], chapter(3))
 
   return chapGuids
 }
@@ -36,7 +36,7 @@ export function createTestDocument (cy, isPremium) {
   return id
 }
 
-export function createTestPlan (cy, isPremium, fileId) {
+export function createTestPlan (cy, isPremium, documentGuid) {
   if (isPremium) {
     cy.exec('node cypress/scripts/createTestPlan.js')
     return
@@ -59,12 +59,12 @@ export function createTestPlan (cy, isPremium, fileId) {
     title: `test section ${index}`
   })
 
-  lsa.updatePlan(fileId, planGuids[0], plan(1))
-  lsa.updateSection(fileId, planGuids[0], sectionGuids[0], section(1))
+  lsa.updatePlan(documentGuid, planGuids[0], plan(1))
+  lsa.updateSection(documentGuid, planGuids[0], sectionGuids[0], section(1))
 
-  lsa.updatePlan(fileId, planGuids[1], plan(2))
-  lsa.updateSection(fileId, planGuids[1], sectionGuids[1], section(2))
-  lsa.updateSection(fileId, planGuids[1], sectionGuids[2], section(3))
+  lsa.updatePlan(documentGuid, planGuids[1], plan(2))
+  lsa.updateSection(documentGuid, planGuids[1], sectionGuids[1], section(2))
+  lsa.updateSection(documentGuid, planGuids[1], sectionGuids[2], section(3))
 
   return planGuids
 }

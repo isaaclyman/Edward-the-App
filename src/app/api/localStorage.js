@@ -5,116 +5,116 @@ class LocalStorageApi {
     this.storage = window.localStorage
     this.getStorageKeys = () => Object.keys(window.localStorage)
 
-    this.planKeyPrefix = fileId => `${fileId}_PLAN_DATA_`
-    this.planOrderKey = fileId => `${fileId}_PLAN_ORDER`
-    this.getPlanKey = (fileId, planId) => `${this.planKeyPrefix(fileId)}${planId}`
+    this.planKeyPrefix = documentGuid => `${documentGuid}_PLAN_DATA_`
+    this.planOrderKey = documentGuid => `${documentGuid}_PLAN_ORDER`
+    this.getPlanKey = (documentGuid, planGuid) => `${this.planKeyPrefix(documentGuid)}${planGuid}`
 
-    this.sectionKeyPrefix = (fileId, planId) => `${fileId}_SECTION_DATA_${planId}_`
-    this.sectionOrderKey = (fileId, planId) => `${fileId}_SECTION_ORDER_${planId}`
-    this.getSectionKey = (fileId, planId, sectionId) => `${this.sectionKeyPrefix(fileId, planId)}${sectionId}`
+    this.sectionKeyPrefix = (documentGuid, planGuid) => `${documentGuid}_SECTION_DATA_${planGuid}_`
+    this.sectionOrderKey = (documentGuid, planGuid) => `${documentGuid}_SECTION_ORDER_${planGuid}`
+    this.getSectionKey = (documentGuid, planGuid, sectionGuid) => `${this.sectionKeyPrefix(documentGuid, planGuid)}${sectionGuid}`
 
-    this.chapterKeyPrefix = fileId => `${fileId}_CHAPTER_DATA_`
-    this.chapterOrderKey = fileId => `${fileId}_CHAPTER_ORDER`
-    this.getChapterKey = (fileId, chapterId) => `${this.chapterKeyPrefix(fileId)}${chapterId}`
+    this.chapterKeyPrefix = documentGuid => `${documentGuid}_CHAPTER_DATA_`
+    this.chapterOrderKey = documentGuid => `${documentGuid}_CHAPTER_ORDER`
+    this.getChapterKey = (documentGuid, chapterGuid) => `${this.chapterKeyPrefix(documentGuid)}${chapterGuid}`
 
-    this.topicKeyPrefix = fileId => `${fileId}_TOPIC_DATA_`
-    this.topicOrderKey = fileId => `${fileId}_TOPIC_ORDER`
-    this.getTopicKey = (fileId, topicId) => `${this.topicKeyPrefix(fileId)}${topicId}`
+    this.topicKeyPrefix = documentGuid => `${documentGuid}_TOPIC_DATA_`
+    this.topicOrderKey = documentGuid => `${documentGuid}_TOPIC_ORDER`
+    this.getTopicKey = (documentGuid, topicGuid) => `${this.topicKeyPrefix(documentGuid)}${topicGuid}`
 
-    this.documentIdsKey = 'DOCUMENT_IDS'
-    this.documentsKey = fileId => `DOCUMENT_${fileId}`
+    this.documentGuidsKey = 'DOCUMENT_IDS'
+    this.documentsKey = documentGuid => `DOCUMENT_${documentGuid}`
   }
 
-  addDocument ({ id, name }) {
-    let documentIds = this._getAllDocumentIds()
-    documentIds.push(id)
-    this.storage.setItem(this.documentIdsKey, JSON.stringify(documentIds))
+  addDocument ({ guid, name }) {
+    let documentGuids = this._getAllDocumentGuids()
+    documentGuids.push(guid)
+    this.storage.setItem(this.documentGuidsKey, JSON.stringify(documentGuids))
 
-    this.storage.setItem(this.documentsKey(id), JSON.stringify({ id, name }))
+    this.storage.setItem(this.documentsKey(guid), JSON.stringify({ guid, name }))
   }
 
-  arrangeChapters (fileId, chapterIds) {
-    this.storage.setItem(this.chapterOrderKey(fileId), JSON.stringify(chapterIds))
+  arrangeChapters (documentGuid, chapterGuids) {
+    this.storage.setItem(this.chapterOrderKey(documentGuid), JSON.stringify(chapterGuids))
   }
 
-  arrangePlans (fileId, planIds) {
-    this.storage.setItem(this.planOrderKey(fileId), JSON.stringify(planIds))
+  arrangePlans (documentGuid, planGuids) {
+    this.storage.setItem(this.planOrderKey(documentGuid), JSON.stringify(planGuids))
   }
 
-  arrangeSections (fileId, planId, sectionIds) {
-    this.storage.setItem(this.sectionOrderKey(fileId, planId), JSON.stringify(sectionIds))
+  arrangeSections (documentGuid, planGuid, sectionGuids) {
+    this.storage.setItem(this.sectionOrderKey(documentGuid, planGuid), JSON.stringify(sectionGuids))
   }
 
-  arrangeTopics (fileId, topicIds) {
-    this.storage.setItem(this.topicOrderKey(fileId), JSON.stringify(topicIds))
+  arrangeTopics (documentGuid, topicGuids) {
+    this.storage.setItem(this.topicOrderKey(documentGuid), JSON.stringify(topicGuids))
   }
 
-  deleteChapter (fileId, chapterId) {
-    const key = this.getChapterKey(fileId, chapterId)
+  deleteChapter (documentGuid, chapterGuid) {
+    const key = this.getChapterKey(documentGuid, chapterGuid)
     this.storage.removeItem(key)
   }
 
-  deleteDocument (id) {
+  deleteDocument (guid) {
     // Remove document from document list
-    let documentIds = this._getAllDocumentIds()
+    let documentGuids = this._getAllDocumentGuids()
 
-    if (documentIds.includes(id)) {
-      documentIds.splice(documentIds.indexOf(id), 1)
+    if (documentGuids.includes(guid)) {
+      documentGuids.splice(documentGuids.indexOf(guid), 1)
     }
 
-    this.storage.setItem(this.documentIdsKey, JSON.stringify(documentIds))
+    this.storage.setItem(this.documentGuidsKey, JSON.stringify(documentGuids))
 
     // Remove all content (chapters, plans, sections, topics)
-    this._getAllChapters(id).forEach(chapter => this.deleteChapter(id, chapter.id))
-    this._getAllPlans(id).forEach(plan => {
-      this._getAllSections(id, plan.id).forEach(section => this.deleteSection(id, plan.id, section.id))
-      this.deletePlan(id, plan.id)
+    this._getAllChapters(guid).forEach(chapter => this.deleteChapter(guid, chapter.guid))
+    this._getAllPlans(guid).forEach(plan => {
+      this._getAllSections(guid, plan.guid).forEach(section => this.deleteSection(guid, plan.guid, section.guid))
+      this.deletePlan(guid, plan.guid)
     })
-    this._getAllTopics(id).forEach(topic => this.deleteTopic(id, topic.id))
+    this._getAllTopics(guid).forEach(topic => this.deleteTopic(guid, topic.guid))
 
     // Remove document metadata
-    this.storage.removeItem(this.documentsKey(id))
+    this.storage.removeItem(this.documentsKey(guid))
   }
 
-  deletePlan (fileId, planId) {
-    const key = this.getPlanKey(fileId, planId)
+  deletePlan (documentGuid, planGuid) {
+    const key = this.getPlanKey(documentGuid, planGuid)
     this.storage.removeItem(key)
   }
 
-  deleteSection (fileId, planId, sectionId) {
-    const key = this.getSectionKey(fileId, planId, sectionId)
+  deleteSection (documentGuid, planGuid, sectionGuid) {
+    const key = this.getSectionKey(documentGuid, planGuid, sectionGuid)
     this.storage.removeItem(key)
   }
 
-  deleteTopic (fileId, topicId) {
-    const key = this.getTopicKey(fileId, topicId)
+  deleteTopic (documentGuid, topicGuid) {
+    const key = this.getTopicKey(documentGuid, topicGuid)
     this.storage.removeItem(key)
   }
 
-  _getAllChapters (fileId) {
-    const prefix = this.chapterKeyPrefix(fileId)
-    const sortOrder = this._getChaptersSortOrder(fileId)
+  _getAllChapters (documentGuid) {
+    const prefix = this.chapterKeyPrefix(documentGuid)
+    const sortOrder = this._getChaptersSortOrder(documentGuid)
     const keys = this.getStorageKeys().filter(key => key.startsWith(prefix))
     const chapters = keys.map(key => JSON.parse(this.storage.getItem(key))).sort((chap1, chap2) => {
-      return sortOrder.indexOf(chap1.id) - sortOrder.indexOf(chap2.id)
+      return sortOrder.indexOf(chap1.guid) - sortOrder.indexOf(chap2.guid)
     })
 
     return chapters
   }
 
-  getAllChapters (fileId) {
-    const chapters = this._getAllChapters(fileId)
+  getAllChapters (documentGuid) {
+    const chapters = this._getAllChapters(documentGuid)
     return Promise.resolve(chapters)
   }
 
-  _getAllDocumentIds () {
-    const documentIds = JSON.parse(this.storage.getItem(this.documentIdsKey)) || []
-    return documentIds
+  _getAllDocumentGuids () {
+    const documentGuids = JSON.parse(this.storage.getItem(this.documentGuidsKey)) || []
+    return documentGuids
   }
 
   _getAllDocuments () {
-    const documents = this._getAllDocumentIds().map(id => {
-      const key = this.documentsKey(id)
+    const documents = this._getAllDocumentGuids().map(guid => {
+      const key = this.documentsKey(guid)
       return JSON.parse(this.storage.getItem(key))
     })
     return documents
@@ -125,150 +125,150 @@ class LocalStorageApi {
     return Promise.resolve(documents)
   }
 
-  _getAllPlans (fileId) {
-    const prefix = this.planKeyPrefix(fileId)
-    const sortOrder = this._getPlansSortOrder(fileId)
+  _getAllPlans (documentGuid) {
+    const prefix = this.planKeyPrefix(documentGuid)
+    const sortOrder = this._getPlansSortOrder(documentGuid)
     const keys = this.getStorageKeys().filter(key => key.startsWith(prefix))
     const plans = keys.map(key => JSON.parse(this.storage.getItem(key)))
       .map(plan => {
-        plan.sections = this._getAllSections(fileId, plan.id)
+        plan.sections = this._getAllSections(documentGuid, plan.guid)
         return plan
       })
       .sort((plan1, plan2) => {
-        return sortOrder.indexOf(plan1.id) - sortOrder.indexOf(plan2.id)
+        return sortOrder.indexOf(plan1.guid) - sortOrder.indexOf(plan2.guid)
       })
 
     return plans
   }
 
-  getAllPlans (fileId) {
-    const plans = this._getAllPlans(fileId)
+  getAllPlans (documentGuid) {
+    const plans = this._getAllPlans(documentGuid)
     return Promise.resolve(plans)
   }
 
-  _getAllSections (fileId, planId) {
-    const prefix = this.sectionKeyPrefix(fileId, planId)
-    const sortOrder = this._getSectionSortOrder(fileId, planId)
+  _getAllSections (documentGuid, planGuid) {
+    const prefix = this.sectionKeyPrefix(documentGuid, planGuid)
+    const sortOrder = this._getSectionSortOrder(documentGuid, planGuid)
     const keys = this.getStorageKeys().filter(key => key.startsWith(prefix))
     const sections = keys.map(key => JSON.parse(this.storage.getItem(key))).sort((section1, section2) => {
-      return sortOrder.indexOf(section1.id) - sortOrder.indexOf(section2.id)
+      return sortOrder.indexOf(section1.guid) - sortOrder.indexOf(section2.guid)
     })
 
     return sections
   }
 
-  _getAllTopics (fileId) {
-    const prefix = this.topicKeyPrefix(fileId)
-    const sortOrder = this._getTopicsSortOrder(fileId)
+  _getAllTopics (documentGuid) {
+    const prefix = this.topicKeyPrefix(documentGuid)
+    const sortOrder = this._getTopicsSortOrder(documentGuid)
     const keys = this.getStorageKeys().filter(key => key.startsWith(prefix))
     const topics = keys.map(key => JSON.parse(this.storage.getItem(key))).sort((topic1, topic2) => {
-      return sortOrder.indexOf(topic1.id) - sortOrder.indexOf(topic2.id)
+      return sortOrder.indexOf(topic1.guid) - sortOrder.indexOf(topic2.guid)
     })
 
     return topics
   }
 
-  getAllTopics (fileId) {
-    const topics = this._getAllTopics(fileId)
+  getAllTopics (documentGuid) {
+    const topics = this._getAllTopics(documentGuid)
     return Promise.resolve(topics)
   }
 
-  _getChaptersSortOrder (fileId) {
-    const sortOrder = JSON.parse(this.storage.getItem(this.chapterOrderKey(fileId))) || []
+  _getChaptersSortOrder (documentGuid) {
+    const sortOrder = JSON.parse(this.storage.getItem(this.chapterOrderKey(documentGuid))) || []
     return sortOrder
   }
 
-  _getPlansSortOrder (fileId) {
-    const sortOrder = JSON.parse(this.storage.getItem(this.planOrderKey(fileId))) || []
+  _getPlansSortOrder (documentGuid) {
+    const sortOrder = JSON.parse(this.storage.getItem(this.planOrderKey(documentGuid))) || []
     return sortOrder
   }
 
-  _getSectionSortOrder (fileId, planId) {
-    const sortOrder = JSON.parse(this.storage.getItem(this.sectionOrderKey(fileId, planId))) || []
+  _getSectionSortOrder (documentGuid, planGuid) {
+    const sortOrder = JSON.parse(this.storage.getItem(this.sectionOrderKey(documentGuid, planGuid))) || []
     return sortOrder
   }
 
-  _getTopicsSortOrder (fileId) {
-    const sortOrder = JSON.parse(this.storage.getItem(this.topicOrderKey(fileId))) || []
+  _getTopicsSortOrder (documentGuid) {
+    const sortOrder = JSON.parse(this.storage.getItem(this.topicOrderKey(documentGuid))) || []
     return sortOrder
   }
 
-  saveAllContent (fileId, { chapters, plans, topics }) {
-    chapters.forEach(chapter => this.updateChapter(fileId, chapter.id, chapter))
+  saveAllContent (documentGuid, { chapters, plans, topics }) {
+    chapters.forEach(chapter => this.updateChapter(documentGuid, chapter.guid, chapter))
     plans.forEach(plan => {
-      this.updatePlan(fileId, plan.id, plan)
+      this.updatePlan(documentGuid, plan.guid, plan)
 
       plan.sections.forEach(section => {
-        this.updateSection(fileId, plan.id, section.id, section)
+        this.updateSection(documentGuid, plan.guid, section.guid, section)
       })
     })
-    topics.forEach(topic => this.updateTopic(fileId, topic.id, topic))
+    topics.forEach(topic => this.updateTopic(documentGuid, topic.guid, topic))
   }
 
-  updateChapter (fileId, chapterId, chapter) {
-    if (!fileId) {
+  updateChapter (documentGuid, chapterGuid, chapter) {
+    if (!documentGuid) {
       return
     }
 
-    const key = this.getChapterKey(fileId, chapterId)
+    const key = this.getChapterKey(documentGuid, chapterGuid)
     this.storage.setItem(key, JSON.stringify(chapter))
 
-    let sortOrder = this._getChaptersSortOrder(fileId) || []
-    if (!sortOrder.includes(chapterId)) {
-      sortOrder.push(chapterId)
-      this.arrangeChapters(fileId, sortOrder)
+    let sortOrder = this._getChaptersSortOrder(documentGuid) || []
+    if (!sortOrder.includes(chapterGuid)) {
+      sortOrder.push(chapterGuid)
+      this.arrangeChapters(documentGuid, sortOrder)
     }
   }
 
-  updateDocument ({ id, name }) {
-    this.storage.setItem(this.documentsKey(id), JSON.stringify({ id, name }))
+  updateDocument ({ guid, name }) {
+    this.storage.setItem(this.documentsKey(guid), JSON.stringify({ guid, name }))
   }
 
-  updatePlan (fileId, planId, plan) {
-    if (!fileId) {
+  updatePlan (documentGuid, planGuid, plan) {
+    if (!documentGuid) {
       return
     }
 
-    const key = this.getPlanKey(fileId, planId)
+    const key = this.getPlanKey(documentGuid, planGuid)
 
     plan = clone(plan)
     plan.sections = null
     this.storage.setItem(key, JSON.stringify(plan))
 
-    let sortOrder = this._getPlansSortOrder(fileId) || []
-    if (!sortOrder.includes(planId)) {
-      sortOrder.push(planId)
-      this.arrangePlans(fileId, sortOrder)
+    let sortOrder = this._getPlansSortOrder(documentGuid) || []
+    if (!sortOrder.includes(planGuid)) {
+      sortOrder.push(planGuid)
+      this.arrangePlans(documentGuid, sortOrder)
     }
   }
 
-  updateSection (fileId, planId, sectionId, section) {
-    if (!fileId) {
+  updateSection (documentGuid, planGuid, sectionGuid, section) {
+    if (!documentGuid) {
       return
     }
 
-    const key = this.getSectionKey(fileId, planId, sectionId)
+    const key = this.getSectionKey(documentGuid, planGuid, sectionGuid)
     this.storage.setItem(key, JSON.stringify(section))
 
-    let sortOrder = this._getSectionSortOrder(fileId, planId) || []
-    if (!sortOrder.includes(sectionId)) {
-      sortOrder.push(sectionId)
-      this.arrangeSections(fileId, sortOrder)
+    let sortOrder = this._getSectionSortOrder(documentGuid, planGuid) || []
+    if (!sortOrder.includes(sectionGuid)) {
+      sortOrder.push(sectionGuid)
+      this.arrangeSections(documentGuid, sortOrder)
     }
   }
 
-  updateTopic (fileId, topicId, topic) {
-    if (!fileId) {
+  updateTopic (documentGuid, topicGuid, topic) {
+    if (!documentGuid) {
       return
     }
 
-    const key = this.getTopicKey(fileId, topicId)
+    const key = this.getTopicKey(documentGuid, topicGuid)
     this.storage.setItem(key, JSON.stringify(topic))
 
-    let sortOrder = this._getTopicsSortOrder(fileId) || []
-    if (!sortOrder.includes(topicId)) {
-      sortOrder.push(topicId)
-      this.arrangeTopics(fileId, sortOrder)
+    let sortOrder = this._getTopicsSortOrder(documentGuid) || []
+    if (!sortOrder.includes(topicGuid)) {
+      sortOrder.push(topicGuid)
+      this.arrangeTopics(documentGuid, sortOrder)
     }
   }
 
@@ -278,10 +278,10 @@ class LocalStorageApi {
 
   getFullExport () {
     const documents = this._getAllDocuments().map(doc => {
-      doc.chapters = this._getAllChapters(doc.id)
-      doc.topics = this._getAllTopics(doc.id)
-      doc.plans = this._getAllPlans(doc.id).map(plan => {
-        plan.sections = this._getAllSections(doc.id, plan.id)
+      doc.chapters = this._getAllChapters(doc.guid)
+      doc.topics = this._getAllTopics(doc.guid)
+      doc.plans = this._getAllPlans(doc.guid).map(plan => {
+        plan.sections = this._getAllSections(doc.guid, plan.guid)
         return plan
       })
       return doc
@@ -291,25 +291,6 @@ class LocalStorageApi {
   }
 
   doFullImport (documents) {
-    documents.forEach(doc => {
-      if (doc.guid) {
-        doc.id = doc.guid
-        delete doc.guid
-      }
-
-      [
-        ...(doc.chapters || []),
-        ...(doc.topics || []),
-        ...(doc.plans || [])
-      ].concat(...doc.plans.map(plan => plan.sections || []))
-      .forEach(item => {
-        if (item.guid) {
-          item.id = item.guid
-          delete item.guid
-        }
-      })
-    })
-
     const backup = JSON.parse(JSON.stringify(this.storage))
     try {
       this.storage.clear()
@@ -320,7 +301,7 @@ class LocalStorageApi {
 
       for (const doc of documents) {
         this.addDocument(doc)
-        this.saveAllContent(doc.id, doc)
+        this.saveAllContent(doc.guid, doc)
       }
     } catch (err) {
       Object.keys(backup).forEach(key => {

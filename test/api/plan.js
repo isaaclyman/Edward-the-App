@@ -51,7 +51,7 @@ test('arrange plans', async t => {
     app.post(route('plan/arrange'))
     .send({
       planIds: [plan2.planId, plan1.planId],
-      fileId: doc.id
+      documentGuid: doc.id
     })
     .expect(200)
   )
@@ -68,7 +68,7 @@ test('delete plan', async t => {
   const plan2 = await addPlan(app, doc.id, 'Test2')
   await (
     app.post(route('plan/delete'))
-    .send({ fileId: doc.id, planId: plan1.planId })
+    .send({ documentGuid: doc.id, planId: plan1.planId })
     .expect(200)
   )
 
@@ -82,7 +82,7 @@ test('update plan', async t => {
   const plan1 = await addPlan(app, doc.id, 'Test1')
   const plan2 = await addPlan(app, doc.id, 'Test2')
   const newPlan = {
-    fileId: doc.id,
+    documentGuid: doc.id,
     planId: plan1.planId,
     plan: {
       archived: true,

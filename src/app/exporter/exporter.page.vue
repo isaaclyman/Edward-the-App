@@ -68,11 +68,11 @@ export default {
     allTopics () {
       return this.$store.state.chapters.topics
     },
-    documentId () {
-      return this.$store.state.file.currentFile.id
+    documentGuid () {
+      return this.$store.state.document.currentDocument.guid
     },
     documentTitle () {
-      return this.$store.state.file.currentFile.name
+      return this.$store.state.document.currentDocument.name
     },
     masterTopics () {
       return this.$store.state.chapters.topics
@@ -149,8 +149,8 @@ export default {
       const nestedTopics = this.allChapters.filter(chapter =>
         !chapter.archived || this.includeArchived
       ).map(chapter => {
-        const chapterTopics = Object.keys(chapter.topics).map(id => {
-          const topic = chapter.topics[id]
+        const chapterTopics = Object.keys(chapter.topics).map(guid => {
+          const topic = chapter.topics[guid]
           const masterTopic = this.getMasterTopic(topic)
           topic.archived = masterTopic.archived
           topic.title = `${chapter.title} - ${masterTopic.title}`
@@ -208,14 +208,14 @@ export default {
       })
     },
     getMasterTopic (chapterTopic) {
-      return this.masterTopics.find(topic => topic.id === chapterTopic.id)
+      return this.masterTopics.find(topic => topic.guid === chapterTopic.guid)
     },
     setFile (event) {
       swal({
         buttons: true,
         dangerMode: true,
         icon: 'warning',
-        text: `Are you sure you want to import this document? It will overwrite everything in the current document.`,
+        text: `Are you sure you want to import this file? It will overwrite everything in the current document.`,
         title: 'Overwrite current document?'
       }).then(willOverwrite => {
         if (!willOverwrite) {

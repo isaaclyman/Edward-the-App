@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <div class="topic" v-for="(topic, index) in chapterTopics" v-show="showTopic(topic)" :key="topic.id">
+    <div class="topic" v-for="(topic, index) in chapterTopics" v-show="showTopic(topic)" :key="topic.guid">
       <div class="topic-head">
         <h5 class="topic-title">
           {{ getMasterTopic(topic).title }}
@@ -48,7 +48,7 @@ export default {
   },
   computed: {
     chapterTopics () {
-      return this.topics.map(topic => this.getTopic(this.chapter, topic))
+      return this.topics.map(topic => this.getTopic(this.chapter, topic)).filter(topic => !!topic)
     }
   },
   data () {
@@ -94,18 +94,18 @@ export default {
       return GetHtml(topic.content)
     },
     getMasterTopic (chapterTopic) {
-      return this.topics.find(topic => topic.id === chapterTopic.id)
+      return this.topics.find(topic => topic.guid === chapterTopic.guid) || {}
     },
     getTopic (chapter, topic) {
       if (!chapter.topics) {
         throw new Error(`Chapter ${chapter.title} was created incorrectly and has no 'topics' dictionary.`)
       }
 
-      if (!chapter.topics[topic.id]) {
+      if (!chapter.topics[topic.guid]) {
         this.$store.commit(ADD_TOPIC_TO_CHAPTER, { chapter, topic })
       }
 
-      return chapter.topics[topic.id]
+      return chapter.topics[topic.guid]
     },
     getTextContent (content) {
       return GetContentString(content)

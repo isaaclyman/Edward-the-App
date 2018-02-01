@@ -22,7 +22,7 @@ const tests = isPremium => () => {
     }
 
     cy.visit('/app.html#/write')
-    cy.get('select.file-dropdown').select('test')
+    cy.get('select.document-dropdown').select('test')
     cy.get('.editor-wrap').find('div.ql-editor').as('chapterEditor')
     cy.get('.editor-wrap').find('.ql-toolbar').find('button.ql-fullscreen').as('fullscreen')
   })

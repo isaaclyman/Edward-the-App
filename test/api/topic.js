@@ -51,7 +51,7 @@ test('arrange topics', async t => {
   await (
     app.post(route('topic/arrange'))
     .send({
-      fileId: doc.id,
+      documentGuid: doc.id,
       topicIds: [topic2.topicId, topic1.topicId]
     })
     .expect(200)
@@ -71,7 +71,7 @@ test('delete topic', async t => {
   await (
     app.post(route('topic/delete'))
     .send({
-      fileId: doc.id,
+      documentGuid: doc.id,
       topicId: topic1.topicId
     })
     .expect(200)
@@ -88,7 +88,7 @@ test('update topic', async t => {
   const topic2 = await addTopic(app, doc.id, 'Test2')
 
   const newTopic = {
-    fileId: doc.id,
+    documentGuid: doc.id,
     topicId: topic1.topicId,
     topic: {
       archived: true,

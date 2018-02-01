@@ -3,18 +3,18 @@ const ts = require('../models/_util').addTimestamps
 const utilities = require('../api/utilities')
 const getDocId = utilities.getDocId
 
-const updateTopic = (db, userId, documentId, topic) => {
-  const docId = () => getDocId(db.knex, userId, documentId)
+const updateTopic = (db, userId, docGuid, topic) => {
+  const docId = () => getDocId(db.knex, userId, docGuid)
 
   return utilities.upsert(db.knex, 'master_topics', {
     where: {
-      guid: topic.id,
+      guid: topic.guid,
       'document_id': docId(),
       'user_id': userId
     },
     insert: ts(db.knex, {
       archived: topic.archived,
-      guid: topic.id,
+      guid: topic.guid,
       title: topic.title,
       'document_id': docId(),
       'user_id': userId
@@ -30,14 +30,14 @@ const updateTopic = (db, userId, documentId, topic) => {
         'user_id': userId
       },
       insert: ts(db.knex, {
-        order: JSON.stringify([topic.id]),
+        order: JSON.stringify([topic.guid]),
         'document_id': docId(),
         'user_id': userId
       }),
       getUpdate: dbOrder => {
         const order = JSON.parse(dbOrder.order || '[]')
-        if (!order.includes(topic.id)) {
-          order.push(topic.id)
+        if (!order.includes(topic.guid)) {
+          order.push(topic.guid)
           return ts(db.knex, { order: JSON.stringify(order) }, true)
         }
 
@@ -85,10 +85,10 @@ const getTopics = (db, userId, documentGuid) => {
 const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
 
-  // POST { fileId, topicIds }
+  // POST { documentGuid, topicGuids }
   app.post(route('topic/arrange'), isPremiumUser, (req, res, next) => {
-    const documentGuid = req.body.fileId
-    const topicGuids = req.body.topicIds
+    const documentGuid = req.body.documentGuid
+    const topicGuids = req.body.topicGuids
     const userId = req.user.id
 
     const docId = () => getDocId(db.knex, userId, documentGuid)
@@ -115,10 +115,10 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     })
   })
 
-  // POST { fileId, topicId }
+  // POST { documentGuid, topicGuid }
   app.post(route('topic/delete'), isPremiumUser, (req, res, next) => {
-    const documentGuid = req.body.fileId
-    const topicGuid = req.body.topicId
+    const documentGuid = req.body.documentGuid
+    const topicGuid = req.body.topicGuid
     const userId = req.user.id
 
     const docId = () => getDocId(db.knex, userId, documentGuid)
@@ -164,12 +164,12 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     })
   })
 
-  // POST { fileId, topicId, topic: {
-  //  archived, id, title
+  // POST { documentGuid, topicGuid, topic: {
+  //  archived, guid, title
   // } }
   app.post(route('topic/update'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
-    const documentGuid = req.body.fileId
+    const documentGuid = req.body.documentGuid
     const topic = req.body.topic
 
     updateTopic(db, userId, documentGuid, topic).then(() => {

@@ -8,7 +8,7 @@ export const addTopic = async (app, docId, title) => {
   const topicId = uuid()
 
   const topic = {
-    fileId: docId,
+    documentGuid: docId,
     topicId,
     topic: {
       archived: false,
@@ -39,7 +39,7 @@ export const checkTopics = (t, app, docId, expectFn) => {
 
 export const compareTopics = (t, docId, apiTopic, topic) => {
   t.deepEqual({
-    fileId: docId,
+    documentGuid: docId,
     topicId: apiTopic.guid,
     topic: {
       archived: apiTopic.archived,

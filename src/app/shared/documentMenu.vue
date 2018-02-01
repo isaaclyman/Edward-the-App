@@ -1,7 +1,7 @@
 <template>
   <div class="menu">
     <div class="menu-item">
-      <file-picker></file-picker>
+      <document-picker></document-picker>
     </div>
     <div class="menu-item">
       <router-link to="/documentEdit">
@@ -39,14 +39,14 @@
 </template>
 
 <script>
-import FilePicker from './filePicker.vue'
+import DocumentPicker from './documentPicker.vue'
 import swal from 'sweetalert'
-import { UNLOAD_CURRENT_DOCUMENT } from './file.store'
+import { UNLOAD_CURRENT_DOCUMENT } from './document.store'
 import userApi from '../api/userApi'
 
 export default {
   components: {
-    FilePicker
+    DocumentPicker
   },
   computed: {
     notDemo () {

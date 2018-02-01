@@ -22,7 +22,7 @@ const tests = isPremium => () => {
     }
 
     cy.visit('/app.html#/outline')
-    cy.get('select.file-dropdown').select('test')
+    cy.get('select.document-dropdown').select('test')
   })
 
   it('has a chapters list', () => {

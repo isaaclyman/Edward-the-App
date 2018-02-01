@@ -8,7 +8,7 @@ export const addChapter = async (app, docId, title) => {
   const chapterId = uuid()
 
   const chapter = {
-    fileId: docId,
+    documentGuid: docId,
     chapterId: chapterId,
     chapter: {
       archived: false,
@@ -41,7 +41,7 @@ export const checkChapters = (t, app, docId, expectFn) => {
 
 export const compareChapters = (t, docId, apiChapter, chapter) => {
   t.deepEqual({
-    fileId: docId,
+    documentGuid: docId,
     chapterId: apiChapter.guid,
     chapter: {
       archived: apiChapter.archived,

@@ -1,6 +1,6 @@
 <template>
   <div class="tabs">
-    <button v-for="(item, index) in dataArray" :key="item.id" v-show="filterTabs(item)"
+    <button v-for="(item, index) in dataArray" :key="item.guid" v-show="filterTabs(item)"
             class="button-tab" :class="{ 'active': isActive(index) }"
             @click="selectItem(index)"
             @mouseover="hoverItem(index)"

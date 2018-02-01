@@ -51,7 +51,7 @@ test('arrange sections', async t => {
   await (
     app.post(route('section/arrange'))
     .send({
-      fileId: doc.id,
+      documentGuid: doc.id,
       planId: plan.planId,
       sectionIds: [section2.sectionId, section1.sectionId]
     })
@@ -71,7 +71,7 @@ test('update section', async t => {
   const section2 = await addSection(app, doc.id, plan.planId, 'Test2')
 
   const newSection = {
-    fileId: doc.id,
+    documentGuid: doc.id,
     planId: plan.planId,
     sectionId: section1.sectionId,
     section: {

@@ -8,7 +8,7 @@ const utilities = require('./utilities')
 
 const addDocument = (db, userId, document) => {
   return db.knex('documents').where({
-    guid: document.id,
+    guid: document.guid,
     'user_id': userId
   }).first().then(doc => {
     if (doc) {
@@ -19,18 +19,18 @@ const addDocument = (db, userId, document) => {
     return utilities.upsert(db.knex, 'document_orders', {
       where: { 'user_id': userId },
       insert: ts(db.knex, {
-        order: JSON.stringify([document.id]),
+        order: JSON.stringify([document.guid]),
         'user_id': userId
       }),
       getUpdate: dbOrder => {
         const order = JSON.parse(dbOrder.order || '[]')
-        order.push(document.id)
+        order.push(document.guid)
         return ts(db.knex, { order: JSON.stringify(order) }, true)
       }
     })
   }).then(() => {
     return db.knex('documents').insert(ts(db.knex, {
-      guid: document.id,
+      guid: document.guid,
       name: document.name,
       'user_id': userId
     }))
@@ -67,11 +67,11 @@ const getDocuments = (db, userId) => {
       ({ order = '[]' } = {}) => JSON.parse(order)
     )
   ]).then(([documents, docOrder]) => {
-    // If there are any document IDs missing from the order, failsafe them in
-    const missingDocIds = documents.map(doc => doc.guid).filter(guid => !docOrder.includes(guid))
+    // If there are any document guids missing from the order, failsafe them in
+    const missingDocGuids = documents.map(doc => doc.guid).filter(guid => !docOrder.includes(guid))
 
-    if (missingDocIds.length) {
-      const newDocOrder = JSON.stringify(docOrder.concat(missingDocIds))
+    if (missingDocGuids.length) {
+      const newDocOrder = JSON.stringify(docOrder.concat(missingDocGuids))
       return db.knex('document_orders').where('user_id', userId).update({
         order: newDocOrder
       }).then(() => [documents, newDocOrder])
@@ -96,7 +96,7 @@ const saveAllContent = (db, userId, docGuid, chapters, topics, plans) => {
 
   const updatePlanFns = plans.map(
     plan => () => updatePlan(db, userId, docGuid, plan).then(() => {
-      const updateSectionFns = plan.sections.map(section => () => updateSection(db, userId, docGuid, plan.id, section))
+      const updateSectionFns = plan.sections.map(section => () => updateSection(db, userId, docGuid, plan.guid, section))
       return orderPromises(updateSectionFns)
     })
   )
@@ -108,7 +108,7 @@ const saveAllContent = (db, userId, docGuid, chapters, topics, plans) => {
 const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
 
-  // POST { id, name }
+  // POST { guid, name }
   app.post(route('document/add'), isPremiumUser, (req, res, next) => {
     const document = req.body
     const userId = req.user.id
@@ -121,9 +121,9 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     })
   })
 
-  // POST { id }
+  // POST { guid }
   app.post(route('document/delete'), isPremiumUser, (req, res, next) => {
-    const docGuid = req.body.id
+    const docGuid = req.body.guid
     const userId = req.user.id
 
     deleteDocument(db, userId, docGuid).then(() => {
@@ -134,13 +134,13 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     })
   })
 
-  // POST { id, name } UPDATES name
+  // POST { guid, name } UPDATES name
   app.post(route('document/update'), isPremiumUser, (req, res, next) => {
     const document = req.body
     const userId = req.user.id
 
     db.knex('documents').where({
-      guid: document.id,
+      guid: document.guid,
       'user_id': userId
     }).update({ name: document.name }).then(() => {
       res.status(200).send(`Document "${document.name}" updated.`)
@@ -163,10 +163,10 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   })
 
   // SAVE ALL CONTENT
-  // POST { fileId, chapters, plans, topics }
+  // POST { documentGuid, chapters, plans, topics }
   app.post(route('document/saveAll'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
-    const { fileId: docGuid, chapters, topics, plans } = req.body
+    const { documentGuid: docGuid, chapters, topics, plans } = req.body
 
     saveAllContent(db, userId, docGuid, chapters, topics, plans).then(() => {
       res.status(200).send({ docGuid, chapters, plans, topics })

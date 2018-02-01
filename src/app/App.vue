@@ -1,6 +1,6 @@
 <template>
-  <div id="app" class="app" v-if="currentFile.id">
-    <file-menu></file-menu>
+  <div id="app" class="app" v-if="currentDocument.guid">
+    <document-menu></document-menu>
     <div class="app-header">
       <div class="app-header--logo-wrap" ref="logoWrap" title="Made in Utah by Isaac.">
         <img class="app-header--logo" src="../../static/logo.png">
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import FileMenu from './shared/fileMenu.vue'
+import DocumentMenu from './shared/documentMenu.vue'
 import MainMenu from './shared/mainMenu.vue'
 import { SET_DEFAULT_USER, SET_USER, SET_USER_PROMISE } from './shared/user.store'
 import tooltip from './shared/tippyBuilder'
@@ -50,13 +50,13 @@ export default {
     this.$store.commit(SET_USER_PROMISE, userPromise)
   },
   components: {
-    FileMenu,
+    DocumentMenu,
     MainMenu,
     Wizard
   },
   computed: {
-    currentFile () {
-      return this.$store.state.file.currentFile || { id: null }
+    currentDocument () {
+      return this.$store.state.document.currentDocument || { guid: null }
     }
   },
   mounted () {

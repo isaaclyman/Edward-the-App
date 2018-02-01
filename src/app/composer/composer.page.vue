@@ -165,7 +165,7 @@ export default {
       return this.getReadTimeMinutes(this.documentFullText)
     },
     documentTitle () {
-      return this.$store.state.file.currentFile.name
+      return this.$store.state.document.currentDocument.name
     },
     documentWordCount () {
       return this.getWordCount(this.documentFullText)
@@ -230,7 +230,7 @@ export default {
       const chapter = {
         archived: false,
         content: null,
-        id: guid(),
+        guid: guid(),
         title,
         topics: {}
       }
@@ -238,7 +238,7 @@ export default {
       this.$store.commit(ADD_CHAPTER, { chapter })
     },
     getMasterTopic (chapterTopic) {
-      return this.allTopics.find(topic => topic.id === chapterTopic.id)
+      return this.allTopics.find(topic => topic.guid === chapterTopic.guid)
     },
     getReadTimeMinutes (str) {
       return Math.ceil(this.getWordCount(str) / 275)
@@ -275,7 +275,7 @@ export default {
     },
     showTopic (chapterTopic) {
       const masterTopic = this.getMasterTopic(chapterTopic)
-      return !masterTopic.archived || this.filters.archived
+      return !masterTopic || !masterTopic.archived || this.filters.archived
     },
     switchOutline () {
       this.showPlans = false

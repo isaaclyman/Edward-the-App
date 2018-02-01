@@ -10,13 +10,13 @@
         </p>
       </div>
       <div class="content border-bottom">
-        <div v-if="!hasFiles">
+        <div v-if="!hasDocuments">
           <p>You haven't created any documents yet.</p>
         </div>
-        <div v-if="hasFiles">
+        <div v-if="hasDocuments">
           <p>Choose a saved document:</p>
-          <div class="file-picker-wrap">
-            <file-picker></file-picker>
+          <div class="document-picker-wrap">
+            <document-picker></document-picker>
           </div>
         </div>
       </div>
@@ -49,18 +49,18 @@
 </template>
 
 <script>
-import { SET_UP_DOCUMENT } from '../shared/file.store'
+import { SET_UP_DOCUMENT } from '../shared/document.store'
 import documentTypes from './documentTypes'
-import FilePicker from '../shared/filePicker.vue'
+import DocumentPicker from '../shared/documentPicker.vue'
 import guid from '../shared/guid'
 
 export default {
   components: {
-    FilePicker
+    DocumentPicker
   },
   computed: {
-    hasFiles () {
-      return this.$store.state.file.ownedFiles.length > 0
+    hasDocuments () {
+      return this.$store.state.document.ownedDocuments.length > 0
     }
   },
   data () {
@@ -79,12 +79,12 @@ export default {
         return
       }
 
-      const newFile = {
-        id: guid(),
+      const newDocument = {
+        guid: guid(),
         name
       }
 
-      this.$store.dispatch(SET_UP_DOCUMENT, { file: newFile, type })
+      this.$store.dispatch(SET_UP_DOCUMENT, { document: newDocument, type })
     },
     selectDocument (type) {
       this.selectedType = type
@@ -139,7 +139,7 @@ export default {
   border-bottom: 1px solid #CCC;
 }
 
-.file-picker-wrap {
+.document-picker-wrap {
   margin-top: 6px;
 }
 

@@ -207,7 +207,7 @@ export default {
       const chapter = {
         archived: false,
         content: null,
-        id: guid(),
+        guid: guid(),
         title,
         topics: {}
       }
@@ -221,7 +221,7 @@ export default {
 
       const topic = {
         archived: false,
-        id: guid(),
+        guid: guid(),
         title
       }
 
@@ -254,7 +254,7 @@ export default {
       })
     },
     getMasterTopic (chapterTopic) {
-      return this.allTopics.find(topic => topic.id === chapterTopic.id)
+      return this.allTopics.find(topic => topic.guid === chapterTopic.guid)
     },
     helpClick (content, title) {
       swal({

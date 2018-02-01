@@ -52,7 +52,7 @@ test('arrange chapters', async t => {
     app.post(route('chapter/arrange'))
     .send({
       chapterIds: [chap2.chapterId, chap1.chapterId],
-      fileId: doc.id
+      documentGuid: doc.id
     })
     .expect(200)
   )
@@ -69,7 +69,7 @@ test('delete chapter', async t => {
   const chap2 = await addChapter(app, doc.id, 'Test2')
   await (
     app.post(route('chapter/delete'))
-    .send({ fileId: doc.id, chapterId: chap1.chapterId })
+    .send({ documentGuid: doc.id, chapterId: chap1.chapterId })
     .expect(200)
   )
 
@@ -83,7 +83,7 @@ test('update chapter', async t => {
   const chap1 = await addChapter(app, doc.id, 'Test1')
   const chap2 = await addChapter(app, doc.id, 'Test2')
   const newChapter = {
-    fileId: doc.id,
+    documentGuid: doc.id,
     chapterId: chap1.chapterId,
     chapter: {
       archived: false,
@@ -185,7 +185,7 @@ test('update chapter topic content', async t => {
   const topic2 = await addTopic(app, doc.id, 'Topic2')
 
   const newChapter = {
-    fileId: doc.id,
+    documentGuid: doc.id,
     chapterId: chap1.chapterId,
     chapter: {
       archived: chap1.chapter.archived,

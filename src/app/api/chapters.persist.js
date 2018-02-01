@@ -7,15 +7,15 @@ import { ADD_CHAPTER, ADD_PLAN, ADD_SECTION, ADD_TOPIC, ADD_TOPIC_TO_CHAPTER,
   UPDATE_SECTION, UPDATE_SECTION_CONTENT, UPDATE_SECTION_TAGS,
   UPDATE_TOPIC, UPDATE_TOPIC_CONTENT } from '../shared/chapters.store'
 
-import { ADD_FILE, REMOVE_OWNED_FILE, UPDATE_FILE_NAME } from '../shared/file.store'
+import { ADD_DOCUMENT, REMOVE_OWNED_DOCUMENT, UPDATE_DOCUMENT_NAME } from '../shared/document.store'
 
 import { getStorageApi } from './storageSwitch'
 import debounce from 'lodash/debounce'
 
 const mutations = {
-  addDocument: [ADD_FILE],
+  addDocument: [ADD_DOCUMENT],
   deleteChapter: [DELETE_CHAPTER],
-  deleteDocument: [REMOVE_OWNED_FILE],
+  deleteDocument: [REMOVE_OWNED_DOCUMENT],
   deletePlan: [DELETE_PLAN],
   deleteSection: [DELETE_SECTION],
   deleteTopic: [DELETE_TOPIC],
@@ -26,7 +26,7 @@ const mutations = {
   updateChapter: [ADD_CHAPTER, ADD_TOPIC_TO_CHAPTER, ARCHIVE_CHAPTER,
     RESTORE_CHAPTER,
     UPDATE_CHAPTER, UPDATE_CHAPTER_CONTENT, UPDATE_TOPIC_CONTENT],
-  updateDocument: [UPDATE_FILE_NAME],
+  updateDocument: [UPDATE_DOCUMENT_NAME],
   updatePlan: [ADD_PLAN, ARCHIVE_PLAN, RESTORE_PLAN, UPDATE_PLAN],
   updateSection: [ADD_SECTION, ARCHIVE_SECTION, RESTORE_SECTION,
     UPDATE_SECTION, UPDATE_SECTION_CONTENT, UPDATE_SECTION_TAGS],
@@ -49,7 +49,7 @@ export const chapterAutosaverPlugin = store => {
 
 function handleMutation (mutation, state, storage) {
   const { type, payload } = mutation
-  const fileId = state.file.currentFile && state.file.currentFile.id
+  const documentGuid = state.document.currentDocument && state.document.currentDocument.guid
 
   if (mutations.addDocument.includes(type)) {
     storage.addDocument(payload)
@@ -57,7 +57,7 @@ function handleMutation (mutation, state, storage) {
   }
 
   if (mutations.deleteDocument.includes(type)) {
-    storage.deleteDocument(payload.id)
+    storage.deleteDocument(payload.guid)
     return
   }
 
@@ -66,67 +66,67 @@ function handleMutation (mutation, state, storage) {
     return
   }
 
-  if (!fileId) {
+  if (!documentGuid) {
     return
   }
 
   if (mutations.deleteChapter.includes(type)) {
-    storage.deleteChapter(fileId, payload.chapter.id)
+    storage.deleteChapter(documentGuid, payload.chapter.guid)
     return
   }
 
   if (mutations.deletePlan.includes(type)) {
-    storage.deletePlan(fileId, payload.plan.id)
+    storage.deletePlan(documentGuid, payload.plan.guid)
     return
   }
 
   if (mutations.deleteSection.includes(type)) {
-    storage.deleteSection(fileId, payload.plan.id, payload.section.id)
+    storage.deleteSection(documentGuid, payload.plan.guid, payload.section.guid)
     return
   }
 
   if (mutations.deleteTopic.includes(type)) {
-    storage.deleteTopic(fileId, payload.topic.id)
+    storage.deleteTopic(documentGuid, payload.topic.guid)
     return
   }
 
   if (mutations.rearrangeChapter.includes(type)) {
-    storage.arrangeChapters(fileId, payload.chapters.map(chapter => chapter.id))
+    storage.arrangeChapters(documentGuid, payload.chapters.map(chapter => chapter.guid))
     return
   }
 
   if (mutations.rearrangePlan.includes(type)) {
-    storage.arrangePlans(fileId, payload.plans.map(plan => plan.id))
+    storage.arrangePlans(documentGuid, payload.plans.map(plan => plan.guid))
     return
   }
 
   if (mutations.rearrangeSection.includes(type)) {
-    storage.arrangeSections(fileId, payload.plan.id, payload.sections.map(section => section.id))
+    storage.arrangeSections(documentGuid, payload.plan.guid, payload.sections.map(section => section.guid))
     return
   }
 
   if (mutations.rearrangeTopic.includes(type)) {
-    storage.arrangeTopics(fileId, payload.topics.map(topic => topic.id))
+    storage.arrangeTopics(documentGuid, payload.topics.map(topic => topic.guid))
     return
   }
 
   if (mutations.updateChapter.includes(type)) {
-    storage.updateChapter(fileId, payload.chapter.id, payload.chapter)
+    storage.updateChapter(documentGuid, payload.chapter.guid, payload.chapter)
     return
   }
 
   if (mutations.updatePlan.includes(type)) {
-    storage.updatePlan(fileId, payload.plan.id, payload.plan)
+    storage.updatePlan(documentGuid, payload.plan.guid, payload.plan)
     return
   }
 
   if (mutations.updateSection.includes(type)) {
-    storage.updateSection(fileId, payload.plan.id, payload.section.id, payload.section)
+    storage.updateSection(documentGuid, payload.plan.guid, payload.section.guid, payload.section)
     return
   }
 
   if (mutations.updateTopic.includes(type)) {
-    storage.updateTopic(fileId, payload.topic.id, payload.topic)
+    storage.updateTopic(documentGuid, payload.topic.guid, payload.topic)
     return
   }
 }

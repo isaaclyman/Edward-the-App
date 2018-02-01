@@ -59,6 +59,13 @@ button.button-green {
   fill: #FFF;
 }
 
+button.button-gold {
+  background-color: #ffeb3b;
+  border: 1px solid #c8b900;
+  color: #000;
+  fill: #000;
+}
+
 button.button-icon {
   border: none;
   padding: 0;

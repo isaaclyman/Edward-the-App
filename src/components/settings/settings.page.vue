@@ -32,6 +32,18 @@
         Save
       </button>
     </div>
+    <hr>
+    <div class="account-type">
+      <div>
+        You have a {{accountType}}.
+        <span v-if="!isPremium">For a better experience, upgrade to a Premium account.</span>
+      </div>
+      <div class="upgrade-button">
+        <button class="button-green" @click="goToUpgrade()">
+          Upgrade
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 </template>
@@ -44,8 +56,14 @@ const mockPassword = '************'
 export default {
   components: {},
   computed: {
+    accountType () {
+      return this.user.accountType.displayName
+    },
+    isPremium () {
+      return this.user.isPremium
+    },
     notDemo () {
-      return this.$store.state.user.user.accountType.name !== 'DEMO'
+      return this.user.accountType.name !== 'DEMO'
     },
     user () {
       return this.$store.state.user.user
@@ -79,6 +97,9 @@ export default {
     editPassword () {
       this.editingPassword = true
       this.account.password = ''
+    },
+    goToUpgrade () {
+      window.location.href = '/auth#/account'
     },
     saveEmail () {
       this.$store.commit(UPDATE_EMAIL, { email: this.account.email })
@@ -116,5 +137,9 @@ export default {
 
 .account-input {
   min-width: 250px;
+}
+
+.upgrade-button {
+  margin-top: 6px;
 }
 </style>

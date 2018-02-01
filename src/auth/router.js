@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import authApi from './authApi'
 
 Vue.use(Router)
 
+import Account from './account.page.vue'
 import Limited from './limited.page.vue'
 import Login from './login.page.vue'
 import Premium from './premium.page.vue'
@@ -10,9 +12,21 @@ import Signup from './signup.page.vue'
 import Verification from './verification.page.vue'
 import Verify from './verify.page.vue'
 
-const assertSignedIn = () => {
-  // Figure out if the user is signed in
-  return true
+let currentUser = null
+const getCurrentUser = () => currentUser
+
+const assertSignedIn = (to, from, next) => {
+  authApi.getUser().then(user => {
+    if (user.verified === false) {
+      return next({ path: '/verification' })
+    }
+
+    currentUser = user
+    next()
+  }, err => {
+    console.error(err)
+    next({ path: '/login' })
+  })
 }
 
 export default new Router({
@@ -25,9 +39,8 @@ export default new Router({
       path: '/limited',
       name: 'Limited Account',
       component: Limited,
-      beforeEnter: (to, from, next) => {
-        assertSignedIn() ? next() : next({ path: '/login' })
-      }
+      beforeEnter: assertSignedIn,
+      meta: { getCurrentUser }
     },
     {
       path: '/login',
@@ -35,12 +48,18 @@ export default new Router({
       component: Login
     },
     {
+      path: '/account',
+      name: 'Account',
+      component: Account,
+      beforeEnter: assertSignedIn,
+      meta: { getCurrentUser }
+    },
+    {
       path: '/gopremium',
       name: 'Premium Account',
       component: Premium,
-      beforeEnter: (to, from, next) => {
-        assertSignedIn() ? next() : next({ path: '/login' })
-      }
+      beforeEnter: assertSignedIn,
+      meta: { getCurrentUser }
     },
     {
       path: '/signup',

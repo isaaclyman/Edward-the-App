@@ -23,9 +23,12 @@
     <div class="menu-item" v-if="notDemo">
       <router-link to="/settings">
         <button class="menu-button">
-          Settings
+          Account
         </button>
       </router-link>
+      <button class="menu-button button-green" @click="goToUpgrade()">
+        Upgrade
+      </button>
     </div>
     <div class="menu-item">
       <button class="menu-button" @click="logOut()">
@@ -54,6 +57,9 @@ export default {
     return {}
   },
   methods: {
+    goToUpgrade () {
+      window.location.href = '/auth#/account'
+    },
     logOut () {
       userApi.logOut().then(() => {
         window.location.href = '/auth'

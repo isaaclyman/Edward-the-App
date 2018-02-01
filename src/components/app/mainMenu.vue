@@ -7,7 +7,7 @@
           <div>{{route.name}}</div>
         </button>
       </router-link>
-      <hr class="vert between" :key="route.name"></hr>
+      <hr class="vert between" :key="route.name">
     </template>
     <div class="spacer"></div>
     <div class="status-wrap" v-if="!isDemo">
@@ -25,11 +25,11 @@
       </div>
     </div>
     <hr class="vert">
-    <div class="account">
+    <div class="account" :title="accountType.description" v-tooltip @click="goToUpgrade()">
       <div class="email">
         {{ email }}
       </div>
-      <div class="account-type" :title="accountType.description" v-tooltip>
+      <div class="account-type">
         {{ accountType.displayName }}
       </div>
     </div>
@@ -104,6 +104,9 @@ export default {
         height: 25,
         width: 25
       })
+    },
+    goToUpgrade () {
+      window.location.href = '/auth#/account'
     }
   },
   watch: {
@@ -200,19 +203,18 @@ hr.between:last-of-type {
 }
 
 .account {
+  cursor: pointer;
   margin-left: 8px;
 }
 
 .email {
   color: #005cb2;
-  cursor: default;
   font-size: 14px;
   margin-right: 20px;
 }
 
 .account-type {
   color: #005cb2;
-  cursor: default;
   font-size: 14px;
   margin-right: 20px;
 }

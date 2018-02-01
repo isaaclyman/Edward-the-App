@@ -1,3 +1,4 @@
+const orderPromises = require('../utilities').orderPromises
 const updateChapter = require('./chapter').updateChapter
 const updateTopic = require('./topic').updateTopic
 const updatePlan = require('./plan').updatePlan
@@ -173,17 +174,6 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       console.error(err)
       res.status(500).send(err)
     })
-  })
-}
-
-function orderPromises (promiseFns) {
-  if (!promiseFns[0]) {
-    return Promise.resolve()
-  }
-
-  return promiseFns[0]().then(() => {
-    promiseFns.splice(0, 1)
-    return orderPromises(promiseFns)
   })
 }
 

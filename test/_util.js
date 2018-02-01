@@ -1,6 +1,7 @@
 const accountTypes = require('../models/accountType')
 const guid = require('uuid/v1')
 const modelUtil = require('../models/_util')
+const orderPromises = require('../utilities').orderPromises
 
 /*
   ROUTES
@@ -103,17 +104,6 @@ function deleteTestUser(knex, email) {
       return orderPromises(deleteFns)
     }).then(() => knex('users').where('email', email).del())
   )
-}
-
-function orderPromises (promiseFns) {
-  if (!promiseFns[0]) {
-    return Promise.resolve()
-  }
-
-  return promiseFns[0]().then(() => {
-    promiseFns.splice(0, 1)
-    return orderPromises(promiseFns)
-  })
 }
 
 function makeTestUserAdmin(knex) {

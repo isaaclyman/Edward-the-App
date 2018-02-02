@@ -4,15 +4,15 @@ import {
   wrapTest
 } from '../_imports'
 
-export const addTopic = async (app, docId, title) => {
-  const topicId = uuid()
+export const addTopic = async (app, docGuid, title) => {
+  const topicGuid = uuid()
 
   const topic = {
-    documentGuid: docId,
-    topicId,
+    documentGuid: docGuid,
+    topicGuid,
     topic: {
       archived: false,
-      id: topicId,
+      guid: topicGuid,
       title
     }
   }
@@ -26,9 +26,9 @@ export const addTopic = async (app, docId, title) => {
   return topic
 }
 
-export const checkTopics = (t, app, docId, expectFn) => {
+export const checkTopics = (t, app, docGuid, expectFn) => {
   return wrapTest(t,
-    app.get(route(`topics/${docId}`))
+    app.get(route(`topics/${docGuid}`))
     .expect(200)
     .expect(response => {
       t.truthy(Array.isArray(response.body))
@@ -37,13 +37,13 @@ export const checkTopics = (t, app, docId, expectFn) => {
   )
 }
 
-export const compareTopics = (t, docId, apiTopic, topic) => {
+export const compareTopics = (t, docGuid, apiTopic, topic) => {
   t.deepEqual({
-    documentGuid: docId,
-    topicId: apiTopic.guid,
+    documentGuid: docGuid,
+    topicGuid: apiTopic.guid,
     topic: {
       archived: apiTopic.archived,
-      id: apiTopic.guid,
+      guid: apiTopic.guid,
       title: apiTopic.title
     }
   }, topic)

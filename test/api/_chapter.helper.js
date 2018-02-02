@@ -4,16 +4,16 @@ import {
   wrapTest
 } from '../_imports'
 
-export const addChapter = async (app, docId, title) => {
-  const chapterId = uuid()
+export const addChapter = async (app, docGuid, title) => {
+  const chapterGuid = uuid()
 
   const chapter = {
-    documentGuid: docId,
-    chapterId: chapterId,
+    documentGuid: docGuid,
+    chapterGuid: chapterGuid,
     chapter: {
       archived: false,
       content: null,
-      id: chapterId,
+      guid: chapterGuid,
       title,
       topics: {}
     }
@@ -28,9 +28,9 @@ export const addChapter = async (app, docId, title) => {
   return chapter
 }
 
-export const checkChapters = (t, app, docId, expectFn) => {
+export const checkChapters = (t, app, docGuid, expectFn) => {
   return wrapTest(t,
-    app.get(route(`chapters/${docId}`))
+    app.get(route(`chapters/${docGuid}`))
     .expect(200)
     .expect(response => {
       t.truthy(Array.isArray(response.body))
@@ -39,20 +39,20 @@ export const checkChapters = (t, app, docId, expectFn) => {
   )
 }
 
-export const compareChapters = (t, docId, apiChapter, chapter) => {
+export const compareChapters = (t, docGuid, apiChapter, chapter) => {
   t.deepEqual({
-    documentGuid: docId,
-    chapterId: apiChapter.guid,
+    documentGuid: docGuid,
+    chapterGuid: apiChapter.guid,
     chapter: {
       archived: apiChapter.archived,
       content: apiChapter.content,
-      id: apiChapter.guid,
+      guid: apiChapter.guid,
       title: apiChapter.title,
-      topics: Object.keys(apiChapter.topics).reduce((topics, id) => {
-        const topic = apiChapter.topics[id]
-        topics[id] = {
+      topics: Object.keys(apiChapter.topics).reduce((topics, guid) => {
+        const topic = apiChapter.topics[guid]
+        topics[guid] = {
           content: topic.content,
-          id
+          guid
         }
 
         return topics

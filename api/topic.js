@@ -181,8 +181,8 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   })
 
   // GET
-  app.get(route('topics/:documentId'), isPremiumUser, (req, res, next) => {
-    const documentGuid = req.params.documentId
+  app.get(route('topics/:documentGuid'), isPremiumUser, (req, res, next) => {
+    const documentGuid = req.params.documentGuid
     const userId = req.user.id
     
     getTopics(db, userId, documentGuid).then(topics => {

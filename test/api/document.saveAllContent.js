@@ -30,25 +30,25 @@ test('save all content', async t => {
   const chapters = ['Introduction', 'Chapter 1'].map(title => ({
     archived: false,
     content: null,
-    id: uuid(),
+    guid: uuid(),
     title,
     topics: {}
   }))
 
   const topics = ['Events', 'Scenes'].map(title => ({
     archived: false,
-    id: uuid(),
+    guid: uuid(),
     title
   }))
 
   const plans = ['Synopsis', 'Plot'].map(title => ({
     archived: false,
-    id: uuid(),
+    guid: uuid(),
     title,
     sections: [`${title}-1`, `${title}-2`].map(title => ({
       archived: false,
       content: null,
-      id: uuid(),
+      guid: uuid(),
       tags: [],
       title
     }))
@@ -57,7 +57,7 @@ test('save all content', async t => {
   await (
     app.post(route('document/saveAll'))
     .send({
-      documentGuid: doc.id,
+      documentGuid: doc.guid,
       chapters,
       plans,
       topics
@@ -65,49 +65,49 @@ test('save all content', async t => {
     .expect(200)
   )
 
-  await checkChapters(t, app, doc.id, apiChapters => {
+  await checkChapters(t, app, doc.guid, apiChapters => {
     t.is(apiChapters.length, 2)
-    compareChapters(t, doc.id, apiChapters[0], {
-      chapterId: chapters[0].id,
-      documentGuid: doc.id,
+    compareChapters(t, doc.guid, apiChapters[0], {
+      chapterGuid: chapters[0].guid,
+      documentGuid: doc.guid,
       chapter: chapters[0]
     })
-    compareChapters(t, doc.id, apiChapters[1], {
-      chapterId: chapters[1].id,
-      documentGuid: doc.id,
+    compareChapters(t, doc.guid, apiChapters[1], {
+      chapterGuid: chapters[1].guid,
+      documentGuid: doc.guid,
       chapter: chapters[1]
     })
   })
 
-  await checkTopics(t, app, doc.id, apiTopics => {
+  await checkTopics(t, app, doc.guid, apiTopics => {
     t.is(apiTopics.length, 2)
-    compareTopics(t, doc.id, apiTopics[0], {
-      topicId: topics[0].id,
-      documentGuid: doc.id,
+    compareTopics(t, doc.guid, apiTopics[0], {
+      topicGuid: topics[0].guid,
+      documentGuid: doc.guid,
       topic: topics[0]
     })
-    compareTopics(t, doc.id, apiTopics[1], {
-      topicId: topics[1].id,
-      documentGuid: doc.id,
+    compareTopics(t, doc.guid, apiTopics[1], {
+      topicGuid: topics[1].guid,
+      documentGuid: doc.guid,
       topic: topics[1]
     })
   })
 
-  await checkPlans(t, app, doc.id, apiPlans => {
+  await checkPlans(t, app, doc.guid, apiPlans => {
     t.is(apiPlans.length, 2)
 
     apiPlans.forEach((apiPlan, planIndex) => {
-      comparePlans(t, doc.id, apiPlan, {
-        planId: plans[planIndex].id,
-        documentGuid: doc.id,
+      comparePlans(t, doc.guid, apiPlan, {
+        planGuid: plans[planIndex].guid,
+        documentGuid: doc.guid,
         plan: plans[planIndex]
       })
       apiPlan.sections.forEach((apiSection, sectionIndex) => {
         const section = plans[planIndex].sections[sectionIndex]
-        compareSections(t, doc.id, apiPlan.guid, apiSection, {
-          sectionId: section.id,
-          planId: plans[planIndex].id,
-          documentGuid: doc.id,
+        compareSections(t, doc.guid, apiPlan.guid, apiSection, {
+          sectionGuid: section.guid,
+          planGuid: plans[planIndex].guid,
+          documentGuid: doc.guid,
           section
         })
       })

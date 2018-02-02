@@ -4,15 +4,15 @@ import {
   wrapTest
 } from '../_imports'
 
-export const addPlan = async (app, docId, title) => {
-  const planId = uuid()
+export const addPlan = async (app, docGuid, title) => {
+  const planGuid = uuid()
 
   const plan = {
-    documentGuid: docId,
-    planId: planId,
+    documentGuid: docGuid,
+    planGuid,
     plan: {
       archived: false,
-      id: planId,
+      guid: planGuid,
       title,
       sections: []
     }
@@ -27,9 +27,9 @@ export const addPlan = async (app, docId, title) => {
   return plan
 }
 
-export const checkPlans = (t, app, docId, expectFn) => {
+export const checkPlans = (t, app, docGuid, expectFn) => {
   return wrapTest(t,
-    app.get(route(`plans/${docId}`))
+    app.get(route(`plans/${docGuid}`))
     .expect(200)
     .expect(response => {
       t.truthy(Array.isArray(response.body))
@@ -38,18 +38,18 @@ export const checkPlans = (t, app, docId, expectFn) => {
   )
 }
 
-export const comparePlans = (t, docId, apiPlan, plan) => {
+export const comparePlans = (t, docGuid, apiPlan, plan) => {
   t.deepEqual({
-    documentGuid: docId,
-    planId: apiPlan.guid,
+    documentGuid: docGuid,
+    planGuid: apiPlan.guid,
     plan: {
       archived: apiPlan.archived,
-      id: apiPlan.guid,
+      guid: apiPlan.guid,
       title: apiPlan.title,
       sections: apiPlan.sections.map(section => ({
         archived: section.archived,
         content: section.content,
-        id: section.guid,
+        guid: section.guid,
         tags: section.tags,
         title: section.title
       }))

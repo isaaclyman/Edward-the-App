@@ -3,17 +3,17 @@ import {
   uuid
 } from '../_imports'
 
-export const addSection = async (app, docId, planId, title) => {
-  const sectionId = uuid()
+export const addSection = async (app, docGuid, planGuid, title) => {
+  const sectionGuid = uuid()
 
   const section = {
-    documentGuid: docId,
-    planId,
-    sectionId,
+    documentGuid: docGuid,
+    planGuid,
+    sectionGuid,
     section: {
       archived: false,
       content: null,
-      id: sectionId,
+      guid: sectionGuid,
       tags: [],
       title
     }
@@ -28,15 +28,15 @@ export const addSection = async (app, docId, planId, title) => {
   return section
 }
 
-export const compareSections = async (t, docId, planId, apiSection, section) => {
+export const compareSections = async (t, docGuid, planGuid, apiSection, section) => {
   t.deepEqual({
-    documentGuid: docId,
-    planId: planId,
-    sectionId: apiSection.guid,
+    documentGuid: docGuid,
+    planGuid,
+    sectionGuid: apiSection.guid,
     section: {
       archived: apiSection.archived,
       content: apiSection.content,
-      id: apiSection.guid,
+      guid: apiSection.guid,
       tags: apiSection.tags,
       title: apiSection.title
     }

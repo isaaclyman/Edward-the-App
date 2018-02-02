@@ -30,61 +30,61 @@ test.beforeEach('set up a premium user and document', async t => {
 })
 
 test('get chapters', async t => {
-  return checkChapters(t, app, doc.id, chapters => {
+  return checkChapters(t, app, doc.guid, chapters => {
     t.is(chapters.length, 0)
   })
 })
 
 test('add chapters', async t => {
-  const chap1 = await addChapter(app, doc.id, 'Test1')
-  const chap2 = await addChapter(app, doc.id, 'Test2')
-  return checkChapters(t, app, doc.id, chapters => {
+  const chap1 = await addChapter(app, doc.guid, 'Test1')
+  const chap2 = await addChapter(app, doc.guid, 'Test2')
+  return checkChapters(t, app, doc.guid, chapters => {
     t.is(chapters.length, 2)
-    compareChapters(t, doc.id, chapters[0], chap1)
-    compareChapters(t, doc.id, chapters[1], chap2)
+    compareChapters(t, doc.guid, chapters[0], chap1)
+    compareChapters(t, doc.guid, chapters[1], chap2)
   })
 })
 
 test('arrange chapters', async t => {
-  const chap1 = await addChapter(app, doc.id, 'Test1')
-  const chap2 = await addChapter(app, doc.id, 'Test2')
+  const chap1 = await addChapter(app, doc.guid, 'Test1')
+  const chap2 = await addChapter(app, doc.guid, 'Test2')
   await (
     app.post(route('chapter/arrange'))
     .send({
-      chapterIds: [chap2.chapterId, chap1.chapterId],
-      documentGuid: doc.id
+      chapterGuids: [chap2.chapterGuid, chap1.chapterGuid],
+      documentGuid: doc.guid
     })
     .expect(200)
   )
 
-  return checkChapters(t, app, doc.id, chapters => {
+  return checkChapters(t, app, doc.guid, chapters => {
     t.is(chapters.length, 2)
-    compareChapters(t, doc.id, chapters[0], chap2)
-    compareChapters(t, doc.id, chapters[1], chap1)
+    compareChapters(t, doc.guid, chapters[0], chap2)
+    compareChapters(t, doc.guid, chapters[1], chap1)
   })
 })
 
 test('delete chapter', async t => {
-  const chap1 = await addChapter(app, doc.id, 'Test1')
-  const chap2 = await addChapter(app, doc.id, 'Test2')
+  const chap1 = await addChapter(app, doc.guid, 'Test1')
+  const chap2 = await addChapter(app, doc.guid, 'Test2')
   await (
     app.post(route('chapter/delete'))
-    .send({ documentGuid: doc.id, chapterId: chap1.chapterId })
+    .send({ documentGuid: doc.guid, chapterGuid: chap1.chapterGuid })
     .expect(200)
   )
 
-  return checkChapters(t, app, doc.id, chapters => {
+  return checkChapters(t, app, doc.guid, chapters => {
     t.is(chapters.length, 1)
-    compareChapters(t, doc.id, chapters[0], chap2)
+    compareChapters(t, doc.guid, chapters[0], chap2)
   })
 })
 
 test('update chapter', async t => {
-  const chap1 = await addChapter(app, doc.id, 'Test1')
-  const chap2 = await addChapter(app, doc.id, 'Test2')
+  const chap1 = await addChapter(app, doc.guid, 'Test1')
+  const chap2 = await addChapter(app, doc.guid, 'Test2')
   const newChapter = {
-    documentGuid: doc.id,
-    chapterId: chap1.chapterId,
+    documentGuid: doc.guid,
+    chapterGuid: chap1.chapterGuid,
     chapter: {
       archived: false,
       content: {
@@ -92,7 +92,7 @@ test('update chapter', async t => {
           insert: 'my chapter 1'
         }]
       },
-      id: chap1.chapterId,
+      guid: chap1.chapterGuid,
       title: 'Test1-updated',
       topics: {}
     }
@@ -100,114 +100,114 @@ test('update chapter', async t => {
 
   await updateChapter(app, newChapter)
 
-  return checkChapters(t, app, doc.id, chapters => {
+  return checkChapters(t, app, doc.guid, chapters => {
     t.is(chapters.length, 2)
-    compareChapters(t, doc.id, chapters[0], newChapter)
-    compareChapters(t, doc.id, chapters[1], chap2)
+    compareChapters(t, doc.guid, chapters[0], newChapter)
+    compareChapters(t, doc.guid, chapters[1], chap2)
   })
 })
 
 test('update chapter with same content', async t => {
-  const chap1 = await addChapter(app, doc.id, 'Test1')
-  const chap2 = await addChapter(app, doc.id, 'Test2')
+  const chap1 = await addChapter(app, doc.guid, 'Test1')
+  const chap2 = await addChapter(app, doc.guid, 'Test2')
   chap2.chapter.archived = true
   await updateChapter(app, chap2)
 
-  return checkChapters(t, app, doc.id, chapters => {
+  return checkChapters(t, app, doc.guid, chapters => {
     t.is(chapters.length, 2)
-    compareChapters(t, doc.id, chapters[0], chap1)
-    compareChapters(t, doc.id, chapters[1], chap2)
+    compareChapters(t, doc.guid, chapters[0], chap1)
+    compareChapters(t, doc.guid, chapters[1], chap2)
   })
 })
 
 test('add chapters, then a topic', async t => {
-  const chap1 = await addChapter(app, doc.id, 'Test1')
-  const chap2 = await addChapter(app, doc.id, 'Test2')
-  const topic = await addTopic(app, doc.id, 'Topic')
+  const chap1 = await addChapter(app, doc.guid, 'Test1')
+  const chap2 = await addChapter(app, doc.guid, 'Test2')
+  const topic = await addTopic(app, doc.guid, 'Topic')
 
   chap1.chapter.topics = {
-    [topic.topicId]: {
+    [topic.topicGuid]: {
       content: null,
-      id: topic.topicId
+      guid: topic.topicGuid
     }
   }
 
   chap2.chapter.topics = {
-    [topic.topicId]: {
+    [topic.topicGuid]: {
       content: null,
-      id: topic.topicId
+      guid: topic.topicGuid
     }
   }
 
   await updateChapter(app, chap1)
   await updateChapter(app, chap2)
 
-  return checkChapters(t, app, doc.id, chapters => {
+  return checkChapters(t, app, doc.guid, chapters => {
     t.is(chapters.length, 2)
-    compareChapters(t, doc.id, chapters[0], chap1)
-    compareChapters(t, doc.id, chapters[1], chap2)
+    compareChapters(t, doc.guid, chapters[0], chap1)
+    compareChapters(t, doc.guid, chapters[1], chap2)
   })
 })
 
 test('add a topic, then add chapters', async t => {
-  const topic = await addTopic(app, doc.id, 'Topic')
-  const chap1 = await addChapter(app, doc.id, 'Test1')
-  const chap2 = await addChapter(app, doc.id, 'Test2')
+  const topic = await addTopic(app, doc.guid, 'Topic')
+  const chap1 = await addChapter(app, doc.guid, 'Test1')
+  const chap2 = await addChapter(app, doc.guid, 'Test2')
 
   chap1.chapter.topics = {
-    [topic.topicId]: {
+    [topic.topicGuid]: {
       content: null,
-      id: topic.topicId
+      guid: topic.topicGuid
     }
   }
 
   chap2.chapter.topics = {
-    [topic.topicId]: {
+    [topic.topicGuid]: {
       content: null,
-      id: topic.topicId
+      guid: topic.topicGuid
     }
   }
 
   await updateChapter(app, chap1)
   await updateChapter(app, chap2)
 
-  return checkChapters(t, app, doc.id, chapters => {
+  return checkChapters(t, app, doc.guid, chapters => {
     t.is(chapters.length, 2)
-    compareChapters(t, doc.id, chapters[0], chap1)
-    compareChapters(t, doc.id, chapters[1], chap2)
+    compareChapters(t, doc.guid, chapters[0], chap1)
+    compareChapters(t, doc.guid, chapters[1], chap2)
   })
 })
 
 test('update chapter topic content', async t => {
-  const chap1 = await addChapter(app, doc.id, 'Test1')
-  const chap2 = await addChapter(app, doc.id, 'Test2')
-  const topic1 = await addTopic(app, doc.id, 'Topic1')
-  const topic2 = await addTopic(app, doc.id, 'Topic2')
+  const chap1 = await addChapter(app, doc.guid, 'Test1')
+  const chap2 = await addChapter(app, doc.guid, 'Test2')
+  const topic1 = await addTopic(app, doc.guid, 'Topic1')
+  const topic2 = await addTopic(app, doc.guid, 'Topic2')
 
   const newChapter = {
-    documentGuid: doc.id,
-    chapterId: chap1.chapterId,
+    documentGuid: doc.guid,
+    chapterGuid: chap1.chapterGuid,
     chapter: {
       archived: chap1.chapter.archived,
       content: chap1.chapter.content,
-      id: chap1.chapterId,
+      guid: chap1.chapterGuid,
       title: chap1.chapter.title,
       topics: {
-        [topic1.topicId]: {
+        [topic1.topicGuid]: {
           content: {
             ops: [{
               insert: 'Topic1-content'
             }]
           },
-          id: topic1.topicId
+          guid: topic1.topicGuid
         },
-        [topic2.topicId]: {
+        [topic2.topicGuid]: {
           content: {
             ops: [{
               insert: 'Topic2-content'
             }]
           },
-          id: topic2.topicId
+          guid: topic2.topicGuid
         }
       }
     }
@@ -219,9 +219,9 @@ test('update chapter topic content', async t => {
     .expect(200)
   )
 
-  return checkChapters(t, app, doc.id, chapters => {
+  return checkChapters(t, app, doc.guid, chapters => {
     t.is(chapters.length, 2)
-    compareChapters(t, doc.id, chapters[0], newChapter)
-    compareChapters(t, doc.id, chapters[1], chap2)
+    compareChapters(t, doc.guid, chapters[0], newChapter)
+    compareChapters(t, doc.guid, chapters[1], chap2)
   })
 })

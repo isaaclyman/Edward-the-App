@@ -6,7 +6,7 @@ import {
 
 export const addDocument = async (app, name) => {
   const document = {
-    id: uuid(),
+    guid: uuid(),
     name
   }
 

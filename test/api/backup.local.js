@@ -29,7 +29,7 @@ test.beforeEach('set up a limited user and document', async t => {
   await deleteTestUser()
   await serverReady
   await createTestUser(app)
-  doc = { id: uuid(), name: 'Test Doc' }
+  doc = { guid: uuid(), name: 'Test Doc' }
   storage.addDocument(doc)
 })
 
@@ -51,33 +51,33 @@ async function expectOneItemArray(t, promise, callback) {
 }
 
 function addContent() {
-  const topicId = uuid()
-  storage.updateTopic(doc.id, topicId, { archived: true, id: topicId, title: 'Test Topic' })
-  const chapterId = uuid()
-  storage.updateChapter(doc.id, chapterId, {
+  const topicGuid = uuid()
+  storage.updateTopic(doc.guid, topicGuid, { archived: true, guid: topicGuid, title: 'Test Topic' })
+  const chapterGuid = uuid()
+  storage.updateChapter(doc.guid, chapterGuid, {
     archived: false,
     content: { ops: [] },
-    id: chapterId,
+    guid: chapterGuid,
     title: 'Test Chapter',
     topics: {
-      [topicId]: {
-        id: topicId,
+      [topicGuid]: {
+        guid: topicGuid,
         content: { ops: [] }
       }
     }
   })
-  const planId = uuid()
-  storage.updatePlan(doc.id, planId, {
+  const planGuid = uuid()
+  storage.updatePlan(doc.guid, planGuid, {
     archived: true,
-    id: planId,
+    guid: planGuid,
     title: 'Test Plan',
     sections: []
   })
-  const sectionId = uuid()
-  storage.updateSection(doc.id, planId, sectionId, {
+  const sectionGuid = uuid()
+  storage.updateSection(doc.guid, planGuid, sectionGuid, {
     archived: false,
     content: { ops: [] },
-    id: sectionId,
+    guid: sectionGuid,
     tags: [],
     title: 'Test Section'
   })
@@ -138,13 +138,13 @@ test('immediately import an export with content to localStorage', async t => {
   storage.doFullImport(exported)
 
   await expectOneItemArray(t, storage.getAllDocuments())
-  await expectOneItemArray(t, storage.getAllPlans(doc.id), plans => {
+  await expectOneItemArray(t, storage.getAllPlans(doc.guid), plans => {
     const sections = plans[0].sections
     t.true(Array.isArray(sections))
     t.is(sections.length, 1)
   })
-  await expectOneItemArray(t, storage.getAllChapters(doc.id))
-  await expectOneItemArray(t, storage.getAllTopics(doc.id))
+  await expectOneItemArray(t, storage.getAllChapters(doc.guid))
+  await expectOneItemArray(t, storage.getAllTopics(doc.guid))
 
   await expectOneItemArray(t, storage.getFullExport(), docs => {
     const doc = docs[0]
@@ -167,7 +167,7 @@ test('when the import to localStorage breaks, it is reverted', async t => {
   await expectOneItemArray(t, storage.getFullExport(), docs => {
     const exported = docs[0]
     t.is(exported.name, doc.name)
-    t.is(exported.id, doc.id)
+    t.is(exported.guid, doc.guid)
   })
 
   console.error = console_err

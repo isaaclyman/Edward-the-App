@@ -337,14 +337,23 @@ class LocalStorageApi {
     })
   }
 
+  revertImport (backup) {
+    return (
+      Promise.all(Object.keys(backup).map(key => this.storage.setItem(key, backup[key])))
+        .then(undefined, importErr => {
+          console.error(importErr)
+          throw importErr
+        })
+    )
+  }
+
   doFullImport (documents) {
     const backup = {}
-    this.storage.iterate((value, key) => {
+
+    return this.storage.iterate((value, key) => {
       backup[key] = value
     }).then(() => {
-      try {
-        this.storage.clear()
-
+      return this.storage.clear().then(() => {
         if (!documents || !Array.isArray(documents) || !documents.length) {
           throw new Error('Attempted to import an empty backup')
         }
@@ -352,10 +361,10 @@ class LocalStorageApi {
         return Promise.all(documents.map(doc =>
           this.addDocument(doc).then(() => this.saveAllContent(doc.guid, doc))
         ))
-      } catch (err) {
-        console.error(err)
-        return Promise.all(Object.keys(backup).map(key => this.storage.setItem(key, backup[key])))
-      }
+      })
+    }).then(undefined, err => {
+      console.error(err)
+      return this.revertImport(backup)
     })
   }
 }

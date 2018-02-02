@@ -10,7 +10,6 @@ import { ADD_CHAPTER, ADD_PLAN, ADD_SECTION, ADD_TOPIC, ADD_TOPIC_TO_CHAPTER,
 import { ADD_DOCUMENT, REMOVE_OWNED_DOCUMENT, UPDATE_DOCUMENT_NAME } from '../shared/document.store'
 
 import { getStorageApi } from './storageSwitch'
-import debounce from 'lodash/debounce'
 
 const mutations = {
   addDocument: [ADD_DOCUMENT],
@@ -36,13 +35,11 @@ const mutations = {
 }
 
 export const chapterAutosaverPlugin = store => {
-  const debouncedHandler = debounce(handleMutation, 700, { maxWait: 1400 })
-
   store.subscribe((mutation, state) => {
     // Make sure we know the user type before handling mutations
     state.user.userPromise.then(user => {
       const storage = getStorageApi(user)
-      debouncedHandler(mutation, state, storage)
+      handleMutation(mutation, state, storage)
     })
   })
 }

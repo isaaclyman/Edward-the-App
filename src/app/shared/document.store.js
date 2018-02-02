@@ -1,4 +1,4 @@
-import Cache from './cache'
+import Cache, { resetCache } from './cache'
 import { storageApiPromise } from '../api/storageSwitch'
 import guid from './guid'
 import { LOAD_CONTENT, NUKE_CONTENT } from './chapters.store'
@@ -92,14 +92,12 @@ const store = {
         return Promise.resolve(storage.addDocument(document)).then(() => storage)
       }).then(storage => {
         return storage.saveAllContent(document.guid, { chapters, plans, topics })
-      }).then(() => {
-        commit(ADD_DOCUMENT, document)
-        return dispatch(CHANGE_DOCUMENT, document)
-      }).then(() => {
-        return commit(LOAD_CONTENT, { plans, chapters, topics })
       })
+      .then(() => commit(ADD_DOCUMENT, document))
+      .then(() => dispatch(CHANGE_DOCUMENT, document))
     },
     [UNLOAD_CURRENT_DOCUMENT] ({ commit }) {
+      resetCache()
       return new Promise(resolve => {
         commit(UPDATE_DOCUMENT_METADATA, { guid: null, name: null })
         commit(NUKE_CONTENT)

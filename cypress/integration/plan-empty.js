@@ -96,7 +96,7 @@ const tests = isPremium => () => {
     })
 
     // Reload
-    cy.reload()
+    cy.slowReload()
 
     // Make sure both plans still exist and the first one has a section
     cy.get('@planTab').contains(plans[0]).click()

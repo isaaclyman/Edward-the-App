@@ -23,3 +23,8 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('slowReload', (forceReload) => {
+  cy.wait(150)
+  cy.reload(forceReload)
+})

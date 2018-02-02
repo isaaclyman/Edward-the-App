@@ -51,7 +51,7 @@ const tests = isPremium => () => {
   it('saves what you write', () => {
     const content = 'This is a test story'
     typeChapter(cy, 1, content)
-    cy.reload()
+    cy.slowReload()
     cy.get('@chapterEditor').should('contain', content)
   })
 
@@ -63,7 +63,7 @@ const tests = isPremium => () => {
     typeChapter(cy, 3, content3)
     typeChapter(cy, 1, content1)
     typeChapter(cy, 2, content2)
-    cy.reload()
+    cy.slowReload()
 
     selectChapter(cy, 1)
     cy.get('@chapterEditor').should('contain', content1)
@@ -94,7 +94,7 @@ const tests = isPremium => () => {
     cy.get('.editor-wrap').find('.tabs').find('button.button-tab').contains(chapterName).click()
 
     typeChapter(cy, 4, chapterName)
-    cy.reload()
+    cy.slowReload()
     selectChapter(cy, 4)
     cy.get('@chapterEditor').should('contain', chapterName)
   })

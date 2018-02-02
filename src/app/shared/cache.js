@@ -1,6 +1,16 @@
+const allCacheKeys = []
+
+export function resetCache () {
+  for (const key of allCacheKeys) {
+    window.localStorage.removeItem(key)
+  }
+  allCacheKeys.splice(0, allCacheKeys.length)
+}
+
 class Cache {
   constructor (key) {
     this.key = key
+    allCacheKeys.push(key)
   }
 
   cacheGet () {

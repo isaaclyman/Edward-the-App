@@ -58,7 +58,7 @@ const store = {
 
           dispatch(CHANGE_DOCUMENT, currentDocument)
         })
-      })
+      }, console.error)
     },
     [SET_UP_DOCUMENT] ({ commit, dispatch }, { document, type }) {
       const plans = type.plans.map(title => ({

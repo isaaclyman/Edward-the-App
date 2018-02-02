@@ -4,8 +4,7 @@ const newGuid = require('uuid/v1')
 
 export function createTestChapter (cy, isPremium, documentGuid) {
   if (isPremium) {
-    cy.exec('node cypress/scripts/createTestChapter.js')
-    return
+    return cy.exec('node cypress/scripts/createTestChapter.js')
   }
 
   const chapGuids = [newGuid(), newGuid(), newGuid()]
@@ -17,29 +16,26 @@ export function createTestChapter (cy, isPremium, documentGuid) {
     topics: {}
   })
 
-  lsa.updateChapter(documentGuid, chapGuids[0], chapter(1))
-  lsa.updateChapter(documentGuid, chapGuids[1], chapter(2))
-  lsa.updateChapter(documentGuid, chapGuids[2], chapter(3))
-
-  return chapGuids
+  return Promise.all([
+    lsa.updateChapter(documentGuid, chapGuids[0], chapter(1)),
+    lsa.updateChapter(documentGuid, chapGuids[1], chapter(2)),
+    lsa.updateChapter(documentGuid, chapGuids[2], chapter(3))
+  ]).then(() => chapGuids)
 }
 
 export function createTestDocument (cy, isPremium) {
   if (isPremium) {
-    cy.exec('node cypress/scripts/createTestDocument.js')
-    return
+    return cy.exec('node cypress/scripts/createTestDocument.js')
   }
 
   const guid = newGuid()
 
-  lsa.addDocument({ guid, name: 'test' })
-  return guid
+  return lsa.storage.clear().then(() => lsa.addDocument({ guid, name: 'test' }).then(() => guid))
 }
 
 export function createTestPlan (cy, isPremium, documentGuid) {
   if (isPremium) {
-    cy.exec('node cypress/scripts/createTestPlan.js')
-    return
+    return cy.exec('node cypress/scripts/createTestPlan.js')
   }
 
   const planGuids = [newGuid(), newGuid()]
@@ -59,14 +55,17 @@ export function createTestPlan (cy, isPremium, documentGuid) {
     title: `test section ${index}`
   })
 
-  lsa.updatePlan(documentGuid, planGuids[0], plan(1))
-  lsa.updateSection(documentGuid, planGuids[0], sectionGuids[0], section(1))
-
-  lsa.updatePlan(documentGuid, planGuids[1], plan(2))
-  lsa.updateSection(documentGuid, planGuids[1], sectionGuids[1], section(2))
-  lsa.updateSection(documentGuid, planGuids[1], sectionGuids[2], section(3))
-
-  return planGuids
+  return Promise.all([
+    lsa.updatePlan(documentGuid, planGuids[0], plan(1)).then(() =>
+      lsa.updateSection(documentGuid, planGuids[0], sectionGuids[0], section(1))  
+    ),
+    lsa.updatePlan(documentGuid, planGuids[1], plan(2)).then(() =>
+      Promise.all([
+        lsa.updateSection(documentGuid, planGuids[1], sectionGuids[1], section(2)),
+        lsa.updateSection(documentGuid, planGuids[1], sectionGuids[2], section(3))
+      ])
+    )
+  ]).then(() => planGuids)
 }
 
 export function createTestUser (cy) {

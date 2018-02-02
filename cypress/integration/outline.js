@@ -8,8 +8,7 @@ const tests = isPremium => () => {
 
     if (isPremium) {
       makeTestUserPremium(cy)
-      createTestDocument(cy, isPremium)
-      createTestChapter(cy, isPremium)
+      return createTestDocument(cy, isPremium).then(() => createTestChapter(cy, isPremium))
     }
   })
 
@@ -17,8 +16,7 @@ const tests = isPremium => () => {
     logIn(cy, user.email, user.password)
 
     if (!isPremium) {
-      const docId = createTestDocument(cy, isPremium)
-      createTestChapter(cy, isPremium, docId)
+      createTestDocument(cy, isPremium).then(docId => createTestChapter(cy, isPremium, docId))
     }
 
     cy.visit('/app.html#/outline')

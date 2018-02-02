@@ -1,9 +1,11 @@
 import clone from 'lodash/clone'
 import localForage from 'localforage'
+import uniq from 'lodash/uniq'
 
 class LocalStorageApi {
   constructor () {
     this.storage = localForage
+    window.storage = this.storage
     this.getStorageKeys = () => this.storage.keys()
 
     this.planKeyPrefix = documentGuid => `${documentGuid}_PLAN_DATA_`
@@ -28,8 +30,10 @@ class LocalStorageApi {
 
   addDocument ({ guid, name }) {
     return this._getAllDocumentGuids().then(documentGuids => {
-      documentGuids.push(guid)
-      return this.storage.setItem(this.documentGuidsKey, documentGuids)
+      if (!documentGuids.includes(guid)) {
+        documentGuids.push(guid)
+        return this.storage.setItem(this.documentGuidsKey, documentGuids)
+      }
     }).then(
       () => this.storage.setItem(this.documentsKey(guid), { guid, name })
     )
@@ -62,7 +66,7 @@ class LocalStorageApi {
       if (documentGuids.includes(guid)) {
         documentGuids.splice(documentGuids.indexOf(guid), 1)
       }
-  
+
       return this.storage.setItem(this.documentGuidsKey, documentGuids)
     }).then(() => {
       // Remove all content (chapters, plans, sections, topics)
@@ -121,7 +125,7 @@ class LocalStorageApi {
   }
 
   _getAllDocumentGuids () {
-    return this.storage.getItem(this.documentGuidsKey).then(guids => guids || [])
+    return this.storage.getItem(this.documentGuidsKey).then(guids => uniq(guids) || [])
   }
 
   _getAllDocuments () {
@@ -194,7 +198,7 @@ class LocalStorageApi {
   }
 
   getAllTopics (documentGuid) {
-    return this._getAllTopics()
+    return this._getAllTopics(documentGuid)
   }
 
   _getChaptersSortOrder (documentGuid) {
@@ -252,7 +256,7 @@ class LocalStorageApi {
     if (!documentGuid) {
       return
     }
-
+    
     const key = this.getPlanKey(documentGuid, planGuid)
 
     plan = clone(plan)

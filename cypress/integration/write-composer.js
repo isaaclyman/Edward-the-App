@@ -1,5 +1,7 @@
 import { user } from '../../test/_util'
 import { createTestChapter, createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium } from '../scripts/_util'
+import localForage from 'localforage'
+localForage.setDriver(localForage.INDEXEDDB)
 
 const tests = isPremium => () => {
   before(() => {
@@ -8,19 +10,17 @@ const tests = isPremium => () => {
 
     if (isPremium) {
       makeTestUserPremium(cy)
-      createTestDocument(cy, isPremium)
-      createTestChapter(cy, isPremium)
+      return createTestDocument(cy, isPremium).then(() => createTestChapter(cy, isPremium))
     }
   })
 
   beforeEach(() => {
     logIn(cy, user.email, user.password)
-
+    
     if (!isPremium) {
-      const docId = createTestDocument(cy, isPremium)
-      createTestChapter(cy, isPremium, docId)
+      createTestDocument(cy, isPremium).then(docId => createTestChapter(cy, isPremium, docId))
     }
-
+    
     cy.visit('/app.html#/write')
     cy.get('select.document-dropdown').select('test')
     cy.get('.editor-wrap').find('div.ql-editor').as('chapterEditor')
@@ -51,7 +51,7 @@ const tests = isPremium => () => {
   it('saves what you write', () => {
     const content = 'This is a test story'
     typeChapter(cy, 1, content)
-    cy.slowReload()
+    cy.reload()
     cy.get('@chapterEditor').should('contain', content)
   })
 
@@ -63,7 +63,7 @@ const tests = isPremium => () => {
     typeChapter(cy, 3, content3)
     typeChapter(cy, 1, content1)
     typeChapter(cy, 2, content2)
-    cy.slowReload()
+    cy.reload()
 
     selectChapter(cy, 1)
     cy.get('@chapterEditor').should('contain', content1)
@@ -94,7 +94,7 @@ const tests = isPremium => () => {
     cy.get('.editor-wrap').find('.tabs').find('button.button-tab').contains(chapterName).click()
 
     typeChapter(cy, 4, chapterName)
-    cy.slowReload()
+    cy.reload()
     selectChapter(cy, 4)
     cy.get('@chapterEditor').should('contain', chapterName)
   })

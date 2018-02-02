@@ -8,8 +8,7 @@ const tests = isPremium => () => {
 
     if (isPremium) {
       makeTestUserPremium(cy)
-      createTestDocument(cy, isPremium)
-      createTestChapter(cy, isPremium)
+      return createTestDocument(cy, isPremium)
     }
   })
 
@@ -17,8 +16,7 @@ const tests = isPremium => () => {
     logIn(cy, user.email, user.password)
 
     if (!isPremium) {
-      const docId = createTestDocument(cy, isPremium)
-      createTestChapter(cy, isPremium, docId)
+      createTestDocument(cy, isPremium)
     }
 
     cy.visit('/app.html#/plan')
@@ -96,7 +94,7 @@ const tests = isPremium => () => {
     })
 
     // Reload
-    cy.slowReload()
+    cy.reload()
 
     // Make sure both plans still exist and the first one has a section
     cy.get('@planTab').contains(plans[0]).click()

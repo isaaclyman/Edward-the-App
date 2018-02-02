@@ -8,8 +8,7 @@ const tests = isPremium => () => {
 
     if (isPremium) {
       makeTestUserPremium(cy)
-      createTestDocument(cy, isPremium)
-      createTestPlan(cy, isPremium)
+      return createTestDocument(cy, isPremium).then(docGuid => createTestPlan(cy, isPremium, docGuid))
     }
   })
 
@@ -17,8 +16,7 @@ const tests = isPremium => () => {
     logIn(cy, user.email, user.password)
 
     if (!isPremium) {
-      const docId = createTestDocument(cy, isPremium)
-      createTestPlan(cy, isPremium, docId)
+      createTestDocument(cy, isPremium).then(docGuid => createTestPlan(cy, isPremium, docGuid))
     }
 
     cy.visit('/app.html#/plan')

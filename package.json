@@ -96,6 +96,7 @@
     "@types/knex": "0.0.67",
     "ava": "^0.23.0",
     "cypress": "^1.4.1",
+    "fake-indexeddb": "^2.0.3",
     "mock-local-storage": "^1.0.5",
     "nodemon": "^1.12.1",
     "sinon": "^4.1.2",

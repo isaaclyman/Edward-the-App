@@ -62,7 +62,7 @@ class LocalStorageApi {
 
   deleteDocument (guid) {
     // Remove document from document list
-    this._getAllDocumentGuids().then(documentGuids => {
+    return this._getAllDocumentGuids().then(documentGuids => {
       if (documentGuids.includes(guid)) {
         documentGuids.splice(documentGuids.indexOf(guid), 1)
       }
@@ -256,7 +256,7 @@ class LocalStorageApi {
     if (!documentGuid) {
       return
     }
-    
+
     const key = this.getPlanKey(documentGuid, planGuid)
 
     plan = clone(plan)

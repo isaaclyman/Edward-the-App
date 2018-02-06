@@ -2,7 +2,7 @@
   <div id="app" class="app" v-if="currentDocument.guid">
     <document-menu></document-menu>
     <div class="app-header">
-      <div class="app-header--logo-wrap" ref="logoWrap" title="Made in Utah by Isaac.">
+      <div class="app-header--logo-wrap">
         <img class="app-header--logo" src="../../static/logo.png">
       </div>
       <div class="app-header--menu">
@@ -11,13 +11,6 @@
     </div>
     <div class="page">
       <router-view></router-view>
-    </div>
-
-    <!-- Author tooltip -->
-    <div style="display: none">
-      <div class="tooltip" ref="authorTooltip">
-        Made in Utah by <a href="http://isaaclyman.com">Isaac</a>.
-      </div>
     </div>
   </div>
   <div v-else class="page" >
@@ -29,7 +22,6 @@
 import DocumentMenu from './shared/documentMenu.vue'
 import MainMenu from './shared/mainMenu.vue'
 import { SET_DEFAULT_USER, SET_USER, SET_USER_PROMISE } from './shared/user.store'
-import tooltip from './shared/tippyBuilder'
 import userApi from './api/userApi'
 import Wizard from './wizard/wizard.vue'
 
@@ -58,15 +50,6 @@ export default {
     currentDocument () {
       return this.$store.state.document.currentDocument || { guid: null }
     }
-  },
-  mounted () {
-    tooltip({
-      arrow: false,
-      content: this.$refs.authorTooltip,
-      distance: -20,
-      el: this.$refs.logoWrap,
-      interactive: true
-    })
   }
 }
 </script>

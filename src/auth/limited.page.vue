@@ -10,7 +10,10 @@
       </p>
       <p>
         You can use your limited account for as long as you want and export as many novels as you want.
-        <strong>Or upgrade to a Premium account</strong> to get instant, permanent storage on our servers.
+        <router-link to="/gopremium">
+          <strong>Or upgrade to a Premium account</strong>
+        </router-link>
+        to get instant, permanent storage on our servers.
       </p>
     </div>
     <div class="fill"></div>
@@ -18,9 +21,11 @@
       <button class="continue-button button-green" @click="noPremium()">
         Continue to the app
       </button>
-      <button class="button-link" @click="goPremium()">
-        Upgrade to a Premium account
-      </button>
+      <router-link to="/gopremium">
+        <button class="button-link">
+          Upgrade to a Premium account
+        </button>
+      </router-link>
     </div>
   </div>
 </template>

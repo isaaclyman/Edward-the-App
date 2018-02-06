@@ -85,8 +85,7 @@ export default {
         if (!result.verified) {
           this.$router.push('/verification')
         } else if (!result.isPremium) {
-          // this.$router.push('/limited')
-          goToApp()
+          this.$router.push('/limited')
         } else {
           goToApp()
         }

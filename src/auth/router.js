@@ -9,6 +9,7 @@ import Limited from './limited.page.vue'
 import Login from './login.page.vue'
 import Premium from './premium.page.vue'
 import Signup from './signup.page.vue'
+import Success from './success.page.vue'
 import Verification from './verification.page.vue'
 import Verify from './verify.page.vue'
 
@@ -67,9 +68,16 @@ export default new Router({
       component: Signup
     },
     {
+      path: '/success',
+      name: 'Success',
+      component: Success,
+      beforeEnter: assertSignedIn
+    },
+    {
       path: '/verification',
       name: 'Verify Account',
-      component: Verification
+      component: Verification,
+      beforeEnter: assertSignedIn
     },
     {
       path: '/verify/:email/:key',

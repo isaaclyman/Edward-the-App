@@ -13,7 +13,7 @@
         <p class="small">
           Please back up all of your documents first.
         </p>
-        <button @click="revertPremium()">
+        <button @click="goldToPremium()">
           Revert to Premium
         </button>
       </div>
@@ -21,17 +21,15 @@
         <p>
           Upgrade to a Premium account to access your novels from anywhere.
         </p>
-        <router-link to="/gopremium">
-          <button class="button-green">
-            Go Premium
-          </button>
-        </router-link>
+        <button class="button-green" @click="limitedToPremium()">
+          Go Premium
+        </button>
       </div>
       <div v-if="!isGold">
         <p>
           Upgrade to a Gold account for extra Premium storage space.
         </p>
-        <button class="button-gold" @click="goGold()">
+        <button class="button-gold" @click="toGold()">
           Go Gold
         </button>
       </div>
@@ -42,9 +40,13 @@
         <p class="small">
           Please back up all of your documents first.
         </p>
-        <button @click="revertLimited()">
+        <button @click="paidToLimited()">
           Revert to Limited
         </button>
+      </div>
+      <div class="error" v-if="error">
+        There has been a critical error. <strong>Your account change was not successful.</strong>
+        Please try again or contact support at <a href="mailto:support@edwardtheapp.com">support@edwardtheapp.com</a>.
       </div>
     </div>
     <div class="cancel">
@@ -57,6 +59,11 @@
 
 <script>
 import { goToApp } from './shared'
+import LocalStorageApi from '../app/api/localStorage'
+const storage = new LocalStorageApi()
+import api from '../app/api/api'
+import authApi from './authApi'
+import accountTypes from '../../models/accountType'
 
 export default {
   computed: {
@@ -75,20 +82,122 @@ export default {
     }
   },
   data () {
-    return {}
+    return {
+      error: false,
+      saving: false
+    }
   },
   methods: {
     cancel () {
       goToApp()
     },
-    goGold () {
-      // GO GOLD
+    limitedToPremium () {
+      this.error = false
+      this.saving = true
+
+      authApi.upgrade({
+        oldAccountType: accountTypes.LIMITED.name,
+        newAccountType: accountTypes.PREMIUM.name
+      }).then(() => {
+        return storage.getFullExport()
+      }).then(exported => {
+        return api.fullImport(exported)
+      }).then(() => {
+        this.error = false
+        this.saving = false
+        this.showSuccessPage()
+      }, err => {
+        console.error(err)
+        this.error = true
+        this.saving = false
+      })
     },
-    revertToLimited () {
-      // REVERT
+    limitedToGold () {
+      this.error = false
+      this.saving = true
+
+      authApi.upgrade({
+        oldAccountType: accountTypes.LIMITED.name,
+        newAccountType: accountTypes.GOLD.name
+      }).then(() => {
+        return storage.getFullExport()
+      }).then(exported => {
+        return api.fullImport(exported)
+      }).then(() => {
+        this.error = false
+        this.saving = false
+        this.showSuccessPage()
+      }, err => {
+        console.error(err)
+        this.error = true
+        this.saving = false
+      })
     },
-    revertToPremium () {
-      // REVERT
+    toGold () {
+      // We could be going from limited OR premium to gold
+      const userType = this.user.accountType.name
+      if (userType === accountTypes.LIMITED.name) {
+        return this.limitedToGold()
+      } else if (userType === accountTypes.PREMIUM.name) {
+        return this.premiumToGold()
+      }
+    },
+    premiumToGold () {
+      this.error = false
+      this.saving = true
+
+      authApi.upgrade({
+        oldAccountType: accountTypes.PREMIUM.name,
+        newAccountType: accountTypes.GOLD.name
+      }).then(() => {
+        this.error = false
+        this.saving = false
+        this.showSuccessPage()
+      }, err => {
+        console.error(err)
+        this.error = true
+        this.saving = false
+      })
+    },
+    paidToLimited () {
+      this.error = false
+      this.saving = true
+
+      // SHOW WARNING: your stuff may not fit
+
+      api.fullExport().then(exported => {
+        return storage.doFullImport(exported)
+      }).then(() => {
+        return authApi.upgrade({
+          oldAccountType: this.user.accountType.name,
+          newAccountType: accountTypes.LIMITED.name
+        })
+      }).then(() => {
+        this.error = false
+        this.saving = false
+        this.showSuccessPage()
+      }, err => {
+        console.error(err)
+        this.error = true
+        this.saving = false
+      })
+    },
+    goldToPremium () {
+      authApi.upgrade({
+        oldAccountType: accountTypes.GOLD.name,
+        newAccountType: accountTypes.PREMIUM.name
+      }).then(() => {
+        this.error = false
+        this.saving = false
+        this.showSuccessPage()
+      }, err => {
+        console.error(err)
+        this.error = true
+        this.saving = false
+      })
+    },
+    showSuccessPage () {
+      this.$router.push('/success')
     }
   }
 }
@@ -125,5 +234,10 @@ hr {
 .cancel {
   margin: 12px 0;
   text-align: center;
+}
+
+.error {
+  color: red;
+  margin: 8px 0;
 }
 </style>

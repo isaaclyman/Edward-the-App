@@ -5,7 +5,7 @@ import uniq from 'lodash/uniq'
 class LocalStorageApi {
   constructor () {
     this.storage = localForage
-    window.storage = this.storage
+    window._storage = this.storage
     this.getStorageKeys = () => this.storage.keys()
 
     this.planKeyPrefix = documentGuid => `${documentGuid}_PLAN_DATA_`

@@ -150,7 +150,7 @@ class ServerStorageApi {
   // FULL EXPORT/IMPORT
 
   fullExport () {
-    return api.fullExport()
+    return api.fullExport().then(data => JSON.stringify(data))
   }
 
   fullImport (json) {

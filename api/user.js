@@ -216,4 +216,33 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
       res.status(500).send()
     })
   })
+
+  // POST { oldAccountType, newAccountType }
+  app.post(route('upgrade'), isLoggedIn, (req, res, next) => {
+    const { oldAccountType, newAccountType } = req.body
+
+    db.knex('users').where('id', req.user.id).first().then(user => {
+      const typeNames = Object.values(accountTypes).map(type => type.name)
+      if (!typeNames.includes(oldAccountType) || !typeNames.includes(newAccountType)) {
+        throw new Error(`One of received account types is not valid. Received: ${oldAccountType}, ${newAccountType}`)
+      }
+
+      if (!user) {
+        throw new Error('Current user was not found.')
+      }
+
+      if (user.account_type !== oldAccountType) {
+        throw new Error(`Received oldAccountType does not match the user's actual account type.`)
+      }
+
+      return db.knex('users').where('id', req.user.id).update(ts(db.knex, {
+        'account_type': newAccountType
+      }, true))
+    }).then(() => {
+      res.status(200).send()
+    }, err => {
+      console.error(err)
+      res.status(500).send(err)
+    })
+  })
 }

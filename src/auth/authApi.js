@@ -24,6 +24,12 @@ const api = {
       axios.post(route('signup'), { about, email, password, captchaResponse, integration })
         .then(response => response.data)
     )
+  },
+  upgrade ({ oldAccountType, newAccountType }) {
+    return (
+      axios.post(route('upgrade'), { oldAccountType, newAccountType })
+        .then(response => response.data)
+    )
   }
 }
 

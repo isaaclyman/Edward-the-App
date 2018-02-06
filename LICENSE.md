@@ -1,2 +1,2 @@
-(c) 2017 by Isaac Lyman.
+(c) 2017 by Novelist LLC.
 All rights reserved.

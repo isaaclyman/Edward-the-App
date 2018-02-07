@@ -6,14 +6,14 @@
         <strong>This is a limited account.</strong>
       </p>
       <p>
-        All your novels are stored insecurely on your computer. You won't be able to access it on multiple computers, and it will be deleted if you reinstall your browser, clear your browsing data, or wipe your hard drive. If you exceed the storage space your browser is allowed to use, it may erase all your data without warning.
+        All your novels are stored insecurely on your computer. You won't be able to access them on other computers, and they will be deleted if you reinstall your browser, clear your browsing data, or wipe your hard drive. If you exceed the storage space your browser allows, it may erase all your data without warning.
       </p>
       <p>
         You can use your limited account for as long as you want and export as many novels as you want.
-        <router-link to="/gopremium">
+        <router-link to="/account">
           <strong>Or upgrade to a Premium account</strong>
         </router-link>
-        to get instant, permanent storage on our servers.
+        to get instant, permanent storage on our servers. It's only $2.46 per month.
       </p>
     </div>
     <div class="fill"></div>
@@ -21,7 +21,7 @@
       <button class="continue-button button-green" @click="noPremium()">
         Continue to the app
       </button>
-      <router-link to="/gopremium">
+      <router-link to="/account">
         <button class="button-link">
           Upgrade to a Premium account
         </button>
@@ -38,9 +38,6 @@ export default {
     return {}
   },
   methods: {
-    goPremium () {
-      this.$router.push('/gopremium')
-    },
     noPremium () {
       goToApp()
     }
@@ -66,6 +63,7 @@ export default {
 }
 
 .actions {
+  align-items: center;
   display: flex;
   flex-direction: column;
   justify-content: center;

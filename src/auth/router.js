@@ -7,7 +7,6 @@ Vue.use(Router)
 import Account from './account.page.vue'
 import Limited from './limited.page.vue'
 import Login from './login.page.vue'
-import Premium from './premium.page.vue'
 import Signup from './signup.page.vue'
 import Success from './success.page.vue'
 import Verification from './verification.page.vue'
@@ -52,13 +51,6 @@ export default new Router({
       path: '/account',
       name: 'Account',
       component: Account,
-      beforeEnter: assertSignedIn,
-      meta: { getCurrentUser }
-    },
-    {
-      path: '/gopremium',
-      name: 'Premium Account',
-      component: Premium,
       beforeEnter: assertSignedIn,
       meta: { getCurrentUser }
     },

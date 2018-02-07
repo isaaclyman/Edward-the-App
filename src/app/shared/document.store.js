@@ -60,7 +60,7 @@ const store = {
         })
       }, console.error)
     },
-    [SET_UP_DOCUMENT] ({ commit, dispatch }, { document, type }) {
+    [SET_UP_DOCUMENT] ({ commit, dispatch, state }, { document, type }) {
       const plans = type.plans.map(title => ({
         archived: false,
         guid: guid(),
@@ -93,7 +93,8 @@ const store = {
       }).then(storage => {
         return storage.saveAllContent(document.guid, { chapters, plans, topics })
       })
-      .then(() => commit(ADD_DOCUMENT, document))
+      // Don't use the ADD_DOCUMENT mutation here or it will try to add the document to storage again
+      .then(() => state.ownedDocuments.push(document))
       .then(() => dispatch(CHANGE_DOCUMENT, document))
     },
     [UNLOAD_CURRENT_DOCUMENT] ({ commit }) {

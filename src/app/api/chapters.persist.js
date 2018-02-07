@@ -1,3 +1,4 @@
+import debounce from 'lodash/debounce'
 import { ADD_CHAPTER, ADD_PLAN, ADD_SECTION, ADD_TOPIC, ADD_TOPIC_TO_CHAPTER,
   ARCHIVE_CHAPTER, ARCHIVE_PLAN, ARCHIVE_SECTION, ARCHIVE_TOPIC,
   DELETE_CHAPTER, DELETE_PLAN, DELETE_SECTION, DELETE_TOPIC,
@@ -34,17 +35,29 @@ const mutations = {
     UPDATE_TOPIC]
 }
 
+const debounced = {}
+
+const getDebounced = (storage) => {
+  if (!debounced.updateChapter) {
+    debounced.updateChapter = debounce((...args) => {
+      storage.updateChapter.apply(storage, args)
+    }, 50)
+  }
+
+  return debounced
+}
+
 export const chapterAutosaverPlugin = store => {
   store.subscribe((mutation, state) => {
     // Make sure we know the user type before handling mutations
     state.user.userPromise.then(user => {
       const storage = getStorageApi(user)
-      handleMutation(mutation, state, storage)
+      handleMutation(mutation, state, storage, getDebounced(storage))
     })
   })
 }
 
-function handleMutation (mutation, state, storage) {
+function handleMutation (mutation, state, storage, debounced) {
   const { type, payload } = mutation
   const documentGuid = state.document.currentDocument && state.document.currentDocument.guid
 
@@ -108,7 +121,7 @@ function handleMutation (mutation, state, storage) {
   }
 
   if (mutations.updateChapter.includes(type)) {
-    storage.updateChapter(documentGuid, payload.chapter.guid, payload.chapter)
+    debounced.updateChapter(documentGuid, payload.chapter.guid, payload.chapter)
     return
   }
 

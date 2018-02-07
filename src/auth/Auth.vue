@@ -8,7 +8,7 @@
     </div>
     <div class="footer">
       <p class="footer-text">
-        Edward the App © 2017 by <a class="footer-link" href="http://isaaclyman.com">Isaac Lyman</a>.
+        Edward the App © 2018 by <a class="footer-link" href="http://isaaclyman.com">Novelist LLC</a>.
       </p>
     </div>
   </div>

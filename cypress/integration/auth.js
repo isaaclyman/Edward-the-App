@@ -1,5 +1,5 @@
 import { user } from '../../test/_util'
-import { createTestUser, deleteTestUser, setTestUserVerifyKey } from '../scripts/_util'
+import { createTestUser, deleteTestUser, makeTestUserPremium, setTestUserVerifyKey } from '../scripts/_util'
 
 describe('the auth page', () => {
   describe('the login form', () => {
@@ -27,10 +27,34 @@ describe('the auth page', () => {
     it('has a demo link', () => {
       cy.get('button').contains('demo')
     })
+  })
+
+  describe('post-login', () => {
+    beforeEach(() => {
+      cy.visit('/auth.html#/login')
+      
+      cy.get('div.username > input').as('username')
+      cy.get('div.password > input').as('password')
+      cy.get('button').contains('Log In').as('logIn')
+    })
 
     it('allows logging in', () => {
       deleteTestUser(cy)
       createTestUser(cy)
+
+      cy.get('@username').type(user.email)
+      cy.get('@password').type(user.password)
+      cy.get('@logIn').click()
+      cy.url().should('contain', '#/limited')
+      cy.getCookie('connect.sid').should('exist')
+      cy.get('button').contains('Continue').click()
+      cy.url().should('contain', '/app')
+    })
+
+    it('allows logging in (premium)', () => {
+      deleteTestUser(cy)
+      createTestUser(cy)
+      makeTestUserPremium(cy)
 
       cy.get('@username').type(user.email)
       cy.get('@password').type(user.password)

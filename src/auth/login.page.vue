@@ -39,6 +39,9 @@ import { goToApp } from './shared'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
 export default {
+  beforeCreate () {
+    authApi.logOut()
+  },
   components: {
     Captcha,
     PulseLoader

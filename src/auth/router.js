@@ -15,13 +15,25 @@ import Verify from './verify.page.vue'
 let currentUser = null
 const getCurrentUser = () => currentUser
 
-const assertSignedIn = (to, from, next) => {
+const assertVerified = (to, from, next) => {
   authApi.getUser().then(user => {
+    currentUser = user
     if (user.verified === false) {
       return next({ path: '/verification' })
     }
+    next()
+  }, err => {
+    console.error(err)
+    next({ path: '/login' })
+  })
+}
 
+const assertUnverified = (to, from, next) => {
+  authApi.getUser().then(user => {
     currentUser = user
+    if (user.verified === true) {
+      return next({ path: '/account' })
+    }
     next()
   }, err => {
     console.error(err)
@@ -39,7 +51,7 @@ export default new Router({
       path: '/limited',
       name: 'Limited Account',
       component: Limited,
-      beforeEnter: assertSignedIn,
+      beforeEnter: assertVerified,
       meta: { getCurrentUser }
     },
     {
@@ -51,7 +63,7 @@ export default new Router({
       path: '/account',
       name: 'Account',
       component: Account,
-      beforeEnter: assertSignedIn,
+      beforeEnter: assertVerified,
       meta: { getCurrentUser }
     },
     {
@@ -63,13 +75,14 @@ export default new Router({
       path: '/success',
       name: 'Success',
       component: Success,
-      beforeEnter: assertSignedIn
+      beforeEnter: assertVerified
     },
     {
       path: '/verification',
       name: 'Verify Account',
       component: Verification,
-      beforeEnter: assertSignedIn
+      beforeEnter: assertUnverified,
+      meta: { getCurrentUser }
     },
     {
       path: '/verify/:email/:key',

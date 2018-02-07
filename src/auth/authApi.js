@@ -19,6 +19,11 @@ const api = {
         .then(response => response.data)
     )
   },
+  logOut () {
+    return (
+      axios.get(route('logout'))
+    )
+  },
   signUp ({ about, email, password, captchaResponse, integration }) {
     return (
       axios.post(route('signup'), { about, email, password, captchaResponse, integration })

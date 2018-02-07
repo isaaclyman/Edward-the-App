@@ -38,23 +38,21 @@ import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import userApi from '../app/api/userApi'
 
 export default {
-  beforeCreate () {
-    userApi.getUser().then(user => {
-      this.user = user
-    })
-  },
   components: {
     PulseLoader
   },
   computed: {
     email () {
       return this.user && this.user.email
+    },
+    user () {
+      const meta = this.$route.matched.find(record => record.meta.getCurrentUser).meta
+      return meta.getCurrentUser()
     }
   },
   data () {
     return {
-      sent: false,
-      user: null
+      sent: false
     }
   },
   methods: {

@@ -1,25 +1,28 @@
 <template>
-  <div id="app" class="app" v-if="currentDocument.guid">
-    <document-menu></document-menu>
-    <div class="app-header">
-      <div class="app-header--logo-wrap">
-        <img class="app-header--logo" src="../../static/logo.png">
+  <idle-watcher>
+    <div id="app" class="app" v-if="currentDocument.guid">
+      <document-menu></document-menu>
+      <div class="app-header">
+        <div class="app-header--logo-wrap">
+          <img class="app-header--logo" src="../../static/logo.png">
+        </div>
+        <div class="app-header--menu">
+          <main-menu></main-menu>
+        </div>
       </div>
-      <div class="app-header--menu">
-        <main-menu></main-menu>
+      <div class="page">
+        <router-view></router-view>
       </div>
     </div>
-    <div class="page">
-      <router-view></router-view>
+    <div v-else class="page">
+      <wizard></wizard>
     </div>
-  </div>
-  <div v-else class="page" >
-    <wizard></wizard>
-  </div>
+  </idle-watcher>
 </template>
 
 <script>
 import DocumentMenu from './shared/documentMenu.vue'
+import IdleWatcher from './IdleWatcher.vue'
 import MainMenu from './shared/mainMenu.vue'
 import { SET_DEFAULT_USER, SET_USER, SET_USER_PROMISE } from './shared/user.store'
 import userApi from './api/userApi'
@@ -43,6 +46,7 @@ export default {
   },
   components: {
     DocumentMenu,
+    IdleWatcher,
     MainMenu,
     Wizard
   },
@@ -50,6 +54,9 @@ export default {
     currentDocument () {
       return this.$store.state.document.currentDocument || { guid: null }
     }
+  },
+  mounted () {
+
   }
 }
 </script>

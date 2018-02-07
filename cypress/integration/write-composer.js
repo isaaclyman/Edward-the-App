@@ -7,13 +7,13 @@ const tests = isPremium => () => {
   before(() => {
     deleteTestUser(cy)
     createTestUser(cy)
-
+    
     if (isPremium) {
       makeTestUserPremium(cy)
       return createTestDocument(cy, isPremium).then(() => createTestChapter(cy, isPremium))
     }
   })
-
+  
   beforeEach(() => {
     logIn(cy, user.email, user.password)
     
@@ -21,6 +21,7 @@ const tests = isPremium => () => {
       createTestDocument(cy, isPremium).then(docId => createTestChapter(cy, isPremium, docId))
     }
     
+    cy.clock()
     cy.visit('/app.html#/write')
     cy.get('select.document-dropdown').select('test')
     cy.get('.editor-wrap').find('div.ql-editor').as('chapterEditor')
@@ -35,12 +36,14 @@ const tests = isPremium => () => {
   }
 
   const typeChapter = (cy, chapterNumber, content) => {
-    const clock = cy.clock()
     selectChapter(cy, chapterNumber)
     cy.get('@chapterEditor').clear()
     cy.get('@chapterEditor').type(content)
     cy.get('@chapterEditor').should('contain', content)
-    clock.tick(1000)
+
+    // Because there are two debounces and a promise between typing something and having it saved, we need two ticks
+    cy.tick(1000)
+    cy.tick(1000)
   }
 
   it('has a text editor with tabs', () => {

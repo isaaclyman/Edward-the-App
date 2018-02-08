@@ -95,10 +95,8 @@ export default {
 
 <style scoped>
 .wrap {
-  display: flex;
+  display: block;
   flex: 1;
-  flex-direction: row;
-  justify-content: center;
 }
 
 .container {
@@ -107,6 +105,7 @@ export default {
   box-shadow: 0px 0px 15px 2px rgba(136,136,136,1);
   display: block;
   flex: 1;
+  margin: 0 auto;
   max-width: 800px;
 }
 

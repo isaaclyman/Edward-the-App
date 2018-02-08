@@ -17,8 +17,8 @@
           Otherwise, you may lose your changes.
         </div>
         <div class="actions">
-          <button class="button-green" @click="reload()">Reload</button>
-          <button class="button-red" @click="backToApp()">Back to the app</button>
+          <button class="button-green reload-button" @click="reload()">Reload</button>
+          <button class="button-red cancel-button" @click="backToApp()">Back to the app</button>
         </div>
       </div>
     </div>

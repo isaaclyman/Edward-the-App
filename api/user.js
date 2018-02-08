@@ -3,6 +3,10 @@ const Email = require('./email.helper')
 const modelUtil = require('../models/_util')
 const request = require('request-promise-native')
 const ts = modelUtil.addTimestamps
+const uuid = require('uuid/v4')
+
+// This file deals with sensitive user data. Therefore, error messages (which could contain that data)
+//  are not included in any response to the front end.
 
 module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
   const route = route => `/api/user/${route}`
@@ -139,14 +143,18 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
 
     db.knex('users').where('id', req.user.id).first().then(user => {
       const key = user['verify_key']
-      const message = new Email(
+      return new Email(
         [user.email],
         'Verify your account',
         `Thanks for signing up for an account with Edward. Use the link below to verify your email address:
         
         ${process.env.BASE_URL}/auth#/verify/${encodeURIComponent(user.email)}/${key}`
       ).send()
+    }).then(() => {
       res.status(200).send()
+    }, err => {
+      console.error(err)
+      res.status(500).send()
     })
   })
 
@@ -242,7 +250,39 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
       res.status(200).send()
     }, err => {
       console.error(err)
-      res.status(500).send(err)
+      res.status(500).send()
+    })
+  })
+
+  app.get(route('send-reset-password-link'), isLoggedIn, (req, res, next) => {
+    let guid
+    db.knex('users').where('id', req.user.id).first().then(user => {
+      if (!user) {
+        throw new Error('Current user was not found.')
+      }
+
+      guid = uuid()
+      return modelUtil.getHash(guid)
+    }).then(hash => {
+      return db.knex('users').where('id', req.user.id).update(ts(db.knex, {
+        'pass_reset_key': hash
+      }, true)).returning('email')
+    }).then(([email]) => {
+      return new Email(
+        [email],
+        'Reset your password',
+        `A password reset has been requested for your Edward account with email ${email}.
+        If you did not request a password reset, you may delete this email and take no further action.
+        If you would like to reset your password, please visit the link below:
+
+        ${process.env.BASE_URL}/auth#/reset/${encodeURIComponent(email)}/${guid}`
+      ).send()
+    })
+    .then(() => {
+      res.status(200).send()
+    }, err => {
+      console.error(err)
+      res.status(500).send()
     })
   })
 }

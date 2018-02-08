@@ -1,8 +1,6 @@
 const bcrypt = require('bcryptjs')
 
-const util = {}
-
-util.getHash = password => {
+const getHash = password => {
   return new Promise((resolve, reject) => {
     bcrypt.genSalt(10, (err, salt) => {
       if (err) {
@@ -23,7 +21,7 @@ util.getHash = password => {
   })
 }
 
-util.isCorrectPassword = (attempt, realHash) => {
+const isCorrectPassword = (attempt, realHash) => {
   return new Promise((resolve, reject) => {
     bcrypt.compare(attempt, realHash).then(isValid => {
       if (isValid) {
@@ -35,7 +33,7 @@ util.isCorrectPassword = (attempt, realHash) => {
   })
 }
 
-util.addTimestamps = (knex, config, isUpdate) => {
+const addTimestamps = (knex, config, isUpdate) => {
   if (!isUpdate) {
     config['created_at'] = knex.raw('current_timestamp')
   }
@@ -44,4 +42,8 @@ util.addTimestamps = (knex, config, isUpdate) => {
   return config
 }
 
-module.exports = util
+module.exports = {
+  getHash,
+  isCorrectPassword,
+  addTimestamps
+}

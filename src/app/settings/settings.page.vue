@@ -39,9 +39,11 @@
         <span v-if="!isPremium">For a better experience, upgrade to a Premium account.</span>
       </div>
       <div class="upgrade-button">
-        <button class="button-green" @click="goToUpgrade()">
-          Upgrade
-        </button>
+        <a href="/auth#/account">
+          <button class="button-green">
+            Upgrade
+          </button>
+        </a>
       </div>
     </div>
   </div>
@@ -97,9 +99,6 @@ export default {
     editPassword () {
       this.editingPassword = true
       this.account.password = ''
-    },
-    goToUpgrade () {
-      window.location.href = '/auth#/account'
     },
     saveEmail () {
       this.$store.commit(UPDATE_EMAIL, { email: this.account.email })

@@ -36,11 +36,16 @@ strong {
 
 /* TAGS */
 
-a {
+a:not(.disguised) {
   cursor: pointer;
   font-size: 14px;
   line-height: 21px;
   text-decoration: underline;
+}
+
+a.disguised {
+  color: inherit;
+  text-decoration: none;
 }
 
 button {

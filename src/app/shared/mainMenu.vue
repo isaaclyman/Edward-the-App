@@ -25,14 +25,16 @@
       </div>
     </div>
     <hr class="vert">
-    <div class="account" :title="accountType.description" v-tooltip @click="goToUpgrade()">
-      <div class="email">
-        {{ email }}
+    <a class="disguised" href="/auth#/account">
+      <div class="account" :title="accountType.description" v-tooltip>
+        <div class="email">
+          {{ email }}
+        </div>
+        <div class="account-type">
+          {{ accountType.displayName }}
+        </div>
       </div>
-      <div class="account-type">
-        {{ accountType.displayName }}
-      </div>
-    </div>
+    </a>
   </div>
 </template>
 
@@ -104,9 +106,6 @@ export default {
         height: 25,
         width: 25
       })
-    },
-    goToUpgrade () {
-      window.location.href = '/auth#/account'
     }
   },
   watch: {
@@ -203,8 +202,10 @@ hr.between:last-of-type {
 }
 
 .account {
+  color: inherit;
   cursor: pointer;
   margin-left: 8px;
+  text-decoration: none;
 }
 
 .email {

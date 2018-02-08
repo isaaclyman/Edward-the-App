@@ -26,9 +26,11 @@
           Account
         </button>
       </router-link>
-      <button class="menu-button button-green" @click="goToUpgrade()">
-        Upgrade
-      </button>
+      <a href="/auth#/account">
+        <button class="menu-button button-green">
+          Upgrade
+        </button>
+      </a>
     </div>
     <div class="menu-item">
       <button class="menu-button" @click="logOut()">
@@ -57,9 +59,6 @@ export default {
     return {}
   },
   methods: {
-    goToUpgrade () {
-      window.location.href = '/auth#/account'
-    },
     logOut () {
       userApi.logOut().then(() => {
         window.location.href = '/auth'

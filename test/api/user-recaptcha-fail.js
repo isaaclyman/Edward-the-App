@@ -3,7 +3,7 @@ import request from 'request-promise-native'
 import sinon from 'sinon'
 
 const sandbox = sinon.sandbox.create()
-const user = { email: 'user-recaptcha-fail.js@test.com__TEST', password: 'thisismysecurepassword', captchaResponse: 'token' }
+const user = { email: 'trash@edwardtheapp.com', password: 'thisismysecurepassword', captchaResponse: 'token' }
 
 test.before('stub', t => {
   sandbox.stub(request, 'post')

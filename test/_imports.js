@@ -10,6 +10,7 @@ import {
   makeTestUserAdmin,
   makeTestUserPremium,
   route,
+  setTestUserVerifyKey,
   stubRecaptcha,
   user,
   wrapTest
@@ -34,6 +35,7 @@ const boundMakeTestUserAdmin = () => makeTestUserAdmin(knex)
 const boundMakeTestUserPremium = () => makeTestUserPremium(knex)
 const boundCreateTestDocument = () => createTestDocument(knex)
 const boundCreateTestChapter = () => createTestChapter(knex)
+const boundSetTestUserVerifyKey = () => setTestUserVerifyKey(knex)
 
 export {
   accountTypes,
@@ -49,6 +51,7 @@ export {
   server,
   knex,
   serverReady,
+  boundSetTestUserVerifyKey as setTestUserVerifyKey,
   stubRecaptcha,
   test,
   user,

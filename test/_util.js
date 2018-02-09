@@ -14,7 +14,7 @@ const route = route => `/api/${route}`
 */
 
 const user = {
-  email: 'user.js@test.com__TEST',
+  email: 'trash@edwardtheapp.com',
   password: 'thisismysecurepassword',
   captchaResponse: 'token',
   verifyKey: '5cf197a4-1029-4250-91cc-6f0ef75bca77'

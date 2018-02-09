@@ -146,7 +146,7 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
       return new Email(
         [user.email],
         'Verify your account',
-        'Thanks for signing up for an account with Edward. Use the link below to verify your email address:'
+        'Thanks for signing up for an account with Edward. Use the link below to verify your email address:' +
         `\n\n${process.env.BASE_URL}/auth#/verify/${encodeURIComponent(user.email)}/${key}`
       ).send()
     }).then(() => {

@@ -5,6 +5,7 @@ import authApi from './authApi'
 Vue.use(Router)
 
 import Account from './account.page.vue'
+import Forgot from './forgot.page.vue'
 import Limited from './limited.page.vue'
 import Login from './login.page.vue'
 import Reset from './reset.page.vue'
@@ -49,13 +50,6 @@ export default new Router({
       redirect: '/login'
     },
     {
-      path: '/limited',
-      name: 'Limited Account',
-      component: Limited,
-      beforeEnter: assertVerified,
-      meta: { getCurrentUser }
-    },
-    {
       path: '/login',
       name: 'Log In',
       component: Login
@@ -64,6 +58,18 @@ export default new Router({
       path: '/account',
       name: 'Account',
       component: Account,
+      beforeEnter: assertVerified,
+      meta: { getCurrentUser }
+    },
+    {
+      path: '/forgot',
+      name: 'Forgot Password',
+      component: Forgot
+    },
+    {
+      path: '/limited',
+      name: 'Limited Account',
+      component: Limited,
       beforeEnter: assertVerified,
       meta: { getCurrentUser }
     },

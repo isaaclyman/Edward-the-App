@@ -1,5 +1,7 @@
 import { user } from '../../test/_util'
-import { createTestUser, deleteTestUser, makeTestUserPremium, setTestUserVerifyKey } from '../scripts/_util'
+import {
+  createTestUser, deleteTestUser, makeTestUserPremium, setTestUserResetKey, setTestUserVerifyKey
+} from '../scripts/_util'
 
 describe('the auth page', () => {
   describe('the login form', () => {
@@ -127,6 +129,41 @@ describe('the auth page', () => {
       setTestUserVerifyKey(cy)
       cy.visit(`/auth.html#/verify/${encodeURIComponent(user.email)}/${user.verifyKey}`)
       cy.url().should('contain', '/app')
+    })
+  })
+
+  describe('the password reset process', () => {
+    beforeEach(() => {
+      deleteTestUser(cy)
+      createTestUser(cy)
+      cy.visit('/auth.html#/login')
+    })
+
+    it('allows you to request a password reset link', () => {
+      cy.get('button.forgot-button').click()
+      cy.url().should('contain', '/forgot')
+      cy.get('input.email-input').type(user.email)
+      cy.get('button.reset-button').click()
+      cy.get('.success').should('exist')
+    })
+
+    it('allows you to reset your password', () => {
+      setTestUserResetKey(cy)
+      cy.visit(`/auth.html#/reset/${encodeURIComponent(user.email)}/${user.resetKey}`)
+      cy.get('.message').should('exist')
+
+      const newPassword = `${user.password}-updated`
+      cy.get('input.password-input').type(newPassword)
+      cy.get('button.submit-button').click()
+      cy.get('.success').should('exist')
+      cy.get('button.finish-button').click()
+      cy.url().should('contain', '/app')
+      
+      cy.visit('/auth.html#/login')
+      cy.get('div.username > input').type(user.email)
+      cy.get('div.password > input').type(newPassword)
+      cy.get('button').contains('Log In').click()
+      cy.url().should('contain', '/limited')
     })
   })
 })

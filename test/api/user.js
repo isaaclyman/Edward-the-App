@@ -324,7 +324,7 @@ test('reset password', async t => {
 
   await (
     app.post(route('user/send-reset-password-link'))
-    .send({ email: user.email })
+    .send({ email: user.email, captchaResponse: user.captchaResponse, integration: true })
     .expect(200)
   )
 
@@ -381,7 +381,7 @@ test('cannot reset password with null or incorrect key', async t => {
 
   await (
     app.post(route('user/send-reset-password-link'))
-    .send({ email: user.email })
+    .send({ email: user.email, captchaResponse: user.captchaResponse, integration: true })
     .expect(200)
   )
 

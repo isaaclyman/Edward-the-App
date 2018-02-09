@@ -8,6 +8,9 @@
   <div class="password">
     <label for="login-password-input">Password:</label>
     <input id="login-password-input" class="login-field" type="password" v-model="password">
+    <router-link to="/forgot">
+      <button class="button-link forgot-button">Forgot your password?</button>
+    </router-link>
   </div>
   <div class="captcha">
     <Captcha @change="setCaptchaResponse" @expire="resetCaptchaResponse" ref="captcha"></Captcha>
@@ -54,7 +57,7 @@ export default {
       )
     },
     isTest () {
-      return this.email.endsWith('__TEST')
+      return this.email === 'trash@edwardtheapp.com'
     }
   },
   data () {

@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <p class="signup-message">
-      <strong>Your Hobbyist account is free. You can use it for as long as you like.</strong>
+      <strong>Your Limited account is free. You can use it for as long as you like.</strong>
     </p>
     <div class="signup-section username">
       <div class="signup-field">
@@ -63,7 +63,7 @@ export default {
       )
     },
     isTest () {
-      return this.email.endsWith('__TEST')
+      return this.email === 'trash@edwardtheapp.com'
     },
     warnEmail () {
       return this.email && !this.validEmail

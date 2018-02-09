@@ -13,21 +13,21 @@
         Please try again. If you keep having trouble, email support@edwardtheapp.com.
       </p>
     </div>
-    <div>
+    <div v-if="!failed">
       <pulse-loader></pulse-loader>
     </div>
   </div>
 </template>
 
 <script>
+import authApi from './authApi'
 import { goToApp } from './shared'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
-import userApi from '../app/api/userApi'
 
 export default {
   beforeCreate () {
     const { email, key } = this.$route.params
-    userApi.verify(email, key).then(() => {
+    authApi.verify({ email, key }).then(() => {
       goToApp()
     }, () => {
       this.failed = true

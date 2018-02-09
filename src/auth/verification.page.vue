@@ -20,6 +20,9 @@
         <p v-if="sent">
           Email sent.
         </p>
+        <p class="error" v-if="error">
+          That didn't work. Please try again later or contact <a href="mailto:support@edwardtheapp.com">support@edwardtheapp.com</a>.
+        </p>
       </div>
       <p>
         Once you get the email, you can click the link to verify your account.
@@ -34,8 +37,8 @@
 </template>
 
 <script>
+import authApi from './authApi'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
-import userApi from '../app/api/userApi'
 
 export default {
   components: {
@@ -52,13 +55,22 @@ export default {
   },
   data () {
     return {
+      error: false,
       sent: false
     }
   },
   methods: {
     sendLink () {
-      userApi.sendVerifyLink()
-      this.sent = true
+      this.error = false
+      this.sent = false
+
+      authApi.sendVerifyLink().then(() => {
+        this.sent = true
+      }, err => {
+        this.sent = false
+        this.error = true
+        console.error(err)
+      })
     }
   }
 }
@@ -78,5 +90,9 @@ export default {
 
 .button-link {
   padding: 6px 0;
+}
+
+.error {
+  color: red;
 }
 </style>

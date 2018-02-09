@@ -93,3 +93,7 @@ export function makeTestUserPremium (cy) {
 export function setTestUserVerifyKey (cy) {
   cy.exec('node cypress/scripts/setTestUserVerifyKey.js')
 }
+
+export function setTestUserResetKey (cy) {
+  cy.exec('node cypress/scripts/setTestUserResetKey.js')
+}

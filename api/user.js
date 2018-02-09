@@ -40,7 +40,7 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
   }
 
   const captchaMiddleware = (req, res, next) => {
-    if (req.body.email.endsWith('__TEST') && req.body.integration === true) {
+    if (req.body.email.endsWith('@edwardtheapp.com') && req.body.integration === true) {
       return next()
     }
 
@@ -266,13 +266,14 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
 
 
   // POST { email }
-  app.post(route('send-reset-password-link'), (req, res, next) => {
+  app.post(route('send-reset-password-link'), captchaMiddleware, (req, res, next) => {
     const email = req.body.email
 
     let guid
     db.knex('users').where('email', email).first().then(user => {
       if (!user) {
-        throw new Error(`A user with the email address ${email} was not found.`)
+        res.status(500).send(`A user with the email address ${email} was not found.`)
+        throw new Error()
       }
 
       guid = uuid()
@@ -294,6 +295,9 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
     .then(() => {
       res.status(200).send()
     }, err => {
+      if (res.headersSent) {
+        return
+      }
       console.error(err)
       res.status(500).send()
     })

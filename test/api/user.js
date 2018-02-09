@@ -360,3 +360,69 @@ test('reset password', async t => {
     .expect('set-cookie', /connect\.sid/)
   )
 })
+
+test('cannot reset password with null or incorrect key', async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+
+  await (
+    app.post(route('user/signup'))
+    .send(user)
+    .expect(200)
+    .expect('set-cookie', /connect\.sid/)
+  )
+
+  await (
+    app.get(route('user/logout'))
+    .expect(200)
+  )
+
+  await (
+    app.post(route('user/send-reset-password-link'))
+    .send({ email: user.email })
+    .expect(200)
+  )
+
+  await setTestUserResetKey()
+
+  await (
+    app.post(route('user/authenticate-password-reset'))
+    .send({
+      email: user.email,
+      key: null
+    })
+    .expect(401)
+  )
+
+  const newPassword = `${user.password}-updated`
+  await (
+    app.post(route('user/password'))
+    .send({ password: newPassword })
+    .expect(302)
+  )
+
+  await (
+    app.post(route('user/authenticate-password-reset'))
+    .send({
+      email: user.email,
+      key: '00000000-1029-4250-91cc-6f0ef75bca77'
+    })
+    .expect(401)
+  )
+
+  await (
+    app.post(route('user/password'))
+    .send({ password: newPassword })
+    .expect(302)
+  )
+
+  const newUser = {}
+  Object.assign(newUser, user, { password: newPassword })
+  await (
+    app.post(route('user/login'))
+    .send(newUser)
+    .expect(401)
+  )
+})

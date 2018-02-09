@@ -10,6 +10,7 @@ import {
   makeTestUserAdmin,
   makeTestUserPremium,
   route,
+  setTestUserResetKey,
   setTestUserVerifyKey,
   stubRecaptcha,
   user,
@@ -36,6 +37,7 @@ const boundMakeTestUserPremium = () => makeTestUserPremium(knex)
 const boundCreateTestDocument = () => createTestDocument(knex)
 const boundCreateTestChapter = () => createTestChapter(knex)
 const boundSetTestUserVerifyKey = () => setTestUserVerifyKey(knex)
+const boundSetTestUserResetKey = () => setTestUserResetKey(knex)
 
 export {
   accountTypes,
@@ -46,12 +48,13 @@ export {
   boundDeleteTestUser as deleteTestUser,
   boundMakeTestUserAdmin as makeTestUserAdmin,
   boundMakeTestUserPremium as makeTestUserPremium,
+  boundSetTestUserVerifyKey as setTestUserVerifyKey,
+  boundSetTestUserResetKey as setTestUserResetKey,
   getPersistentAgent,
   route,
   server,
   knex,
   serverReady,
-  boundSetTestUserVerifyKey as setTestUserVerifyKey,
   stubRecaptcha,
   test,
   user,

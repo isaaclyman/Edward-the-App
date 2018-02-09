@@ -25,9 +25,9 @@ const isCorrectPassword = (attempt, realHash) => {
   return new Promise((resolve, reject) => {
     bcrypt.compare(attempt, realHash).then(isValid => {
       if (isValid) {
-        resolve()
+        return resolve()
       } else {
-        reject()
+        return reject()
       }
     }, reject)
   })

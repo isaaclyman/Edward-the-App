@@ -161,7 +161,7 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
     const { email, key } = req.body
 
     if (!email || !key) {
-      res.status(500).send('Email and reset key must be provided.')
+      res.status(401).send('Email and reset key must be provided.')
       return
     }
 
@@ -171,7 +171,7 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
       'verify_key': key
     }).first().then(user => {
       if (!user || !user['verify_key']) {
-        res.status(400).send('Email address or verification key is incorrect.')
+        res.status(401).send('Email address or verification key is incorrect.')
         return false
       }
 
@@ -189,6 +189,9 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
           return res.status(200).send()
         })
       })
+    }).then(undefined, err => {
+      console.error(err)
+      res.status(500).send()
     })
   })
 
@@ -301,18 +304,30 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
     const { email, key } = req.body
 
     if (!email || !key) {
-      res.status(500).send('Email and reset key must be provided.')
+      res.status(401).send('Email and reset key must be provided.')
       return
     }
 
     db.knex('users').where({
-      email: email,
-      'pass_reset_key': key
+      email: email
     }).first().then(user => {
       if (!user || !user['pass_reset_key']) {
-        throw new Error('Email or password reset key is incorrect.')
+        res.status(401).send('Email or password reset key is incorrect.')
+        return false
       }
 
+      const realHash = user['pass_reset_key']
+
+      return modelUtil.isCorrectPassword(key, realHash).then(() => user, () => {
+        res.status(401).send('Email or password reset key is incorrect.')
+        return false
+      })
+    }).then(user => {
+      if (!user) {
+        return
+      }
+
+      // Correct password
       req.login(user, err => {
         if (err) {
           console.error(err)

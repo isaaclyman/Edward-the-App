@@ -17,6 +17,7 @@ const user = {
   email: 'trash@edwardtheapp.com',
   password: 'thisismysecurepassword',
   captchaResponse: 'token',
+  resetKey: '5cf197a4-1029-4250-91cc-6f0ef75bca77',
   verifyKey: '5cf197a4-1029-4250-91cc-6f0ef75bca77'
 }
 
@@ -130,6 +131,16 @@ function setTestUserVerifyKey(knex) {
   )
 }
 
+function setTestUserResetKey(knex) {
+  return (
+    modelUtil.getHash(user.resetKey).then(hash => {
+      return knex('users').where('email', user.email).update({
+        'pass_reset_key': hash
+      })
+    })
+  )
+}
+
 /*
   EXTERNAL REQUEST STUBBING
 */
@@ -176,6 +187,7 @@ module.exports = {
   makeTestUserAdmin,
   makeTestUserPremium,
   route,
+  setTestUserResetKey,
   setTestUserVerifyKey,
   stubRecaptcha,
   wrapTest

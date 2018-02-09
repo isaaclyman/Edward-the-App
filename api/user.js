@@ -146,9 +146,8 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
       return new Email(
         [user.email],
         'Verify your account',
-        `Thanks for signing up for an account with Edward. Use the link below to verify your email address:
-        
-        ${process.env.BASE_URL}/auth#/verify/${encodeURIComponent(user.email)}/${key}`
+        'Thanks for signing up for an account with Edward. Use the link below to verify your email address:'
+        `\n\n${process.env.BASE_URL}/auth#/verify/${encodeURIComponent(user.email)}/${key}`
       ).send()
     }).then(() => {
       res.status(200).send()
@@ -160,11 +159,18 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
 
   app.post(route('verify'), (req, res, next) => {
     const { email, key } = req.body
+
+    if (!email || !key) {
+      res.status(500).send('Email and reset key must be provided.')
+      return
+    }
+
     db.knex('users').where({
       email,
+      verified: false,
       'verify_key': key
     }).first().then(user => {
-      if (!user) {
+      if (!user || !user['verify_key']) {
         res.status(400).send('Email address or verification key is incorrect.')
         return false
       }
@@ -175,6 +181,7 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
       }, true)).then(() => {
         req.login(user, err => {
           if (err) {
+            console.error(err)
             res.status(500).send('An error occurred while logging in.')
             return false
           }
@@ -254,33 +261,75 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
     })
   })
 
-  app.get(route('send-reset-password-link'), isLoggedIn, (req, res, next) => {
+
+  // POST { email }
+  app.post(route('send-reset-password-link'), (req, res, next) => {
+    const email = req.body.email
+
     let guid
-    db.knex('users').where('id', req.user.id).first().then(user => {
+    db.knex('users').where('email', email).first().then(user => {
       if (!user) {
-        throw new Error('Current user was not found.')
+        throw new Error(`A user with the email address ${email} was not found.`)
       }
 
       guid = uuid()
       return modelUtil.getHash(guid)
     }).then(hash => {
-      return db.knex('users').where('id', req.user.id).update(ts(db.knex, {
+      return db.knex('users').where('email', email).update(ts(db.knex, {
         'pass_reset_key': hash
-      }, true)).returning('email')
-    }).then(([email]) => {
+      }, true))
+    }).then(() => {
       return new Email(
         [email],
         'Reset your password',
-        `A password reset has been requested for your Edward account with email ${email}.
-        If you did not request a password reset, you may delete this email and take no further action.
-        If you would like to reset your password, please visit the link below:
-
-        ${process.env.BASE_URL}/auth#/reset/${encodeURIComponent(email)}/${guid}`
+        `A password reset has been requested for your Edward account with email ${email}.` +
+        '\nIf you did not request a password reset, you may delete this email and take no further action.' +
+        '\nIf you would like to reset your password, please visit the link below:' +
+        `\n\n${process.env.BASE_URL}/auth#/reset/${encodeURIComponent(email)}/${guid}`
       ).send()
     })
     .then(() => {
       res.status(200).send()
     }, err => {
+      console.error(err)
+      res.status(500).send()
+    })
+  })
+
+  // POST { email, key }
+  app.post(route('authenticate-password-reset'), (req, res, next) => {
+    const { email, key } = req.body
+
+    if (!email || !key) {
+      res.status(500).send('Email and reset key must be provided.')
+      return
+    }
+
+    db.knex('users').where({
+      email: email,
+      'pass_reset_key': key
+    }).first().then(user => {
+      if (!user || !user['pass_reset_key']) {
+        throw new Error('Email or password reset key is incorrect.')
+      }
+
+      req.login(user, err => {
+        if (err) {
+          console.error(err)
+          res.status(500).send('Could not log in.')
+          return false
+        }
+
+        db.knex('users').where('email', email).update(ts(db.knex, {
+          'pass_reset_key': null
+        }, true)).then(() => {
+          res.status(200).send()
+        }, err => {
+          console.error(err)
+          res.status(500).send()
+        })
+      })
+    }).then(undefined, err => {
       console.error(err)
       res.status(500).send()
     })

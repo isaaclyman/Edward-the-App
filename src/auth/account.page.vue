@@ -217,6 +217,7 @@ hr {
 }
 
 .account, .upgrade {
+  max-width: 1200px;
   padding: 0 50px;
   width: 100%;
 }

@@ -6,7 +6,7 @@
         <strong>This is a limited account.</strong>
       </p>
       <p>
-        All your novels are stored insecurely on your computer. You won't be able to access them on other computers, and they will be deleted if you reinstall your browser, clear your browsing data, or wipe your hard drive. If you exceed the storage space your browser allows, it may erase all your data without warning.
+        All your novels are stored insecurely on your computer. You won't be able to access them on other computers, and they will be <strong>deleted without warning</strong> if you reinstall your browser, clear your browsing data, or wipe your hard drive. If you exceed the storage space your browser allows, it may suddenly erase all your data.
       </p>
       <p>
         You can use your limited account for as long as you want and export as many novels as you want.

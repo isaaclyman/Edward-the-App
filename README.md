@@ -25,10 +25,13 @@ npm run server
 # serve Node server app with auto reload at localhost:3000
 npm run server-dev
 
-# run integration tests (using Cypress)
+# run Ava unit tests and API integration tests
+npm run test
+
+# run Cypress integration tests in the command line (headless)
 npm run integration
 
-# run integration tests in interactive mode (Cypress GUI)
+# run Cypress integration tests in interactive mode
 npm run cypress
 ```
 

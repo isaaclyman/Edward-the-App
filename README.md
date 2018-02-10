@@ -1,6 +1,6 @@
 # Edward the App
 
-> A better way to outline and write novels, essays, speeches, scripts and more
+Write your first novel.
 
 ## Build Setup
 
@@ -49,6 +49,8 @@ For local development, you'll need a root-level `.env` file with the following k
 ## Running the app locally
 
 `npm run dev` serves the front-end site on port 8080. `npm run server-dev` runs the API server on port 3000. Run these in separate console windows, and API requests will automatically be proxied from port 8080 to port 3000.
+
+The app will try to redirect you to routes like `/app` and `/auth`. These work on port 3000, where the Express server is, but not on the webpack dev server on port 8080. You'll need to change these to `/app.html` and `/auth.html` manually.
 
 ## Tests
 

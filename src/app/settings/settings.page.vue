@@ -39,7 +39,7 @@
     <div class="account-type">
       <div>
         You have a {{accountType}}.
-        <span v-if="!isPremium">For a better experience, upgrade to a Premium account.</span>
+        <span v-if="!isPremium">For a better experience, upgrade to a Premium Account.</span>
       </div>
       <div class="upgrade-button">
         <a href="/auth#/account">

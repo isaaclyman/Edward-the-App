@@ -26,6 +26,15 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'))
 })
 
+// Serve legal documents
+app.get('/privacy', (req, res) => {
+  res.sendFile(path.join(__dirname, 'legal', 'privacy.html'))
+})
+
+app.get('/terms', (req, res) => {
+  res.sendFile(path.join(__dirname, 'legal', 'terms.html'))
+})
+
 // Database ORM
 const knex = require('./db')
 const { db, dbReady } = require('./models/_index')(knex)

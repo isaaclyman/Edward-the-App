@@ -61,11 +61,21 @@ h4 {
   font-size: 22px;
 }
 
-ul li {
+ul li, ol li {
   margin-left: 20px;
 }
 
 /* CLASSES */
+
+.left-align .header,
+.left-align h1,
+.left-align h2,
+.left-align h3,
+.left-align h4 {
+  max-width: 100%;
+  text-align: left;
+  width: 800px;
+}
 
 .header {
   align-items: center;
@@ -110,7 +120,7 @@ ul li {
   width: 100%;
 }
 
-.content > p, .content > ul {
+.content > p, .content > ul, .content > ol {
   max-width: 100%;
   padding: 0 12px;
   width: 800px;
@@ -141,15 +151,22 @@ ul li {
   max-width: 550px;
 }
 
+.footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding-bottom: 30px;
+}
+
 /* BACKGROUNDS */
 
-.background-gray, .background-pink, .background-blue, .background-brown, .background-green,
+.background-gray, .background-pink, .background-blue, .background-purple, .background-green,
 .background-yellow, .background-orange {
   padding: 0 30px;
 }
 
 /* .background-pink > div,  */
-.background-gray > div, .background-blue > div, .background-brown > div,
+.background-gray > div, .background-blue > div, .background-purple > div,
 .background-green > div, .background-yellow > div, .background-orange > div {
   background-color: #fff;
 }
@@ -166,7 +183,7 @@ ul li {
   background-color: #c9c9ff;
 }
 
-.background-brown {
+.background-purple {
   background-color: #f1cbff;
 }
 

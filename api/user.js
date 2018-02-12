@@ -211,7 +211,9 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
 
       return (
         db.knex('users').where('id', req.user.id).update(ts(db.knex, {
-          email: newEmail
+          email: newEmail,
+          verified: false,
+          'verify_key': uuid()
         }, true))
       )
     }).then(() => {

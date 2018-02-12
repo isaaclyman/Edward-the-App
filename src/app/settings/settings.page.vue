@@ -18,6 +18,9 @@
         Save
       </button>
     </div>
+    <div class="error" v-if="error">
+      That didn't work. Please try again or contact support.
+    </div>
     <hr>
     <h4>Password</h4>
     <div class="change-password">
@@ -52,6 +55,7 @@
 
 <script>
 import { UPDATE_EMAIL, UPDATE_PASSWORD } from '../shared/user.store'
+import swal from 'sweetalert'
 
 const mockPassword = '************'
 
@@ -81,7 +85,8 @@ export default {
         password: mockPassword
       },
       editingEmail: false,
-      editingPassword: false
+      editingPassword: false,
+      error: false
     }
   },
   methods: {
@@ -101,8 +106,26 @@ export default {
       this.account.password = ''
     },
     saveEmail () {
-      this.$store.commit(UPDATE_EMAIL, { email: this.account.email })
-      this.editingEmail = false
+      this.error = false
+      swal({
+        buttons: true,
+        dangerMode: true,
+        icon: 'warning',
+        text: `Are you sure you want to change your email address? You will have to verify the new address before you can access your account.`,
+        title: 'Change email and re-verify?'
+      }).then((willChange) => {
+        if (!willChange) {
+          return
+        }
+
+        this.$store.dispatch(UPDATE_EMAIL, { email: this.account.email }).then(() => {
+          this.editingEmail = false
+          window.location.href = '/auth#/verification'
+        }, err => {
+          console.error(err)
+          this.error = true
+        })
+      })
     },
     savePassword () {
       this.$store.commit(UPDATE_PASSWORD, { password: this.account.password })
@@ -136,6 +159,10 @@ export default {
 
 .account-input {
   min-width: 250px;
+}
+
+.error {
+  color: red;
 }
 
 .upgrade-button {

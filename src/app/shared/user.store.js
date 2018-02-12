@@ -1,5 +1,6 @@
 import userApi from '../api/userApi'
 
+export const COMMIT_NEW_EMAIL = 'COMMIT_NEW_EMAIL'
 export const SET_DEFAULT_USER = 'SET_DEFAULT_USER'
 export const SET_USER = 'SET_USER'
 export const SET_USER_PROMISE = 'SET_USER_PROMISE'
@@ -34,7 +35,16 @@ const store = {
       userPromiseResolve = resolve
     })
   },
+  actions: {
+    [UPDATE_EMAIL] ({ commit, state }, { email }) {
+      commit(COMMIT_NEW_EMAIL, { email })
+      return userApi.updateEmail(email)
+    }
+  },
   mutations: {
+    [COMMIT_NEW_EMAIL] (state, { email }) {
+      state.user.email = email
+    },
     [SET_DEFAULT_USER] (state) {
       state.user = defaultUser
     },
@@ -47,10 +57,6 @@ const store = {
       }, err => {
         userPromiseResolve(null, err)
       })
-    },
-    [UPDATE_EMAIL] (state, { email }) {
-      state.user.email = email
-      userApi.updateEmail(email)
     },
     [UPDATE_PASSWORD] (state, { password }) {
       userApi.updatePassword(password)

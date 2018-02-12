@@ -19,7 +19,7 @@
       </div>
       <div v-if="!isPremium">
         <p>
-          Upgrade to a Premium account to access your novels from anywhere.
+          Upgrade to a Premium account to access your novels from anywhere. ($2.46 per month)
         </p>
         <button class="button-green" @click="limitedToPremium()">
           Go Premium
@@ -27,7 +27,7 @@
       </div>
       <div v-if="!isGold">
         <p>
-          Upgrade to a Gold account for extra Premium storage space.
+          Upgrade to a Gold account for extra Premium storage space. ($10 per month)
         </p>
         <button class="button-gold" @click="toGold()">
           Go Gold

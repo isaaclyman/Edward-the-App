@@ -61,7 +61,7 @@ h4 {
   font-size: 22px;
 }
 
-ul li {
+ul li, ol li {
   margin-left: 20px;
 }
 

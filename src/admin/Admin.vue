@@ -1,11 +1,20 @@
 <template>
   <div class="wrap">
-    Admin page works.
+    <h4>This is a restricted Admin page.</h4>
+    <total-users></total-users>
+    <space-overages></space-overages>
   </div>
 </template>
 
 <script>
+import SpaceOverages from './SpaceOverages.vue'
+import TotalUsers from './TotalUsers.vue'
+
 export default {
+  components: {
+    SpaceOverages,
+    TotalUsers
+  },
   data () {
     return {}
   }
@@ -13,5 +22,7 @@ export default {
 </script>
 
 <style scoped>
-
+.wrap {
+  padding: 10px;
+}
 </style>

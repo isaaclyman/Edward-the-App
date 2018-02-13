@@ -8,7 +8,13 @@ module.exports = function (app, passport, db) {
     res.sendFile(path.join(__dirname, '../dist/auth.html'))
   })
 
-  app.get('/login', (req, res) => { res.redirect('/auth') })
+  app.get('/login', (req, res) => {
+    if (req.isAuthenticated()) {
+      return res.redirect('/app')
+    } else {
+      return res.redirect('/auth')
+    }
+  })
 
   // Serve main app
   app.get('/app', httpsMiddleware, isLoggedInMiddleware, (req, res) => {

@@ -53,7 +53,7 @@ For local development, you'll need a root-level `.env` file with the following k
 
 `npm run dev` serves the front-end site on port 8080. `npm run server-dev` runs the API server on port 3000. Run these in separate console windows, and API requests will automatically be proxied from port 8080 to port 3000.
 
-The app will try to redirect you to routes like `/app` and `/auth`. These work on port 3000, where the Express server is, but not on the webpack dev server on port 8080. You'll need to change these to `/app.html` and `/auth.html` manually.
+The webpack dev server (port 8080) will automatically redirect from routes like `/app` and `/auth` to `/app.html` and `/auth.html`. On the express server (port 3000) the original routes work without a redirect.
 
 ## Tests
 

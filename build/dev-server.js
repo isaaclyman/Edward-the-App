@@ -49,6 +49,11 @@ Object.keys(proxyTable).forEach(function (context) {
   app.use(proxyMiddleware(options.filter || context, options))
 })
 
+app.get('/app', function (req, res) { res.redirect('/app.html') })
+app.get('/auth', function (req, res) { res.redirect('/auth.html') })
+app.get('/login', function (req, res) { res.redirect('/auth.html') })
+app.get('/admin', function (req, res) { res.redirect('/admin.html') })
+
 // handle fallback for HTML5 history API
 app.use(require('connect-history-api-fallback')())
 
@@ -75,7 +80,7 @@ devMiddleware.waitUntilValid(() => {
   console.log('> Listening at ' + uri + '\n')
   // when env is testing, don't need open it
   if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
-    opn(uri + '/app.html')
+    opn(uri + '/app')
   }
   _resolve()
 })

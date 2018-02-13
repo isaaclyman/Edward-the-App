@@ -21,6 +21,11 @@ module.exports = function (app, passport, db) {
     res.sendFile(path.join(__dirname, '../dist/app.html'))
   })
 
+  // Serve admin page
+  app.get('/admin', httpsMiddleware, isAdminMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/admin.html'))
+  })
+
   // Serve user-facing APIs
   require('./user')(app, passport, db, isPremiumUser, isLoggedInMiddleware)
   require('./document').registerApis(app, passport, db, isPremiumUserMiddleware)

@@ -76,6 +76,18 @@ var webpackConfig = merge(baseWebpackConfig, {
       chunks: ['vendor', 'manifest', 'auth'],
       chunkSortMode: 'dependency'
     }),
+    new HtmlWebpackPlugin({
+      filename: config.build.admin,
+      template: 'admin.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunks: ['vendor', 'manifest', 'admin'],
+      chunksSortMode: 'dependency'
+    }),
     // keep module.id stable when vender modules does not change
     new webpack.HashedModuleIdsPlugin(),
     // split vendor js into its own file

@@ -53,9 +53,14 @@ const api = {
         .then(response => response.data)
     )
   },
-  upgrade ({ oldAccountType, newAccountType }) {
+  updatePayment ({ token }) {
     return (
-      axios.post(route('upgrade'), { oldAccountType, newAccountType })
+      axios.post(route('update-payment'), { token }).then(response => response.data)
+    )
+  },
+  upgrade ({ oldAccountType, newAccountType, token = null }) {
+    return (
+      axios.post(route('upgrade'), { oldAccountType, newAccountType, token })
         .then(response => response.data)
     )
   },

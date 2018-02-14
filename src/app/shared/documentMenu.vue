@@ -32,6 +32,13 @@
         </button>
       </a>
     </div>
+    <div class="menu-item" v-if="!notDemo">
+      <a href="/auth#/signup">
+        <button class="menu-button button-green">
+          Upgrade
+        </button>
+      </a>
+    </div>
     <div class="menu-item">
       <button class="menu-button" @click="logOut()">
         Log Out

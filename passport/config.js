@@ -1,7 +1,9 @@
 const accountTypes = require('../models/accountType')
 const guid = require('uuid/v4')
 const LocalAuth = require('passport-local').Strategy
+const payments = require('../api/payments')
 const util = require('../models/_util')
+const ts = util.addTimestamps
 
 module.exports = function config (passport, knex) {
   passport.serializeUser((user, done) => {
@@ -33,16 +35,27 @@ module.exports = function config (passport, knex) {
 
         // User doesn't exist
 
-        // Generate password hash
-        return util.getHash(password).then(hash => {
-          // Create new user
-          return knex('users').insert(util.addTimestamps(knex, {
-            email,
-            password: hash,
-            'account_type': accountTypes.LIMITED.name,
-            verified: false,
-            'verify_key': guid()
-          })).returning(['id', 'email', 'password', 'account_type', 'verified'])
+        return Promise.all([
+          // Create customer in Stripe
+          payments.createLimitedCustomer(email),
+          // Generate password hash
+          util.getHash(password)
+        ]).then(([customer, hash]) => {
+          return util.getHash(password).then(hash => {
+            // Create new user
+            return knex('users').insert(ts(knex, {
+              email,
+              password: hash,
+              'account_type': accountTypes.LIMITED.name,
+              verified: false,
+              'verify_key': guid(),
+              'stripe_customer_id': customer.customerId,
+              'stripe_subscription_id': customer.subscriptionId
+            })).returning([
+              'id', 'email', 'password', 'account_type', 'verified',
+              'stripe_customer_id', 'stripe_subscription_id'
+            ])
+          })
         }).then(([user]) => {
           return done(null, user)
         }, err => {

@@ -36,7 +36,7 @@
       </button>
     </div>
     <hr>
-    <div class="account-type">
+    <div class="account-type" v-if="notDemo">
       <div>
         You have a {{accountType}}.
         <span v-if="!isPremium">For a better experience, upgrade to a Premium Account.</span>

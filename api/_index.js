@@ -4,7 +4,6 @@ const path = require('path')
 module.exports = function (app, passport, db) {
   // Serve auth pages
   app.get('/auth', httpsMiddleware, (req, res) => {
-    req.logout()
     res.sendFile(path.join(__dirname, '../dist/auth.html'))
   })
 
@@ -17,7 +16,7 @@ module.exports = function (app, passport, db) {
   })
 
   // Serve main app
-  app.get('/app', httpsMiddleware, isLoggedInMiddleware, (req, res) => {
+  app.get('/app', httpsMiddleware, isLoggedInMiddleware, isNotOverdueMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, '../dist/app.html'))
   })
 
@@ -27,7 +26,7 @@ module.exports = function (app, passport, db) {
   })
 
   // Serve user-facing APIs
-  require('./user')(app, passport, db, isPremiumUser, isLoggedInMiddleware)
+  require('./user')(app, passport, db, isPremiumUser, isOverdue, isLoggedInMiddleware)
   require('./document').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./backup').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./chapter').registerApis(app, passport, db, isPremiumUserMiddleware)
@@ -80,7 +79,7 @@ module.exports = function (app, passport, db) {
         return
       }
 
-      if (!isPremiumUser(user['account_type'])) {
+      if (!isPremiumUser(user.account_type)) {
         res.status(401).send('Attempted a premium API call with a limited account.')
         return
       }
@@ -96,6 +95,39 @@ function isLoggedInMiddleware (req, res, next) {
   }
 
   res.redirect('/auth')
+}
+
+function isOverdue (user) {
+  return addDays(user.payment_period_end, 3) < Date.now()
+}
+
+function isNotOverdueMiddleware (req, res, next) {
+  if (!req.isAuthenticated()) {
+    res.status(401).send('Attempted an API call without authentication.')
+    return
+  }
+
+  db.knex('users').where('id', req.user.id).first().then(user => {
+    if (!user) {
+      res.status(500).send('User does not exist.')
+      return
+    }
+
+    if (!isPremiumUser(user.account_type)) {
+      return next()
+    }
+
+    if (isOverdue(user)) {
+      res.redirect('/auth#/account')
+      return
+    }
+  })
+}
+
+function addDays(date, days) {
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
 }
 
 function httpsMiddleware (req, res, next) {

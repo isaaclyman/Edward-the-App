@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css?family=Asap+Condensed" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
     <script src='https://www.google.com/recaptcha/api.js'></script>
+    <script src="https://checkout.stripe.com/checkout.js"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-109036711-1"></script>
@@ -29,8 +30,10 @@
     
     if (isDevelopment) {
       window.recaptchaSiteKey = '6Lcg3DUUAAAAANAt-cV-ELiedVMT543DJ7-wOneQ'
+      window.stripePublicKey = 'pk_test_j5EoXIK1dh5meggrjMtioHjw'
     } else {
       window.recaptchaSiteKey = '6LfxrTQUAAAAAKZHrZj_kqcmaVoYBcExGAfEN8kf'
+      window.stripePublicKey = 'pk_live_b7aCr7fqukKinDMFNhe9HOH8'
     }
   </script>
 </html>

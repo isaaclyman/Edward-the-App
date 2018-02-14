@@ -1,6 +1,7 @@
 const accountTypes = require('../models/accountType')
 const Email = require('./email.helper')
 const modelUtil = require('../models/_util')
+const payments = require('./payments')
 const request = require('request-promise-native')
 const ts = modelUtil.addTimestamps
 const uuid = require('uuid/v4')
@@ -8,7 +9,7 @@ const uuid = require('uuid/v4')
 // This file deals with sensitive user data. Therefore, error messages (which could contain that data)
 //  are not included in any response to the front end.
 
-module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
+module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLoggedInMiddleware) {
   const route = route => `/api/user/${route}`
 
   const verifyCaptchaToken = (req) => {
@@ -58,6 +59,7 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
         resolve({
           accountType: accountTypes[accountType],
           email: user.email,
+          isOverdue: isOverdue(user),
           isPremium: isPremiumUser(accountType),
           verified: user.verified
         })
@@ -68,7 +70,7 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
     })
   }
 
-  app.get(route('current'), isLoggedIn, (req, res, next) => {
+  app.get(route('current'), isLoggedInMiddleware, (req, res, next) => {
     if (!req.user) {
       res.status(401).send('User not found.')
       return false
@@ -118,7 +120,7 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
         }
 
         return res.status(200).send({
-          isPremium: isPremiumUser(user['account_type']),
+          isPremium: isPremiumUser(user.account_type),
           verified: user.verified
         })
       })
@@ -200,7 +202,7 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
     res.status(200).send()
   })
 
-  app.post(route('email'), isLoggedIn, (req, res, next) => {
+  app.post(route('email'), isLoggedInMiddleware, (req, res, next) => {
     const newEmail = req.body.email
 
     return db.knex('users').where('email', newEmail).first().then(existingUser => {
@@ -224,7 +226,7 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
     })
   })
 
-  app.post(route('password'), isLoggedIn, (req, res, next) => {
+  app.post(route('password'), isLoggedInMiddleware, (req, res, next) => {
     return modelUtil.getHash(req.body.password).then(hash => {
       return db.knex('users').where('id', req.user.id).update(ts(db.knex, {
         password: hash
@@ -237,26 +239,59 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
     })
   })
 
-  // POST { oldAccountType, newAccountType }
-  app.post(route('upgrade'), isLoggedIn, (req, res, next) => {
-    const { oldAccountType, newAccountType } = req.body
+  // POST { oldAccountType, newAccountType, token }
+  app.post(route('upgrade'), isLoggedInMiddleware, (req, res, next) => {
+    const { oldAccountType, newAccountType, token } = req.body
 
+    // Verify that the user isn't trying to make themself an Admin
+    if (newAccountType === accountTypes.ADMIN.name) {
+      const err = new Error('Cannot upgrade to an Admin account using this API.')
+      console.error(err)
+      return res.status(401).send()
+    }
+
+    // Verify that someone isn't trying to upgrade the Demo account
+    if (oldAccountType === accountTypes.DEMO.name) {
+      const err = new Error('Cannot upgrade the demo account.')
+      console.error(err)
+      return res.status(401).send()
+    }
+
+    // Verify that if a paid account is being requested, a payment token is included
+    if ([accountTypes.PREMIUM.name, accountTypes.GOLD.name].includes(newAccountType) && !token) {
+      const err = new Error('Cannot upgrade to a paid account without a payment token.')
+      console.error(err)
+      return res.status(500).send()
+    }
+
+    // Verify that oldAccountType and newAccountType are valid account type names
+    const typeNames = Object.values(accountTypes).map(type => type.name)
+    if (!typeNames.includes(oldAccountType) || !typeNames.includes(newAccountType)) {
+      const err = new Error(`One of received account types is not valid. Received: ${oldAccountType}, ${newAccountType}`)
+      console.error(err)
+      return res.status(500).send()
+    }
+    
     db.knex('users').where('id', req.user.id).first().then(user => {
-      const typeNames = Object.values(accountTypes).map(type => type.name)
-      if (!typeNames.includes(oldAccountType) || !typeNames.includes(newAccountType)) {
-        throw new Error(`One of received account types is not valid. Received: ${oldAccountType}, ${newAccountType}`)
-      }
-
       if (!user) {
         throw new Error('Current user was not found.')
       }
-
+      
       if (user.account_type !== oldAccountType) {
         throw new Error(`Received oldAccountType does not match the user's actual account type.`)
       }
 
+      return payments.setSubscription(
+        user.stripe_customer_id,
+        user.stripe_subscription_id,
+        payments.planIds[newAccountType],
+        token,
+        db.knex
+      )
+    }).then(() => {
       return db.knex('users').where('id', req.user.id).update(ts(db.knex, {
-        'account_type': newAccountType
+        'account_type': newAccountType,
+        'payment_period_end': knex.raw('current_timestamp')
       }, true))
     }).then(() => {
       res.status(200).send()
@@ -266,6 +301,35 @@ module.exports = function (app, passport, db, isPremiumUser, isLoggedIn) {
     })
   })
 
+  // POST { token }
+  app.post(route('update-payment'), isLoggedInMiddleware, (req, res, next) => {
+    const { token } = req.body
+
+    if (!token) {
+      const err = new Error('Cannot update payment method without a valid token.')
+      console.error(err)
+      return res.status(500).send()
+    }
+
+    db.knex('users').where('id', req.user.id).first().then(user => {
+      if (!user) {
+        throw new Error('Current user was not found.')
+      }
+
+      return payments.setSubscription(
+        user.stripe_customer_id,
+        user.stripe_subscription_id,
+        payments.planIds[user.account_type],
+        token,
+        db.knex
+      )
+    }).then(() => {
+      res.status(200).send()
+    }, err => {
+      console.error(err)
+      res.status(500).send()
+    })
+  })
 
   // POST { email }
   app.post(route('send-reset-password-link'), captchaMiddleware, (req, res, next) => {

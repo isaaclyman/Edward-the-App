@@ -8,6 +8,7 @@ import {
   createTestUser,
   deleteTestUser,
   makeTestUserAdmin,
+  makeTestUserDemo,
   makeTestUserPremium,
   route,
   setTestUserResetKey,
@@ -33,6 +34,7 @@ const boundCreateTestUser = async (overrideApp) => {
 }
 const boundDeleteTestUser = email => deleteTestUser(knex, email)
 const boundMakeTestUserAdmin = () => makeTestUserAdmin(knex)
+const boundMakeTestUserDemo = () => makeTestUserDemo(knex)
 const boundMakeTestUserPremium = () => makeTestUserPremium(knex)
 const boundCreateTestDocument = () => createTestDocument(knex)
 const boundCreateTestChapter = () => createTestChapter(knex)
@@ -47,6 +49,7 @@ export {
   boundCreateTestUser as createTestUser,
   boundDeleteTestUser as deleteTestUser,
   boundMakeTestUserAdmin as makeTestUserAdmin,
+  boundMakeTestUserDemo as makeTestUserDemo,
   boundMakeTestUserPremium as makeTestUserPremium,
   boundSetTestUserVerifyKey as setTestUserVerifyKey,
   boundSetTestUserResetKey as setTestUserResetKey,

@@ -115,6 +115,14 @@ function makeTestUserAdmin(knex) {
   )
 }
 
+function makeTestUserDemo(knex) {
+  return (
+    knex('users').where('email', user.email).update({
+      'account_type': accountTypes.DEMO.name
+    })
+  )
+}
+
 function makeTestUserPremium(knex) {
   return (
     knex('users').where('email', user.email).update({
@@ -185,6 +193,7 @@ module.exports = {
   createTestChapter,
   deleteTestUser,
   makeTestUserAdmin,
+  makeTestUserDemo,
   makeTestUserPremium,
   route,
   setTestUserResetKey,

@@ -48,6 +48,7 @@ For local development, you'll need a root-level `.env` file with the following k
 - `SMTP_HOST={hostname}`: A host for sending emails via SMTP. For development, you might consider using `smtp.ethereal.email`. NOTE: you can leave the SMTP attributes blank if you're not developing email or signup functionality.
 - `SMTP_USER={username}`: Your username for accessing the SMTP server.
 - `SMTP_PASS={password}`: Your password for accessing the SMTP server.
+- `STRIPE_SECRET_KEY={key}`: A secret key for use with the Stripe API. If you're developing locally on /auth, you'll also need to set `window.stripePublicKey` to a valid publishable key after page load. By default, this is set in `auth.html`.
 
 ## Running the app locally
 

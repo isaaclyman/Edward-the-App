@@ -1,3 +1,6 @@
+import Stripe from 'stripe'
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
+
 import {
   app,
   createTestUser,
@@ -10,7 +13,9 @@ import {
   stubRecaptcha,
   test,
   user,
-  wrapTest
+  wrapTest,
+  makeTestUserPremium,
+  accountTypes
 } from '../_imports'
 
 stubRecaptcha(test)
@@ -423,6 +428,134 @@ test('cannot reset password with null or incorrect key', async t => {
   await (
     app.post(route('user/login'))
     .send(newUser)
+    .expect(401)
+  )
+})
+
+function token (id = 'tok_visa') {
+  return { id, object: 'token' }
+}
+
+test(`update payment method`, async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+  await makeTestUserPremium()
+
+  await (
+    app.post(route('user/update-payment'))
+    .send({ token: token() })
+    .expect(200)
+  )
+})
+
+test(`upgrade account`, async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+
+  await (
+    app.post(route('user/upgrade'))
+    .send({
+      oldAccountType: accountTypes.LIMITED.name,
+      newAccountType: accountTypes.PREMIUM.name,
+      token: token()
+    })
+    .expect(200)
+  )
+})
+
+test(`can't falsify your current account type`, async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+
+  await (
+    app.post(route('user/upgrade'))
+    .send({
+      oldAccountType: accountTypes.PREMIUM.name,
+      newAccountType: accountTypes.LIMITED.name
+    })
+    .expect(500)
+  )
+})
+
+test(`downgrade account with no token`, async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+  await makeTestUserPremium()
+
+  await (
+    app.post(route('user/upgrade'))
+    .send({
+      oldAccountType: accountTypes.PREMIUM.name,
+      newAccountType: accountTypes.LIMITED.name
+    })
+    .expect(200)
+  )
+})
+
+test(`can't upgrade to a paid account without a payment token`, async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+
+  await (
+    app.post(route('user/upgrade'))
+    .send({
+      oldAccountType: accountTypes.LIMITED.name,
+      newAccountType: accountTypes.PREMIUM.name
+    })
+    .expect(500)
+  )
+})
+
+test(`can't upgrade to a paid account if there is a processing error`, async t => {
+  const console_err = console.error
+  console.error = function () {}
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+
+  await (
+    app.post(route('user/upgrade'))
+    .send({
+      oldAccountType: accountTypes.LIMITED.name,
+      newAccountType: accountTypes.PREMIUM.name,
+      token: token('tok_chargeDeclinedProcessingError')
+    })
+    .expect(500)
+  )
+
+  console.error = console_err
+})
+
+test(`can't upgrade to an admin account`, async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+
+  await (
+    app.post(route('user/upgrade'))
+    .send({
+      oldAccountType: accountTypes.LIMITED.name,
+      newAccountType: accountTypes.ADMIN.name
+    })
     .expect(401)
   )
 })

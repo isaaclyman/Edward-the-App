@@ -19,26 +19,32 @@ const deleteCustomer = customerId => {
   return stripe.customers.del(customerId)
 }
 
-const verifyCustomerExists = (email, knex) => {
-  return stripe.customers.list({ email }).then(resp => {
-    if (!resp.data.length) {
-      return createCustomer(email).then(customer => {
-        return knex('users').where('email', email).update(ts(knex, {
-          'stripe_customer_id': customer.id
-        }, true)).then(() => customer.id)
-      })
+const saveCustomerId = (email, customerId, knex) => {
+  return knex('users').where('email', email).update(ts(knex, {
+    'stripe_customer_id': customerId
+  }, true)).then(() => customerId)
+}
+
+const verifyCustomerExists = (defaultEmail, customerId, knex) => {
+  if (!customerId) {
+    return createCustomer(defaultEmail).then(customer => saveCustomerId(defaultEmail, customer.id, knex))
+  }
+
+  return stripe.customers.retrieve(customerId).then(resp => {
+    if (!resp) {
+      return createCustomer(defaultEmail).then(customer => saveCustomerId(defaultEmail, customer.id, knex))
     }
 
-    return resp.data[0].id
+    return resp.id
   })
 }
 
 // SUBSCRIPTIONS
 
-const createSubscription = (customerId, planId) => {
+const createLimitedSubscription = (customerId) => {
   return stripe.subscriptions.create({
     customer: customerId,
-    items: [{ plan: planId }]
+    items: [{ plan: planIds.LIMITED }]
   })
 }
 
@@ -50,14 +56,13 @@ const getSubscription = subscriptionId => {
   return stripe.subscriptions.retrieve(subscriptionId)
 }
 
-const verifyHasLimitedSubscription = (email, knex) => {
-  let customerId
-  return verifyCustomerExists(email, knex).then(_customerId => {
+const verifyHasLimitedSubscription = (defaultEmail, customerId, knex) => {
+  return verifyCustomerExists(defaultEmail, customerId, knex).then(_customerId => {
     customerId = _customerId
     return stripe.subscriptions.list({ customer: customerId })
   }).then(resp => {
     if (!resp.data.length) {
-      return createSubscription(customerId, planIds.LIMITED).then(subscription => {
+      return createLimitedSubscription(customerId).then(subscription => {
         return knex('users').where('stripe_customer_id', customerId).update(ts(knex, {
           'stripe_subscription_id': subscription.id
         }, true)).then(() => subscription.id)
@@ -74,7 +79,7 @@ const updateSubscription = (subscription, planId, token) => {
       id: subscription.items.data[0].id,
       plan: planId
     }],
-    source: token
+    source: token && token.id
   })
 }
 
@@ -91,7 +96,7 @@ const createLimitedCustomer = email => {
   let customerId
   return createCustomer(email).then(customer => {
     customerId = customer.id
-    return createSubscription(customerId, planIds.LIMITED)
+    return createLimitedSubscription(customerId)
   }).then(subscription => {
     return {
       customerId,
@@ -106,9 +111,9 @@ const deleteAllCustomerData = (customerId, subscriptionId) => {
   })
 }
 
-const setSubscription = (customerId, subscriptionId, planId, token, knex) => {
-  return verifyHasLimitedSubscription(customerId, knex).then(
-    () => getSubscription(subscriptionId)
+const setSubscription = (defaultEmail, customerId, planId, token, knex) => {
+  return verifyHasLimitedSubscription(defaultEmail, customerId, knex).then(
+    subscriptionId => getSubscription(subscriptionId)
   ).then(
     subscription => updateSubscription(subscription, planId, token)
   )

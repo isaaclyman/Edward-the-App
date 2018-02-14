@@ -246,14 +246,12 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
     // Verify that the user isn't trying to make themself an Admin
     if (newAccountType === accountTypes.ADMIN.name) {
       const err = new Error('Cannot upgrade to an Admin account using this API.')
-      console.error(err)
       return res.status(401).send()
     }
 
     // Verify that if a paid account is being requested, a payment token is included
     if ([accountTypes.PREMIUM.name, accountTypes.GOLD.name].includes(newAccountType) && !token) {
       const err = new Error('Cannot upgrade to a paid account without a payment token.')
-      console.error(err)
       return res.status(500).send()
     }
 
@@ -261,7 +259,6 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
     const typeNames = Object.values(accountTypes).map(type => type.name)
     if (!typeNames.includes(oldAccountType) || !typeNames.includes(newAccountType)) {
       const err = new Error(`One of received account types is not valid. Received: ${oldAccountType}, ${newAccountType}`)
-      console.error(err)
       return res.status(500).send()
     }
     
@@ -271,12 +268,13 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
       }
       
       if (user.account_type !== oldAccountType) {
-        throw new Error(`Received oldAccountType does not match the user's actual account type.`)
+        res.status(500).send(`Received oldAccountType does not match the user's actual account type.`)
+        throw new Error()
       }
 
       return payments.setSubscription(
+        user.email,
         user.stripe_customer_id,
-        user.stripe_subscription_id,
         payments.planIds[newAccountType],
         token,
         db.knex
@@ -284,11 +282,15 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
     }).then(() => {
       return db.knex('users').where('id', req.user.id).update(ts(db.knex, {
         'account_type': newAccountType,
-        'payment_period_end': db.knex.raw(`SELECT 'now'::timestamp + '1 month'::interval`)
+        'payment_period_end': db.knex.raw(`(SELECT 'now'::timestamp + '1 month'::interval)`)
       }, true))
     }).then(() => {
       res.status(200).send()
     }, err => {
+      if (res.headersSent) {
+        return
+      }
+
       console.error(err)
       res.status(500).send()
     })
@@ -310,8 +312,8 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
       }
 
       return payments.setSubscription(
+        user.email,
         user.stripe_customer_id,
-        user.stripe_subscription_id,
         payments.planIds[user.account_type],
         token,
         db.knex

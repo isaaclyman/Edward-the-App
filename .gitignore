@@ -12,7 +12,7 @@ yarn-error.log*
 *.sln
 .vscode/
 
-# Environment variables
+# Environment variables (DO NOT CHECK IN.)
 .env
 
 # Test artifacts

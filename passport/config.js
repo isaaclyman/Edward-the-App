@@ -1,7 +1,7 @@
 const accountTypes = require('../models/accountType')
 const guid = require('uuid/v4')
 const LocalAuth = require('passport-local').Strategy
-const payments = require('../api/payments')
+const payments = require('../api/payments.helper')
 const util = require('../models/_util')
 const ts = util.addTimestamps
 

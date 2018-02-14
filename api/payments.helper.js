@@ -78,6 +78,13 @@ const updateSubscription = (subscription, planId, token) => {
   })
 }
 
+// WEBHOOKS
+
+const verifySignature = request => {
+  const sig = req.headers["stripe-signature"]
+  return stripe.webhooks.constructEvent(request.body, sig, process.env.STRIPE_WEBHOOK_SECRET)
+}
+
 // ABSTRACT
 
 const createLimitedCustomer = email => {
@@ -111,5 +118,6 @@ module.exports = {
   deleteAllCustomerData,
   createLimitedCustomer,
   planIds,
-  setSubscription
+  setSubscription,
+  verifySignature
 }

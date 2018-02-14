@@ -37,10 +37,17 @@
 </template>
 
 <script>
+import accountTypes from '../../models/accountType'
 import authApi from './authApi'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
 export default {
+  created () {
+    if (!this.user || !this.user.accountType || this.user.accountType.name === accountTypes.DEMO.name) {
+      this.$router.push('/login')
+      return
+    }
+  },
   components: {
     PulseLoader
   },

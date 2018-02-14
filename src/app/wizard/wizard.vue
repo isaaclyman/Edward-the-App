@@ -38,9 +38,13 @@
             <input id="new-document-title" v-model="title">
           </div>
           <div class="actions">
-            <button class="button-green" @click="createDocument()" :disabled="!title">
+            <pulse-loader v-if="saving"></pulse-loader>
+            <button v-if="!saving" class="button-green" @click="createDocument()" :disabled="!title">
               Create
             </button>
+            <p class="error" v-if="error">
+              That didn't work. Please try again.
+            </p>
           </div>
         </template>
       </div>
@@ -53,10 +57,12 @@ import { SET_UP_DOCUMENT } from '../shared/document.store'
 import documentTypes from './documentTypes'
 import DocumentPicker from '../shared/documentPicker.vue'
 import guid from '../shared/guid'
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
 export default {
   components: {
-    DocumentPicker
+    DocumentPicker,
+    PulseLoader
   },
   computed: {
     hasDocuments () {
@@ -66,6 +72,8 @@ export default {
   data () {
     return {
       documentTypes,
+      error: false,
+      saving: false,
       selectedType: null,
       title: ''
     }
@@ -84,7 +92,14 @@ export default {
         name
       }
 
-      this.$store.dispatch(SET_UP_DOCUMENT, { document: newDocument, type })
+      this.saving = true
+      this.error = false
+      this.$store.dispatch(SET_UP_DOCUMENT, { document: newDocument, type }).then(() => {
+        this.saving = false
+      }, () => {
+        this.error = true
+        this.saving = false
+      })
     },
     selectDocument (type) {
       this.selectedType = type
@@ -177,5 +192,9 @@ export default {
   flex-direction: column;
   margin: 8px 0;
   max-width: 500px;
+}
+
+.error {
+  color: red;
 }
 </style>

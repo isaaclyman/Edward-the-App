@@ -26,13 +26,14 @@ module.exports = function (app, passport, db) {
   })
 
   // Serve user-facing APIs
-  require('./user')(app, passport, db, isPremiumUser, isOverdue, isLoggedInMiddleware)
+  require('./user')(app, passport, db, isPremiumUser, isOverdue, isLoggedInMiddleware, isNotDemoMiddleware)
   require('./document').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./backup').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./chapter').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./topic').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./plan').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./section').registerApis(app, passport, db, isPremiumUserMiddleware)
+  require('./payments.events').registerApis(app, db)
 
   // Serve admin-facing APIs
   require('./admin')(app, passport, db, isAdminMiddleware)
@@ -42,24 +43,29 @@ module.exports = function (app, passport, db) {
   }
 
   function isAdminMiddleware (req, res, next) {
-    if (!req.isAuthenticated()) {
+    if (!req.isAuthenticated() || !req.user) {
       res.status(401).send('Attempted an admin API call without authentication.')
       return
     }
 
-    db.knex('users').where('id', req.user.id).first().then(user => {
-      if (!user) {
-        res.status(500).send('User does not exist.')
-        return
-      }
+    if (!isAdmin(req.user.account_type)) {
+      res.status(401).send('Attempted an admin API call without an admin account.')
+      return
+    }
 
-      if (!isAdmin(user['account_type'])) {
-        res.status(401).send('Attempted an admin API call without an admin account.')
-        return
-      }
+    return next()
+  }
 
+  function isNotDemoMiddleware (req, res, next) {
+    if (!req.isAuthenticated()) {
       return next()
-    })
+    }
+
+    if (req.user.account_type === accountTypes.DEMO.name) {
+      return res.status(500).send('Cannot perform this action with a Demo account.')
+    }
+
+    return next()
   }
 
   const premiumTypes = [accountTypes.PREMIUM.name, accountTypes.GOLD.name, accountTypes.ADMIN.name]
@@ -68,24 +74,17 @@ module.exports = function (app, passport, db) {
   }
 
   function isPremiumUserMiddleware (req, res, next) {
-    if (!req.isAuthenticated()) {
+    if (!req.isAuthenticated() || !req.user) {
       res.status(401).send('Attempted a premium API call without authentication.')
       return
     }
 
-    db.knex('users').where('id', req.user.id).first().then(user => {
-      if (!user) {
-        res.status(500).send('User does not exist.')
-        return
-      }
+    if (!isPremiumUser(req.user.account_type)) {
+      res.status(401).send('Attempted a premium API call with a limited account.')
+      return
+    }
 
-      if (!isPremiumUser(user.account_type)) {
-        res.status(401).send('Attempted a premium API call with a limited account.')
-        return
-      }
-
-      return next()
-    })
+    return next()
   }
 }
 
@@ -102,26 +101,21 @@ function isOverdue (user) {
 }
 
 function isNotOverdueMiddleware (req, res, next) {
-  if (!req.isAuthenticated()) {
+  if (!req.isAuthenticated() || !req.user) {
     res.status(401).send('Attempted an API call without authentication.')
     return
   }
 
-  db.knex('users').where('id', req.user.id).first().then(user => {
-    if (!user) {
-      res.status(500).send('User does not exist.')
-      return
-    }
+  if (!isPremiumUser(req.user.account_type)) {
+    return next()
+  }
 
-    if (!isPremiumUser(user.account_type)) {
-      return next()
-    }
+  if (isOverdue(req.user)) {
+    res.redirect('/auth#/account')
+    return
+  }
 
-    if (isOverdue(user)) {
-      res.redirect('/auth#/account')
-      return
-    }
-  })
+  return next()
 }
 
 function addDays(date, days) {

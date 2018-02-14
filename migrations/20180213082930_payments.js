@@ -10,6 +10,6 @@ exports.up = function(knex, Promise) {
 
 exports.down = function(knex, Promise) {
   return knex.schema.table('users', table => {
-    table.dropColumns('stripe_customer_id', 'stripe_subscription_id')
+    table.dropColumns('stripe_customer_id', 'stripe_subscription_id', 'payment_period_end')
   })
 }

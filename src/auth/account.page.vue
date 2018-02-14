@@ -88,6 +88,12 @@ const accountPayments = {
 }
 
 export default {
+  created () {
+    if (!this.user || !this.user.accountType || this.user.accountType.name === accountTypes.DEMO.name) {
+      this.$router.push('/login')
+      return
+    }
+  },
   components: {
     PulseLoader
   },

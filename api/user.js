@@ -1,7 +1,7 @@
 const accountTypes = require('../models/accountType')
 const Email = require('./email.helper')
 const modelUtil = require('../models/_util')
-const payments = require('./payments')
+const payments = require('./payments.helper')
 const request = require('request-promise-native')
 const ts = modelUtil.addTimestamps
 const uuid = require('uuid/v4')
@@ -9,7 +9,7 @@ const uuid = require('uuid/v4')
 // This file deals with sensitive user data. Therefore, error messages (which could contain that data)
 //  are not included in any response to the front end.
 
-module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLoggedInMiddleware) {
+module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLoggedInMiddleware, isNotDemoMiddleware) {
   const route = route => `/api/user/${route}`
 
   const verifyCaptchaToken = (req) => {
@@ -137,7 +137,7 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
     })
   })
 
-  app.post(route('send-verify-link'), (req, res, next) => {
+  app.post(route('send-verify-link'), isLoggedInMiddleware, isNotDemoMiddleware, (req, res, next) => {
     if (!req.user) {
       res.status(401).send('User not found.')
       return false
@@ -159,7 +159,7 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
     })
   })
 
-  app.post(route('verify'), (req, res, next) => {
+  app.post(route('verify'), isNotDemoMiddleware, (req, res, next) => {
     const { email, key } = req.body
 
     if (!email || !key) {
@@ -202,7 +202,7 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
     res.status(200).send()
   })
 
-  app.post(route('email'), isLoggedInMiddleware, (req, res, next) => {
+  app.post(route('email'), isLoggedInMiddleware, isNotDemoMiddleware, (req, res, next) => {
     const newEmail = req.body.email
 
     return db.knex('users').where('email', newEmail).first().then(existingUser => {
@@ -226,7 +226,7 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
     })
   })
 
-  app.post(route('password'), isLoggedInMiddleware, (req, res, next) => {
+  app.post(route('password'), isLoggedInMiddleware, isNotDemoMiddleware, (req, res, next) => {
     return modelUtil.getHash(req.body.password).then(hash => {
       return db.knex('users').where('id', req.user.id).update(ts(db.knex, {
         password: hash
@@ -240,19 +240,12 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
   })
 
   // POST { oldAccountType, newAccountType, token }
-  app.post(route('upgrade'), isLoggedInMiddleware, (req, res, next) => {
+  app.post(route('upgrade'), isLoggedInMiddleware, isNotDemoMiddleware, (req, res, next) => {
     const { oldAccountType, newAccountType, token } = req.body
 
     // Verify that the user isn't trying to make themself an Admin
     if (newAccountType === accountTypes.ADMIN.name) {
       const err = new Error('Cannot upgrade to an Admin account using this API.')
-      console.error(err)
-      return res.status(401).send()
-    }
-
-    // Verify that someone isn't trying to upgrade the Demo account
-    if (oldAccountType === accountTypes.DEMO.name) {
-      const err = new Error('Cannot upgrade the demo account.')
       console.error(err)
       return res.status(401).send()
     }
@@ -291,7 +284,7 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
     }).then(() => {
       return db.knex('users').where('id', req.user.id).update(ts(db.knex, {
         'account_type': newAccountType,
-        'payment_period_end': knex.raw('current_timestamp')
+        'payment_period_end': db.knex.raw(`SELECT 'now'::timestamp + '1 month'::interval`)
       }, true))
     }).then(() => {
       res.status(200).send()
@@ -302,7 +295,7 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
   })
 
   // POST { token }
-  app.post(route('update-payment'), isLoggedInMiddleware, (req, res, next) => {
+  app.post(route('update-payment'), isLoggedInMiddleware, isNotDemoMiddleware, (req, res, next) => {
     const { token } = req.body
 
     if (!token) {
@@ -337,6 +330,10 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
 
     let guid
     db.knex('users').where('email', email).first().then(user => {
+      if (user.account_type === accountTypes.DEMO.name) {
+        throw new Error('Cannot perform this action with a Demo account.')
+      }
+
       if (!user) {
         res.status(500).send(`A user with the email address ${email} was not found.`)
         throw new Error()

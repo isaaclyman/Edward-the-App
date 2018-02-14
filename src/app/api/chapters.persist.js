@@ -35,16 +35,16 @@ const mutations = {
     UPDATE_TOPIC]
 }
 
-const debounced = {}
+let debouncedUpdateChapter = null
 
-const getDebounced = (storage) => {
-  if (!debounced.updateChapter) {
-    debounced.updateChapter = debounce((...args) => {
+const getDebouncedUpdateChapter = (storage) => {
+  if (!debouncedUpdateChapter) {
+    debouncedUpdateChapter = debounce((...args) => {
       storage.updateChapter.apply(storage, args)
     }, 50)
   }
 
-  return debounced
+  return debouncedUpdateChapter
 }
 
 export const chapterAutosaverPlugin = store => {
@@ -52,12 +52,12 @@ export const chapterAutosaverPlugin = store => {
     // Make sure we know the user type before handling mutations
     state.user.userPromise.then(user => {
       const storage = getStorageApi(user)
-      handleMutation(mutation, state, storage, getDebounced(storage))
+      handleMutation(mutation, state, storage, getDebouncedUpdateChapter(storage))
     })
   })
 }
 
-function handleMutation (mutation, state, storage, debounced) {
+function handleMutation (mutation, state, storage, debouncedUpdateChapter) {
   const { type, payload } = mutation
   const documentGuid = state.document.currentDocument && state.document.currentDocument.guid
 
@@ -121,7 +121,7 @@ function handleMutation (mutation, state, storage, debounced) {
   }
 
   if (mutations.updateChapter.includes(type)) {
-    debounced.updateChapter(documentGuid, payload.chapter.guid, payload.chapter)
+    debouncedUpdateChapter(documentGuid, payload.chapter.guid, payload.chapter)
     return
   }
 

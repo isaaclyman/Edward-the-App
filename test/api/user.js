@@ -572,6 +572,14 @@ test(`can access app when account is due`, async t => {
   await setTestUserPaymentDueDate(0)
 
   await (
+    app.get(route('user/current'))
+    .expect(200)
+    .expect(res => {
+      t.is(res.body.isOverdue, false)
+    })
+  )
+
+  await (
     app.get('/app')
     .expect(200)
   )
@@ -585,6 +593,14 @@ test(`can access app when account is 1 day overdue`, async t => {
   await createTestUser(app)
   await makeTestUserPremium()
   await setTestUserPaymentDueDate(-1)
+
+  await (
+    app.get(route('user/current'))
+    .expect(200)
+    .expect(res => {
+      t.is(res.body.isOverdue, false)
+    })
+  )
 
   await (
     app.get('/app')
@@ -603,6 +619,14 @@ test(`cannot access app when account is 1 week overdue`, async t => {
   await setTestUserPaymentDueDate(-7)
 
   await (
+    app.get(route('user/current'))
+    .expect(200)
+    .expect(res => {
+      t.is(res.body.isOverdue, true)
+    })
+  )
+
+  await (
     app.get('/app')
     .expect(302)
   )
@@ -618,6 +642,14 @@ test(`can access app after successfully updating payment information when overdu
   await setTestUserStripeId()
   await setTestUserPaymentDueDate(-10)
   await paymentSucceeded({ customer: user.stripeId }, knex)
+
+  await (
+    app.get(route('user/current'))
+    .expect(200)
+    .expect(res => {
+      t.is(res.body.isOverdue, false)
+    })
+  )
 
   await (
     app.get('/app')

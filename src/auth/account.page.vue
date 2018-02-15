@@ -131,7 +131,7 @@ export default {
         email: this.user.email,
         description: accountPayments.PREMIUM.display,
         amount: accountPayments.PREMIUM.amount,
-        token: function (token) {
+        token: token => {
           this.error = false
           this.saving = true
           authApi.upgrade({
@@ -159,7 +159,7 @@ export default {
         email: this.user.email,
         description: accountPayments.GOLD.display,
         amount: accountPayments.GOLD.amount,
-        token: function (token) {
+        token: token => {
           this.error = false
           this.saving = true
           authApi.upgrade({
@@ -196,7 +196,7 @@ export default {
         email: this.user.email,
         description: accountPayments.GOLD.display,
         amount: accountPayments.GOLD.amount,
-        token: function (token) {
+        token: token => {
           this.error = false
           this.saving = true
           authApi.upgrade({
@@ -253,7 +253,7 @@ export default {
         email: this.user.email,
         description: accountPayments.PREMIUM.display,
         amount: accountPayments.PREMIUM.amount,
-        token: function (token) {
+        token: token => {
           this.error = false
           this.saving = true
 
@@ -283,7 +283,7 @@ export default {
         email: this.user.email,
         description: paymentData.display,
         amount: paymentData.amount,
-        token: function (token) {
+        token: token => {
           this.error = false
           this.saving = true
 

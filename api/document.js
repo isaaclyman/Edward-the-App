@@ -105,7 +105,7 @@ const saveAllContent = (db, userId, docGuid, chapters, topics, plans) => {
   return Promise.all([updateChapterPromise, updatePlanPromise])
 }
 
-const registerApis = function (app, passport, db, isPremiumUser) {
+const registerApis = function (app, passport, db, isPremiumUser, isNotOverdue) {
   const route = route => `/api/${route}`
 
   // POST { guid, name }
@@ -152,7 +152,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   })
 
   // GET
-  app.get(route('documents'), isPremiumUser, (req, res, next) => {
+  app.get(route('documents'), isPremiumUser, isNotOverdue, (req, res, next) => {
     const userId = req.user.id
 
     getDocuments(db, userId).then(documents => {

@@ -20,7 +20,9 @@ export function createTestChapter (cy, isPremium, documentGuid) {
     lsa.updateChapter(documentGuid, chapGuids[0], chapter(1)),
     lsa.updateChapter(documentGuid, chapGuids[1], chapter(2)),
     lsa.updateChapter(documentGuid, chapGuids[2], chapter(3))
-  ]).then(() => chapGuids)
+  ])
+  .then(() => lsa.arrangeChapters(documentGuid, chapGuids))
+  .then(() => chapGuids)
 }
 
 export function createTestDocument (cy, isPremium) {
@@ -31,6 +33,18 @@ export function createTestDocument (cy, isPremium) {
   const guid = newGuid()
 
   return lsa.storage.clear().then(() => lsa.addDocument({ guid, name: 'test' }).then(() => guid))
+}
+
+export function createTestOutline (cy, isPremium, documentGuid) {
+  if (isPremium) {
+    // Not yet implemented
+    return cy.exec('node cypress/scripts/createTestOutline.js')
+  }
+
+  const guid = newGuid()
+  return lsa.updateTopic(documentGuid, guid,
+    { archived: false, guid, title: 'test topic 1' }
+  )
 }
 
 export function createTestPlan (cy, isPremium, documentGuid) {

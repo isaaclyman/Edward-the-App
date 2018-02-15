@@ -18,6 +18,7 @@ const updateChapter = (db, userId, docGuid, chapter) => {
     },
     insert: ts(db.knex, {
       archived: chapter.archived,
+      content: chapter.content,
       guid: chapter.guid,
       title: chapter.title,
       'user_id': userId,

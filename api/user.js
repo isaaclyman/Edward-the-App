@@ -54,7 +54,9 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
 
   const getUserResponse = user => {
     return new Promise((resolve, reject) => {
-      db.knex('users').where('id', user.id).first('account_type', 'email', 'verified').then(user => {
+      db.knex('users').where('id', user.id).first(
+        'account_type', 'email', 'verified', 'payment_period_end'
+      ).then(user => {
         const accountType = user['account_type']
         resolve({
           accountType: accountTypes[accountType],

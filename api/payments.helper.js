@@ -79,7 +79,7 @@ const updateSubscription = (subscription, planId, token) => {
       id: subscription.items.data[0].id,
       plan: planId
     }],
-    source: token && token.id
+    source: (token && token.id) || undefined
   })
 }
 

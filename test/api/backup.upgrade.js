@@ -88,7 +88,7 @@ test('transfer document with content from API to local storage', async t => {
       archived: false,
       content: { ops: [{ insert: 'test chapter 1' }] },
       guid: chapter.chapterGuid,
-      title,
+      title: 'test chapter',
       topics: {
         [topic.topicGuid]: {
           guid: topic.topicGuid,
@@ -171,7 +171,7 @@ test('transfer document with content from local storage to API', async t => {
     t.deepEqual(sections[0].content, section.content)
   })
   await expectOneItemArray(t, app.get(route(`chapters/${doc.guid}`)).then(response => response.body), chapters => {
-    t.deepEqual(chapters[0].content, { ops: [] })
+    t.deepEqual(chapters[0].content, chapter.content)
     t.deepEqual(chapters[0].topics[topicGuid].content, chapter.topics[topicGuid].content)
   })
   await expectOneItemArray(t, app.get(route(`topics/${doc.guid}`)).then(response => response.body))

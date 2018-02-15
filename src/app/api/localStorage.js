@@ -30,7 +30,6 @@ class LocalStorageApi {
   }
 
   addDocument ({ guid, name }) {
-    console.log('adding document', name)
     return this._getAllDocumentGuids().then(documentGuids => {
       if (!documentGuids.includes(guid)) {
         documentGuids.push(guid)

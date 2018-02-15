@@ -28,7 +28,7 @@ test.beforeEach('set up an admin user', async t => {
 
 test('get users exceeding usage limits', async t => {
   return wrapTest(t,
-    app.get(route(`admin/space-exceeded`))
+    app.get(route(`admin/space-overages`))
     .expect(200)
     .expect(response => {
       const { premiums, golds } = response.body

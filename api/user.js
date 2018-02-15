@@ -66,7 +66,7 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
           verified: user.verified
         })
       }, err => {
-        console.log(err)
+        console.error(err)
         reject()
       })
     })

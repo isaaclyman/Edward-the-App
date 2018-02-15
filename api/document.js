@@ -110,7 +110,6 @@ const registerApis = function (app, passport, db, isPremiumUser, isNotOverdue) {
 
   // POST { guid, name }
   app.post(route('document/add'), isPremiumUser, (req, res, next) => {
-    console.log('endpoint reached')
     const document = req.body
     const userId = req.user.id
 

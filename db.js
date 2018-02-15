@@ -4,7 +4,6 @@ const config = {
   debug: process.env.DEBUG_DB === 'true',
   pool: {
     afterCreate: function (conn, done) {
-      console.log('Database connection established.')
       done(null, conn)
     }
   },

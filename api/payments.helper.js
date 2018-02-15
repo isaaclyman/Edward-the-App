@@ -87,7 +87,11 @@ const updateSubscription = (subscription, planId, token) => {
 
 const verifySignature = request => {
   const sig = request.headers["stripe-signature"]
-  return stripe.webhooks.constructEvent(request.rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET)
+  return new Promise(resolve => {
+    const event = stripe.webhooks.constructEvent(request.rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET)
+    resolve(event)
+    return
+  })
 }
 
 // ABSTRACT

@@ -1,5 +1,6 @@
 import clone from 'lodash/clone'
 import localForage from 'localforage'
+import { orderPromises } from '../../../utilities'
 import uniq from 'lodash/uniq'
 
 class LocalStorageApi {
@@ -29,6 +30,7 @@ class LocalStorageApi {
   }
 
   addDocument ({ guid, name }) {
+    console.log('adding document', name)
     return this._getAllDocumentGuids().then(documentGuids => {
       if (!documentGuids.includes(guid)) {
         documentGuids.push(guid)
@@ -358,9 +360,11 @@ class LocalStorageApi {
           throw new Error('Attempted to import an empty backup')
         }
 
-        return Promise.all(documents.map(doc =>
-          this.addDocument(doc).then(() => this.saveAllContent(doc.guid, doc))
-        ))
+        const addDocumentPromises = documents.map(doc =>
+          () => this.addDocument(doc).then(() => this.saveAllContent(doc.guid, doc))
+        )
+
+        return orderPromises(addDocumentPromises)
       })
     }).then(undefined, err => {
       console.error(err)

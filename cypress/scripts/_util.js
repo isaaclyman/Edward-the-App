@@ -37,7 +37,6 @@ export function createTestDocument (cy, isPremium) {
 
 export function createTestOutline (cy, isPremium, documentGuid) {
   if (isPremium) {
-    // Not yet implemented
     return cy.exec('node cypress/scripts/createTestOutline.js')
   }
 

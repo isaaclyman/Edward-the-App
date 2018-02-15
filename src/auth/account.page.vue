@@ -220,7 +220,7 @@ export default {
         buttons: true,
         dangerMode: true,
         icon: 'warning',
-        text: `Do you want to revert to a Limited account? You'll lose access to your documents on all other computers, and your data will be deleted if it exceeds the space your browser allows.`,
+        text: `Do you want to downgrade to a Limited account? You'll lose access to your documents on all other computers, and your data will be deleted if it exceeds the space your browser allows.`,
         title: 'Downgrade to Limited account?'
       }).then((willDowngrade) => {
         if (!willDowngrade) {

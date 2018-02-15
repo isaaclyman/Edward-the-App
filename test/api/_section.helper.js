@@ -12,7 +12,7 @@ export const addSection = async (app, docGuid, planGuid, title) => {
     sectionGuid,
     section: {
       archived: false,
-      content: null,
+      content: { ops: [{ insert: 'test section 1' }] },
       guid: sectionGuid,
       tags: [],
       title

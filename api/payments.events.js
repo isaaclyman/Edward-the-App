@@ -19,7 +19,7 @@ const registerApis = (app, db) => {
   const route = route => `/api/${route}`
 
   app.post(route('payment-event'), verifySignatureMiddleware, (req, res) => {
-    const { type, data } = res.body
+    const { type, data } = req.body
 
     switch (type) {
       case 'invoice.payment_succeeded':

@@ -18,6 +18,7 @@ const user = {
   password: 'thisismysecurepassword',
   captchaResponse: 'token',
   resetKey: '5cf197a4-1029-4250-91cc-6f0ef75bca77',
+  stripeId: 'cus_test',
   verifyKey: '5cf197a4-1029-4250-91cc-6f0ef75bca77'
 }
 
@@ -126,7 +127,24 @@ function makeTestUserDemo(knex) {
 function makeTestUserPremium(knex) {
   return (
     knex('users').where('email', user.email).update({
-      'account_type': accountTypes.PREMIUM.name
+      'account_type': accountTypes.PREMIUM.name,
+      'payment_period_end': knex.raw(`(SELECT 'now'::timestamp + '1 month'::interval)`)
+    })
+  )
+}
+
+function setTestUserPaymentDueDate(knex, daysFromNow) {
+  return (
+    knex('users').where('email', user.email).update({
+      'payment_period_end': knex.raw(`(SELECT 'now'::timestamp + '${daysFromNow} days'::interval)`)
+    })
+  )
+}
+
+function setTestUserStripeId(knex) {
+  return (
+    knex('users').where('email', user.email).update({
+      'stripe_customer_id': user.stripeId
     })
   )
 }
@@ -196,7 +214,9 @@ module.exports = {
   makeTestUserDemo,
   makeTestUserPremium,
   route,
+  setTestUserPaymentDueDate,
   setTestUserResetKey,
+  setTestUserStripeId,
   setTestUserVerifyKey,
   stubRecaptcha,
   wrapTest

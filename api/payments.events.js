@@ -9,9 +9,9 @@ const verifySignatureMiddleware = (req, res, next) => {
   })
 }
 
-const paymentSucceeded = (invoice, db) => {
-  db.knex('users').where('stripe_customer_id', invoice.customer).update(ts(db.knex, {
-    'payment_period_end': db.knex.raw(`SELECT 'now'::timestamp + '1 month'::interval`)
+const paymentSucceeded = ({ customer: customerId }, knex) => {
+  return knex('users').where('stripe_customer_id', customerId).update(ts(knex, {
+    'payment_period_end': knex.raw(`(SELECT 'now'::timestamp + '1 month'::interval)`)
   }, true))
 }
 
@@ -21,7 +21,7 @@ const registerApis = (app, db) => {
 
     switch (type) {
       case 'invoice.payment_succeeded':
-        return paymentSucceeded(data.object, db).then(() => {
+        return paymentSucceeded(data.object, db.knex).then(() => {
           res.status(200).send()
         }, err => {
           res.status(500).send()
@@ -33,5 +33,6 @@ const registerApis = (app, db) => {
 }
 
 module.exports = {
-  registerApis
+  registerApis,
+  paymentSucceeded
 }

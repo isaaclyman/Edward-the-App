@@ -37,55 +37,55 @@ module.exports = function (app, passport, db) {
 
   // Serve admin-facing APIs
   require('./admin')(app, passport, db, isAdminMiddleware)
+}
 
-  function isAdmin (accountType) {
-    return accountType === accountTypes.ADMIN.name
+const premiumTypes = [accountTypes.PREMIUM.name, accountTypes.GOLD.name, accountTypes.ADMIN.name]
+function isPremiumUser (accountType) {
+  return premiumTypes.includes(accountType)
+}
+
+function isAdmin (accountType) {
+  return accountType === accountTypes.ADMIN.name
+}
+
+function isAdminMiddleware (req, res, next) {
+  if (!req.isAuthenticated() || !req.user) {
+    res.status(401).send('Attempted an admin API call without authentication.')
+    return
   }
 
-  function isAdminMiddleware (req, res, next) {
-    if (!req.isAuthenticated() || !req.user) {
-      res.status(401).send('Attempted an admin API call without authentication.')
-      return
-    }
+  if (!isAdmin(req.user.account_type)) {
+    res.status(401).send('Attempted an admin API call without an admin account.')
+    return
+  }
 
-    if (!isAdmin(req.user.account_type)) {
-      res.status(401).send('Attempted an admin API call without an admin account.')
-      return
-    }
+  return next()
+}
 
+function isNotDemoMiddleware (req, res, next) {
+  if (!req.isAuthenticated()) {
     return next()
   }
 
-  function isNotDemoMiddleware (req, res, next) {
-    if (!req.isAuthenticated()) {
-      return next()
-    }
-
-    if (req.user.account_type === accountTypes.DEMO.name) {
-      return res.status(500).send('Cannot perform this action with a Demo account.')
-    }
-
-    return next()
+  if (req.user.account_type === accountTypes.DEMO.name) {
+    return res.status(500).send('Cannot perform this action with a Demo account.')
   }
 
-  const premiumTypes = [accountTypes.PREMIUM.name, accountTypes.GOLD.name, accountTypes.ADMIN.name]
-  function isPremiumUser (accountType) {
-    return premiumTypes.includes(accountType)
+  return next()
+}
+
+function isPremiumUserMiddleware (req, res, next) {
+  if (!req.isAuthenticated() || !req.user) {
+    res.status(401).send('Attempted a premium API call without authentication.')
+    return
   }
 
-  function isPremiumUserMiddleware (req, res, next) {
-    if (!req.isAuthenticated() || !req.user) {
-      res.status(401).send('Attempted a premium API call without authentication.')
-      return
-    }
-
-    if (!isPremiumUser(req.user.account_type)) {
-      res.status(401).send('Attempted a premium API call with a limited account.')
-      return
-    }
-
-    return next()
+  if (!isPremiumUser(req.user.account_type)) {
+    res.status(401).send('Attempted a premium API call with a limited account.')
+    return
   }
+
+  return next()
 }
 
 function isLoggedInMiddleware (req, res, next) {
@@ -97,7 +97,8 @@ function isLoggedInMiddleware (req, res, next) {
 }
 
 function isOverdue (user) {
-  return addDays(user.payment_period_end, 3) < Date.now()
+  const dueDate = user.payment_period_end
+  return !dueDate || (addDays(dueDate, 5) < Date.now())
 }
 
 function isNotOverdueMiddleware (req, res, next) {

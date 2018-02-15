@@ -11,7 +11,9 @@ import {
   makeTestUserDemo,
   makeTestUserPremium,
   route,
+  setTestUserPaymentDueDate,
   setTestUserResetKey,
+  setTestUserStripeId,
   setTestUserVerifyKey,
   stubRecaptcha,
   user,
@@ -38,8 +40,10 @@ const boundMakeTestUserDemo = () => makeTestUserDemo(knex)
 const boundMakeTestUserPremium = () => makeTestUserPremium(knex)
 const boundCreateTestDocument = () => createTestDocument(knex)
 const boundCreateTestChapter = () => createTestChapter(knex)
-const boundSetTestUserVerifyKey = () => setTestUserVerifyKey(knex)
+const boundSetTestUserPaymentDueDate = daysFromNow => setTestUserPaymentDueDate(knex, daysFromNow)
 const boundSetTestUserResetKey = () => setTestUserResetKey(knex)
+const boundSetTestUserStripeId = () => setTestUserStripeId(knex)
+const boundSetTestUserVerifyKey = () => setTestUserVerifyKey(knex)
 
 export {
   accountTypes,
@@ -51,8 +55,10 @@ export {
   boundMakeTestUserAdmin as makeTestUserAdmin,
   boundMakeTestUserDemo as makeTestUserDemo,
   boundMakeTestUserPremium as makeTestUserPremium,
-  boundSetTestUserVerifyKey as setTestUserVerifyKey,
+  boundSetTestUserPaymentDueDate as setTestUserPaymentDueDate,
   boundSetTestUserResetKey as setTestUserResetKey,
+  boundSetTestUserStripeId as setTestUserStripeId,
+  boundSetTestUserVerifyKey as setTestUserVerifyKey,
   getPersistentAgent,
   route,
   server,

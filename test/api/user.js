@@ -1,22 +1,23 @@
-import Stripe from 'stripe'
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
-
 import {
+  accountTypes,
   app,
   createTestUser,
   deleteTestUser,
   getPersistentAgent,
+  knex,
+  makeTestUserPremium,
   route,
   serverReady,
+  setTestUserPaymentDueDate,
   setTestUserResetKey,
+  setTestUserStripeId,
   setTestUserVerifyKey,
   stubRecaptcha,
   test,
   user,
-  wrapTest,
-  makeTestUserPremium,
-  accountTypes
+  wrapTest
 } from '../_imports'
+import { paymentSucceeded } from '../../api/payments.events'
 
 stubRecaptcha(test)
 
@@ -554,8 +555,72 @@ test(`can't upgrade to an admin account`, async t => {
     app.post(route('user/upgrade'))
     .send({
       oldAccountType: accountTypes.LIMITED.name,
-      newAccountType: accountTypes.ADMIN.name
+      newAccountType: accountTypes.ADMIN.name,
+      token: token()
     })
     .expect(401)
+  )
+})
+
+test(`can access app when account is due`, async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+  await makeTestUserPremium()
+  await setTestUserPaymentDueDate(0)
+
+  await (
+    app.get('/app')
+    .expect(200)
+  )
+})
+
+test(`can access app when account is 1 day overdue`, async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+  await makeTestUserPremium()
+  await setTestUserPaymentDueDate(-1)
+
+  await (
+    app.get('/app')
+    .expect(200)
+  )
+})
+
+
+test(`cannot access app when account is 1 week overdue`, async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+  await makeTestUserPremium()
+  await setTestUserPaymentDueDate(-7)
+
+  await (
+    app.get('/app')
+    .expect(302)
+  )
+})
+
+test(`can access app after successfully updating payment information when overdue`, async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+  await makeTestUserPremium()
+  await setTestUserStripeId()
+  await setTestUserPaymentDueDate(-10)
+  await paymentSucceeded({ customer: user.stripeId }, knex)
+
+  await (
+    app.get('/app')
+    .expect(200)
   )
 })

@@ -17,6 +17,15 @@ const app = express()
 // Serve static files
 app.use('/static', express.static(path.join(__dirname, 'static')))
 app.use(express.static(path.join(__dirname, 'dist')))
+app.use(bodyParser.json({
+  // For Stripe webhooks, we compute the raw body so its signature can be verified
+  verify: (req, res, buf) => {
+    var url = req.originalUrl;
+    if (url.startsWith('/webhooks')) {
+      req.rawBody = buf.toString()
+    }
+  }
+}))
 app.use(bodyParser.json())
 app.use(cookieParser(process.env.SESSION_COOKIE_SECRET))
 app.use(timeout(15000))

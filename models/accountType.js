@@ -4,7 +4,7 @@ const createAccountType = function (name, displayName, description) {
 
 const accountTypes = {
   DEMO: createAccountType('DEMO', 'Demo Account',
-    'This is a demo. Your data is not stored and will be lost when you close the current tab.'),
+    'This is a demo. Your data is not stored and will be lost if you refresh the page or close this tab.'),
   LIMITED: createAccountType('LIMITED', 'Limited Account',
     'All data is stored insecurely on your computer\'s hard drive and may be lost if your browsing data is cleared.\
     Your maximum storage limit is probably 5MB (about 2,500 pages).'),

@@ -5,6 +5,7 @@ import uniq from 'lodash/uniq'
 
 class LocalStorageApi {
   constructor () {
+    localForage.setDriver([localForage.INDEXEDDB, localForage.WEBSQL, localForage.LOCALSTORAGE])
     this.storage = localForage
     window._storage = this.storage
     this.getStorageKeys = () => this.storage.keys()

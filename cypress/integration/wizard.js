@@ -1,18 +1,32 @@
 import { user } from '../../test/_util'
 import { createTestUser, deleteTestUser, logIn, makeTestUserPremium } from '../scripts/_util'
 
-const tests = isPremium => () => {
+const tests = (userType) => () => {
   before(() => {
-    deleteTestUser(cy)
-    createTestUser(cy)
-
-    if (isPremium) {
-      makeTestUserPremium(cy)
+    switch (userType) {
+      case 'demo':
+        break
+      case 'limited':
+        deleteTestUser(cy)
+        createTestUser(cy)
+        break
+      case 'premium':
+        deleteTestUser(cy)
+        createTestUser(cy)
+        makeTestUserPremium(cy)
+        break
     }
   })
 
   beforeEach(() => {
-    logIn(cy, user.email, user.password)
+    if (userType !== 'demo') {
+      cy.visit('/auth.html#/login')
+      cy.get('button').contains('demo').click()
+      cy.url().should('contain', '/app')
+    } else {
+      logIn(cy, user.email, user.password)
+    }
+
     cy.visit('/app.html')
   })
 
@@ -79,5 +93,6 @@ const tests = isPremium => () => {
   })
 }
 
-describe('the wizard page (limited)', tests(false))
-describe('the wizard page (premium)', tests(true))
+describe('the wizard page (demo)', tests('demo'))
+describe('the wizard page (limited)', tests('limited'))
+describe('the wizard page (premium)', tests('premium'))

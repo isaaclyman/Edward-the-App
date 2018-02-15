@@ -1,41 +1,380 @@
-const stubbed = (response) => () => Promise.resolve(response || null)
+import clone from 'lodash/clone'
+import localForage from 'localforage'
+import { orderPromises } from '../../../utilities'
+import uniq from 'lodash/uniq'
 
 class DemoStorageApi {
-  // DOCUMENTS
+  constructor () {
+    localForage.setDriver(localForage.LOCALSTORAGE)
+    this.storage = localForage
+    window._storage = this.storage
+    this.getStorageKeys = () => this.storage.keys()
 
-  addDocument = stubbed()
-  getAllDocuments = stubbed([])
-  deleteDocument = stubbed()
-  updateDocument = stubbed()
+    this.planKeyPrefix = documentGuid => `${documentGuid}_PLAN_DATA_`
+    this.planOrderKey = documentGuid => `${documentGuid}_PLAN_ORDER`
+    this.getPlanKey = (documentGuid, planGuid) => `${this.planKeyPrefix(documentGuid)}${planGuid}`
 
-  // ARRANGE
+    this.sectionKeyPrefix = (documentGuid, planGuid) => `${documentGuid}_SECTION_DATA_${planGuid}_`
+    this.sectionOrderKey = (documentGuid, planGuid) => `${documentGuid}_SECTION_ORDER_${planGuid}`
+    this.getSectionKey = (documentGuid, planGuid, sectionGuid) => `${this.sectionKeyPrefix(documentGuid, planGuid)}${sectionGuid}`
 
-  arrangeChapters = stubbed()
-  arrangePlans = stubbed()
-  arrangeSections = stubbed()
-  arrangeTopics = stubbed()
+    this.chapterKeyPrefix = documentGuid => `${documentGuid}_CHAPTER_DATA_`
+    this.chapterOrderKey = documentGuid => `${documentGuid}_CHAPTER_ORDER`
+    this.getChapterKey = (documentGuid, chapterGuid) => `${this.chapterKeyPrefix(documentGuid)}${chapterGuid}`
 
-  // DELETE
+    this.topicKeyPrefix = documentGuid => `${documentGuid}_TOPIC_DATA_`
+    this.topicOrderKey = documentGuid => `${documentGuid}_TOPIC_ORDER`
+    this.getTopicKey = (documentGuid, topicGuid) => `${this.topicKeyPrefix(documentGuid)}${topicGuid}`
 
-  deleteChapter = stubbed()
-  deletePlan = stubbed()
-  deleteSection = stubbed()
-  deleteTopic = stubbed()
+    this.documentGuidsKey = 'DOCUMENT_IDS'
+    this.documentsKey = documentGuid => `DOCUMENT_${documentGuid}`
 
-  // GET
+    window.onbeforeunload = function () {
+      localStorage.clear()
+    }
+  }
 
-  getAllChapters = stubbed([])
-  getAllPlans = stubbed([])
-  getAllTopics = stubbed([])
+  addDocument ({ guid, name }) {
+    return this._getAllDocumentGuids().then(documentGuids => {
+      if (!documentGuids.includes(guid)) {
+        documentGuids.push(guid)
+        return this.storage.setItem(this.documentGuidsKey, documentGuids)
+      }
+    }).then(
+      () => this.storage.setItem(this.documentsKey(guid), { guid, name })
+    )
+  }
 
-  // UPDATE
+  arrangeChapters (documentGuid, chapterGuids) {
+    return this.storage.setItem(this.chapterOrderKey(documentGuid), chapterGuids)
+  }
 
-  updateChapter = stubbed()
-  updatePlan = stubbed()
-  updateSection = stubbed()
-  updateTopic = stubbed()
+  arrangePlans (documentGuid, planGuids) {
+    return this.storage.setItem(this.planOrderKey(documentGuid), planGuids)
+  }
 
-  saveAllContent = stubbed()
+  arrangeSections (documentGuid, planGuid, sectionGuids) {
+    return this.storage.setItem(this.sectionOrderKey(documentGuid, planGuid), sectionGuids)
+  }
+
+  arrangeTopics (documentGuid, topicGuids) {
+    return this.storage.setItem(this.topicOrderKey(documentGuid), topicGuids)
+  }
+
+  deleteChapter (documentGuid, chapterGuid) {
+    const key = this.getChapterKey(documentGuid, chapterGuid)
+    return this.storage.removeItem(key)
+  }
+
+  deleteDocument (guid) {
+    // Remove document from document list
+    return this._getAllDocumentGuids().then(documentGuids => {
+      if (documentGuids.includes(guid)) {
+        documentGuids.splice(documentGuids.indexOf(guid), 1)
+      }
+
+      return this.storage.setItem(this.documentGuidsKey, documentGuids)
+    }).then(() => {
+      // Remove all content (chapters, plans, sections, topics)
+      return Promise.all([
+        this._getAllChapters(guid).then(chapters =>
+          Promise.all(chapters.map(chapter => this.deleteChapter(guid, chapter.guid)))
+        ),
+        this._getAllPlans(guid).then(plans => {
+          return Promise.all(plans.map(plan => {
+            return this._getAllSections(guid, plan.guid).then(sections =>
+              Promise.all(sections.map(section => this.deleteSection(guid, plan.guid, section.guid)))
+            ).then(() => this.deletePlan(guid, plan.guid))
+          }))
+        }),
+        this._getAllTopics(guid).then(topics =>
+          Promise.all(topics.map(topic => this.deleteTopic(guid, topic.guid)))
+        )
+      ]).then(() => this.storage.removeItem(this.documentsKey(guid)))
+    })
+  }
+
+  deletePlan (documentGuid, planGuid) {
+    const key = this.getPlanKey(documentGuid, planGuid)
+    return this.storage.removeItem(key)
+  }
+
+  deleteSection (documentGuid, planGuid, sectionGuid) {
+    const key = this.getSectionKey(documentGuid, planGuid, sectionGuid)
+    return this.storage.removeItem(key)
+  }
+
+  deleteTopic (documentGuid, topicGuid) {
+    const key = this.getTopicKey(documentGuid, topicGuid)
+    return this.storage.removeItem(key)
+  }
+
+  _getAllChapters (documentGuid) {
+    const prefix = this.chapterKeyPrefix(documentGuid)
+
+    return Promise.all([
+      this._getChaptersSortOrder(documentGuid),
+      this.getStorageKeys().then(keys => keys.filter(key => key.startsWith(prefix)))
+    ]).then(([sortOrder, keys]) => {
+      return Promise.all(keys.map(key => this.storage.getItem(key))).then(chapters => {
+        chapters.sort((chap1, chap2) => {
+          return sortOrder.indexOf(chap1.guid) - sortOrder.indexOf(chap2.guid)
+        })
+
+        return chapters
+      })
+    })
+  }
+
+  getAllChapters (documentGuid) {
+    return this._getAllChapters(documentGuid)
+  }
+
+  _getAllDocumentGuids () {
+    return this.storage.getItem(this.documentGuidsKey).then(guids => uniq(guids) || [])
+  }
+
+  _getAllDocuments () {
+    return this._getAllDocumentGuids().then(guids => Promise.all(guids.map(guid => {
+      const key = this.documentsKey(guid)
+      return this.storage.getItem(key)
+    })))
+  }
+
+  getAllDocuments () {
+    return this._getAllDocuments()
+  }
+
+  _getAllPlans (documentGuid) {
+    const prefix = this.planKeyPrefix(documentGuid)
+
+    return Promise.all([
+      this._getPlansSortOrder(documentGuid),
+      this.getStorageKeys().then(keys => keys.filter(key => key.startsWith(prefix)))
+    ]).then(([sortOrder, keys]) => {
+      return Promise.all(keys.map(key => this.storage.getItem(key))).then(plans => {
+        return Promise.all(plans.map(plan => {
+          return this._getAllSections(documentGuid, plan.guid).then(sections => {
+            plan.sections = sections
+          })
+        })).then(() => {
+          plans.sort((plan1, plan2) => {
+            return sortOrder.indexOf(plan1.guid) - sortOrder.indexOf(plan2.guid)
+          })
+          return plans
+        })
+      })
+    })
+  }
+
+  getAllPlans (documentGuid) {
+    return this._getAllPlans(documentGuid)
+  }
+
+  _getAllSections (documentGuid, planGuid) {
+    const prefix = this.sectionKeyPrefix(documentGuid, planGuid)
+
+    return Promise.all([
+      this._getSectionSortOrder(documentGuid, planGuid),
+      this.getStorageKeys().then(keys => keys.filter(key => key.startsWith(prefix)))
+    ]).then(([sortOrder, keys]) => {
+      return Promise.all(keys.map(key => this.storage.getItem(key))).then(sections => {
+        sections.sort((section1, section2) => {
+          return sortOrder.indexOf(section1.guid) - sortOrder.indexOf(section2.guid)
+        })
+        return sections
+      })
+    })
+  }
+
+  _getAllTopics (documentGuid) {
+    const prefix = this.topicKeyPrefix(documentGuid)
+
+    return Promise.all([
+      this._getTopicsSortOrder(documentGuid),
+      this.getStorageKeys().then(keys => keys.filter(key => key.startsWith(prefix)))
+    ]).then(([sortOrder, keys]) => {
+      return Promise.all(keys.map(key => this.storage.getItem(key))).then(topics => {
+        topics.sort((topic1, topic2) => {
+          return sortOrder.indexOf(topic1.guid) - sortOrder.indexOf(topic2.guid)
+        })
+        return topics
+      })
+    })
+  }
+
+  getAllTopics (documentGuid) {
+    return this._getAllTopics(documentGuid)
+  }
+
+  _getChaptersSortOrder (documentGuid) {
+    return this.storage.getItem(this.chapterOrderKey(documentGuid)).then(sortOrder => sortOrder || [])
+  }
+
+  _getPlansSortOrder (documentGuid) {
+    return this.storage.getItem(this.planOrderKey(documentGuid)).then(sortOrder => sortOrder || [])
+  }
+
+  _getSectionSortOrder (documentGuid, planGuid) {
+    return this.storage.getItem(this.sectionOrderKey(documentGuid, planGuid)).then(sortOrder => sortOrder || [])
+  }
+
+  _getTopicsSortOrder (documentGuid) {
+    return this.storage.getItem(this.topicOrderKey(documentGuid)).then(sortOrder => sortOrder || [])
+  }
+
+  saveAllContent (documentGuid, { chapters, plans, topics }) {
+    return Promise.all([
+      Promise.all(chapters.map(chapter => this.updateChapter(documentGuid, chapter.guid, chapter))),
+      Promise.all(plans.map(plan => {
+        return this.updatePlan(documentGuid, plan.guid, plan).then(() => {
+          return Promise.all(plan.sections.map(section =>
+            this.updateSection(documentGuid, plan.guid, section.guid, section)
+          ))
+        })
+      })),
+      Promise.all(topics.map(topic => this.updateTopic(documentGuid, topic.guid, topic)))
+    ])
+  }
+
+  updateChapter (documentGuid, chapterGuid, chapter) {
+    if (!documentGuid) {
+      return
+    }
+
+    const key = this.getChapterKey(documentGuid, chapterGuid)
+    return Promise.all([
+      this.storage.setItem(key, chapter),
+      this._getChaptersSortOrder(documentGuid).then((sortOrder = []) => {
+        if (!sortOrder.includes(chapterGuid)) {
+          sortOrder.push(chapterGuid)
+          return this.arrangeChapters(documentGuid, sortOrder)
+        }
+      })
+    ])
+  }
+
+  updateDocument ({ guid, name }) {
+    return this.storage.setItem(this.documentsKey(guid), { guid, name })
+  }
+
+  updatePlan (documentGuid, planGuid, plan) {
+    if (!documentGuid) {
+      return
+    }
+
+    const key = this.getPlanKey(documentGuid, planGuid)
+
+    plan = clone(plan)
+    plan.sections = null
+
+    return Promise.all([
+      this.storage.setItem(key, plan),
+      this._getPlansSortOrder(documentGuid).then((sortOrder = []) => {
+        if (!sortOrder.includes(planGuid)) {
+          sortOrder.push(planGuid)
+          return this.arrangePlans(documentGuid, sortOrder)
+        }
+      })
+    ])
+  }
+
+  updateSection (documentGuid, planGuid, sectionGuid, section) {
+    if (!documentGuid) {
+      return
+    }
+
+    const key = this.getSectionKey(documentGuid, planGuid, sectionGuid)
+
+    return Promise.all([
+      this.storage.setItem(key, section),
+      this._getSectionSortOrder(documentGuid, planGuid).then((sortOrder = []) => {
+        if (!sortOrder.includes(sectionGuid)) {
+          sortOrder.push(sectionGuid)
+          return this.arrangeSections(documentGuid, sortOrder)
+        }
+      })
+    ])
+  }
+
+  updateTopic (documentGuid, topicGuid, topic) {
+    if (!documentGuid) {
+      return
+    }
+
+    const key = this.getTopicKey(documentGuid, topicGuid)
+
+    return Promise.all([
+      this.storage.setItem(key, topic),
+      this._getTopicsSortOrder(documentGuid).then((sortOrder = []) => {
+        if (!sortOrder.includes(topicGuid)) {
+          sortOrder.push(topicGuid)
+          return this.arrangeTopics(documentGuid, sortOrder)
+        }
+      })
+    ])
+  }
+
+  /*
+    FULL EXPORT / IMPORT
+  */
+
+  getFullExport () {
+    return this._getAllDocuments().then(documents => {
+      return Promise.all(documents.map(doc => {
+        return Promise.all([
+          this._getAllChapters(doc.guid),
+          this._getAllTopics(doc.guid),
+          this._getAllPlans(doc.guid).then(plans => {
+            return Promise.all(plans.map(plan =>
+              this._getAllSections(doc.guid, plan.guid).then(sections => {
+                plan.sections = sections
+                return plan
+              })
+            ))
+          })
+        ]).then(([chapters, topics, plans]) => {
+          doc.chapters = chapters
+          doc.topics = topics
+          doc.plans = plans
+          return doc
+        })
+      }))
+    })
+  }
+
+  revertImport (backup) {
+    return (
+      Promise.all(Object.keys(backup).map(key => this.storage.setItem(key, backup[key])))
+        .then(undefined, importErr => {
+          console.error(importErr)
+          throw importErr
+        })
+    )
+  }
+
+  doFullImport (documents) {
+    const backup = {}
+
+    return this.storage.iterate((value, key) => {
+      backup[key] = value
+    }).then(() => {
+      return this.storage.clear().then(() => {
+        if (!documents || !Array.isArray(documents) || !documents.length) {
+          throw new Error('Attempted to import an empty backup')
+        }
+
+        const addDocumentPromises = documents.map(doc =>
+          () => this.addDocument(doc).then(() => this.saveAllContent(doc.guid, doc))
+        )
+
+        return orderPromises(addDocumentPromises)
+      })
+    }).then(undefined, err => {
+      console.error(err)
+      return this.revertImport(backup)
+    })
+  }
 }
 
 export default DemoStorageApi

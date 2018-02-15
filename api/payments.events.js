@@ -16,7 +16,9 @@ const paymentSucceeded = ({ customer: customerId }, knex) => {
 }
 
 const registerApis = (app, db) => {
-  app.post('/payment-event', verifySignatureMiddleware, (req, res) => {
+  const route = route => `/api/${route}`
+
+  app.post(route('payment-event'), verifySignatureMiddleware, (req, res) => {
     const { type, data } = res.body
 
     switch (type) {

@@ -11,14 +11,14 @@ describe('the landing page', () => {
     cy.contains('Edward is a')
   })
 
-  it('includes at least 2 links to the login page', () => {
+  it('includes at least 1 link to the login page', () => {
     const authLinks = cy.get('a[href="/auth"]')
     authLinks.should('be.visible')
-    authLinks.should('have.length.above', 1)
+    authLinks.should('have.length.above', 0)
   })
 
   it('links to the login page', () => {
-    cy.get('a').contains('Try it').click()
+    cy.get('a').contains('Go to').click()
     cy.url().should('contain', '/auth')
   })
 })

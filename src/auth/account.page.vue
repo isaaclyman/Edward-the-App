@@ -63,7 +63,7 @@
     </div>
     <hr>
     <div class="delete">
-      <router-link to="/deleteAccount">
+      <router-link to="/delete-account">
         <button class="button-link">Delete my account</button>
       </router-link>
     </div>

@@ -1,6 +1,6 @@
 import { user } from '../../test/_util'
 import {
-  createTestUser, deleteTestUser, makeTestUserPremium, setTestUserResetKey, setTestUserVerifyKey
+  createTestUser, deleteTestUser, logIn, makeTestUserPremium, setTestUserResetKey, setTestUserVerifyKey
 } from '../scripts/_util'
 
 describe('the auth page', () => {
@@ -164,6 +164,32 @@ describe('the auth page', () => {
       cy.get('div.password > input').type(newPassword)
       cy.get('button').contains('Log In').click()
       cy.url().should('contain', '/limited')
+    })
+  })
+  
+  describe('deleting an account', () => {
+    beforeEach(() => {
+      deleteTestUser(cy)
+      createTestUser(cy)
+      logIn(cy, user.email, user.password)
+      cy.visit('/auth.html#/account')
+    })
+
+    it('allows deleting an account with the correct password', () => {
+      cy.get('div.delete').find('button').click()
+      cy.url().should('contain', '/delete-account')
+      cy.get('.password-input').type(user.password)
+      cy.get('button').contains('Delete').click()
+      cy.url().should('contain', '/login')
+    })
+
+    it(`doesn't allow deleting an account with the wrong password`, () => {
+      cy.get('div.delete').find('button').click()
+      cy.url().should('contain', '/delete-account')
+      cy.get('.password-input').type('NOT THE CORRECT PASSWORD')
+      cy.get('button').contains('Delete').click()
+      cy.get('.error').should('be.visible')
+      cy.url().should('contain', '/delete-account')
     })
   })
 })

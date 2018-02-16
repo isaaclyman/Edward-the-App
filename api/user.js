@@ -425,12 +425,22 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
   app.post(route('delete-account'), isLoggedInMiddleware, isNotDemoMiddleware, (req, res, next) => {
     const { password } = req.body
 
-    db.knex('users').where('id', req.user.id).first('password').then(({ password: hash }) => {
+    db.knex('users').where('id', req.user.id).first(
+      'password', 'stripe_customer_id', 'stripe_subscription_id'
+    ).then(({
+      password: hash,
+      stripe_customer_id: stripeId,
+      stripe_subscription_id: subscriptionId
+    }) => {
       return modelUtil.isCorrectPassword(password, hash).then(() => {
         // Password is correct
         const userId = req.user.id
         req.logout()
-        return db.knex('users').where('id', userId).del()
+        return db.knex('users').where('id', userId).del().then(() => {
+          if (stripeId) {
+            return payments.deleteAllCustomerData(stripeId, subscriptionId)
+          }
+        })
       }, () => {
         res.status(401).send('Incorrect password.')
         throw new Error('Incorrect password.')

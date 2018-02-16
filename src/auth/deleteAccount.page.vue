@@ -8,36 +8,62 @@
       </p>
       <p>To continue, type your account password below and click "Delete my account".</p>
       <div class="actions">
-        <input class="password-input" type="password" v-model="password" autocomplete="off">
-        <button class="button-red" @click="deleteAccount">Delete my account</button>
+        <input class="password-input" type="password" v-model="password" autocomplete="off" :disabled="saving">
+        <button v-if="!saving" class="button-red" @click="deleteAccount">Delete my account</button>
+        <pulse-loader v-if="saving"></pulse-loader>
       </div>
-      <div class="cancel">
-        <router-link to="/account">
-          <button class="button-link">Never mind, go back</button>
-        </router-link>
+      <div class="error" v-if="error">
+        That didn't work. Please check your password and try again.
+        If the problem persists, contact <a href="mailto:support@edwardtheapp.com">support@edwardtheapp.com</a>.
       </div>
+    </div>
+    <hr>
+    <div class="cancel">
+      <router-link to="/account">
+        <button class="button-link">Never mind, go back</button>
+      </router-link>
     </div>
   </div>
 </template>
 
 <script>
 import authApi from './authApi'
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
 export default {
+  components: {
+    PulseLoader
+  },
   data () {
     return {
-      password: ''
+      error: false,
+      password: '',
+      saving: false
     }
   },
   methods: {
     deleteAccount () {
-      authApi.deleteAccount({ password: this.password })
+      this.saving = true
+      this.error = false
+      authApi.deleteAccount({ password: this.password }).then(() => {
+        this.saving = false
+        this.$router.push('/login')
+      }, err => {
+        this.error = true
+        this.saving = false
+        console.error(err)
+      })
     }
   }
 }
 </script>
 
 <style scoped>
+hr {
+  margin: 16px 0;
+  width: 100%;
+}
+
 .wrap {
   align-items: center;
   display: flex;
@@ -45,7 +71,7 @@ export default {
   flex-direction: column;
 }
 
-.delete {
+.delete, .cancel {
   max-width: 1200px;
   padding: 0 50px;
   width: 100%;
@@ -61,5 +87,13 @@ export default {
 .password-input {
   margin-bottom: 12px;
   width: 300px;
+}
+
+.error {
+  color: red;
+}
+
+.cancel {
+  margin-bottom: 20px;
 }
 </style>

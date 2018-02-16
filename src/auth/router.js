@@ -63,7 +63,7 @@ export default new Router({
       meta: { getCurrentUser }
     },
     {
-      path: '/deleteAccount',
+      path: '/delete-account',
       name: 'Delete Your Account',
       component: DeleteAccount
     },

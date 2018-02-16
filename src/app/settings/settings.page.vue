@@ -2,7 +2,7 @@
 <div class="wrap">
   <div class="settings">
     <div class="title">
-      <h3>Account</h3>
+      <h3>Settings</h3>
     </div>
     <hr>
     <h4>Email</h4>
@@ -44,7 +44,7 @@
       <div class="upgrade-button">
         <a href="/auth#/account">
           <button class="button-green">
-            Upgrade
+            Manage account
           </button>
         </a>
       </div>

@@ -61,6 +61,13 @@
         Please try again or contact support at <a href="mailto:support@edwardtheapp.com">support@edwardtheapp.com</a>.
       </div>
     </div>
+    <hr>
+    <div class="delete">
+      <router-link to="/deleteAccount">
+        <button class="button-link">Delete my account</button>
+      </router-link>
+    </div>
+    <hr>
     <div class="cancel">
       <pulse-loader v-if="saving"></pulse-loader>
       <button class="button-link" @click="cancel()" :disabled="saving">
@@ -330,13 +337,17 @@ hr {
   flex-direction: column;
 }
 
-.account, .payment, .upgrade {
+.account, .payment, .upgrade, .delete {
   max-width: 1200px;
   padding: 0 50px;
   width: 100%;
 }
 
 .payment {
+  margin-bottom: 20px;
+}
+
+.upgrade {
   margin-bottom: 20px;
 }
 

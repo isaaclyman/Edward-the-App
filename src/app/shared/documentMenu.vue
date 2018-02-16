@@ -23,7 +23,7 @@
     <div class="menu-item" v-if="notDemo">
       <router-link to="/settings">
         <button class="menu-button">
-          Account
+          Settings
         </button>
       </router-link>
       <a href="/auth#/account">

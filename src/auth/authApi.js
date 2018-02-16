@@ -9,6 +9,12 @@ const api = {
         .then(response => response.data)
     )
   },
+  deleteAccount ({ password }) {
+    return (
+      axios.post(route('delete-account'), { password })
+        .then(response => response.data)
+    )
+  },
   demoLogIn () {
     return (
       axios.post(route('demo-login'), {}).then(response => response.data)

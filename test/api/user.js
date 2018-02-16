@@ -656,3 +656,53 @@ test(`can access app after successfully updating payment information when overdu
     .expect(200)
   )
 })
+
+test(`can delete account with correct password`, async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+
+  await (
+    app.post(route('user/delete-account'))
+    .send({ password: user.password })
+    .expect(200)
+  )
+
+  await (
+    app.get(route('user/current'))
+    .expect(302)
+  )
+  
+  await (
+    app.post(route('user/login'))
+    .send(user)
+    .expect(401)
+  )
+})
+
+test(`cannot delete account with incorrect password`, async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+
+  await (
+    app.post(route('user/delete-account'))
+    .send({ password: 'NOT THE CORRECT PASSWORD' })
+    .expect(401)
+  )
+
+  await (
+    app.get(route('user/current'))
+    .expect(200)
+  )
+  
+  await (
+    app.post(route('user/login'))
+    .send(user)
+    .expect(200)
+  )
+})

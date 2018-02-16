@@ -425,20 +425,25 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
   app.post(route('delete-account'), isLoggedInMiddleware, isNotDemoMiddleware, (req, res, next) => {
     const { password } = req.body
 
-    db.knex('users').where('id', req.user.id).first('password').then(hash => {
+    db.knex('users').where('id', req.user.id).first('password').then(({ password: hash }) => {
       return modelUtil.isCorrectPassword(password, hash).then(() => {
         // Password is correct
-        return db.knex('users').where('id', req.user.id).del().then(undefined, err => {
-          res.status(401).send()
-          throw err
-        })
+        const userId = req.user.id
+        req.logout()
+        return db.knex('users').where('id', userId).del()
+      }, () => {
+        res.status(401).send('Incorrect password.')
+        throw new Error('Incorrect password.')
       })
     }).then(() => {
       res.status(200).send()
-    }, () => {
-      if (!res.headersSent) {
-        res.status(500).send()
+    }, err => {
+      if (res.headersSent) {
+        return
       }
+
+      console.error(err)
+      res.status(500).send()
     })
   })
 }

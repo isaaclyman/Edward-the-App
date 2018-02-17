@@ -4,9 +4,18 @@ const { getUsersOverLimit } = require('./space-used.helper')
 module.exports = function (app, passport, db, isAdmin) {
   const route = route => `/api/admin/${route}`
 
+  const countUsersQuery = accountType =>
+    db.knex('users').count('id as count').where('account_type', accountType).then(([{ count }]) => count)
+
   app.get(route('total-users'), isAdmin, (req, res, next) => {
-    db.knex('users').count('id').then(([{ count }]) => {
-      res.status(200).send({ count })
+    Promise.all([
+      countUsersQuery(accountTypes.DEMO.name),
+      countUsersQuery(accountTypes.LIMITED.name),
+      countUsersQuery(accountTypes.PREMIUM.name),
+      countUsersQuery(accountTypes.GOLD.name),
+      countUsersQuery(accountTypes.ADMIN.name)
+    ]).then(([demo, limited, premium, gold, admin]) => {
+      res.status(200).send({ demo, limited, premium, gold, admin })
     }, err => {
       res.status(500).send(err)
     })

@@ -1,7 +1,9 @@
 <template>
   <div class="wrap">
     <h4>This is a restricted Admin page.</h4>
+    <hr>
     <total-users></total-users>
+    <hr>
     <space-overages></space-overages>
   </div>
 </template>

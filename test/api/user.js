@@ -1,6 +1,8 @@
 import {
   accountTypes,
   app,
+  createTestChapter,
+  createTestDocument,
   createTestUser,
   deleteTestUser,
   getPersistentAgent,
@@ -663,6 +665,33 @@ test(`can delete account with correct password`, async t => {
   await deleteTestUser()
   await serverReady
   await createTestUser(app)
+
+  await (
+    app.post(route('user/delete-account'))
+    .send({ password: user.password })
+    .expect(200)
+  )
+
+  await (
+    app.get(route('user/current'))
+    .expect(302)
+  )
+  
+  await (
+    app.post(route('user/login'))
+    .send(user)
+    .expect(401)
+  )
+})
+
+test(`can delete account that has content`, async t => {
+  const app = getPersistentAgent()
+
+  await deleteTestUser()
+  await serverReady
+  await createTestUser(app)
+  await createTestDocument()
+  await createTestChapter()
 
   await (
     app.post(route('user/delete-account'))

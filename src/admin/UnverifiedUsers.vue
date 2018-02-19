@@ -2,7 +2,7 @@
   <div class="stat">
     <p>Unverified users (limit 150):</p>
     <p v-if="users" v-text="usersDisplay"></p>
-    <button class="button-green" @click="deleteUnverified()">Delete unverified users older than 72 hours</button>
+    <button class="button-green" @click="deleteUnverified()">Delete unverified users older than 3 days</button>
     <div class="success" v-if="success">Success!</div>
     <div class="error" v-if="error" v-text="error"></div>
   </div>
@@ -25,7 +25,7 @@ export default {
         if (!user.daysUnverified) {
           user.daysUnverified = Math.round((Date.now() - new Date(user.created_at)) / (1000 * 60 * 60 * 24))
         }
-        return `${user.email} (${user.daysUnverified})`
+        return `${user.email} (${user.daysUnverified} days)`
       }).join(', ')
     }
   },

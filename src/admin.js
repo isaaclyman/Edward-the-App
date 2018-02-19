@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import router from './admin/router'
 import Admin from './admin/Admin.vue'
 
 Vue.config.productionTip = false
@@ -10,5 +11,6 @@ import './admin/admin.css'
 new Vue({
   el: '#app',
   components: { Admin },
+  router,
   template: '<Admin/>'
 })

@@ -14,6 +14,13 @@ class AdminApi {
     })
   }
 
+  addEmail ({ content, subject }) { return this.simplePost(route('emails/new'), { content, subject }) }
+  deleteEmail ({ id }) { return this.simplePost(route('emails/delete'), { id }) }
+  getPendingEmails () { return this.simpleGet(route('emails/pending')) }
+  getUserEmails () { return this.simpleGet(route('emails/csv')) }
+  reviewEmail ({ id }) { return this.simplePost(route('emails/review'), { id }) }
+  sendEmail ({ id }) { return this.simplePost(route('emails/send'), { id }) }
+
   deleteUnverifiedUsers () { return this.simplePost(route('delete-unverified')) }
 
   getSpaceOverages () { return this.simpleGet(route('space-overages')) }

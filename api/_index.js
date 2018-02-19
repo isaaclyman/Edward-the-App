@@ -26,7 +26,7 @@ module.exports = function (app, passport, db) {
   })
 
   // Serve user-facing APIs
-  require('./user')(app, passport, db, isPremiumUser, isOverdue, isLoggedInMiddleware, isNotDemoMiddleware)
+  require('./user')(app, passport, db, isPremiumUser, isOverdue, isLoggedInMiddleware, isNotDemoMiddleware, isVerifiedMiddleware)
   require('./document').registerApis(app, passport, db, isPremiumUserMiddleware, isNotOverdueMiddleware)
   require('./backup').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./chapter').registerApis(app, passport, db, isPremiumUserMiddleware)
@@ -113,6 +113,20 @@ function isNotOverdueMiddleware (req, res, next) {
 
   if (isOverdue(req.user)) {
     res.redirect('/auth#/account')
+    return
+  }
+
+  return next()
+}
+
+function isVerifiedMiddleware (req, res, next) {
+  if (!req.isAuthenticated() || !req.user) {
+    res.status(401).send('Attempted an API call without authentication.')
+    return
+  }
+
+  if (!req.user.verified) {
+    res.redirect('/auth#/verification')
     return
   }
 

@@ -14,8 +14,11 @@ class AdminApi {
     })
   }
 
-  getTotalUsers () { return this.simpleGet(route('total-users')) }
+  deleteUnverifiedUsers () { return this.simplePost(route('delete-unverified')) }
+
   getSpaceOverages () { return this.simpleGet(route('space-overages')) }
+  getTotalUsers () { return this.simpleGet(route('total-users')) }
+  getUnverifiedUsers () { return this.simpleGet(route('unverified-users')) }
 }
 
 export default new AdminApi()

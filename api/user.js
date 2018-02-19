@@ -9,7 +9,7 @@ const uuid = require('uuid/v4')
 // This file deals with sensitive user data. Therefore, error messages (which could contain that data)
 //  are not included in any response to the front end.
 
-module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLoggedInMiddleware, isNotDemoMiddleware) {
+module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLoggedInMiddleware, isNotDemoMiddleware, isVerifiedMiddleware) {
   const route = route => `/api/user/${route}`
 
   const verifyCaptchaToken = (req) => {
@@ -242,7 +242,7 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
   })
 
   // POST { oldAccountType, newAccountType, token }
-  app.post(route('upgrade'), isLoggedInMiddleware, isNotDemoMiddleware, (req, res, next) => {
+  app.post(route('upgrade'), isLoggedInMiddleware, isNotDemoMiddleware, isVerifiedMiddleware, (req, res, next) => {
     const { oldAccountType, newAccountType, token } = req.body
 
     // Verify that the user isn't trying to make themself an Admin

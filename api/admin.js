@@ -85,8 +85,32 @@ module.exports = function (app, passport, db, isAdmin) {
     })
   })
 
-  // Miscellaneous
+  // Comp users
+  
+  app.get(route('comp-users'), isAdmin, (req, res, next) => {
+    const monthFromNow = db.knex.raw(`('now'::timestamp + '35 days'::interval)`)
+    db.knex('users').where('payment_period_end', '>', monthFromNow).select().then(users => {
+      res.status(200).send(users)
+    }, err => {
+      res.status(500).send(err)
+    })
+  })
 
+  app.post(route('uncomp'), isAdmin, (req, res, next) => {
+    const { id } = req.body
+
+    const monthFromNow = db.knex.raw(`(SELECT 'now'::timestamp + '1 month'::interval)`)
+    db.knex('users').where('id', id).update({
+      payment_period_end: monthFromNow
+    }).then(() => {
+      res.status(200).send()
+    }, err => {
+      res.status(500).send(err)
+    })
+  })
+
+  // Miscellaneous
+  
   app.post(route('delete-unverified'), isAdmin, (req, res, next) => {
     const cutoffDate = db.knex.raw(`('now'::timestamp - '3 days'::interval)`)
     db.knex('users').where('verified', false).andWhere('created_at', '<', cutoffDate).del().then(() => {

@@ -16,6 +16,7 @@ export default {
 
 <style scoped>
 .wrap {
+  margin-bottom: 100px;
   padding: 10px;
 }
 </style>

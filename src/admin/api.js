@@ -23,11 +23,12 @@ class AdminApi {
 
   deleteUnverifiedUsers () { return this.simplePost(route('delete-unverified')) }
 
-  getCompUsers () { return this.simpleGet(route('comp-users')) }
   getSpaceOverages () { return this.simpleGet(route('space-overages')) }
   getTotalUsers () { return this.simpleGet(route('total-users')) }
   getUnverifiedUsers () { return this.simpleGet(route('unverified-users')) }
 
+  compUser ({ id, months }) { return this.simplePost(route('comp'), { id, months }) }
+  getCompUsers () { return this.simpleGet(route('comp-users')) }
   uncompUser ({ id }) { return this.simplePost(route('uncomp'), { id }) }
 }
 

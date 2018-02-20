@@ -2,6 +2,7 @@ const accountTypes = require('../models/accountType')
 const Email = require('./email.helper')
 const { getUsersOverLimit } = require('./space-used.helper')
 
+// APIs in this file do not update created_at, updated_at columns
 module.exports = function (app, passport, db, isAdmin) {
   const route = route => `/api/admin/${route}`
 
@@ -86,6 +87,25 @@ module.exports = function (app, passport, db, isAdmin) {
   })
 
   // Comp users
+
+  app.post(route('comp'), isAdmin, (req, res, next) => {
+    const { id, months } = req.body
+    const dueDate = db.knex.raw(`(SELECT 'now'::timestamp + '${months} months'::interval)`)
+
+    db.knex('users').where('id', id).first().then(user => {
+      if (![accountTypes.PREMIUM.name, accountTypes.GOLD.name, accountTypes.ADMIN.name].includes(user.account_type)) {
+        throw new Error('This user does not have a premium account and cannot be comped.')
+      }
+
+      return db.knex('users').where('id', id).update({
+        payment_period_end: dueDate
+      })
+    }).then(() => {
+      res.status(200).send()
+    }, err => {
+      res.status(500).send(err)
+    })
+  })
   
   app.get(route('comp-users'), isAdmin, (req, res, next) => {
     const monthFromNow = db.knex.raw(`('now'::timestamp + '35 days'::interval)`)

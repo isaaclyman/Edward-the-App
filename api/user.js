@@ -263,7 +263,7 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
       const err = new Error(`One of received account types is not valid. Received: ${oldAccountType}, ${newAccountType}`)
       return res.status(500).send()
     }
-    
+
     db.knex('users').where('id', req.user.id).first().then(user => {
       if (!user) {
         throw new Error('Current user was not found.')

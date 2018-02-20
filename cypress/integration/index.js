@@ -18,7 +18,7 @@ describe('the landing page', () => {
   })
 
   it('links to the login page', () => {
-    cy.get('a').contains('Go to').click()
+    cy.get('a').contains('Log in').click()
     cy.url().should('contain', '/auth')
   })
 })

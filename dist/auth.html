@@ -3,12 +3,23 @@
       gtag('js', new Date());
 
       gtag('config', 'UA-109036711-1');</script><link href=/static/css/auth.b964a66a6b8df23eb0f1220f5a21890e.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=/static/js/manifest.6076ef7d407a1e8b6892.js></script><script type=text/javascript src=/static/js/vendor.c3f177c5929603740c7a.js></script><script type=text/javascript src=/static/js/auth.b8eb4cdfae984ea1a605.js></script></body><script>// Detect environment, set globals
-    var isDevelopment = !!~['127.0.0.1', 'localhost'].indexOf(window.location.hostname)
+    var isLocal = !!~['127.0.0.1', 'localhost'].indexOf(window.location.hostname)
+    var isDev = !!~window.location.hostname.indexOf('herokuapp.com')
     
-    if (isDevelopment) {
+    if (isLocal) {
+      // Test keys
       window.recaptchaSiteKey = '6Lcg3DUUAAAAANAt-cV-ELiedVMT543DJ7-wOneQ'
       window.stripePublicKey = 'pk_test_j5EoXIK1dh5meggrjMtioHjw'
-    } else {
+    }
+
+    if (isDev) {
+      // Live recaptcha key, test stripe key
+      window.recaptchaSiteKey = '6LfxrTQUAAAAAKZHrZj_kqcmaVoYBcExGAfEN8kf'
+      window.stripePublicKey = 'pk_test_j5EoXIK1dh5meggrjMtioHjw'
+    }
+
+    if (!isLocal && !isDev) {
+      // Live keys
       window.recaptchaSiteKey = '6LfxrTQUAAAAAKZHrZj_kqcmaVoYBcExGAfEN8kf'
       window.stripePublicKey = 'pk_live_b7aCr7fqukKinDMFNhe9HOH8'
     }</script></html>

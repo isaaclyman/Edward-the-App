@@ -8,7 +8,7 @@ export const GetContentString = (delta) => {
 
   const inserts = delta.ops.map(op => op.insert || '')
   const joined = inserts.join('')
-  return joined.trim().length && joined
+  return joined.trim().length ? joined : ''
 }
 
 const wordStartRe = /^[a-zA-Z0-9'\-_@&]/

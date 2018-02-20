@@ -26,12 +26,23 @@
   </body>
   <script>
     // Detect environment, set globals
-    var isDevelopment = !!~['127.0.0.1', 'localhost'].indexOf(window.location.hostname)
+    var isLocal = !!~['127.0.0.1', 'localhost'].indexOf(window.location.hostname)
+    var isDev = !!~window.location.hostname.indexOf('herokuapp.com')
     
-    if (isDevelopment) {
+    if (isLocal) {
+      // Test keys
       window.recaptchaSiteKey = '6Lcg3DUUAAAAANAt-cV-ELiedVMT543DJ7-wOneQ'
       window.stripePublicKey = 'pk_test_j5EoXIK1dh5meggrjMtioHjw'
-    } else {
+    }
+
+    if (isDev) {
+      // Live recaptcha key, test stripe key
+      window.recaptchaSiteKey = '6LfxrTQUAAAAAKZHrZj_kqcmaVoYBcExGAfEN8kf'
+      window.stripePublicKey = 'pk_test_j5EoXIK1dh5meggrjMtioHjw'
+    }
+
+    if (!isLocal && !isDev) {
+      // Live keys
       window.recaptchaSiteKey = '6LfxrTQUAAAAAKZHrZj_kqcmaVoYBcExGAfEN8kf'
       window.stripePublicKey = 'pk_live_b7aCr7fqukKinDMFNhe9HOH8'
     }

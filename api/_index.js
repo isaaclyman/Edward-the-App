@@ -9,7 +9,7 @@ module.exports = function (app, passport, db) {
 
   app.get('/login', (req, res) => {
     if (req.isAuthenticated()) {
-      return res.redirect('/app')
+      return isPremiumUser(req.user.account_type) ? res.redirect('/app') : res.redirect('/auth#/limited')
     } else {
       return res.redirect('/auth')
     }

@@ -21,14 +21,13 @@
 
 <script>
 import authApi from './authApi'
-import { goToApp } from './shared'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
 export default {
   beforeCreate () {
     const { email, key } = this.$route.params
     authApi.verify({ email, key }).then(() => {
-      goToApp()
+      this.$router.push('/limited')
     }, () => {
       this.failed = true
     })

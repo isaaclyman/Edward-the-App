@@ -9,10 +9,10 @@
         </p>
       </div>
       <div class="input">
-        <input class="email-input" v-model="email" placeholder="edward@example.com">
+        <input tabindex="1" class="email-input" v-model="email" placeholder="edward@example.com">
       </div>
       <div class="captcha">
-        <Captcha @change="setCaptchaResponse" @expire="resetCaptchaResponse" ref="captcha"></Captcha>
+        <Captcha :tabindex="2" @change="setCaptchaResponse" @expire="resetCaptchaResponse" ref="captcha"></Captcha>
       </div>
       <div class="actions" v-if="!emailSent">
         <pulse-loader v-if="saving"></pulse-loader>

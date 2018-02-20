@@ -16,7 +16,9 @@ export default {
       const placeholderEl = this.$refs.recaptcha
       placeholderEl.innerHTML = ''
 
+      console.log('captcha tabindex', this.tabindex)
       window.grecaptcha.render(placeholderEl, {
+        tabIndex: this.tabindex,
         callback: (response) => {
           this.$emit('change', response)
         },
@@ -40,6 +42,12 @@ export default {
         window.clearInterval(interval)
       }
     }, 100)
+  },
+  props: {
+    tabindex: {
+      required: true,
+      type: Number
+    }
   }
 }
 </script>

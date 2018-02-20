@@ -3,17 +3,17 @@
   <hr class="divider">
   <div class="username">
     <label for="login-username-input">Email address:</label>
-    <input id="login-username-input" class="login-field" type="text" v-model="email">
+    <input tabindex="1" id="login-username-input" class="login-field" type="text" v-model="email">
   </div>
   <div class="password">
     <label for="login-password-input">Password:</label>
-    <input id="login-password-input" class="login-field" type="password" v-model="password">
+    <input tabindex="2" id="login-password-input" class="login-field" type="password" v-model="password">
     <router-link to="/forgot">
-      <button class="button-link forgot-button">Forgot your password?</button>
+      <button tabindex="3" class="button-link forgot-button">Forgot your password?</button>
     </router-link>
   </div>
   <div class="captcha">
-    <Captcha @change="setCaptchaResponse" @expire="resetCaptchaResponse" ref="captcha"></Captcha>
+    <Captcha :tabindex="4" @change="setCaptchaResponse" @expire="resetCaptchaResponse" ref="captcha"></Captcha>
   </div>
   <div class="messages">
     <p>{{ loginMessage }}</p>

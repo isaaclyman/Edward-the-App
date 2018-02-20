@@ -7,7 +7,7 @@
       <div class="signup-field">
         <label class="signup-label" for="signup-email">Email address:</label>
         <input class="signup-input" :class="{ 'invalid': warnEmail }" id="signup-email" type="text"
-               v-model.trim="email" placeholder="greg@example.com">
+              tabindex="1" v-model.trim="email" placeholder="greg@example.com">
       </div>
       <button class="field-info" :class="{ 'invalid': warnEmail }" v-html="infoSvg" ref="emailInfo"
               :title="emailInfo"></button>
@@ -16,7 +16,7 @@
       <div class="signup-field">
         <label class="signup-label" for="signup-password">Password:</label>
         <input class="signup-input" :class="{ 'invalid': warnPassword }" id="signup-password" type="password"
-               v-model="password">
+              tabindex="2" v-model="password">
       </div>
       <button class="field-info" :class="{ 'invalid': warnPassword }" v-html="infoSvg" ref="passwordInfo"
               :title="passwordInfo"></button>
@@ -24,12 +24,12 @@
     <div class="signup-section about">
       <div class="signup-field">
         <label class="signup-label" for="signup-about">Tell us something about yourself, if you'd like:</label>
-        <textarea class="signup-textarea" id="signup-about" type="text" v-model="about"></textarea>
+        <textarea tabindex="3" class="signup-textarea" id="signup-about" type="text" v-model="about"></textarea>
       </div>
       <button class="field-info" v-html="infoSvg" ref="aboutInfo" :title="aboutInfo"></button>
     </div>
     <div class="captcha">
-      <Captcha @change="setCaptchaResponse" @expire="resetCaptchaResponse" ref="captcha"></Captcha>
+      <Captcha :tabindex="4" @change="setCaptchaResponse" @expire="resetCaptchaResponse" ref="captcha"></Captcha>
     </div>
     <div class="message">
       <p class="message-text">{{ message }}</p>
@@ -40,7 +40,9 @@
     </div>
     <div class="actions">
       <pulse-loader v-if="loading"></pulse-loader>
-      <button class="button-green" v-if="!loading" @click="submit()" :disabled="!canSignUp">Create account</button>
+      <button class="button-green" v-if="!loading" @click="submit()" :disabled="!canSignUp">
+        Create account
+      </button>
     </div>
   </div>
 </template>

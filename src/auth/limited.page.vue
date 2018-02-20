@@ -3,13 +3,18 @@
     <div class="warning">
       <h1>Just so you know...</h1>
       <p>
-        <strong>This is a limited account.</strong>
+        <strong>This is a limited account.</strong> When you use a limited account, you should know that:
       </p>
+      <ul>
+        <li>
+          <strong>Your documents are not private.</strong> Anyone with access to this computer can see and edit them.
+        </li>
+        <li>
+          <strong>Your documents are not safe.</strong> If you reinstall your browser, clear your browsing data, or wipe your hard drive, all your work will be deleted. If you exceed the storage space your browser allows, it will erase all your data without warning.
+        </li>
+      </ul>
       <p>
-        All your novels are stored insecurely on your computer. You won't be able to access them on other computers, and they will be <strong>deleted without warning</strong> if you reinstall your browser, clear your browsing data, or wipe your hard drive. If you exceed the storage space your browser allows, it may suddenly erase all your data.
-      </p>
-      <p>
-        You can use your limited account for as long as you want and export as many novels as you want.
+        Limited accounts are not intended for long-term use, but you can use yours for as long as you want and export as many novels as you want.
         <router-link to="/account">
           <strong>Or upgrade to a Premium account</strong>
         </router-link>
@@ -34,6 +39,17 @@
 import { goToApp } from './shared'
 
 export default {
+  computed: {
+    user () {
+      const meta = this.$route.matched.find(record => record.meta.getCurrentUser).meta
+      return meta.getCurrentUser()
+    }
+  },
+  created () {
+    if (this.user.isPremium) {
+      goToApp()
+    }
+  },
   data () {
     return {}
   },
@@ -56,6 +72,10 @@ export default {
 
 .warning {
   padding: 0 50px;
+}
+
+ul {
+  padding-left: 6px;
 }
 
 .fill {

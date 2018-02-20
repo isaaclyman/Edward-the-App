@@ -45,15 +45,13 @@ export default {
       this.showFullScreen = false
     },
     listenQuill (quill) {
-      const onTextChange = debounce(() => this.emitContent(quill.getContents()), 750, { maxWait: 2000 })
+      const selectionChanged = debounce((selection) => {
+        this.emitSelection(selection)
+      }, 500)
 
-      const onSelectionChange = debounce((range) => {
-        if (!range) {
-          return
-        }
-
+      const onSelectionChange = range => {
         let selection
-        if (!range.length) {
+        if (!range || !range.length) {
           selection = {
             range: null,
             text: ''
@@ -65,8 +63,19 @@ export default {
           }
         }
 
-        this.emitSelection(selection)
-      }, 500)
+        selectionChanged(selection)
+      }
+
+      const textChanged = debounce(content => {
+        this.emitContent(content)
+      }, 750, { maxWait: 2000 })
+
+      const onTextChange = () => {
+        const selection = quill.getSelection()
+        onSelectionChange(selection)
+        const content = quill.getContents()
+        textChanged(content)
+      }
 
       quill.on('text-change', onTextChange)
       quill.on('selection-change', onSelectionChange)

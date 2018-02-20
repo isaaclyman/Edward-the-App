@@ -153,10 +153,12 @@ export default {
       return this.getWordCount(this.textContent)
     },
     documentFullText () {
-      return this.$store.state.chapters.chapters
-        .map(chapter => chapter.content)
-        .map(content => GetContentString(content))
-        .join(' ')
+      return (
+        this.$store.state.chapters.chapters
+          .map(chapter => chapter.content)
+          .map(content => GetContentString(content))
+          .join(' ')
+      )
     },
     documentPageCount () {
       return this.getPageCount(this.documentFullText)

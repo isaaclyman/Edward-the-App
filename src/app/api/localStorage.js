@@ -220,17 +220,22 @@ class LocalStorageApi {
   }
 
   saveAllContent (documentGuid, { chapters, plans, topics }) {
-    return Promise.all([
-      Promise.all(chapters.map(chapter => this.updateChapter(documentGuid, chapter.guid, chapter))),
-      Promise.all(plans.map(plan => {
-        return this.updatePlan(documentGuid, plan.guid, plan).then(() => {
-          return Promise.all(plan.sections.map(section =>
-            this.updateSection(documentGuid, plan.guid, section.guid, section)
-          ))
-        })
-      })),
-      Promise.all(topics.map(topic => this.updateTopic(documentGuid, topic.guid, topic)))
-    ])
+    const updateTopicFns = topics.map(topic => () => this.updateTopic(documentGuid, topic.guid, topic))
+    const updateTopicPromise = orderPromises(updateTopicFns)
+    const updateChapterPromise = updateTopicPromise.then(() => {
+      const updateChapterFns = chapters.map(chapter => () => this.updateChapter(documentGuid, chapter.guid, chapter))
+      return orderPromises(updateChapterFns)
+    })
+
+    const updatePlanFns = plans.map(
+      plan => () => this.updatePlan(documentGuid, plan.guid, plan).then(() => {
+        const updateSectionFns = plan.sections.map(section => () => this.updateSection(documentGuid, plan.guid, section.guid, section))
+        return orderPromises(updateSectionFns)
+      })
+    )
+    const updatePlanPromise = orderPromises(updatePlanFns)
+
+    return Promise.all([updateChapterPromise, updatePlanPromise])
   }
 
   updateChapter (documentGuid, chapterGuid, chapter) {

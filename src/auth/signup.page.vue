@@ -36,11 +36,11 @@
     </div>
     <div class="legal">
       Before creating an account, you must read and agree to our
-      <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms of Use.</a>
+      <a tabindex="5" href="/privacy">Privacy Policy</a> and <a tabindex="6" href="/terms">Terms of Use.</a>
     </div>
     <div class="actions">
       <pulse-loader v-if="loading"></pulse-loader>
-      <button class="button-green" v-if="!loading" @click="submit()" :disabled="!canSignUp">
+      <button tabindex="7" class="button-green" v-if="!loading" @click="submit()" :disabled="!canSignUp">
         Create account
       </button>
     </div>

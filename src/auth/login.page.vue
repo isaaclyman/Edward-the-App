@@ -20,17 +20,17 @@
   </div>
   <div class="actions">
     <pulse-loader v-if="loading"></pulse-loader>
-    <button v-if="!loading" class="login-button button-green" :disabled="!canLogin" @click="logIn()">Log In</button>
+    <button tabindex="5" v-if="!loading" class="login-button button-green" :disabled="!canLogin" @click="logIn()">Log In</button>
   </div>
   <hr class="divider">
   <div class="sign-up">
     <div class="sign-up-text">Don't have an account?</div>
-    <button class="sign-up-link button-link" @click="signUp()">Sign up for free.</button>
+    <button tabindex="6" class="sign-up-link button-link" @click="signUp()">Sign up for free.</button>
   </div>
   <hr class="divider">
   <div class="sign-up">
     <div class="sign-up-text">Just want to check it out?</div>
-    <button class="sign-up-link button-link" @click="viewDemo()">Try the demo.</button>
+    <button tabindex="7" class="sign-up-link button-link" @click="viewDemo()">Try the demo.</button>
   </div>
 </div>
 </template>

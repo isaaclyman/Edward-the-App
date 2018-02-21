@@ -4,6 +4,15 @@
 
 <script>
 export default {
+  created () {
+    const iframeInterval = setInterval(() => {
+      const iframe = this.$refs.recaptcha.querySelector('iframe')
+      if (iframe) {
+        iframe.setAttribute('tabindex', this.tabindex)
+        clearInterval(iframeInterval)
+      }
+    }, 100)
+  },
   data () {
     return {}
   },
@@ -16,9 +25,8 @@ export default {
       const placeholderEl = this.$refs.recaptcha
       placeholderEl.innerHTML = ''
 
-      console.log('captcha tabindex', this.tabindex)
       window.grecaptcha.render(placeholderEl, {
-        tabIndex: this.tabindex,
+        tabindex: this.tabindex,
         callback: (response) => {
           this.$emit('change', response)
         },

@@ -16,7 +16,7 @@
       </div>
       <div class="actions" v-if="!emailSent">
         <pulse-loader v-if="saving"></pulse-loader>
-        <button v-if="!saving" class="button-green reset-button" @click="reset()">Reset my password</button>
+        <button tabindex="3" v-if="!saving" class="button-green reset-button" @click="reset()">Reset my password</button>
         <p class="error" v-if="error">
           That didn't work. Please check your email address and try again.
         </p>
@@ -26,7 +26,7 @@
       </div>
       <div class="cancel">
         <router-link to="/login">
-          <button class="button-link">Back to login</button>
+          <button tabindex="4" class="button-link">Back to login</button>
         </router-link>
       </div>
     </div>

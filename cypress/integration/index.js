@@ -12,7 +12,7 @@ describe('the landing page', () => {
   })
 
   it('includes at least 1 link to the login page', () => {
-    const authLinks = cy.get('a[href="/auth"]')
+    const authLinks = cy.get('a[href="/auth#/signup"]')
     authLinks.should('be.visible')
     authLinks.should('have.length.above', 0)
   })

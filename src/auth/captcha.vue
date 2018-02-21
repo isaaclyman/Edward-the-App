@@ -6,7 +6,7 @@
 export default {
   created () {
     const iframeInterval = setInterval(() => {
-      const iframe = this.$refs.recaptcha.querySelector('iframe')
+      const iframe = this.$refs.recaptcha && this.$refs.recaptcha.querySelector('iframe')
       if (iframe) {
         iframe.setAttribute('tabindex', this.tabindex)
         clearInterval(iframeInterval)

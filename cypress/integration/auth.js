@@ -128,7 +128,7 @@ describe('the auth page', () => {
       signUp()
       setTestUserVerifyKey(cy)
       cy.visit(`/auth.html#/verify/${encodeURIComponent(user.email)}/${user.verifyKey}`)
-      cy.url().should('contain', '/app')
+      cy.url().should('contain', '/limited')
     })
   })
 

@@ -6,12 +6,10 @@
     <div class="content" v-if="email">
       <h1>You're almost done.</h1>
       <p>
-        Before you can use Edward, you'll need to verify your email address.
-        <br>
-        This helps protect your identity.
+        Before you can use Edward, you'll need to verify your email address. We've sent a link to {{email}}. Please allow up to 10 minutes for it to arrive, then click the link to activate your account.
       </p>
       <p>
-        <strong>Click the button below to email a verification link to {{email}}.</strong>
+        Didn't get the email? Click the button to resend it.
       </p>
       <div>
         <button class="button-green" @click="sendLink()" v-if="!sent">
@@ -47,6 +45,8 @@ export default {
       this.$router.push('/login')
       return
     }
+
+    this.sendLink(true)
   },
   components: {
     PulseLoader
@@ -67,12 +67,14 @@ export default {
     }
   },
   methods: {
-    sendLink () {
+    sendLink (auto = false) {
       this.error = false
       this.sent = false
 
-      authApi.sendVerifyLink().then(() => {
-        this.sent = true
+      return authApi.sendVerifyLink().then(() => {
+        if (!auto) {
+          this.sent = true
+        }
       }, err => {
         this.sent = false
         this.error = true

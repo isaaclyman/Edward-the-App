@@ -20,10 +20,7 @@
             <input :id="getInputId(input)" v-model="currentAnalysis.args[input]">
           </div>
         </template>
-        <h4 class="analysis-title">
-          Run the analysis:
-        </h4>
-        <button class="analysis-button" @click="runAnalysis(currentAnalysis)">Run</button>
+        <button class="analysis-button button-green" @click="runAnalysis(currentAnalysis)">Run the analysis</button>
       </div>
       <div class="results" ref="results"></div>
     </div>
@@ -85,13 +82,9 @@ export default {
   margin-bottom: 10px;
 }
 
-.analysis-title {
-  margin-bottom: 8px;
-  margin-top: 12px;
-}
-
 .analysis-button {
   margin-right: 6px;
+  margin-top: 12px;
 }
 
 .results {

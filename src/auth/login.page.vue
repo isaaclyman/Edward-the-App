@@ -168,9 +168,12 @@ export default {
   width: 100%;
 }
 
+.username label, .password label {
+  text-align: center;
+  width: 100%;
+}
+
 .login-field {
-  border: none;
-  border-bottom: 1px solid #e8cc84;
   width: 300px;
 }
 

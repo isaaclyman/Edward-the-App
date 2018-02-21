@@ -1,3 +1,8 @@
+if (process.env.NO_SSL_DB !== 'true') {
+  var pg = require('pg');
+  pg.defaults.ssl = true;
+}
+
 const config = {
   client: 'pg',
   connection: process.env.DATABASE_URL,

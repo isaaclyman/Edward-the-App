@@ -28,7 +28,6 @@ a.small {
   background-color: transparent;
   border: 1px solid transparent;
   border-radius: 2px;
-  font-size: 14px;
   font-weight: bold;
   margin: 2px 4px;
   padding: 6px;
@@ -62,7 +61,7 @@ h4 {
 }
 
 ul li, ol li {
-  margin-left: 20px;
+  margin-left: 10px;
 }
 
 /* CLASSES */
@@ -90,16 +89,16 @@ ul li, ol li {
   height: 60px;
 }
 
-.links {
+.header-links {
   display: flex;
   flex-direction: row;
+  font-size: 17px;
   justify-content: center;
   padding-bottom: 30px;
 }
 
 .hook {
   align-items: center;
-  /* background-color: #f0f0f0; */
   background-color: #FFF;
   color: #222;
   display: flex;
@@ -141,6 +140,10 @@ ul li, ol li {
   color: #FFF;
 }
 
+.content-button {
+  margin: 12px 0;
+}
+
 .center {
   text-align: center;
 }
@@ -151,9 +154,30 @@ ul li, ol li {
   max-width: 550px;
 }
 
+.features li {
+  align-items: center;
+  display: flex;
+  line-height: 1.3em;
+  list-style-type: none;
+  padding-bottom: 8px;
+  padding-top: 8px;
+}
+
+.features .icon {
+  display: flex;
+  font-size: 20px;
+  justify-content: center;
+  width: 35px;
+}
+
+.features svg {
+  margin-right: 12px;
+}
+
 .footer {
   display: flex;
   flex-direction: row;
+  font-size: 14px;
   justify-content: center;
   padding-bottom: 30px;
 }

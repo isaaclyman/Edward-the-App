@@ -44,6 +44,9 @@ export default {
     emitSelection (selection) {
       this.$emit('update:selection', selection)
     },
+    focus () {
+      this.$nextTick(() => this.quill.setSelection(this.quill.getLength(), 0, 'silent'))
+    },
     hideFullScreen () {
       this.showFullScreen = false
     },

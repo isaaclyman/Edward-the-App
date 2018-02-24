@@ -27,7 +27,7 @@
           </span>
         </div>
         <div class="content-editable" v-show="isEditing(index)">
-          <quill-editor :content="topic.content" @update:content="updateContent(topic, $event)"
+          <quill-editor :content="topic.content" ref="quillEditor" @update:content="updateContent(topic, $event)"
             @shortcut:done="endEditTopic(index)"></quill-editor>
         </div>
       </div>
@@ -87,6 +87,7 @@ export default {
     },
     editTopic (index) {
       this.editingTopicIndex = index
+      this.$refs.quillEditor[index].focus()
     },
     endEditTopic (index) {
       this.editingTopicIndex = -1

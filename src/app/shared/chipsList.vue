@@ -13,7 +13,7 @@
             <button v-show="!isDeletable(chip)" class="button-icon chip-action-button action-restore" @click="restoreChip(index)" v-html="addSvg"></button>
           </div>
           <div class="chip-content" v-if="showChipInput(index)">
-            <input class="chip-input" v-model="chipValues[index]" :placeholder="chip[nameProp]">
+            <input class="chip-input" v-model="chipValues[index]" @keyup.enter="saveChipValue(index)" :placeholder="chip[nameProp]">
             <button class="button-green chip-add-button" @click="saveChipValue(index)" :disabled="!chipValues[index]">
               <span class="u-center-all chip-add-svg" v-html="saveSvg"></span> Save
             </button>
@@ -26,7 +26,7 @@
     </div>
     <div class="chip">
       <div class="chip-content">
-        <input class="chip-input" v-model="newChip" :placeholder="placeholder">
+        <input class="chip-input" v-model="newChip" @keyup.enter="addNewChip" :placeholder="placeholder">
         <button class="button-green chip-add-button" @click="addNewChip" :disabled="!newChip">
           <span class="u-center-all chip-add-svg" v-html="addSvg"></span> Add
         </button>

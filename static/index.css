@@ -126,18 +126,19 @@ ul li, ol li {
 }
 
 .content-link {
-  background-color: #444;
+  background-color: #ffeb3b;
+  border: 1px solid #c8b900;
   border-radius: 3px;
-  color: #FFF;
+  color: #000;
   font-size: 16px;
-  padding: 4px 6px;
+  padding: 4px 10px;
   text-decoration: none;
   transition: background-color 100ms;
 }
 
 .content-link:hover {
-  background-color: #AAA;
-  color: #FFF;
+  border-color: #c8b900;
+  box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.24);
 }
 
 .content-button {

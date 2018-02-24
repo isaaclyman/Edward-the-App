@@ -6,6 +6,7 @@
     </div>
     <hr v-if="isPremium">
     <div class="payment" v-if="isPremium">
+      <p v-if="!isOverdue && paymentDueDate">Your next payment is due on {{paymentDueDate}}.</p>
       <p class="error" v-if="isOverdue">
         Your account is overdue. You cannot access the app until you downgrade to a Limited account or make a successful payment.
       </p>
@@ -116,6 +117,9 @@ export default {
     },
     isPremium () {
       return this.user.isPremium
+    },
+    paymentDueDate () {
+      return this.user.paymentDue ? new Date(this.user.paymentDue).toLocaleDateString() : null
     },
     user () {
       const meta = this.$route.matched.find(record => record.meta.getCurrentUser).meta

@@ -63,6 +63,7 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
           email: user.email,
           isOverdue: isOverdue(user),
           isPremium: isPremiumUser(accountType),
+          paymentDue: user.payment_period_end,
           verified: user.verified
         })
       }, err => {

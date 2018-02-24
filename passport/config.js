@@ -12,9 +12,12 @@ module.exports = function config (passport, knex) {
 
   passport.deserializeUser((id, done) => {
     knex('users').where('id', id).first().then(user => {
-      done(null, user)
+      if (!user) {
+        return done(null, false)
+      }
+      return done(null, user)
     }, err => {
-      done(err, false)
+      return done(err, false)
     })
   })
 

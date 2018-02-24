@@ -61,7 +61,8 @@
               </span>
             </div>
             <div class="content-editable" v-show="isEditing(index)">
-              <quill-editor :content="section.content" @update:content="updateContent(section, $event)"></quill-editor>
+              <quill-editor :content="section.content" @update:content="updateContent(section, $event)"
+                @shortcut:done="endEditSection(index)"></quill-editor>
             </div>
           </div>
         </div>

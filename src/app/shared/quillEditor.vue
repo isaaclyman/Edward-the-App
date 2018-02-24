@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <div class="editor" ref="container">
-      <div ref="editor"></div>
+      <div ref="editor" @keyup.ctrl.enter="emitDone"></div>
     </div>
     <div v-if="showFullScreen">
       <quill-full-screen 
@@ -37,6 +37,9 @@ export default {
   methods: {
     emitContent (content) {
       this.$emit('update:content', content)
+    },
+    emitDone () {
+      this.$emit('shortcut:done')
     },
     emitSelection (selection) {
       this.$emit('update:selection', selection)

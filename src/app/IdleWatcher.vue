@@ -1,9 +1,9 @@
 <template>
   <div class="page-wrap" :class="{ 'fade': fadeOn }" v-if="!needsReload"
-    @click="resetIdleTime()"
-    @mousemove="resetIdleTime()"
-    @scroll="resetIdleTime()"
-    @keypress="resetIdleTime()">
+    @click.passive="resetIdleTime()"
+    @mousemove.passive="resetIdleTime()"
+    @scroll.passive="resetIdleTime()"
+    @keypress.passive="resetIdleTime()">
     <slot></slot>
   </div>
   <div class="page-wrap" v-else>

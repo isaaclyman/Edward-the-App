@@ -47,9 +47,9 @@ const api = {
       axios.post(route('send-verify-link')).then(response => response.data)
     )
   },
-  signUp ({ about, email, password, captchaResponse, integration }) {
+  signUp ({ email, password, captchaResponse, integration }) {
     return (
-      axios.post(route('signup'), { about, email, password, captchaResponse, integration })
+      axios.post(route('signup'), { email, password, captchaResponse, integration })
         .then(response => response.data)
     )
   },

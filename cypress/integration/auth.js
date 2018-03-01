@@ -82,7 +82,6 @@ describe('the auth page', () => {
     function signUp() {
       cy.get('@username').type(user.email)
       cy.get('@password').type(user.password)
-      cy.get('@about').type('TESTING')
       cy.get('@signUp').click()
     }
 
@@ -91,14 +90,12 @@ describe('the auth page', () => {
       cy.get('button').contains('Sign up').click()
       cy.get('div.username input').as('username')
       cy.get('div.password input').as('password')
-      cy.get('div.about textarea').as('about')
       cy.get('button').contains('Create').as('signUp')
     })
 
     it('has a signup form', () => {
       cy.get('@username').should('be.visible')
       cy.get('@password').should('be.visible')
-      cy.get('@about').should('be.visible')
       cy.get('div.captcha iframe').should('be.visible')
       cy.get('@signUp').should('be.visible')
     })

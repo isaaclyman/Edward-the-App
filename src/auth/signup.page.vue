@@ -21,13 +21,6 @@
       <button class="field-info" :class="{ 'invalid': warnPassword }" v-html="infoSvg" ref="passwordInfo"
               :title="passwordInfo"></button>
     </div>
-    <div class="signup-section about">
-      <div class="signup-field">
-        <label class="signup-label" for="signup-about">Tell us something about yourself, if you'd like:</label>
-        <textarea tabindex="3" class="signup-textarea" id="signup-about" type="text" v-model="about"></textarea>
-      </div>
-      <button class="field-info" v-html="infoSvg" ref="aboutInfo" :title="aboutInfo"></button>
-    </div>
     <div class="captcha">
       <Captcha :tabindex="4" @change="setCaptchaResponse" @expire="resetCaptchaResponse" ref="captcha"></Captcha>
     </div>
@@ -92,8 +85,6 @@ export default {
   },
   data () {
     return {
-      about: '',
-      aboutInfo: `This field is optional.`,
       captchaResponse: '',
       email: '',
       emailInfo: `We won't email you unless it's important.`,
@@ -131,7 +122,6 @@ export default {
       this.loading = true
 
       authApi.signUp({
-        about: this.about,
         captchaResponse: this.captchaResponse,
         email: this.email,
         password: this.password,
@@ -147,7 +137,6 @@ export default {
     }
   },
   mounted () {
-    this.setInfoTooltip(this.$refs.aboutInfo)
     this.setInfoTooltip(this.$refs.emailInfo)
     this.setInfoTooltip(this.$refs.passwordInfo)
   }

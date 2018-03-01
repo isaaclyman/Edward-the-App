@@ -14,7 +14,7 @@
         </li>
       </ul>
       <p>
-        Limited accounts are not intended for long-term use, but you can use yours for as long as you want and export as many novels as you want.
+        Limited accounts are not intended for long-term or serious use, but you can use yours for as long as you want and export as many novels as you want.
         <router-link to="/account">
           <strong>Or upgrade to a Premium account</strong>
         </router-link>

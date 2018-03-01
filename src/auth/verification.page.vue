@@ -6,7 +6,8 @@
     <div class="content" v-if="email">
       <h1>You're almost done.</h1>
       <p>
-        Before you can use Edward, you'll need to verify your email address. We've sent a link to {{email}}. Please allow up to 10 minutes for it to arrive, then click the link to activate your account.
+        Before you can use Edward, you'll need to verify your email address. We've sent a link to {{email}}.
+        <b>Please allow up to 10 minutes for it to arrive.</b>
       </p>
       <p>
         Didn't get the email? Click the button to resend it.

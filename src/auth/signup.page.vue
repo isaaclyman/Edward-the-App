@@ -47,7 +47,7 @@ import Octicons from 'octicons'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import tippy from 'tippy.js'
 
-const emailRegex = /^.+@.+$/
+const emailRegex = /^.+@.+\..+$/
 
 export default {
   components: {
@@ -73,7 +73,8 @@ export default {
     validEmail () {
       return (
         !!this.email &&
-        emailRegex.test(this.email)
+        emailRegex.test(this.email) &&
+        !this.email.includes(' ')
       )
     },
     validPassword () {

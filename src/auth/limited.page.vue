@@ -12,13 +12,16 @@
         <li>
           <strong>Your documents are not safe.</strong> If you reinstall your browser, clear your browsing data, or wipe your hard drive, all your work will be deleted. If you exceed the storage space your browser allows, it will erase all your data without warning.
         </li>
+        <li>
+          <strong>Your documents are not online.</strong> They are stored on this computer. You cannot access them from any other computer.
+        </li>
       </ul>
       <p>
         Limited accounts are not intended for long-term or serious use, but you can use yours for as long as you want and export as many novels as you want.
         <router-link to="/account">
           <strong>Or upgrade to a Premium account</strong>
         </router-link>
-        to get instant, permanent storage on our servers. It's only $2.46 per month.
+        to get <strong>private, safe, permanent online storage</strong> for all your documents. It's only $2.46 per month.
       </p>
     </div>
     <div class="fill"></div>

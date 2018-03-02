@@ -24,15 +24,6 @@ a {
   transition: background-color 250ms, border-color 250ms, color 250ms;
 }
 
-a.small {
-  background-color: transparent;
-  border: 1px solid transparent;
-  border-radius: 2px;
-  font-weight: bold;
-  margin: 2px 4px;
-  padding: 6px;
-}
-
 a:hover {
   background-color: #ffeb3b;
   border-color: #ffeb3b;
@@ -175,7 +166,17 @@ ul li, ol li {
   margin-right: 12px;
 }
 
+.small {
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  font-weight: bold;
+  margin: 2px 4px;
+  padding: 6px;
+}
+
 .footer {
+  align-items: center;
   display: flex;
   flex-direction: row;
   font-size: 14px;

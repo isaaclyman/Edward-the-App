@@ -80,6 +80,7 @@ export default {
   display: block;
   flex: 1;
   max-width: 1050px;
+  overflow: auto;
   padding: 15px;
 }
 

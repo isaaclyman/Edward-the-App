@@ -1,20 +1,21 @@
 const writingTools = require('../models/writingTool')
 
 exports.up = function(knex, Promise) {
-  return toolsContentTable(knex)
+  return toolContentTable(knex)
 }
 
 exports.down = function(knex, Promise) {
   return knex.schema.dropTableIfExists('tool_content')
 }
 
-function toolsContentTable (knex) {
+function toolContentTable (knex) {
   return knex.schema.createTable('tool_content', t => {
     t.increments('id').primary()
     t.uuid('guid').notNullable()    
     t.enu('tool_name', Object.keys(writingTools)).notNullable()
     t.boolean('archived').notNullable()
     t.json('content')
+    t.date('date')
     userIdCol(t)
     docIdCol(t)
     t.timestamps()

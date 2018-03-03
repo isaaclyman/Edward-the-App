@@ -33,6 +33,9 @@ module.exports = function (app, passport, db) {
   require('./topic').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./plan').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./section').registerApis(app, passport, db, isPremiumUserMiddleware)
+  require('./tools').registerApis(app, passport, db, isPremiumUserMiddleware)
+
+  // Serve webhook APIs
   require('./payments.events').registerApis(app, db)
 
   // Serve admin-facing APIs

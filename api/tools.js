@@ -106,7 +106,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
 
   // POST { documentGuid, toolName, guids: uuid[] }
   // (get a tool's contents that match a list of guids)
-  app.get(route('tool-content/by-guids'), isPremiumUser, (req, res, next) => {
+  app.post(route('tool-content/by-guids'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
     const documentGuid = req.body.documentGuid
     const toolName = req.body.toolName

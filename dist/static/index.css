@@ -15,6 +15,7 @@ html, body {
 a, button, div, input, optgroup, select, span, textarea,
 h1, h2, h3, h4, h5, h6, p, li {
   font-family: 'Asap', sans-serif;
+  font-size: 16px;
 }
 
 
@@ -22,15 +23,6 @@ h1, h2, h3, h4, h5, h6, p, li {
 a {
   color: #444;
   transition: background-color 250ms, border-color 250ms, color 250ms;
-}
-
-a.small {
-  background-color: transparent;
-  border: 1px solid transparent;
-  border-radius: 2px;
-  font-weight: bold;
-  margin: 2px 4px;
-  padding: 6px;
 }
 
 a:hover {
@@ -175,7 +167,21 @@ ul li, ol li {
   margin-right: 12px;
 }
 
+.small {
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  font-weight: bold;
+  margin: 2px 4px;
+  padding: 6px;
+}
+
+.small .icon {
+  font-size: 18px;
+}
+
 .footer {
+  align-items: center;
   display: flex;
   flex-direction: row;
   font-size: 14px;

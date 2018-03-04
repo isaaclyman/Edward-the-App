@@ -57,7 +57,7 @@ export default {
   computed: {
     canSignUp () {
       return (
-        !!this.email.trim() &&
+        this.validEmail &&
         this.validPassword
       )
     },

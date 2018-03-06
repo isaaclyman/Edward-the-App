@@ -335,13 +335,13 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
 
     let guid
     db.knex('users').where('email', email).first().then(user => {
-      if (user.account_type === accountTypes.DEMO.name) {
-        throw new Error('Cannot perform this action with a Demo account.')
-      }
-
       if (!user) {
         res.status(500).send(`A user with the email address ${email} was not found.`)
         throw new Error()
+      }
+
+      if (user.account_type === accountTypes.DEMO.name) {
+        throw new Error('Cannot perform this action with a Demo account.')
       }
 
       guid = uuid()

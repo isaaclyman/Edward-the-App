@@ -40,7 +40,12 @@ const getToolContentList = function (db, userId, docGuid) {
   return db.knex('tool_content').where({
     document_id: docId(),
     user_id: userId
-  }).select('guid', 'tool_name', 'archived', 'created_at')
+  }).select({
+    guid: 'guid',
+    name: 'tool_name',
+    archived: 'archived',
+    createdDate: 'created_at'
+  })
 }
 
 const getToolContent = function (db, userId, docGuid, toolName, toolGuids) {
@@ -50,7 +55,13 @@ const getToolContent = function (db, userId, docGuid, toolName, toolGuids) {
     tool_name: toolName,
     document_id: docId(),
     user_id: userId
-  }).whereIn('guid', toolGuids).select()
+  }).whereIn('guid', toolGuids).select({
+    guid: 'guid',
+    name: 'tool_name',
+    archived: 'archived',
+    content: 'content',
+    createdDate: 'created_at'
+  })
 }
 
 const registerApis = function (app, passport, db, isPremiumUser) {

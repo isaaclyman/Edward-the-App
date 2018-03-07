@@ -66,7 +66,7 @@ const getToolContent = function (db, userId, docGuid, toolName, toolGuids) {
     order: 'order',
     title: 'title',
     toolName: 'tool_name'
-  })
+  }).orderBy('order', 'asc')
 }
 
 const registerApis = function (app, passport, db, isPremiumUser) {

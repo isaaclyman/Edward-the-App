@@ -129,3 +129,56 @@ test('add tool content', async t => {
     })
   )
 })
+
+test('delete content', async t => {
+  await addContents()
+  await (
+    app.post(route(`tool-content/delete`))
+    .send({
+      documentGuid: doc.guid,
+      guid: tools[0].guid
+    })
+    .expect(200)
+  )
+
+  let item
+  await (
+    app.get(route(`tool-content/list/${doc.guid}`))
+    .expect(200)
+    .expect(response => {
+      const list = response.body
+      t.truthy(Array.isArray(list))
+      t.is(list.length, 1)
+
+      item = list[0]
+      t.true(item.toolName === writingTool.CHARACTER_WORKSHOP.name)
+      t.true(item.date !== null)
+    })
+  )
+
+  return wrapTest(t,
+    app.post(route(`tool-content/by-guids`))
+    .send({
+      documentGuid: doc.guid,
+      toolName: writingTool.CHARACTER_WORKSHOP.name,
+      guids: guids
+    })
+    .expect(200)
+    .expect(response => {
+      const list = response.body
+      t.truthy(Array.isArray(list))
+      t.is(list.length, 1)
+      const comparableList = list.map(item => {
+        item.date = new Date(item.createdDate).toDateString()
+        item.createdDate = undefined
+        return item
+      })
+      const comparableTools = tools.map(item => {
+        item.date = new Date(item.date).toDateString()
+        item.createdDate = undefined
+        return item
+      })
+      t.deepEqual(comparableList[0], comparableTools[1])
+    })
+  )
+})

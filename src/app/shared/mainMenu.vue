@@ -9,6 +9,10 @@
       </router-link>
       <hr class="vert between" :key="route.name">
     </template>
+    <button class="main-menu--button" :title="toolsTooltip" v-tooltip>
+      <div v-html="getIconSvg('tools')"></div>
+      <div>Workshop</div>
+    </button>
     <div class="spacer"></div>
     <div class="status-wrap" v-if="!isDemo">
       <div class="status">
@@ -93,7 +97,8 @@ export default {
         width: 15
       }),
       saveErrorText: `Your work may not be saved. Please check your Internet connection.`,
-      savingDebouncer: setTimeout(() => {})
+      savingDebouncer: setTimeout(() => {}),
+      toolsTooltip: 'Workshop your novel with free or prompted writing exercises.'
     }
   },
   directives: {

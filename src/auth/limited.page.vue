@@ -10,7 +10,7 @@
           <strong>Your documents are not private.</strong> Anyone with access to this computer can see and edit them.
         </li>
         <li>
-          <strong>Your documents are not safe.</strong> If you reinstall your browser, clear your browsing data, or wipe your hard drive, all your work will be deleted. If you exceed the storage space your browser allows, it will erase all your data without warning.
+          <strong>Your documents are not safe.</strong> If you reinstall your browser, clear your browsing data, or wipe your hard drive, all your work will be deleted. If you use more space than your browser allows, it will erase all your data without warning.
         </li>
         <li>
           <strong>Your documents are not online.</strong> They are stored on this computer. You cannot access them from any other computer.

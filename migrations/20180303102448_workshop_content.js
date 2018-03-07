@@ -1,20 +1,20 @@
-const writingTools = require('../models/writingTool')
+const writingWorkshops = require('../models/writingWorkshop')
 
 exports.up = function(knex, Promise) {
-  return toolContentTable(knex)
+  return workshopContentTable(knex)
 }
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTableIfExists('tool_content')
+  return knex.schema.dropTableIfExists('workshop_content')
 }
 
-function toolContentTable (knex) {
-  return knex.schema.createTable('tool_content', t => {
+function workshopContentTable (knex) {
+  return knex.schema.createTable('workshop_content', t => {
     t.increments('id').primary()
     t.uuid('guid').notNullable()
     t.integer('order')
     t.string('title')
-    t.enu('tool_name', Object.keys(writingTools)).notNullable()
+    t.enu('workshop_name', Object.keys(writingWorkshops)).notNullable()
     t.boolean('archived').notNullable()
     t.json('content')
     t.date('date')

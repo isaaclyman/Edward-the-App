@@ -33,14 +33,18 @@ test.beforeEach('set up a premium user and document', async t => {
 
 const tools = [{
   guid: guids[0],
-  name: writingTool.CHARACTER_WORKSHOP.name,
+  toolName: writingTool.CHARACTER_WORKSHOP.name,
   content: { ops: [{ insert: '1' }] },
+  title: 'Tool 1',
+  order: 0,
   archived: false,
   date: new Date()
 }, {
   guid: guids[1],
-  name: writingTool.CHARACTER_WORKSHOP.name,
+  toolName: writingTool.CHARACTER_WORKSHOP.name,
   content: { ops: [{ insert: '2' }] },
+  title: 'Tool 2',
+  order: 1,
   archived: false,
   date: new Date()
 }]
@@ -48,13 +52,7 @@ const tools = [{
 async function addContents() {
   await (
     app.post(route(`tool-content/update`))
-    .send({ documentGuid: doc.guid, tool: tools[0] })
-    .expect(200)
-  )
-
-  await (
-    app.post(route(`tool-content/update`))
-    .send({ documentGuid: doc.guid, tool: tools[1] })
+    .send({ documentGuid: doc.guid, tools: tools })
     .expect(200)
   )
 }
@@ -98,7 +96,7 @@ test('add tool content', async t => {
       const list = response.body
       t.truthy(Array.isArray(list))
       t.is(list.length, 2)
-      t.true(list.every(item => item.name === writingTool.CHARACTER_WORKSHOP.name))
+      t.true(list.every(item => item.toolName === writingTool.CHARACTER_WORKSHOP.name))
       t.true(list.every(item => item.date !== null))
       contentList = list
     })

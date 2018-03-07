@@ -11,7 +11,9 @@ exports.down = function(knex, Promise) {
 function toolContentTable (knex) {
   return knex.schema.createTable('tool_content', t => {
     t.increments('id').primary()
-    t.uuid('guid').notNullable()    
+    t.uuid('guid').notNullable()
+    t.integer('order')
+    t.string('title')
     t.enu('tool_name', Object.keys(writingTools)).notNullable()
     t.boolean('archived').notNullable()
     t.json('content')

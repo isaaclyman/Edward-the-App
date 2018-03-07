@@ -17,7 +17,9 @@ const updateToolContent = function (db, userId, docGuid, tool) {
       content: tool.content,
       date: tool.date,
       guid: tool.guid,
-      tool_name: tool.name,
+      order: tool.order,
+      title: tool.title,
+      tool_name: tool.toolName,
       user_id: userId,
       document_id: docId()
     }),
@@ -41,10 +43,10 @@ const getToolContentList = function (db, userId, docGuid) {
     document_id: docId(),
     user_id: userId
   }).select({
-    guid: 'guid',
-    name: 'tool_name',
     archived: 'archived',
-    createdDate: 'created_at'
+    createdDate: 'created_at',
+    guid: 'guid',
+    toolName: 'tool_name'
   })
 }
 
@@ -56,27 +58,30 @@ const getToolContent = function (db, userId, docGuid, toolName, toolGuids) {
     document_id: docId(),
     user_id: userId
   }).whereIn('guid', toolGuids).select({
-    guid: 'guid',
-    name: 'tool_name',
     archived: 'archived',
     content: 'content',
-    createdDate: 'created_at'
+    createdDate: 'created_at',
+    date: 'date',
+    guid: 'guid',
+    order: 'order',
+    title: 'title',
+    toolName: 'tool_name'
   })
 }
 
 const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/${route}`
 
-  // POST { documentGuid, toolGuid }
+  // POST { documentGuid, guid }
   app.post(route('tool-content/delete'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
     const docGuid = req.body.documentGuid
-    const toolGuid = req.body.toolGuid
+    const guid = req.body.guid
 
     const docId = () => getDocId(db.knex, userId, docGuid)
 
     return db.knex('tool_content').where({
-      guid: toolGuid,
+      guid: guid,
       document_id: docId(),
       user_id: userId
     }).del().then(() => {
@@ -87,15 +92,15 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     })
   })
 
-  // POST { documentGuid, tool: {
-  //   guid, name, content, archived, date
-  // } }
+  // POST { documentGuid, tools: [{
+  //   guid, title, toolName, content, archived, date
+  // }] }
   app.post(route('tool-content/update'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
-    const { documentGuid, tool } = req.body
+    const { documentGuid, tools } = req.body
 
-    updateToolContent(db, userId, documentGuid, tool).then(() => {
-      res.status(200).send(`Tool content for "${tool.name}" updated.`)
+    Promise.all(tools.map(tool => updateToolContent(db, userId, documentGuid, tool))).then(() => {
+      res.status(200).send(`Tool contents updated.`)
     }, err => {
       console.error(err)
       res.status(500).send(err)

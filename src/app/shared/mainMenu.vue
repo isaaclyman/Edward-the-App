@@ -9,7 +9,7 @@
       </router-link>
       <hr class="vert between" :key="route.name">
     </template>
-    <button class="main-menu--button" :title="toolsTooltip" v-tooltip>
+    <button class="main-menu--button" :title="toolsTooltip" v-tooltip @click="showWorkshops()">
       <div v-html="getIconSvg('tools')"></div>
       <div>Workshop</div>
     </button>
@@ -39,12 +39,39 @@
         </div>
       </div>
     </a>
+    <!-- Workshops modal -->
+    <div style="display: none">
+      <div class="workshops" ref="workshopsModal">
+        <p v-if="!isPremium" class="warn">
+          Workshops are only available for Premium subscribers.
+        </p>
+        <div v-for="workshop in workshops" :key="workshop.name">
+          <div class="workshop">
+            <div class="workshop-details">
+              <div class="workshop-name">
+                {{workshop.displayName}}
+              </div>
+              <div class="workshop-description">
+                {{workshop.description}}
+              </div>
+            </div>
+            <div class="workshop-button">
+              <button class="button-green">
+                Begin
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import Octicons from 'octicons'
+import swal from 'sweetalert'
 import tooltip from './tooltip.directive'
+import writingWorkshops from '../../../models/writingWorkshop'
 
 export default {
   computed: {
@@ -56,6 +83,9 @@ export default {
     },
     isDemo () {
       return this.accountType.name === 'DEMO'
+    },
+    isPremium () {
+      return this.$store.state.user.user.isPremium
     },
     saveError () {
       return this.$store.state.status.error
@@ -98,7 +128,8 @@ export default {
       }),
       saveErrorText: `Your work may not be saved. Please check your Internet connection.`,
       savingDebouncer: setTimeout(() => {}),
-      toolsTooltip: 'Workshop your novel with free or prompted writing exercises.'
+      toolsTooltip: 'Workshop your novel with free or prompted writing exercises.',
+      workshops: Object.keys(writingWorkshops).map(key => writingWorkshops[key])
     }
   },
   directives: {
@@ -110,6 +141,12 @@ export default {
         class: 'main-menu--icon',
         height: 25,
         width: 25
+      })
+    },
+    showWorkshops () {
+      swal({
+        content: this.$refs.workshopsModal,
+        title: 'Workshops'
       })
     }
   },
@@ -223,6 +260,42 @@ hr.between:last-of-type {
   color: #005cb2;
   font-size: 14px;
   margin-right: 20px;
+}
+
+.warn {
+  color: red;
+}
+
+.workshop {
+  align-items: center;
+  border: 1px solid #8bc34a;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-bottom: 12px;
+  padding: 8px;
+}
+
+.workshop-details {
+  align-items: flex-start;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.workshop-name {
+  font-size: 28px;
+  text-align: left;
+}
+
+.workshop-description {
+  font-size: 14px;
+  text-align: left;
+}
+
+.workshop-button {
+  margin-left: 12px;
+  padding: 8px;
 }
 </style>
 

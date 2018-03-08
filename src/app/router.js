@@ -8,6 +8,7 @@ import Exporter from './exporter/exporter.page.vue'
 import Outliner from './outliner/outliner.page.vue'
 import Planner from './planner/planner.page.vue'
 import Settings from './settings/settings.page.vue'
+import WFreeWrite from './workshops/freeWrite.page.vue'
 
 Vue.use(Router)
 
@@ -51,6 +52,11 @@ export default new Router({
       path: '/settings',
       name: 'Settings',
       component: Settings
+    },
+    {
+      path: '/workshop/free-write',
+      name: 'Free Write',
+      component: WFreeWrite
     }
   ]
 })

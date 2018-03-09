@@ -4,8 +4,8 @@
       <h1>Free Write</h1>
       <p class="intro">
         Write whatever comes to mind. Don't worry about style, grammar, or making sense.
-        If you'd like, you can set a time or word limit:
       </p>
+      <p class="intro" v-if="!begun">If you'd like, you can set a time or word limit:</p>
       <timer @begin="begin()" :fullText="fullText"></timer>
       <div v-if="begun" class="editor">
         <quill-editor :content="content" @update:content="updateContent($event)"></quill-editor>

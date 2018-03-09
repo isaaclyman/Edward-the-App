@@ -45,7 +45,7 @@
         <p v-if="!isPremium" class="warn">
           Workshops are only available for Premium subscribers.
         </p>
-        <div v-for="workshop in workshops" :key="workshop.name">
+        <div v-for="workshop in workshops" :key="workshop.name" @click="startWorkshop(workshop)">
           <div class="workshop">
             <div class="workshop-details">
               <div class="workshop-name">
@@ -146,8 +146,15 @@ export default {
     showWorkshops () {
       swal({
         content: this.$refs.workshopsModal,
-        title: 'Workshops'
+        title: 'Workshops',
+        buttons: {
+          cancel: true
+        }
       })
+    },
+    startWorkshop (workshop) {
+      swal.close()
+      this.$router.push(workshop.route)
     }
   },
   watch: {
@@ -269,11 +276,14 @@ hr.between:last-of-type {
 .workshop {
   align-items: center;
   border: 1px solid #8bc34a;
+  color: #000;
+  cursor: pointer;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   margin-bottom: 12px;
   padding: 8px;
+  text-decoration: none;
 }
 
 .workshop-details {

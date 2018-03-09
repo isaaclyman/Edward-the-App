@@ -53,6 +53,18 @@ class Api {
   // No get method; sections are returned with their associated plans
   updateSection (data) { return this.simplePost(route('section/update'), data) }
 
+  // WORKSHOPS
+  deleteWorkshopContent ({ documentGuid, guid }) {
+    return this.simplePost(route('workshop-content/delete'), { documentGuid, guid })
+  }
+  getWorkshopContentList (documentGuid) { return this.simpleGet(route(`workshop-content/list/${documentGuid}`)) }
+  getWorkshopContentByGuids ({ documentGuid, workshopName, guids }) {
+    return this.simplePost(route('workshop-content/by-guids'), { documentGuid, workshopName, guids })
+  }
+  updateWorkshopContents ({ documentGuid, workshops }) {
+    return this.simplePost(route('workshop-content/update'), { documentGuid, workshops })
+  }
+
   // FULL EXPORT/IMPORT
   fullExport () { return this.simpleGet(route('backup/export')) }
   fullImport (data) { return this.simplePost(route('backup/import'), data) }

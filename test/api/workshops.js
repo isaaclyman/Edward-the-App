@@ -130,6 +130,54 @@ test('add workshop content', async t => {
   )
 })
 
+test('update content', async t => {
+  await addContents()
+  
+  // Another time, to update the same ones
+  await addContents()
+
+  let contentList
+  await (
+    app.get(route(`workshop-content/list/${doc.guid}`))
+    .expect(200)
+    .expect(response => {
+      const list = response.body
+      t.truthy(Array.isArray(list))
+      t.is(list.length, 2)
+      t.true(list.every(item => item.workshopName === writingWorkshops.CHARACTER_WORKSHOP.name))
+      t.true(list.every(item => item.date !== null))
+      contentList = list
+    })
+  )
+
+  return wrapTest(t,
+    app.post(route(`workshop-content/by-guids`))
+    .send({
+      documentGuid: doc.guid,
+      workshopName: writingWorkshops.CHARACTER_WORKSHOP.name,
+      guids: guids
+    })
+    .expect(200)
+    .expect(response => {
+      const list = response.body
+      t.truthy(Array.isArray(list))
+      t.is(list.length, 2)
+      const comparableList = list.map(item => {
+        item.date = new Date(item.createdDate).toDateString()
+        item.createdDate = undefined
+        return item
+      })
+      const comparableWorkshops = workshops.map(item => {
+        item.date = new Date(item.date).toDateString()
+        item.createdDate = undefined
+        return item
+      })
+      t.deepEqual(comparableList[0], comparableWorkshops[0])
+      t.deepEqual(comparableList[1], comparableWorkshops[1])
+    })
+  )
+})
+
 test('delete content', async t => {
   await addContents()
   await (

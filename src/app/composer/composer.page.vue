@@ -43,15 +43,22 @@
       <div class="sidebar-wrap">
         <div class="sidebar-options">
           <div class="plan-switch">
-            <button class="switch-label" :class="{ 'active': !showPlans }" @click="switchOutline()">
-              <div class="switch-label-text">Chapter Outline</div>
+            <button class="switch-label" :class="{ 'active': sidebar === 'outline' }" @click="switchOutline()">
               <div v-html="outlineSvg"></div>
+              <div class="switch-label-text">Outline</div>
             </button>
             <hr class="vert">
-            <button class="switch-label" :class="{ 'active': showPlans }" @click="switchPlans()">
+            <button class="switch-label" :class="{ 'active': sidebar === 'plan' }" @click="switchPlans()">
               <div v-html="planSvg"></div>
-              <div class="switch-label-text">Document Plans</div>
+              <div class="switch-label-text">Plans</div>
             </button>
+            <template v-if="isPremium">
+              <hr class="vert">
+              <button class="switch-label" :class="{ 'active': sidebar === 'workshop' }" @click="switchWorkshops()">
+                <div v-html="workshopSvg"></div>
+                <div class="switch-label-text">Workshops</div>
+              </button>
+            </template>
           </div>
           <div class="archived-filter">
             <input id="showArchivedTopics" type="checkbox" v-model="filters.archived">
@@ -59,7 +66,7 @@
           </div>
         </div>
         <!-- Document Plans -->
-        <div class="sidebar-content" v-show="showPlans">
+        <div class="sidebar-content" v-show="sidebar === 'plan'">
           <template v-if="hasPlans">
             <plans-list :filter-plans="showPlan" :filter-sections="showSection"></plans-list>
           </template>
@@ -71,7 +78,7 @@
           </template>
         </div>
         <!-- Chapter Outlines -->
-        <div class="sidebar-content" v-show="!showPlans">
+        <div class="sidebar-content" v-show="sidebar === 'outline'">
           <template v-if="hasTopics">
             <div class="topic-list-wrap">
               <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
@@ -81,6 +88,18 @@
             <div>No outline yet.</div>
             <div>
               <router-link to="/outline">Start outlining</router-link>
+            </div>
+          </template>
+        </div>
+        <!-- Workshops -->
+        <div class="sidebar-content" v-show="sidebar === 'workshop'">
+          <template v-if="hasWorkshops">
+            <workshop-list :filter-workshops="showWorkshop"></workshop-list>
+          </template>
+          <template v-else>
+            <div>No workshops completed yet.</div>
+            <div>
+              <router-link to="/workshop/free-write">Do a free write</router-link>
             </div>
           </template>
         </div>
@@ -110,6 +129,7 @@ import { UPDATE_SELECTION } from './composer.store'
 import { ValidateTitle } from '../shared/validate'
 import VueSwitch from 'vue-switches'
 import WordDefine from './wordDefine.vue'
+import WorkshopList from '../shared/workshopList.vue'
 
 const planSwitch = new Cache('COMPOSER_PLAN_SWITCH')
 
@@ -121,7 +141,8 @@ export default {
     TextMap,
     TopicList,
     VueSwitch,
-    WordDefine
+    WordDefine,
+    WorkshopList
   },
   computed: {
     activeChapter () {
@@ -139,6 +160,9 @@ export default {
     },
     allTopics () {
       return this.$store.state.chapters.topics
+    },
+    allWorkshopsList () {
+      return this.$store.state.workshop.workshopList
     },
     chapterPageCount () {
       return this.getPageCount(this.textContent)
@@ -181,6 +205,12 @@ export default {
     hasTopics () {
       return this.allTopics && this.allTopics.length
     },
+    hasWorkshops () {
+      return this.allWorkshopsList && this.allWorkshopsList.length
+    },
+    isPremium () {
+      return this.$store.state.user.user.isPremium
+    },
     mark () {
       return this.selection.text
     },
@@ -215,11 +245,15 @@ export default {
         height: 25,
         width: 25
       }),
+      workshopSvg: Octicons.tools.toSVG({
+        height: 25,
+        width: 25
+      }),
       scrollTo: {
         paragraphIndex: -1,
         searchTermIndex: -1
       },
-      showPlans: false,
+      sidebar: 'outline',
       showStats: false
     }
   },
@@ -279,13 +313,20 @@ export default {
       const masterTopic = this.getMasterTopic(chapterTopic)
       return !masterTopic || !masterTopic.archived || this.filters.archived
     },
+    showWorkshop (workshop) {
+      return !workshop.archived || this.filters.archived
+    },
     switchOutline () {
-      this.showPlans = false
-      planSwitch.cacheSet(false)
+      this.sidebar = 'outline'
+      planSwitch.cacheSet('outline')
     },
     switchPlans () {
-      this.showPlans = true
-      planSwitch.cacheSet(true)
+      this.sidebar = 'plan'
+      planSwitch.cacheSet('plan')
+    },
+    switchWorkshops () {
+      this.sidebar = 'workshop'
+      planSwitch.cacheSet('workshop')
     },
     unhoverChapter () {
       this.showStats = false
@@ -303,7 +344,7 @@ export default {
   mounted () {
     this.editorContainerNode = this.$refs.editorContainer
     this.editorElement = this.$refs.textEditor
-    this.showPlans = planSwitch.cacheGet()
+    this.sidebar = planSwitch.cacheGet() || 'outline'
   }
 }
 </script>
@@ -406,6 +447,7 @@ export default {
   flex-direction: row;
   height: 35px;
   margin-bottom: 6px;
+  margin-top: 6px;
 }
 
 .switch-label {
@@ -415,7 +457,7 @@ export default {
   cursor: pointer;
   display: flex;
   fill: #888;
-  flex-direction: row;
+  flex-direction: column;
   font-size: 16px;
   margin: 0 4px;
   transition: color 100ms, fill 100ms;

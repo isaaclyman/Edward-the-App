@@ -47,7 +47,8 @@ const getWorkshopContentList = function (db, userId, docGuid) {
     archived: 'archived',
     date: 'date',
     guid: 'guid',
-    workshopName: 'workshop_name'
+    workshopName: 'workshop_name',
+    title: 'title'
   })
 }
 

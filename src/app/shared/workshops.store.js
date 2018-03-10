@@ -6,6 +6,7 @@ export const UPDATE_WORKSHOPS_CONTENT = 'UPDATE_WORKSHOPS_CONTENT'
 
 export const LOAD_WORKSHOPS = 'LOAD_WORKSHOPS'
 export const LOAD_WORKSHOP_LIST = 'LOAD_WORKSHOP_LIST'
+export const NUKE_WORKSHOPS = 'NUKE_WORKSHOPS'
 
 const store = {
   state: {
@@ -64,6 +65,10 @@ const store = {
       }
 
       state.workshopList = workshopList
+    },
+    [NUKE_WORKSHOPS] (state) {
+      state.workshops = null
+      state.workshopList = null
     }
   }
 }

@@ -2,7 +2,7 @@ import Cache, { resetCache } from './cache'
 import { storageApiPromise } from '../api/storageSwitch'
 import guid from './guid'
 import { LOAD_CONTENT, NUKE_CONTENT } from './chapters.store'
-import { LOAD_WORKSHOP_LIST } from './workshops.store'
+import { LOAD_WORKSHOP_LIST, NUKE_WORKSHOPS } from './workshops.store'
 
 export const ADD_DOCUMENT = 'ADD_DOCUMENT'
 export const CHANGE_DOCUMENT = 'CHANGE_DOCUMENT'
@@ -112,6 +112,7 @@ const store = {
       return new Promise(resolve => {
         commit(UPDATE_DOCUMENT_METADATA, { guid: null, name: null })
         commit(NUKE_CONTENT)
+        commit(NUKE_WORKSHOPS)
         resolve()
       })
     }

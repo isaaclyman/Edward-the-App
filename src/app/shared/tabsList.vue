@@ -7,8 +7,8 @@
             @mouseout="unhoverItem()">
       {{ item.title }}
     </button>
-    <button @click="showNewItem" class="button-tab add-button" v-show="!showAddItem" v-html="addSvg"></button>
-    <div class="button-tab add-tab" v-show="showAddItem">
+    <button v-if="canAdd" @click="showNewItem" class="button-tab add-button" v-show="!showAddItem" v-html="addSvg"></button>
+    <div class="button-tab add-tab" v-show="showAddItem" v-if="canAdd">
       <input class="tab-input" v-model="newItem" :placeholder="`New ${itemName}...`">
       <button class="button-green tab-internal-button" @click="addItem">
         <span class="u-center-all" v-html="saveSvg"></span> Save
@@ -94,6 +94,11 @@ export default {
     itemName: {
       required: true,
       type: String
+    },
+    canAdd: {
+      required: false,
+      default: true,
+      type: Boolean
     }
   },
   watch: {

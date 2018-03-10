@@ -52,7 +52,7 @@ import { backupToJsonFile, jsonFileToBackup } from './json'
 import { chaptersToPdf } from './pdf'
 import { LOAD_CONTENT } from '../shared/chapters.store'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
-import { storageApiPromise } from '../api/storageSwitch'
+// import { storageApiPromise } from '../api/storageSwitch'
 import swal from 'sweetalert'
 
 export default {

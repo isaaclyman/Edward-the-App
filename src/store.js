@@ -9,6 +9,7 @@ import chapters from './app/shared/chapters.store.js'
 import document, { INIT_DOCUMENTS } from './app/shared/document.store.js'
 import status from './app/shared/status.store'
 import user from './app/shared/user.store'
+import workshop from './app/shared/workshops.store'
 
 const store = new Vuex.Store({
   modules: {
@@ -16,7 +17,8 @@ const store = new Vuex.Store({
     chapters,
     document,
     status,
-    user
+    user,
+    workshop
   },
   plugins: [chapterAutosaverPlugin]
 })

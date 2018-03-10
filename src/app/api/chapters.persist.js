@@ -155,6 +155,6 @@ function handleMutation (mutation, state, storage, debouncedUpdateChapter) {
   }
 
   if (mutations.updateWorkshops.includes(type)) {
-    storage.updateWorkshops(documentGuid, payload.workshops)
+    storage.updateWorkshops(documentGuid, payload.workshopUpdates.map(update => update.workshop))
   }
 }

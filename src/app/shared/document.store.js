@@ -36,11 +36,11 @@ const store = {
             storage.isPremium() ? storage.getWorkshopsList(guid) : Promise.resolve(false)
           ]
 
-          return Promise.all(promises).then(([chapters, plans, topics, workshopsList]) => {
+          return Promise.all(promises).then(([chapters, plans, topics, workshopList]) => {
             commit(LOAD_CONTENT, { plans, chapters, topics })
 
-            if (workshopsList) {
-              commit(LOAD_WORKSHOP_LIST, { workshopsList })
+            if (workshopList) {
+              commit(LOAD_WORKSHOP_LIST, { workshopList })
             }
 
             commit(UPDATE_DOCUMENT_METADATA, { guid, name })

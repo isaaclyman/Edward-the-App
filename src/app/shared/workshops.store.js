@@ -40,7 +40,7 @@ const store = {
 
       workshop.archived = false
     },
-    [UPDATE_WORKSHOPS_CONTENT] (state, [...workshopUpdates]) {
+    [UPDATE_WORKSHOPS_CONTENT] (state, { workshopUpdates: [...workshopUpdates] }) {
       for (const { workshop, newContent } of workshopUpdates) {
         if (!state.workshops.includes(workshop)) {
           throw new Error(`${UPDATE_WORKSHOPS_CONTENT}: Cannot update workshop "${workshop.title}": does not exist.`)

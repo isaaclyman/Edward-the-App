@@ -15,9 +15,12 @@
 </template>
 
 <script>
+import { ADD_WORKSHOP, UPDATE_WORKSHOPS_CONTENT } from '../shared/workshops.store'
 import { GetContentString } from '../shared/deltaParser'
+import guid from '../shared/guid'
 import QuillEditor from '../shared/quillEditor.vue'
 import Timer from '../shared/timer.vue'
+import writingWorkshops from '../../../models/writingWorkshop'
 
 export default {
   components: {
@@ -25,6 +28,9 @@ export default {
     Timer
   },
   computed: {
+    content () {
+      return this.workshop ? this.workshop.content : null
+    },
     fullText () {
       return GetContentString(this.content)
     }
@@ -32,15 +38,30 @@ export default {
   data () {
     return {
       begun: false,
-      content: null
+      workshop: null
     }
   },
   methods: {
     begin () {
       this.begun = true
+      this.workshop = {
+        archived: false,
+        guid: guid(),
+        title: `Free Write ${new Date().toLocaleDateString()}`,
+        order: 0,
+        workshopName: writingWorkshops.FREE_WRITE.name,
+        content: null,
+        date: new Date().toLocaleDateString()
+      }
+      this.$store.commit(ADD_WORKSHOP, { workshop: this.workshop })
     },
     updateContent (content) {
-      this.content = content
+      this.$store.commit(UPDATE_WORKSHOPS_CONTENT, {
+        workshopUpdates: [{
+          workshop: this.workshop,
+          newContent: content
+        }]
+      })
     }
   }
 }

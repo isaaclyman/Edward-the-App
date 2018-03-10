@@ -53,6 +53,12 @@ class ServerStorageApi {
     }
   }
 
+  // INFO
+
+  isPremium () {
+    return true
+  }
+
   // DOCUMENTS
 
   addDocument ({ guid, name }) {
@@ -109,6 +115,10 @@ class ServerStorageApi {
     return this.wrapStatus(api.deleteTopic({ documentGuid, topicGuid }))
   }
 
+  deleteWorkshop (documentGuid, workshopGuid) {
+    return this.wrapStatus(api.deleteWorkshopContent({ documentGuid, guid: workshopGuid }))
+  }
+
   // GET
 
   getAllChapters (documentGuid) {
@@ -121,6 +131,14 @@ class ServerStorageApi {
 
   getAllTopics (documentGuid) {
     return api.getTopics(documentGuid)
+  }
+
+  getWorkshopsList (documentGuid) {
+    return api.getWorkshopContentList(documentGuid)
+  }
+
+  getWorkshopsByGuids (documentGuid, workshopName, guids) {
+    return api.getWorkshopContentByGuids({ documentGuid, workshopName, guids })
   }
 
   // UPDATE
@@ -139,6 +157,10 @@ class ServerStorageApi {
 
   updateTopic (documentGuid, topicGuid, topic) {
     return this.wrapStatus(api.updateTopic({ documentGuid, topicGuid, topic }))
+  }
+
+  updateWorkshops (documentGuid, workshops) {
+    return this.wrapStatus(api.updateWorkshopContents({ documentGuid, workshops }))
   }
 
   saveAllContent (documentGuid, { chapters, plans, topics }) {

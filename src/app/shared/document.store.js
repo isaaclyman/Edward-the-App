@@ -2,6 +2,7 @@ import Cache, { resetCache } from './cache'
 import { storageApiPromise } from '../api/storageSwitch'
 import guid from './guid'
 import { LOAD_CONTENT, NUKE_CONTENT } from './chapters.store'
+import { LOAD_WORKSHOP_LIST } from './workshops.store'
 
 export const ADD_DOCUMENT = 'ADD_DOCUMENT'
 export const CHANGE_DOCUMENT = 'CHANGE_DOCUMENT'
@@ -28,12 +29,21 @@ const store = {
       return dispatch(UNLOAD_CURRENT_DOCUMENT).then(() => {
         return storageApiPromise.then(storage => {
           // Get the new document from storage
-          const promises = [storage.getAllChapters(guid), storage.getAllPlans(guid), storage.getAllTopics(guid)]
+          const promises = [
+            storage.getAllChapters(guid),
+            storage.getAllPlans(guid),
+            storage.getAllTopics(guid),
+            storage.isPremium() ? storage.getWorkshopsList(guid) : Promise.resolve(false)
+          ]
 
-          return Promise.all(promises).then(([chapters, plans, topics]) => {
+          return Promise.all(promises).then(([chapters, plans, topics, workshopsList]) => {
             commit(LOAD_CONTENT, { plans, chapters, topics })
-            commit(UPDATE_DOCUMENT_METADATA, { guid, name })
 
+            if (workshopsList) {
+              commit(LOAD_WORKSHOP_LIST, { workshopsList })
+            }
+
+            commit(UPDATE_DOCUMENT_METADATA, { guid, name })
             cache.cacheSet({ guid, name })
           }, err => {
             throw err

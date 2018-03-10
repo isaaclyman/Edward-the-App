@@ -44,7 +44,7 @@ const getWorkshopContentList = function (db, userId, docGuid) {
     user_id: userId
   }).select({
     archived: 'archived',
-    createdDate: 'created_at',
+    date: 'date',
     guid: 'guid',
     workshopName: 'workshop_name'
   })
@@ -107,7 +107,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     })
   })
 
-  // GET (list of all workshop contents)
+  // GET (list of all workshops)
   app.get(route('workshop-content/list/:documentGuid'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
     const documentGuid = req.params.documentGuid

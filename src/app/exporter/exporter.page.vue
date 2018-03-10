@@ -52,6 +52,7 @@ import { backupToJsonFile, jsonFileToBackup } from './json'
 import { chaptersToPdf } from './pdf'
 import { LOAD_CONTENT } from '../shared/chapters.store'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
+import { storageApiPromise } from '../api/storageSwitch'
 import swal from 'sweetalert'
 
 export default {
@@ -74,6 +75,9 @@ export default {
     documentTitle () {
       return this.$store.state.document.currentDocument.name
     },
+    isPremium () {
+      return this.$store.state.user.user.isPremium
+    },
     masterTopics () {
       return this.$store.state.chapters.topics
     }
@@ -90,6 +94,7 @@ export default {
       jsonFileToBackup(file).then(backup => {
         this.loading = false
         this.$store.commit(LOAD_CONTENT, backup)
+
         swal({
           icon: 'success',
           text: 'The document has been imported.',

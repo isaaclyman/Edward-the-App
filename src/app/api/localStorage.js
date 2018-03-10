@@ -30,6 +30,11 @@ class LocalStorageApi {
     this.documentsKey = documentGuid => `DOCUMENT_${documentGuid}`
   }
 
+  // INFO
+  isPremium () {
+    return false
+  }
+
   addDocument ({ guid, name }) {
     return this._getAllDocumentGuids().then(documentGuids => {
       if (!documentGuids.includes(guid)) {
@@ -103,6 +108,10 @@ class LocalStorageApi {
   deleteTopic (documentGuid, topicGuid) {
     const key = this.getTopicKey(documentGuid, topicGuid)
     return this.storage.removeItem(key)
+  }
+
+  deleteWorkshop (documentGuid, workshopGuid) {
+    throw new Error('Workshops are a Premium-only feature.')
   }
 
   _getAllChapters (documentGuid) {
@@ -219,6 +228,14 @@ class LocalStorageApi {
     return this.storage.getItem(this.topicOrderKey(documentGuid)).then(sortOrder => sortOrder || [])
   }
 
+  getWorkshopsList () {
+    throw new Error('Workshops are a Premium-only feature.')
+  }
+
+  getWorkshopsByGuids () {
+    throw new Error('Workshops are a Premium-only feature.')
+  }
+
   saveAllContent (documentGuid, { chapters, plans, topics }) {
     const updateTopicFns = topics.map(topic => () => this.updateTopic(documentGuid, topic.guid, topic))
     const updateTopicPromise = orderPromises(updateTopicFns)
@@ -314,6 +331,10 @@ class LocalStorageApi {
         }
       })
     ])
+  }
+
+  updateWorkshops (documentGuid, workshops) {
+    throw new Error('Workshops are a Premium-only feature.')
   }
 
   /*

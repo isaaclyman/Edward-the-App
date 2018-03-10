@@ -34,6 +34,11 @@ class DemoStorageApi {
     }
   }
 
+  // INFO
+  isPremium () {
+    return false
+  }
+
   addDocument ({ guid, name }) {
     return this._getAllDocumentGuids().then(documentGuids => {
       if (!documentGuids.includes(guid)) {
@@ -107,6 +112,10 @@ class DemoStorageApi {
   deleteTopic (documentGuid, topicGuid) {
     const key = this.getTopicKey(documentGuid, topicGuid)
     return this.storage.removeItem(key)
+  }
+
+  deleteWorkshop (documentGuid, workshopGuid) {
+    // Not implemented here. Premium-only feature.
   }
 
   _getAllChapters (documentGuid) {
@@ -223,6 +232,15 @@ class DemoStorageApi {
     return this.storage.getItem(this.topicOrderKey(documentGuid)).then(sortOrder => sortOrder || [])
   }
 
+  getWorkshopsList () {
+    // Not implemented here. Premium-only feature.
+    return []
+  }
+
+  getWorkshopsByGuids () {
+    // Not implemented here. Premium-only feature.
+  }
+
   saveAllContent (documentGuid, { chapters, plans, topics }) {
     return Promise.all([
       Promise.all(chapters.map(chapter => this.updateChapter(documentGuid, chapter.guid, chapter))),
@@ -313,6 +331,10 @@ class DemoStorageApi {
         }
       })
     ])
+  }
+
+  updateWorkshops (documentGuid, workshops) {
+    // Not implemented here. Premium-only feature.
   }
 
   /*

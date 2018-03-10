@@ -10,6 +10,9 @@ import { ADD_CHAPTER, ADD_PLAN, ADD_SECTION, ADD_TOPIC, ADD_TOPIC_TO_CHAPTER,
 
 import { ADD_DOCUMENT, REMOVE_OWNED_DOCUMENT, UPDATE_DOCUMENT_NAME } from '../shared/document.store'
 
+import { ADD_WORKSHOP, ARCHIVE_WORKSHOP, DELETE_WORKSHOP, RESTORE_WORKSHOP,
+  UPDATE_WORKSHOPS_CONTENT } from '../shared/workshops.store'
+
 import { getStorageApi } from './storageSwitch'
 
 const mutations = {
@@ -19,20 +22,22 @@ const mutations = {
   deletePlan: [DELETE_PLAN],
   deleteSection: [DELETE_SECTION],
   deleteTopic: [DELETE_TOPIC],
+  deleteWorkshop: [DELETE_WORKSHOP],
   rearrangeChapter: [REARRANGE_CHAPTERS],
   rearrangePlan: [REARRANGE_PLANS],
   rearrangeSection: [REARRANGE_SECTIONS],
   rearrangeTopic: [REARRANGE_TOPICS],
   updateChapter: [ADD_CHAPTER, ADD_TOPIC_TO_CHAPTER, ARCHIVE_CHAPTER,
-    RESTORE_CHAPTER,
-    UPDATE_CHAPTER, UPDATE_CHAPTER_CONTENT, UPDATE_TOPIC_CONTENT],
+    RESTORE_CHAPTER, UPDATE_CHAPTER, UPDATE_CHAPTER_CONTENT,
+    UPDATE_TOPIC_CONTENT],
   updateDocument: [UPDATE_DOCUMENT_NAME],
   updatePlan: [ADD_PLAN, ARCHIVE_PLAN, RESTORE_PLAN, UPDATE_PLAN],
   updateSection: [ADD_SECTION, ARCHIVE_SECTION, RESTORE_SECTION,
     UPDATE_SECTION, UPDATE_SECTION_CONTENT, UPDATE_SECTION_TAGS],
   updateTopic: [ADD_TOPIC, ARCHIVE_TOPIC,
-    RESTORE_TOPIC,
-    UPDATE_TOPIC]
+    RESTORE_TOPIC, UPDATE_TOPIC],
+  updateWorkshop: [ADD_WORKSHOP, ARCHIVE_WORKSHOP, RESTORE_WORKSHOP],
+  updateWorkshops: [UPDATE_WORKSHOPS_CONTENT]
 }
 
 let debouncedUpdateChapter = null
@@ -100,6 +105,11 @@ function handleMutation (mutation, state, storage, debouncedUpdateChapter) {
     return
   }
 
+  if (mutations.deleteWorkshop.includes(type)) {
+    storage.deleteWorkshop(documentGuid, payload.workshop.guid)
+    return
+  }
+
   if (mutations.rearrangeChapter.includes(type)) {
     storage.arrangeChapters(documentGuid, payload.chapters.map(chapter => chapter.guid))
     return
@@ -138,5 +148,13 @@ function handleMutation (mutation, state, storage, debouncedUpdateChapter) {
   if (mutations.updateTopic.includes(type)) {
     storage.updateTopic(documentGuid, payload.topic.guid, payload.topic)
     return
+  }
+
+  if (mutations.updateWorkshop.includes(type)) {
+    storage.updateWorkshops(documentGuid, [payload.workshop])
+  }
+
+  if (mutations.updateWorkshops.includes(type)) {
+    storage.updateWorkshops(documentGuid, payload.workshops)
   }
 }

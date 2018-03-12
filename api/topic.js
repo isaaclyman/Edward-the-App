@@ -70,7 +70,7 @@ const getTopics = (db, userId, documentGuid) => {
       return db.knex('master_topic_orders').where({
         'document_id': docId(),
         'user_id': userId
-      }).update(ts(db.knex, { order }, true))
+      }).update(ts(db.knex, { order: JSON.stringify(order) }, true))
     }
 
     return

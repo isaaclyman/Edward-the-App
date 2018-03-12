@@ -71,7 +71,7 @@ const getPlans = (db, userId, docGuid) => {
       return db.knex('plan_orders').where({
         'document_id': docId(),
         'user_id': userId
-      }).update(ts(db.knex, { order }, true))
+      }).update(ts(db.knex, { order: JSON.stringify(order) }, true))
     }
 
     return

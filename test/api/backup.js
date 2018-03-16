@@ -15,6 +15,7 @@ import { addChapter } from './_chapter.helper'
 import { addTopic } from './_topic.helper'
 import { addPlan } from './_plan.helper'
 import { addSection } from './_section.helper'
+import isEqualWith from 'lodash/isEqualWith'
 
 stubRecaptcha(test)
 
@@ -47,6 +48,8 @@ async function expectOneItemArray(t, supertest, callback) {
     })
   )
 }
+
+// FULL EXPORT/IMPORT
 
 test('do a full export with no content', async t => {
   await expectOneItemArray(t, app.get(route('backup/export')))
@@ -181,6 +184,8 @@ test('when the import breaks, it is reverted', async t => {
   console.error = console_err
 })
 
+// SINGLE DOCUMENT
+
 test('import a single empty document (overwrite)', async t => {
   const importable = {}
   Object.assign(importable, doc, {
@@ -259,4 +264,105 @@ test('import a single empty document (add)', async t => {
       t.is(docs[1].name, doc2.name)
     })
   )
+})
+
+test('import and export a document with content', async t => {
+  const importable = {}
+  const topicGuid = uuid()
+  Object.assign(importable, doc, {
+    chapters: [{
+      archived: false,
+      content: null,
+      guid: uuid(),
+      title: 'test chapter',
+      topics: {
+        [topicGuid]: {
+          guid: topicGuid,
+          content: null
+        }
+      }
+    }],
+    topics: [{
+      archived: false,
+      guid: topicGuid,
+      title: 'test topic'
+    }],
+    plans: [{
+      archived: false,
+      guid: uuid(),
+      title: 'test plan',
+      sections: [{
+        archived: false,
+        guid: uuid(),
+        content: null,
+        title: 'test section',
+        tags: []
+      }]
+    }]
+  })
+
+  await (
+    app.post(route('backup/import/document'))
+    .send(importable)
+    .expect(200)
+  )
+
+  await (
+    app.get(route(`backup/export/document/${doc.guid}`))
+    .expect(200)
+    .expect(({ body: document }) => {
+      t.truthy(document)
+      removeUnmatchedProperties(importable, document)
+      t.deepEqual(document, importable)
+    })
+  )
+})
+
+function removeUnmatchedProperties (model, mutable) {
+  for (const key in mutable) {
+    if (!model[key]) {
+      model[key] = undefined
+      mutable[key] = undefined
+    }
+
+    if (Array.isArray(model[key])) {
+      model[key].arrLen = model[key].length
+      mutable[key].arrLen = mutable[key].length
+    }
+
+    if (typeof model[key] === 'object') {
+      removeUnmatchedProperties(model[key], mutable[key])
+    }
+  }
+}
+
+test('when overwrite import fails, it is reverted', async t => {
+  const console_err = console.error
+  console.error = function () {}
+
+  const importable = {}
+  Object.assign(importable, doc, {
+    chapters: [{
+      guid: 'not a guid'
+    }],
+    topics: [],
+    plans: []
+  })
+
+  await (
+    app.post(route('backup/import/document'))
+    .send(importable)
+    .expect(500)
+    .expect(response => {
+      t.true(response.text.includes('REVERTED'))
+      t.false(response.text.includes('FAIL'))
+    })
+  )
+
+  await expectOneItemArray(t, app.get(route('documents')).expect(({ body: documents }) => {
+    t.is(documents[0].guid, doc.guid)
+    t.is(documents[0].name, doc.name)
+  }))
+
+  console.error = console_err
 })

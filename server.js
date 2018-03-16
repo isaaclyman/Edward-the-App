@@ -76,6 +76,15 @@ const serverReady = dbReady.then(() => {
   // REST APIs
   require('./api/_index')(app, passport, db)
 
+  // Log errors
+  app.use((err, req, res, next) => {
+    if (err) {
+      console.error(err)
+    }
+
+    next()
+  })
+
   // Listen
   const port = process.env.PORT || 3000
   app.listen(port, () => {

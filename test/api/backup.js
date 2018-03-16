@@ -180,3 +180,83 @@ test('when the import breaks, it is reverted', async t => {
 
   console.error = console_err
 })
+
+test('import a single empty document (overwrite)', async t => {
+  const importable = {}
+  Object.assign(importable, doc, {
+    chapters: [],
+    topics: [],
+    plans: []
+  })
+
+  await (
+    app.post(route('backup/import/document'))
+    .send(importable)
+    .expect(200)
+  )
+
+  await expectOneItemArray(t, app.get(route('documents')))
+})
+
+test('export a single empty document', async t => {
+  await (
+    app.get(route(`backup/export/document/${doc.guid}`))
+    .expect(200)
+    .expect(({ body: document }) => {
+      t.truthy(document)
+      t.is(document.guid, doc.guid)
+      t.is(document.name, doc.name)
+      t.deepEqual(document.chapters, [])
+      t.deepEqual(document.plans, [])
+      t.deepEqual(document.topics, [])
+    })
+  )
+})
+
+test('import and export a single document (overwrite)', async t => {
+  await (
+    app.post(route('backup/import/document'))
+    .send(doc)
+    .expect(200)
+  )
+
+  await (
+    app.get(route(`backup/export/document/${doc.guid}`))
+    .expect(200)
+    .expect(({ body: document }) => {
+      t.truthy(document)
+      t.is(document.guid, doc.guid)
+      t.is(document.name, doc.name)
+      t.deepEqual(document.chapters, [])
+      t.deepEqual(document.plans, [])
+      t.deepEqual(document.topics, [])
+    })
+  )
+})
+
+test('import a single empty document (add)', async t => {
+  const doc2 = {
+    guid: uuid(),
+    name: 'Doc 2',
+    chapters: [],
+    topics: [],
+    plans: []
+  }
+
+  await (
+    app.post(route('backup/import/document'))
+    .send(doc2)
+    .expect(200)
+  )
+
+  await (
+    app.get(route('documents'))
+    .expect(200)
+    .expect(({ body: docs }) => {
+      t.true(Array.isArray(docs))
+      t.is(docs.length, 2)
+      t.is(docs[1].guid, doc2.guid)
+      t.is(docs[1].name, doc2.name)
+    })
+  )
+})

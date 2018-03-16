@@ -86,7 +86,7 @@ const getDocuments = (db, userId) => {
   })
 }
 
-const saveAllContent = (db, userId, docGuid, chapters, topics, plans) => {
+const saveAllContent = (db, userId, docGuid, chapters = [], topics = [], plans = []) => {
   const updateTopicFns = topics.map(topic => () => updateTopic(db, userId, docGuid, topic))
   const updateTopicPromise = orderPromises(updateTopicFns)
   const updateChapterPromise = updateTopicPromise.then(() => {

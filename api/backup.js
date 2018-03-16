@@ -4,10 +4,10 @@ const { getTopics } = require('./topic')
 const { getPlans } = require('./plan')
 const find = require('lodash/find')
 
-const getDocExport = (db, userId, documentGuid) => {  
+const getDocExport = (db, userId, docGuid) => {  
   return Promise.all([
     getDocuments(db, userId).then(docs => {
-      return find(docs, doc => doc.guid === documentGuid)
+      return find(docs, doc => doc.guid === docGuid)
     }),
     getChapters(db, userId, docGuid),
     getTopics(db, userId, docGuid),
@@ -107,6 +107,8 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     let oldDoc
     getDocExport(db, userId, newDoc.guid).then(doc => {
       oldDoc = doc
+    }, () => {
+      // No old document was found, probably
     }).then(() =>
       deleteDocument(db, userId, newDoc.guid)
     ).then(() =>
@@ -115,6 +117,12 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       res.status(200).send()
     }, err => {
       console.error('[DOCUMENT IMPORT ERROR.]', err)
+
+      if (!oldDoc) {
+        res.status(500).send(`[NO DOCUMENT TO REVERT TO.] ${err}`)
+        return
+      }
+
       deleteDocument(db, userId, newDoc.guid).then(() =>
         importDoc(db, userId, oldDoc)
       ).then(() => {

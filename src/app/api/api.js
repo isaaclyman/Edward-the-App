@@ -65,7 +65,11 @@ class Api {
     return this.simplePost(route('workshop-content/update'), { documentGuid, workshops })
   }
 
-  // FULL EXPORT/IMPORT
+  // EXPORT/IMPORT
+  docExport () { return this.simpleGet(route(`backup/export/${documentGuid}`)) }
+  docImport ({ guid, name, chapters, topics, plans }) {
+    return this.simplePost(route(`backup/import/document`), { guid, name, chapters, topics, plans })
+  }
   fullExport () { return this.simpleGet(route('backup/export')) }
   fullImport (data) { return this.simplePost(route('backup/import'), data) }
 }

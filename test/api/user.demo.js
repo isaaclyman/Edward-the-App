@@ -29,5 +29,8 @@ test(`can't modify demo account using APIs`, async t => {
   await app.post(route('user/password')).expect(500)
   await app.post(route('user/upgrade')).expect(500)
   await app.post(route('user/update-payment')).expect(500)
-  await app.post(route('user/send-reset-password-link')).expect(500)
+  await app.post(route('user/send-reset-password-link')).send({
+    captchaResponse: 'token',
+    email: user.email
+  }).expect(500)
 })

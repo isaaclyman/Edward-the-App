@@ -41,7 +41,7 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
   }
 
   const captchaMiddleware = (req, res, next) => {
-    if (req.body.email.endsWith('@edwardtheapp.com') && req.body.integration === true) {
+    if (req.body && req.body.email && req.body.email.endsWith('@edwardtheapp.com') && req.body.integration === true) {
       return next()
     }
 
@@ -336,12 +336,15 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
     let guid
     db.knex('users').where('email', email).first().then(user => {
       if (!user) {
-        res.status(500).send(`A user with the email address ${email} was not found.`)
-        throw new Error()
+        const errorMessage = `A user with the email address ${email} was not found.`
+        res.status(500).send(errorMessage)
+        throw new Error(errorMessage)
       }
 
       if (user.account_type === accountTypes.DEMO.name) {
-        throw new Error('Cannot perform this action with a Demo account.')
+        const errorMessage = 'Cannot perform this action with a Demo account.'
+        res.status(500).send(errorMessage)
+        throw new Error(errorMessage)
       }
 
       guid = uuid()

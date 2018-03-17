@@ -14,7 +14,7 @@ const getDocExport = (db, userId, docGuid) => {
     getTopics(db, userId, docGuid),
     getPlans(db, userId, docGuid),
     getWorkshops(db, userId, docGuid)
-  ]).then(([doc, chapters, topics, plans]) => {
+  ]).then(([doc, chapters, topics, plans, workshops]) => {
     if (!doc) {
       throw new Error('Could not find document.')
     }
@@ -37,7 +37,7 @@ const getFullExport = (db, userId) => {
         getTopics(db, userId, docGuid),
         getPlans(db, userId, docGuid),
         getWorkshops(db, userId, docGuid)
-      ]).then(([doc, chapters, topics, plans]) => {
+      ]).then(([doc, chapters, topics, plans, workshops]) => {
         doc.chapters = chapters
         doc.topics = topics
         doc.plans = plans

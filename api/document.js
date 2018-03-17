@@ -3,6 +3,7 @@ const updateChapter = require('./chapter').updateChapter
 const updateTopic = require('./topic').updateTopic
 const updatePlan = require('./plan').updatePlan
 const updateSection = require('./section').updateSection
+const updateWorkshop = require('./workshops').updateWorkshop
 const ts = require('../models/_util').addTimestamps
 const utilities = require('./utilities')
 
@@ -86,7 +87,7 @@ const getDocuments = (db, userId) => {
   })
 }
 
-const saveAllContent = (db, userId, docGuid, chapters = [], topics = [], plans = []) => {
+const saveAllContent = (db, userId, docGuid, chapters = [], topics = [], plans = [], workshops = []) => {
   const updateTopicFns = topics.map(topic => () => updateTopic(db, userId, docGuid, topic))
   const updateTopicPromise = orderPromises(updateTopicFns)
   const updateChapterPromise = updateTopicPromise.then(() => {
@@ -102,7 +103,10 @@ const saveAllContent = (db, userId, docGuid, chapters = [], topics = [], plans =
   )
   const updatePlanPromise = orderPromises(updatePlanFns)
 
-  return Promise.all([updateChapterPromise, updatePlanPromise])
+  const updateWorkshopFns = workshops.map(workshop => () => updateWorkshop(db, userId, docGuid, workshop))
+  const updateWorkshopPromise = orderPromises(updateWorkshopFns)
+
+  return Promise.all([updateChapterPromise, updatePlanPromise, updateWorkshopPromise])
 }
 
 const registerApis = function (app, passport, db, isPremiumUser, isNotOverdue) {

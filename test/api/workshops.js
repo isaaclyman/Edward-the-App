@@ -57,26 +57,9 @@ async function addContents() {
   )
 }
 
-test('get workshops content list (empty)', async t => {
+test('get workshops (empty)', async t => {
   return wrapTest(t,
-    app.get(route(`workshop-content/list/${doc.guid}`))
-    .expect(200)
-    .expect(response => {
-      const list = response.body
-      t.truthy(Array.isArray(list))
-      t.is(list.length, 0)
-    })
-  )
-})
-
-test('get workshops content (empty)', async t => {
-  return wrapTest(t,
-    app.post(route(`workshop-content/by-guids`))
-    .send({
-      documentGuid: doc.guid,
-      workshopName: writingWorkshops.FREE_WRITE.name,
-      guids: guids
-    })
+    app.get(route(`workshop-content/${doc.guid}`))
     .expect(200)
     .expect(response => {
       const list = response.body
@@ -90,7 +73,7 @@ test('add workshop content', async t => {
   await addContents()
   let contentList
   await (
-    app.get(route(`workshop-content/list/${doc.guid}`))
+    app.get(route(`workshop-content/${doc.guid}`))
     .expect(200)
     .expect(response => {
       const list = response.body
@@ -98,22 +81,6 @@ test('add workshop content', async t => {
       t.is(list.length, 2)
       t.true(list.every(item => item.workshopName === writingWorkshops.CHARACTER_WORKSHOP.name))
       t.true(list.every(item => item.date !== null))
-      contentList = list
-    })
-  )
-
-  return wrapTest(t,
-    app.post(route(`workshop-content/by-guids`))
-    .send({
-      documentGuid: doc.guid,
-      workshopName: writingWorkshops.CHARACTER_WORKSHOP.name,
-      guids: guids
-    })
-    .expect(200)
-    .expect(response => {
-      const list = response.body
-      t.truthy(Array.isArray(list))
-      t.is(list.length, 2)
       const comparableList = list.map(item => {
         item.date = new Date(item.createdDate).toDateString()
         item.createdDate = undefined
@@ -138,7 +105,7 @@ test('update content', async t => {
 
   let contentList
   await (
-    app.get(route(`workshop-content/list/${doc.guid}`))
+    app.get(route(`workshop-content/${doc.guid}`))
     .expect(200)
     .expect(response => {
       const list = response.body
@@ -146,22 +113,6 @@ test('update content', async t => {
       t.is(list.length, 2)
       t.true(list.every(item => item.workshopName === writingWorkshops.CHARACTER_WORKSHOP.name))
       t.true(list.every(item => item.date !== null))
-      contentList = list
-    })
-  )
-
-  return wrapTest(t,
-    app.post(route(`workshop-content/by-guids`))
-    .send({
-      documentGuid: doc.guid,
-      workshopName: writingWorkshops.CHARACTER_WORKSHOP.name,
-      guids: guids
-    })
-    .expect(200)
-    .expect(response => {
-      const list = response.body
-      t.truthy(Array.isArray(list))
-      t.is(list.length, 2)
       const comparableList = list.map(item => {
         item.date = new Date(item.createdDate).toDateString()
         item.createdDate = undefined
@@ -191,7 +142,7 @@ test('delete content', async t => {
 
   let item
   await (
-    app.get(route(`workshop-content/list/${doc.guid}`))
+    app.get(route(`workshop-content/${doc.guid}`))
     .expect(200)
     .expect(response => {
       const list = response.body
@@ -201,21 +152,7 @@ test('delete content', async t => {
       item = list[0]
       t.true(item.workshopName === writingWorkshops.CHARACTER_WORKSHOP.name)
       t.true(item.date !== null)
-    })
-  )
 
-  return wrapTest(t,
-    app.post(route(`workshop-content/by-guids`))
-    .send({
-      documentGuid: doc.guid,
-      workshopName: writingWorkshops.CHARACTER_WORKSHOP.name,
-      guids: guids
-    })
-    .expect(200)
-    .expect(response => {
-      const list = response.body
-      t.truthy(Array.isArray(list))
-      t.is(list.length, 1)
       const comparableList = list.map(item => {
         item.date = new Date(item.createdDate).toDateString()
         item.createdDate = undefined

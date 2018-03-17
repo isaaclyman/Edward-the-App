@@ -2,6 +2,7 @@ const { addDocument, deleteDocument, getDocuments, saveAllContent } = require('.
 const { getChapters } = require('./chapter')
 const { getTopics } = require('./topic')
 const { getPlans } = require('./plan')
+const { getWorkshops } = require('./workshops')
 const find = require('lodash/find')
 
 const getDocExport = (db, userId, docGuid) => {  
@@ -11,7 +12,8 @@ const getDocExport = (db, userId, docGuid) => {
     }),
     getChapters(db, userId, docGuid),
     getTopics(db, userId, docGuid),
-    getPlans(db, userId, docGuid)
+    getPlans(db, userId, docGuid),
+    getWorkshops(db, userId, docGuid)
   ]).then(([doc, chapters, topics, plans]) => {
     if (!doc) {
       throw new Error('Could not find document.')
@@ -20,6 +22,7 @@ const getDocExport = (db, userId, docGuid) => {
     doc.chapters = chapters
     doc.topics = topics
     doc.plans = plans
+    doc.workshops = workshops
     return doc
   })
 }
@@ -32,11 +35,13 @@ const getFullExport = (db, userId) => {
         Promise.resolve(doc),
         getChapters(db, userId, docGuid),
         getTopics(db, userId, docGuid),
-        getPlans(db, userId, docGuid)
+        getPlans(db, userId, docGuid),
+        getWorkshops(db, userId, docGuid)
       ]).then(([doc, chapters, topics, plans]) => {
         doc.chapters = chapters
         doc.topics = topics
         doc.plans = plans
+        doc.workshops = workshops
         return doc
       })
     }))
@@ -45,14 +50,14 @@ const getFullExport = (db, userId) => {
 
 const importDoc = (db, userId, doc) => {
   return addDocument(db, userId, doc).then(() => {
-    return saveAllContent(db, userId, doc.guid, doc.chapters, doc.topics, doc.plans)
+    return saveAllContent(db, userId, doc.guid, doc.chapters, doc.topics, doc.plans, doc.workshops)
   })
 }
 
 const importFull = (db, userId, docs) => {
   const addPromises = docs.map(doc => {
     return addDocument(db, userId, doc).then(() => {
-      return saveAllContent(db, userId, doc.guid, doc.chapters, doc.topics, doc.plans)
+      return saveAllContent(db, userId, doc.guid, doc.chapters, doc.topics, doc.plans, doc.workshops)
     }).then(result => ({ result, success: true }), err => ({ err, success: false }))
   })
 

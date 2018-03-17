@@ -3,7 +3,7 @@ const ts = require('../models/_util').addTimestamps
 const utilities = require('../api/utilities')
 const getDocId = utilities.getDocId
 
-const updateWorkshopContent = function (db, userId, docGuid, workshop) {
+const updateWorkshop = function (db, userId, docGuid, workshop) {
   const docId = () => getDocId(db.knex, userId, docGuid)
 
   // Upsert the workshop content
@@ -37,29 +37,13 @@ const updateWorkshopContent = function (db, userId, docGuid, workshop) {
   })
 }
 
-const getWorkshopContentList = function (db, userId, docGuid) {
+const getWorkshops = function (db, userId, docGuid) {
   const docId = () => getDocId(db.knex, userId, docGuid)
 
   return db.knex('workshop_content').where({
     document_id: docId(),
     user_id: userId
   }).select({
-    archived: 'archived',
-    date: 'date',
-    guid: 'guid',
-    workshopName: 'workshop_name',
-    title: 'title'
-  })
-}
-
-const getWorkshopContent = function (db, userId, docGuid, workshopName, workshopGuids) {
-  const docId = () => getDocId(db.knex, userId, docGuid)
-
-  return db.knex('workshop_content').where({
-    workshop_name: workshopName,
-    document_id: docId(),
-    user_id: userId
-  }).whereIn('guid', workshopGuids).select({
     archived: 'archived',
     content: 'content',
     createdDate: 'created_at',
@@ -68,7 +52,7 @@ const getWorkshopContent = function (db, userId, docGuid, workshopName, workshop
     order: 'order',
     title: 'title',
     workshopName: 'workshop_name'
-  }).orderBy('order', 'asc')
+  }).orderBy('workshop_name').orderBy('order', 'asc')
 }
 
 const registerApis = function (app, passport, db, isPremiumUser) {
@@ -101,7 +85,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     const userId = req.user.id
     const { documentGuid, workshops } = req.body
 
-    Promise.all(workshops.map(workshop => updateWorkshopContent(db, userId, documentGuid, workshop))).then(() => {
+    Promise.all(workshops.map(workshop => updateWorkshop(db, userId, documentGuid, workshop))).then(() => {
       res.status(200).send(`Workshop contents updated.`)
     }, err => {
       console.error(err)
@@ -109,34 +93,18 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     })
   })
 
-  // GET (list of all workshops)
-  app.get(route('workshop-content/list/:documentGuid'), isPremiumUser, (req, res, next) => {
+  // GET
+  app.get(route('workshop-content/:documentGuid'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
     const documentGuid = req.params.documentGuid
 
-    getWorkshopContentList(db, userId, documentGuid).then(workshopContentList => {
-      res.status(200).send(workshopContentList)
+    getWorkshops(db, userId, documentGuid).then(workshops => {
+      res.status(200).send(workshops)
     }, err => {
       console.error(err)
-      res.status(500).send(err)
-    })
-  })
-
-  // POST { documentGuid, workshopName, guids: uuid[] }
-  // (get a workshop's contents that match a list of guids)
-  app.post(route('workshop-content/by-guids'), isPremiumUser, (req, res, next) => {
-    const userId = req.user.id
-    const documentGuid = req.body.documentGuid
-    const workshopName = req.body.workshopName
-    const guids = req.body.guids
-
-    getWorkshopContent(db, userId, documentGuid, workshopName, guids).then(workshopContents => {
-      res.status(200).send(workshopContents)
-    }, err => {
-      console.error(err)
-      res.status(500).send(err)
+      res.status(500).send()
     })
   })
 }
 
-module.exports = { updateWorkshopContent, registerApis }
+module.exports = { updateWorkshop, registerApis }

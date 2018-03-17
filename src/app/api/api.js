@@ -57,10 +57,7 @@ class Api {
   deleteWorkshopContent ({ documentGuid, guid }) {
     return this.simplePost(route('workshop-content/delete'), { documentGuid, guid })
   }
-  getWorkshopContentList (documentGuid) { return this.simpleGet(route(`workshop-content/list/${documentGuid}`)) }
-  getWorkshopContentByGuids ({ documentGuid, workshopName, guids }) {
-    return this.simplePost(route('workshop-content/by-guids'), { documentGuid, workshopName, guids })
-  }
+  getWorkshops (documentGuid) { return this.simpleGet(route(`workshop-content/${documentGuid}`)) }
   updateWorkshopContents ({ documentGuid, workshops }) {
     return this.simplePost(route('workshop-content/update'), { documentGuid, workshops })
   }

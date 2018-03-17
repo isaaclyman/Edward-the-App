@@ -11,6 +11,7 @@ exports.down = function(knex, Promise) {
 function workshopContentTable (knex) {
   return knex.schema.createTable('workshop_content', t => {
     t.increments('id').primary()
+    // Duplicate guids are allowed in order to group workshop content together
     t.uuid('guid').notNullable()
     t.integer('order')
     t.string('title')

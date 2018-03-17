@@ -27,8 +27,11 @@ import Octicons from 'octicons'
 export default {
   created () {
     const cachedIndex = this.tabCache.cacheGet()
-    if (cachedIndex) {
+    if (cachedIndex && cachedIndex < this.dataArray.length) {
       this.selectItem(cachedIndex)
+    } else {
+      this.tabCache.cacheSet(0)
+      this.selectItem(0)
     }
   },
   components: {},

@@ -59,7 +59,8 @@ export default {
       this.$store.commit(UPDATE_WORKSHOPS_CONTENT, {
         workshopUpdates: [{
           workshop: this.workshop,
-          newContent: content
+          newContent: content,
+          newTitle: `${this.fullText.slice(0, 20)}...`
         }]
       })
     }

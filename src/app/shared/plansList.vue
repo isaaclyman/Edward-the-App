@@ -310,12 +310,6 @@ export default {
   padding-top: 4px;
 }
 
-.section-title {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-}
-
 .plan {
   background-color: #e3f2fd;
   border: 1px solid #CCC;
@@ -373,7 +367,10 @@ export default {
 }
 
 .section-title {
+  align-items: center;
+  display: flex;
   flex: 1;
+  flex-direction: row;
 }
 
 .section-actions {

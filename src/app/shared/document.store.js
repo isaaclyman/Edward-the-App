@@ -1,4 +1,4 @@
-import Cache, { resetCache } from './cache'
+import Cache from './cache'
 import { storageApiPromise } from '../api/storageSwitch'
 import guid from './guid'
 import { LOAD_CONTENT, NUKE_CONTENT } from './chapters.store'
@@ -108,7 +108,6 @@ const store = {
       .then(() => dispatch(CHANGE_DOCUMENT, document))
     },
     [UNLOAD_CURRENT_DOCUMENT] ({ commit }) {
-      resetCache()
       return new Promise(resolve => {
         commit(UPDATE_DOCUMENT_METADATA, { guid: null, name: null })
         commit(NUKE_CONTENT)

@@ -35,7 +35,7 @@
         <template v-if="selectedType">
           <div class="title">
             <label for="new-document-title">{{selectedType.name}} title:</label>
-            <input id="new-document-title" v-model="title">
+            <input id="new-document-title" v-model="title" @keyup.enter="createDocument()">
           </div>
           <div class="actions">
             <pulse-loader v-if="saving"></pulse-loader>

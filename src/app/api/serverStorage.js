@@ -169,7 +169,15 @@ class ServerStorageApi {
     })
   }
 
-  // FULL EXPORT/IMPORT
+  // EXPORT/IMPORT
+
+  docExport () {
+    return api.docExport()
+  }
+
+  docImport (doc) {
+    return api.docImport(doc)
+  }
 
   fullExport () {
     return api.fullExport().then(data => JSON.stringify(data))

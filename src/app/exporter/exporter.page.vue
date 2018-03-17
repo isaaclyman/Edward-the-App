@@ -50,9 +50,9 @@
 <script>
 import { backupToJsonFile, jsonFileToBackup } from './json'
 import { chaptersToPdf } from './pdf'
-import { LOAD_CONTENT } from '../shared/chapters.store'
+import { CHANGE_DOCUMENT } from '../shared/document.store'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
-// import { storageApiPromise } from '../api/storageSwitch'
+import { storageApiPromise } from '../api/storageSwitch'
 import swal from 'sweetalert'
 
 export default {
@@ -91,14 +91,26 @@ export default {
   methods: {
     importBackup (file) {
       this.loading = true
-      jsonFileToBackup(file).then(backup => {
+      let backup
+      jsonFileToBackup(file).then(_backup => {
+        backup = _backup
+        backup.guid = this.documentGuid
+        backup.name = this.documentTitle
+
+        return storageApiPromise.then(storage => {
+          return storage.docImport(backup)
+        })
+      }).then(backup => {
         this.loading = false
-        this.$store.commit(LOAD_CONTENT, backup)
 
         swal({
           icon: 'success',
           text: 'The document has been imported.',
           title: 'Success'
+        }).then(() => {
+          return this.$store.dispatch(CHANGE_DOCUMENT,
+            { guid: this.documentGuid, name: this.documentTitle }
+          )
         })
       }, err => {
         this.loading = false
@@ -113,21 +125,19 @@ export default {
     exportJsonDocument () {
       this.loading = true
 
-      const backup = {
-        chapters: this.allChapters,
-        plans: this.allPlans,
-        topics: this.allTopics
-      }
-
-      backupToJsonFile(this.documentTitle, backup).then(() => {
-        this.loading = false
-      }, err => {
-        this.loading = false
-        swal({
-          icon: 'error',
-          text: `Could not export the document. DETAILS: "${err}"`
+      storageApiPromise.then(storage => {
+        return storage.docExport(this.documentGuid, this.documentTitle)
+      }).then(backup => {
+        backupToJsonFile(this.documentTitle, backup).then(() => {
+          this.loading = false
+        }, err => {
+          this.loading = false
+          swal({
+            icon: 'error',
+            text: `Could not export the document. DETAILS: "${err}"`
+          })
+          throw err
         })
-        throw err
       })
     },
     exportPdfChapters () {

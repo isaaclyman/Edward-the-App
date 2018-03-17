@@ -341,6 +341,48 @@ class LocalStorageApi {
     FULL EXPORT / IMPORT
   */
 
+  docExport (guid, name) {
+    return Promise.all([
+      this._getAllChapters(guid),
+      this._getAllTopics(guid),
+      this._getAllPlans(guid).then(plans => {
+        return Promise.all(plans.map(plan => {
+          this._getAllSections(guid, plan.guid).then(sections => {
+            plan.sections = sections
+            return plan
+          })
+        }))
+      })
+    ]).then(([chapters, topics, plans]) => {
+      const doc = {
+        guid,
+        name,
+        chapters,
+        topics,
+        plans
+      }
+      return doc
+    })
+  }
+
+  docImport (doc) {
+    let backup
+    return this.docExport(doc.guid).then(_backup => {
+      backup = _backup
+    }).then(() => {
+      return this.deleteDocument(doc.guid)
+    }).then(() => {
+      if (!doc) {
+        throw new Error('Attempted to import an empty backup')
+      }
+
+      return this.addDocument(doc).then(() => this.saveAllContent(doc.guid, doc))
+    }).then(undefined, err => {
+      console.error(err)
+      return this.addDocument(backup).then(() => this.saveAllContent(backup.guid, backup))
+    })
+  }
+
   getFullExport () {
     return this._getAllDocuments().then(documents => {
       return Promise.all(documents.map(doc => {

@@ -107,4 +107,4 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   })
 }
 
-module.exports = { updateWorkshop, registerApis }
+module.exports = { getWorkshops, updateWorkshop, registerApis }

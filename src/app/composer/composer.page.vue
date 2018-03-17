@@ -41,6 +41,7 @@
         </div>
       </div>
       <div class="sidebar-wrap">
+        <!-- Plans/Outlines/Workshops switch -->
         <div class="sidebar-options">
           <div class="plan-switch">
             <button class="switch-label" :class="{ 'active': sidebar === 'outline' }" @click="switchOutline()">
@@ -161,8 +162,8 @@ export default {
     allTopics () {
       return this.$store.state.chapters.topics
     },
-    allWorkshopsList () {
-      return this.$store.state.workshop.workshopList
+    allWorkshops () {
+      return this.$store.state.workshop.workshops
     },
     chapterPageCount () {
       return this.getPageCount(this.textContent)
@@ -206,7 +207,7 @@ export default {
       return this.allTopics && this.allTopics.length
     },
     hasWorkshops () {
-      return this.allWorkshopsList && this.allWorkshopsList.length
+      return this.allWorkshops && this.allWorkshops.length
     },
     isPremium () {
       return this.$store.state.user.user.isPremium

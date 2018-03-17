@@ -1,5 +1,5 @@
 <template>
-  <div class="workshops-wrap" v-show="workshopList.length > 0">
+  <div class="workshops-wrap" v-show="workshops.length > 0">
     <tabs-list :active-index="activeWorkshopNameIndex" :data-array="workshopNames" :filter-tabs="() => true"
               item-name="Workshop"
               :can-add="false"
@@ -25,10 +25,10 @@ export default {
       return this.workshopNames[this.activeWorkshopNameIndex] || {}
     },
     workshopNames () {
-      return uniq(this.workshopList.map(item => item.workshopName)).map(name => ({ title: writingWorkshops[name].displayName }))
+      return uniq(this.workshops.map(item => item.workshopName)).map(name => ({ title: writingWorkshops[name].displayName }))
     },
-    workshopList () {
-      return this.$store.state.workshop.workshopList
+    workshops () {
+      return this.$store.state.workshop.workshops
     }
   },
   data () {

@@ -2,7 +2,7 @@ import Cache, { resetCache } from './cache'
 import { storageApiPromise } from '../api/storageSwitch'
 import guid from './guid'
 import { LOAD_CONTENT, NUKE_CONTENT } from './chapters.store'
-import { LOAD_WORKSHOP_LIST, NUKE_WORKSHOPS } from './workshops.store'
+import { LOAD_WORKSHOPS, NUKE_WORKSHOPS } from './workshops.store'
 
 export const ADD_DOCUMENT = 'ADD_DOCUMENT'
 export const CHANGE_DOCUMENT = 'CHANGE_DOCUMENT'
@@ -33,14 +33,14 @@ const store = {
             storage.getAllChapters(guid),
             storage.getAllPlans(guid),
             storage.getAllTopics(guid),
-            storage.isPremium() ? storage.getWorkshopsList(guid) : Promise.resolve(false)
+            storage.isPremium() ? storage.getWorkshops(guid) : Promise.resolve(false)
           ]
 
-          return Promise.all(promises).then(([chapters, plans, topics, workshopList]) => {
+          return Promise.all(promises).then(([chapters, plans, topics, workshops]) => {
             commit(LOAD_CONTENT, { plans, chapters, topics })
 
-            if (workshopList) {
-              commit(LOAD_WORKSHOP_LIST, { workshopList })
+            if (workshops) {
+              commit(LOAD_WORKSHOPS, { workshops })
             }
 
             commit(UPDATE_DOCUMENT_METADATA, { guid, name })

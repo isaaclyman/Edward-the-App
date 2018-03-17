@@ -5,15 +5,12 @@ export const RESTORE_WORKSHOP = 'RESTORE_WORKSHOP'
 export const UPDATE_WORKSHOPS_CONTENT = 'UPDATE_WORKSHOPS_CONTENT'
 
 export const LOAD_WORKSHOPS = 'LOAD_WORKSHOPS'
-export const LOAD_WORKSHOP_LIST = 'LOAD_WORKSHOP_LIST'
 export const NUKE_WORKSHOPS = 'NUKE_WORKSHOPS'
 
 const store = {
   state: {
     // workshop [{ archived bool false, guid Guid, title string, order number, workshopName string, content Delta null, date Date }]
-    workshops: [],
-    // workshopListItem [{ archived bool false, date Date, guid Guid, workshopName string }]
-    workshopList: []
+    workshops: []
   },
   mutations: {
     // Standard workshop mutations
@@ -59,16 +56,8 @@ const store = {
 
       state.workshops = workshops
     },
-    [LOAD_WORKSHOP_LIST] (state, { workshopList }) {
-      if (!Array.isArray(workshopList)) {
-        throw new Error(`${LOAD_WORKSHOP_LIST}: Cannot load workshops list: argument is not an array.`)
-      }
-
-      state.workshopList = workshopList
-    },
     [NUKE_WORKSHOPS] (state) {
       state.workshops = null
-      state.workshopList = null
     }
   }
 }

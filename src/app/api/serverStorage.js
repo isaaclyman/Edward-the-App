@@ -133,12 +133,8 @@ class ServerStorageApi {
     return api.getTopics(documentGuid)
   }
 
-  getWorkshopsList (documentGuid) {
-    return api.getWorkshopContentList(documentGuid)
-  }
-
-  getWorkshopsByGuids (documentGuid, workshopName, guids) {
-    return api.getWorkshopContentByGuids({ documentGuid, workshopName, guids })
+  getWorkshops (documentGuid) {
+    return api.getWorkshops(documentGuid)
   }
 
   // UPDATE

@@ -28,8 +28,9 @@ const updateWorkshop = function (db, userId, docGuid, workshop) {
       const update = {
         archived: workshop.archived,
         // Only update content if it has changed
-        content: !isEqual(dbWorkshop.content, workshop.content) ? workshop.content : undefined
-        // Never update workshop name, order, title or date
+        content: !isEqual(dbWorkshop.content, workshop.content) ? workshop.content : undefined,
+        title: workshop.title
+        // Never update workshop name, order, or date
       }
 
       return ts(db.knex, update, true)

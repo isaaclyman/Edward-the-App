@@ -10,25 +10,27 @@
           {{ activeWorkshopDisplayName }}
         </div>
       </div>
-      <div class="workshop-select">
-        <div class="workshop-select-label">
-          Select a workshop:
-        </div>
-        <select class="workshop-select-dropdown" v-model="selectedWorkshopGuid">
-          <option v-for="workshop in selectableWorkshops" :key="workshop.guid" :value="workshop.guid">
-            {{ workshop.title }}
-          </option>
-        </select>
-      </div>
-      <div class="workshops">
-        <div class="workshop">
-          <div class="workshop-header">
-            <div class="workshop-title">
-              {{ activeWorkshopsTitle }}
-            </div>
+      <div class="workshop-list-body">
+        <div class="workshop-select">
+          <div class="workshop-select-label">
+            Select a workshop:
           </div>
-          <div class="workshop-content" v-for="workshop in activeWorkshops" :key="workshop.guid">
-            <div v-html="getHtml(workshop)"></div>            
+          <select class="workshop-select-dropdown" v-model="selectedWorkshopGuid">
+            <option v-for="workshop in selectableWorkshops" :key="workshop.guid" :value="workshop.guid">
+              {{ workshop.title }}
+            </option>
+          </select>
+        </div>
+        <div class="workshops">
+          <div class="workshop">
+            <div class="workshop-header">
+              <div class="workshop-title">
+                {{ activeWorkshopsTitle }} ({{ activeWorkshopsDate }})
+              </div>
+            </div>
+            <div class="workshop-content" v-for="workshop in activeWorkshops" :key="workshop.guid">
+              <div v-html="getHtml(workshop)"></div>            
+            </div>
           </div>
         </div>
       </div>
@@ -59,6 +61,9 @@ export default {
     },
     activeWorkshops () {
       return this.viewingWorkshops.filter(workshop => workshop.guid === this.selectedWorkshopGuid)
+    },
+    activeWorkshopsDate () {
+      return this.activeWorkshops && this.activeWorkshops.length && new Date(this.activeWorkshops[0].date).toLocaleDateString()
     },
     activeWorkshopsTitle () {
       return this.activeWorkshops && this.activeWorkshops.length && this.activeWorkshops[0].title
@@ -108,7 +113,7 @@ export default {
 
 <style scoped>
 .workshop-list {
-  background-color: #ebf5e1;
+  background-color: #FFF;
   border: 1px solid #CCC;
   box-shadow: 0px -2px 12px -4px rgba(0,0,0,0.75);
   margin-bottom: 10px;
@@ -116,7 +121,7 @@ export default {
 
 .workshop-list-header {
   align-items: center;
-  background-color: #8bc34a;
+  background-color: rgba(139, 195, 74, 0.85);
   color: #FFF;
   display: flex;
   flex-direction: row;
@@ -125,6 +130,10 @@ export default {
 
 .workshop-list-title {
   flex: 1;
+}
+
+.workshop-list-body {
+  background-color: rgba(139, 195, 74, 0.05);
 }
 
 .workshop-select {
@@ -144,13 +153,13 @@ export default {
 }
 
 .workshop {
-  border: 1px solid #8bc34a; 
+  border: 1px solid rgba(139, 195, 74, 0.85);
   margin-bottom: 20px; 
 }
 
 .workshop-header {
   align-items: center;
-  background-color: #8bc34a;
+  background-color: rgba(139, 195, 74, 0.85);
   color: #FFF;
   display: flex;
   flex-direction: row;

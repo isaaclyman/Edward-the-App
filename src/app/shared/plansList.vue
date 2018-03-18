@@ -16,53 +16,54 @@
           <button class="plan-action button-red" v-show="activePlan.archived" @click="deletePlan({ index: activePlanIndex })">Delete Forever</button>
         </div>
       </div>
-      <!-- Section Chips -->
-      <div class="chips-wrap section-chips">
-        <div class="section-title">
-          <h3>Sections</h3>
-          <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpSectionChipsModal, 'Section List')"></button>
-        </div>
-        <chips-list name="Section" name-prop="title"
-                    :data-array="activePlanSections"
-                    :filter-chips="filterSections"
-                    :is-deletable="isDeletable"
-                    @add="addSection"
-                    @delete="archiveSection"
-                    @rearrange="rearrangeSection"
-                    @restore="restoreSection"
-                    @update="renameSection"></chips-list>
-      </div>
-
-      <div class="sections">
-        <div class="section" v-for="(section, index) in activePlan.sections" :key="section.guid" v-show="filterSections(section)">
-          <div class="section-header">
-            <h5 class="section-title">
-              {{ section.title }}
-            </h5>
-            <div class="section-actions">
-              <button class="section-action" v-show="!section.archived" @click="archiveSection({ index })">Archive</button>
-              <button class="section-action" v-show="section.archived" @click="restoreSection({ index })">Restore</button>
-              <button class="section-action button-red" v-show="section.archived" @click="deleteSection({ index })">Delete Forever</button>
-            </div>
+      <div class="plan-body">
+        <!-- Section Chips -->
+        <div class="chips-wrap section-chips">
+          <div class="section-title">
+            <h3>Sections</h3>
+            <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpSectionChipsModal, 'Section List')"></button>
           </div>
-          <div class="section-content">
-            <div class="content-actions" v-if="!section.archived">
-              <button class="button-link" v-if="!isEditing(index)" @click="editSection(index)">
-                <span class="button-link-icon" v-html="editSvg"></span>Edit
-              </button>
-              <button class="button-link" v-if="isEditing(index)" @click="endEditSection(index)">
-                <span class="button-link-icon" v-html="doneSvg"></span>Done Editing
-              </button>
+          <chips-list name="Section" name-prop="title"
+                      :data-array="activePlanSections"
+                      :filter-chips="filterSections"
+                      :is-deletable="isDeletable"
+                      @add="addSection"
+                      @delete="archiveSection"
+                      @rearrange="rearrangeSection"
+                      @restore="restoreSection"
+                      @update="renameSection"></chips-list>
+        </div>
+        <div class="sections">
+          <div class="section" v-for="(section, index) in activePlan.sections" :key="section.guid" v-show="filterSections(section)">
+            <div class="section-header">
+              <h5 class="section-title">
+                {{ section.title }}
+              </h5>
+              <div class="section-actions">
+                <button class="section-action" v-show="!section.archived" @click="archiveSection({ index })">Archive</button>
+                <button class="section-action" v-show="section.archived" @click="restoreSection({ index })">Restore</button>
+                <button class="section-action button-red" v-show="section.archived" @click="deleteSection({ index })">Delete Forever</button>
+              </div>
             </div>
-            <div class="content-static" v-if="!isEditing(index)">
-              <div v-html="getHtml(section)"></div>
-              <span class="content-placeholder" v-if="!section.archived && !getTextContent(section.content)">
-                No content yet. Click "Edit" to add some.
-              </span>
-            </div>
-            <div class="content-editable" v-show="isEditing(index)">
-              <quill-editor :content="section.content" ref="quillEditor" @update:content="updateContent(section, $event)"
-                @shortcut:done="endEditSection(index)"></quill-editor>
+            <div class="section-content">
+              <div class="content-actions" v-if="!section.archived">
+                <button class="button-link" v-if="!isEditing(index)" @click="editSection(index)">
+                  <span class="button-link-icon" v-html="editSvg"></span>Edit
+                </button>
+                <button class="button-link" v-if="isEditing(index)" @click="endEditSection(index)">
+                  <span class="button-link-icon" v-html="doneSvg"></span>Done Editing
+                </button>
+              </div>
+              <div class="content-static" v-if="!isEditing(index)">
+                <div v-html="getHtml(section)"></div>
+                <span class="content-placeholder" v-if="!section.archived && !getTextContent(section.content)">
+                  No content yet. Click "Edit" to add some.
+                </span>
+              </div>
+              <div class="content-editable" v-show="isEditing(index)">
+                <quill-editor :content="section.content" ref="quillEditor" @update:content="updateContent(section, $event)"
+                  @shortcut:done="endEditSection(index)"></quill-editor>
+              </div>
             </div>
           </div>
         </div>
@@ -311,7 +312,7 @@ export default {
 }
 
 .plan {
-  background-color: #e3f2fd;
+  background-color: #FFF;
   border: 1px solid #CCC;
   box-shadow: 0px -2px 12px -4px rgba(0,0,0,0.75);
   margin-bottom: 10px;
@@ -319,7 +320,7 @@ export default {
 
 .plan-header {
   align-items: center;
-  background-color: #005cb2;
+  background-color: rgba(0, 92, 178, 0.85);
   color: #FFF;
   display: flex;
   flex-direction: row;
@@ -342,9 +343,13 @@ export default {
   background-color: #444;
 }
 
+.plan-body {
+  background-color: rgba(0, 92, 178, 0.05);
+  padding-top: 8px;
+}
+
 .section-chips {
   margin-left: 8px;
-  margin-top: 8px;
 }
 
 .sections {
@@ -352,13 +357,13 @@ export default {
 }
 
 .section {
-  border: 1px solid #005cb2; 
+  border: 1px solid rgba(0, 92, 178, 0.85);
   margin-bottom: 20px; 
 }
 
 .section-header {
   align-items: center;
-  background-color: #005cb2;
+  background-color: rgba(0, 92, 178, 0.85);
   color: #FFF;
   display: flex;
   flex-direction: row;

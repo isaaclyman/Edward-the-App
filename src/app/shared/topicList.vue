@@ -156,14 +156,14 @@ export default {
 }
 
 .topic {
-  border: 1px solid #e8cc84;
+  border: 1px solid rgba(232, 204, 132, 0.75);
   border-top: none;  
   margin-bottom: 20px;
 }
 
 .topic-head {
   align-items: center;
-  background-color: #e8cc84;
+  background-color: rgba(232, 204, 132, 0.75);
   display: flex;
   flex-direction: row;
   height: 28px;

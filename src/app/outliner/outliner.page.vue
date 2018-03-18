@@ -353,7 +353,7 @@ export default {
 }
 
 .chips-wrap {
-  border-left: 2px solid #e8cc84;
+  border-left: 2px solid rgb(232, 204, 132);
   margin-bottom: 16px;
   padding-bottom: 4px;
   padding-left: 8px;
@@ -365,15 +365,17 @@ export default {
 }
 
 .chapter {
-  background-color: transparent;
-  box-shadow: 0px -2px 12px -4px rgba(0,0,0,0.75);
+  background-color: #FFF;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  box-shadow: 0px -2px 12px -4px rgba(0, 0, 0, 0.75);
   margin-bottom: 10px;
 }
 
 .chapter-head {
   align-items: center;
-  background-color: #e8cc84;
-  border: 1px solid #e8cc84;
+  background-color: rgba(232, 204, 132, 0.75);
+  border: 1px solid rgba(232, 204, 132, 0.75);
   display: flex;
   flex-direction: row;
   padding: 8px;
@@ -401,8 +403,8 @@ export default {
 }
 
 .chapter-content {
-  background-color: #FFFFD1;
-  border: 1px solid #e8cc84;
+  background-color: rgba(232, 204, 132, 0.1);
+  border: 1px solid rgba(232, 204, 132, 0.75);
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   border-top: none;

@@ -55,12 +55,12 @@ test('add workshop content', async t => {
       t.true(list.every(item => item.workshopName === writingWorkshops.CHARACTER_WORKSHOP.name))
       t.true(list.every(item => item.date !== null))
       const comparableList = list.map(item => {
-        item.date = new Date(item.createdDate).toDateString()
+        item.date = new Date(item.date).toLocaleDateString()
         item.createdDate = undefined
         return item
       })
       const comparableWorkshops = workshops.map(item => {
-        item.date = new Date(item.date).toDateString()
+        item.date = new Date(item.date).toLocaleDateString()
         item.createdDate = undefined
         return item
       })
@@ -87,12 +87,12 @@ test('update content', async t => {
       t.true(list.every(item => item.workshopName === writingWorkshops.CHARACTER_WORKSHOP.name))
       t.true(list.every(item => item.date !== null))
       const comparableList = list.map(item => {
-        item.date = new Date(item.createdDate).toDateString()
+        item.date = new Date(item.date).toLocaleDateString()
         item.createdDate = undefined
         return item
       })
       const comparableWorkshops = workshops.map(item => {
-        item.date = new Date(item.date).toDateString()
+        item.date = new Date(item.date).toLocaleDateString()
         item.createdDate = undefined
         return item
       })
@@ -127,12 +127,12 @@ test('delete content', async t => {
       t.true(item.date !== null)
 
       const comparableList = list.map(item => {
-        item.date = new Date(item.createdDate).toDateString()
+        item.date = new Date(item.date).toLocaleDateString()
         item.createdDate = undefined
         return item
       })
       const comparableWorkshops = workshops.map(item => {
-        item.date = new Date(item.date).toDateString()
+        item.date = new Date(item.date).toLocaleDateString()
         item.createdDate = undefined
         return item
       })

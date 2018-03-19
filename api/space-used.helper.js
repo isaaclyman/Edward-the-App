@@ -9,7 +9,8 @@ const tablesToCheck = [
   tableObject('master_topics', ['title']),
   tableObject('chapter_topics', ['content']),
   tableObject('plans', ['title']),
-  tableObject('sections', ['title', 'content'])
+  tableObject('sections', ['title', 'content']),
+  tableObject('workshop_content', ['title', 'content'])
 ]
 
 function getUsersOverLimit (accountType, limit) {

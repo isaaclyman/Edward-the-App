@@ -11,14 +11,13 @@ import {
 } from '../_imports'
 import { addDocument } from './_document.helper'
 import writingWorkshops from '../../models/writingWorkshop'
+import { workshops, addWorkshops } from './_workshop.helper'
 
 stubRecaptcha(test)
 
 /*
   TESTS
 */
-
-const guids = ['8104b1fb-c177-4ca1-b995-a75dcbe6911c', '2ae71a48-7873-4316-bf18-d9ee0e461799']
 
 let app, doc
 test.beforeEach('set up a premium user and document', async t => {
@@ -31,31 +30,6 @@ test.beforeEach('set up a premium user and document', async t => {
   doc = await addDocument(app, 'Test1')
 })
 
-const workshops = [{
-  guid: guids[0],
-  workshopName: writingWorkshops.CHARACTER_WORKSHOP.name,
-  content: { ops: [{ insert: '1' }] },
-  title: 'Workshop 1',
-  order: 0,
-  archived: false,
-  date: new Date()
-}, {
-  guid: guids[1],
-  workshopName: writingWorkshops.CHARACTER_WORKSHOP.name,
-  content: { ops: [{ insert: '2' }] },
-  title: 'Workshop 2',
-  order: 1,
-  archived: false,
-  date: new Date()
-}]
-
-async function addContents() {
-  await (
-    app.post(route(`workshop-content/update`))
-    .send({ documentGuid: doc.guid, workshops: workshops })
-    .expect(200)
-  )
-}
 
 test('get workshops (empty)', async t => {
   return wrapTest(t,
@@ -70,7 +44,7 @@ test('get workshops (empty)', async t => {
 })
 
 test('add workshop content', async t => {
-  await addContents()
+  await addWorkshops(app, doc)
   let contentList
   await (
     app.get(route(`workshop-content/${doc.guid}`))
@@ -98,10 +72,10 @@ test('add workshop content', async t => {
 })
 
 test('update content', async t => {
-  await addContents()
+  await addWorkshops(app, doc)
   
   // Another time, to update the same ones
-  await addContents()
+  await addWorkshops(app, doc)
 
   let contentList
   await (
@@ -130,7 +104,7 @@ test('update content', async t => {
 })
 
 test('delete content', async t => {
-  await addContents()
+  await addWorkshops(app, doc)
   await (
     app.post(route(`workshop-content/delete`))
     .send({

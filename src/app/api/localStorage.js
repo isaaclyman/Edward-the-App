@@ -228,11 +228,7 @@ class LocalStorageApi {
     return this.storage.getItem(this.topicOrderKey(documentGuid)).then(sortOrder => sortOrder || [])
   }
 
-  getWorkshopsList () {
-    throw new Error('Workshops are a Premium-only feature.')
-  }
-
-  getWorkshopsByGuids () {
+  getAllWorkshops () {
     throw new Error('Workshops are a Premium-only feature.')
   }
 

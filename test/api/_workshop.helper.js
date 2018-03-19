@@ -25,10 +25,12 @@ export const workshops = [{
   date: new Date()
 }]
 
-export async function addWorkshops(app, doc) {
+export async function addWorkshops(app, docGuid) {
   await (
     app.post(route(`workshop-content/update`))
-    .send({ documentGuid: doc.guid, workshops: workshops })
+    .send({ documentGuid: docGuid, workshops: workshops })
     .expect(200)
   )
+
+  return workshops
 }

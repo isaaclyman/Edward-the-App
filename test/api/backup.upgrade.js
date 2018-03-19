@@ -16,6 +16,7 @@ import { addChapter, updateChapter } from './_chapter.helper'
 import { addTopic } from './_topic.helper'
 import { addPlan } from './_plan.helper'
 import { addSection } from './_section.helper'
+import { addWorkshops } from './_workshop.helper'
 
 import localStorage from 'mock-local-storage'
 
@@ -81,6 +82,7 @@ test('transfer document with content from API to local storage', async t => {
   const chapter = await addChapter(app, doc.guid, 'Test Chapter')
   const plan = await addPlan(app, doc.guid, 'Test Plan')
   const section = await addSection(app, doc.guid, plan.planGuid, 'Test Section')
+  const workshops = await addWorkshops(app, doc.guid)
   const newChapter = {
     documentGuid: doc.guid,
     chapterGuid: chapter.chapterGuid,
@@ -114,6 +116,13 @@ test('transfer document with content from API to local storage', async t => {
     t.deepEqual(sections[0].content, section.section.content)
   })
 
+  try {
+    storage.getAllWorkshops()
+    t.fail()
+  } catch (err) {
+    // Method should fail because workshops are premium-only
+  }
+
   await expectOneItemArray(t, storage.getFullExport(), docs => {
     t.is(docs.length, 1)
     const doc = docs[0]
@@ -121,6 +130,7 @@ test('transfer document with content from API to local storage', async t => {
     t.is(doc.topics.length, 1)
     t.is(doc.plans.length, 1)
     t.is(doc.plans[0].sections.length, 1)
+    t.falsy(doc.workshops)
   })
 })
 
@@ -181,5 +191,6 @@ test('transfer document with content from local storage to API', async t => {
     t.is(doc.topics.length, 1)
     t.is(doc.plans.length, 1)
     t.is(doc.plans[0].sections.length, 1)
+    t.is(doc.workshops.length, 0)
   })
 })

@@ -30,7 +30,6 @@ test.beforeEach('set up a premium user and document', async t => {
   doc = await addDocument(app, 'Test1')
 })
 
-
 test('get workshops (empty)', async t => {
   return wrapTest(t,
     app.get(route(`workshop-content/${doc.guid}`))
@@ -44,7 +43,7 @@ test('get workshops (empty)', async t => {
 })
 
 test('add workshop content', async t => {
-  await addWorkshops(app, doc)
+  await addWorkshops(app, doc.guid)
   let contentList
   await (
     app.get(route(`workshop-content/${doc.guid}`))
@@ -72,10 +71,10 @@ test('add workshop content', async t => {
 })
 
 test('update content', async t => {
-  await addWorkshops(app, doc)
+  await addWorkshops(app, doc.guid)
   
   // Another time, to update the same ones
-  await addWorkshops(app, doc)
+  await addWorkshops(app, doc.guid)
 
   let contentList
   await (
@@ -104,7 +103,7 @@ test('update content', async t => {
 })
 
 test('delete content', async t => {
-  await addWorkshops(app, doc)
+  await addWorkshops(app, doc.guid)
   await (
     app.post(route(`workshop-content/delete`))
     .send({

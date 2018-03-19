@@ -232,13 +232,9 @@ class DemoStorageApi {
     return this.storage.getItem(this.topicOrderKey(documentGuid)).then(sortOrder => sortOrder || [])
   }
 
-  getWorkshopsList () {
+  getAllWorkshops () {
     // Not implemented here. Premium-only feature.
     return []
-  }
-
-  getWorkshopsByGuids () {
-    // Not implemented here. Premium-only feature.
   }
 
   saveAllContent (documentGuid, { chapters, plans, topics }) {

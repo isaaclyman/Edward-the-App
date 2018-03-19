@@ -204,6 +204,34 @@ function wrapTest(t, supertest) {
   })
 }
 
+/*
+  GENERAL UTILITIES
+*/
+
+function removeUnmatchedProperties (model, mutable) {
+  for (const key in mutable) {
+    if (model[key] === undefined) {
+      model[key] = undefined
+      mutable[key] = undefined
+    }
+
+    if (Array.isArray(model[key])) {
+      model[key].arrLen = model[key].length
+      mutable[key].arrLen = mutable[key].length
+    }
+
+    if (model[key] instanceof Date) {
+      model[key] = new Date(model[key]).toLocaleDateString()
+      mutable[key] = new Date(mutable[key]).toLocaleDateString()
+      continue;
+    }
+
+    if (typeof model[key] === 'object') {
+      removeUnmatchedProperties(model[key], mutable[key])
+    }
+  }
+}
+
 module.exports = {
   user,
   createTestUser,
@@ -213,6 +241,7 @@ module.exports = {
   makeTestUserAdmin,
   makeTestUserDemo,
   makeTestUserPremium,
+  removeUnmatchedProperties,
   route,
   setTestUserPaymentDueDate,
   setTestUserResetKey,

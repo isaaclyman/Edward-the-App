@@ -10,12 +10,15 @@ import {
   uuid,
   wrapTest
 } from '../_imports'
+import { removeUnmatchedProperties } from '../_util'
 import { addDocument } from './_document.helper'
 import { addChapter } from './_chapter.helper'
 import { addTopic } from './_topic.helper'
 import { addPlan } from './_plan.helper'
 import { addSection } from './_section.helper'
+import { addWorkshops } from './_workshop.helper'
 import isEqualWith from 'lodash/isEqualWith'
+import writingWorkshops from '../../models/writingWorkshop'
 
 stubRecaptcha(test)
 
@@ -61,13 +64,15 @@ test('import a hand-made export', async t => {
     name: 'Doc 1',
     chapters: [],
     topics: [],
-    plans: []
+    plans: [],
+    workshops: []
   }, {
     guid: uuid(),
     name: 'Doc 1',
     chapters: [],
     topics: [],
-    plans: []
+    plans: [],
+    workshops: []
   }]
 
   await (
@@ -105,6 +110,7 @@ test('do a full export with content', async t => {
   await addChapter(app, doc.guid, 'Test Chapter')
   const plan = await addPlan(app, doc.guid, 'Test Plan')
   await addSection(app, doc.guid, plan.planGuid, 'Test Section')
+  await addWorkshops(app, doc.guid)
 
   await expectOneItemArray(t, app.get(route('backup/export')), response => {
     const doc = response.body[0]
@@ -112,6 +118,7 @@ test('do a full export with content', async t => {
     t.is(doc.topics.length, 1)
     t.is(doc.plans.length, 1)
     t.is(doc.plans[0].sections.length, 1)
+    t.is(doc.workshops.length, 2)
   })
 })
 
@@ -120,6 +127,7 @@ test('immediately import an export with content', async t => {
   await addChapter(app, doc.guid, 'Test Chapter')
   const plan = await addPlan(app, doc.guid, 'Test Plan')
   await addSection(app, doc.guid, plan.planGuid, 'Test Section')
+  await addWorkshops(app, doc.guid)  
 
   const exported = await app.get(route('backup/export')).then(response => response.body)
   await (
@@ -136,12 +144,20 @@ test('immediately import an export with content', async t => {
   })
   await expectOneItemArray(t, app.get(route(`chapters/${doc.guid}`)))
   await expectOneItemArray(t, app.get(route(`topics/${doc.guid}`)))
+  await (
+    app.get(route(`workshop-content/${doc.guid}`))
+    .expect(200)
+    .expect(({ body: workshops }) => {
+      t.is(workshops.length, 2)
+    })
+  )
   await expectOneItemArray(t, app.get(route('backup/export')), response => {
     const doc = response.body[0]
     t.is(doc.chapters.length, 1)
     t.is(doc.topics.length, 1)
     t.is(doc.plans.length, 1)
     t.is(doc.plans[0].sections.length, 1)
+    t.is(doc.workshops.length, 2)
   })
 })
 
@@ -154,13 +170,15 @@ test('when the import breaks, it is reverted', async t => {
     name: 'Doc 1',
     chapters: [],
     topics: [],
-    plans: []
+    plans: [],
+    workshops: []
   }, {
     guid: 'Not a guid',
     name: {},
     chapters: [],
     topics: [],
-    plans: []
+    plans: [],
+    workshops: []
   }]
 
   await (
@@ -191,7 +209,8 @@ test('import a single empty document (overwrite)', async t => {
   Object.assign(importable, doc, {
     chapters: [],
     topics: [],
-    plans: []
+    plans: [],
+    workshops: []
   })
 
   await (
@@ -214,6 +233,7 @@ test('export a single empty document', async t => {
       t.deepEqual(document.chapters, [])
       t.deepEqual(document.plans, [])
       t.deepEqual(document.topics, [])
+      t.deepEqual(document.workshops, [])
     })
   )
 })
@@ -235,6 +255,7 @@ test('import and export a single document (overwrite)', async t => {
       t.deepEqual(document.chapters, [])
       t.deepEqual(document.plans, [])
       t.deepEqual(document.topics, [])
+      t.deepEqual(document.workshops, [])
     })
   )
 })
@@ -245,7 +266,8 @@ test('import a single empty document (add)', async t => {
     name: 'Doc 2',
     chapters: [],
     topics: [],
-    plans: []
+    plans: [],
+    workshops: []
   }
 
   await (
@@ -298,6 +320,15 @@ test('import and export a document with content', async t => {
         title: 'test section',
         tags: []
       }]
+    }],
+    workshops: [{
+      guid: uuid(),
+      workshopName: writingWorkshops.CHARACTER_WORKSHOP.name,
+      content: null,
+      title: 'Workshop 1',
+      order: 0,
+      archived: false,
+      date: new Date().toLocaleDateString()
     }]
   })
 
@@ -318,24 +349,6 @@ test('import and export a document with content', async t => {
   )
 })
 
-function removeUnmatchedProperties (model, mutable) {
-  for (const key in mutable) {
-    if (!model[key]) {
-      model[key] = undefined
-      mutable[key] = undefined
-    }
-
-    if (Array.isArray(model[key])) {
-      model[key].arrLen = model[key].length
-      mutable[key].arrLen = mutable[key].length
-    }
-
-    if (typeof model[key] === 'object') {
-      removeUnmatchedProperties(model[key], mutable[key])
-    }
-  }
-}
-
 test('when overwrite import fails, it is reverted', async t => {
   const console_err = console.error
   console.error = function () {}
@@ -346,7 +359,8 @@ test('when overwrite import fails, it is reverted', async t => {
       guid: 'not a guid'
     }],
     topics: [],
-    plans: []
+    plans: [],
+    workshops: []
   })
 
   await (

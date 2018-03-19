@@ -167,12 +167,12 @@ const registerApis = function (app, passport, db, isPremiumUser, isNotOverdue) {
   })
 
   // SAVE ALL CONTENT
-  // POST { documentGuid, chapters, plans, topics }
+  // POST { documentGuid, chapters, plans, topics, workshops }
   app.post(route('document/saveAll'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
-    const { documentGuid: docGuid, chapters, topics, plans } = req.body
+    const { documentGuid: docGuid, chapters, topics, plans, workshops } = req.body
 
-    saveAllContent(db, userId, docGuid, chapters, topics, plans).then(() => {
+    saveAllContent(db, userId, docGuid, chapters, topics, plans, workshops).then(() => {
       res.status(200).send({ docGuid, chapters, plans, topics })
     }, err => {
       console.error(err)

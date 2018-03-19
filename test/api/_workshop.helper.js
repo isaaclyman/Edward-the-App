@@ -1,7 +1,8 @@
 import {
   app,
   route,
-  uuid
+  uuid,
+  wrapTest
 } from '../_imports'
 import writingWorkshops from '../../models/writingWorkshop'
 
@@ -14,7 +15,7 @@ export const workshops = [{
   title: 'Workshop 1',
   order: 0,
   archived: false,
-  date: new Date()
+  date: new Date().toLocaleDateString()
 }, {
   guid: guids[1],
   workshopName: writingWorkshops.CHARACTER_WORKSHOP.name,
@@ -22,7 +23,7 @@ export const workshops = [{
   title: 'Workshop 2',
   order: 1,
   archived: false,
-  date: new Date()
+  date: new Date().toLocaleDateString()
 }]
 
 export async function addWorkshops(app, docGuid) {
@@ -33,4 +34,15 @@ export async function addWorkshops(app, docGuid) {
   )
 
   return workshops
+}
+
+export const checkWorkshops = (t, app, docGuid, expectFn) => {
+  return wrapTest(t,
+    app.get(route(`workshop-content/${docGuid}`))
+    .expect(200)
+    .expect(response => {
+      t.truthy(Array.isArray(response.body))
+      expectFn(response.body)
+    })
+  )
 }

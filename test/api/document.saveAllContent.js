@@ -9,11 +9,14 @@ import {
   test,
   uuid
 } from '../_imports'
+import { removeUnmatchedProperties } from '../_util'
 import { addDocument } from './_document.helper'
 import { checkChapters, compareChapters } from './_chapter.helper'
 import { checkTopics, compareTopics } from './_topic.helper'
 import { checkPlans, comparePlans } from './_plan.helper'
 import { compareSections } from './_section.helper'
+import { checkWorkshops, workshops } from './_workshop.helper'
+import writingWorkshops from '../../models/writingWorkshop'
 
 stubRecaptcha(test)
 
@@ -54,13 +57,26 @@ test('save all content', async t => {
     }))
   }))
 
+  // They share a guid because they're part of the same exercise
+  const workshopGuid = uuid()
+  const workshops = ['It was the best of...', 'It was the worst of...'].map((title, index) => ({
+    guid: workshopGuid,
+    workshopName: writingWorkshops.CHARACTER_WORKSHOP.name,
+    content: null,
+    title: title,
+    order: index,
+    archived: false,
+    date: new Date()
+  }))
+
   await (
     app.post(route('document/saveAll'))
     .send({
       documentGuid: doc.guid,
       chapters,
       plans,
-      topics
+      topics,
+      workshops
     })
     .expect(200)
   )
@@ -112,5 +128,16 @@ test('save all content', async t => {
         })
       })
     })
+  })
+
+  await checkWorkshops(t, app, doc.guid, apiWorkshops => {
+    t.is(apiWorkshops.length, 2)
+
+
+    workshops.forEach((workshop, index) => {
+      removeUnmatchedProperties(workshop, apiWorkshops[index])
+    })
+
+    t.deepEqual(apiWorkshops, workshops)
   })
 })

@@ -10,6 +10,7 @@ const updateWorkshop = function (db, userId, docGuid, workshop) {
   return utilities.upsert(db.knex, 'workshop_content', {
     where: {
       guid: workshop.guid,
+      order: workshop.order,
       document_id: docId(),
       user_id: userId
     },
@@ -47,13 +48,17 @@ const getWorkshops = function (db, userId, docGuid) {
   }).select({
     archived: 'archived',
     content: 'content',
-    createdDate: 'created_at',
     date: 'date',
     guid: 'guid',
     order: 'order',
     title: 'title',
     workshopName: 'workshop_name'
-  }).orderBy('workshop_name').orderBy('order', 'asc')
+  }).orderBy('workshop_name').orderBy('order', 'asc').then(workshops => {
+    return workshops.map(workshop => {
+      workshop.date = new Date(workshop.date).toLocaleDateString()
+      return workshop
+    })
+  })
 }
 
 const registerApis = function (app, passport, db, isPremiumUser) {

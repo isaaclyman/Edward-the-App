@@ -1,14 +1,22 @@
 <template>
-  <div class="wrap">
+  <div class="workshops-wrap">
     <div class="write">
       <h1>Free Write</h1>
       <p class="intro">
         Write whatever comes to mind. Don't worry about style, grammar, or making sense.
       </p>
       <p class="intro" v-if="!begun">If you'd like, you can set a time or word limit:</p>
-      <timer @begin="begin()" :fullText="fullText"></timer>
-      <div v-if="begun" class="editor">
-        <quill-editor :content="content" @update:content="updateContent($event)"></quill-editor>
+      <div v-show="!finished">
+        <timer @begin="begin()" :fullText="fullText"></timer>
+        <div v-if="begun" class="editor" :class="{ 'saving': saving }">
+          <quill-editor :content="content" @update:content="updateContent($event)" ref="quillEditor"></quill-editor>
+        </div>
+      </div>
+      <p class="finished" v-show="finished">
+        <strong>Saved!</strong> You can view this free write in the Workshops column of the Write page.
+      </p>
+      <div v-if="begun && !finished" class="done">
+        <button class="button-green" @click="finish()">Done</button>
       </div>
     </div>
   </div>
@@ -38,6 +46,8 @@ export default {
   data () {
     return {
       begun: false,
+      finished: false,
+      saving: false,
       workshop: null
     }
   },
@@ -55,12 +65,20 @@ export default {
       }
       this.$store.commit(ADD_WORKSHOP, { workshop: this.workshop })
     },
+    finish () {
+      this.$refs.quillEditor.disable()
+      this.saving = true
+      setTimeout(() => {
+        this.finished = true
+        this.saving = false
+      }, 1000)
+    },
     updateContent (content) {
       this.$store.commit(UPDATE_WORKSHOPS_CONTENT, {
         workshopUpdates: [{
           workshop: this.workshop,
           newContent: content,
-          newTitle: `${this.fullText.slice(0, 20)}...`
+          newTitle: `${GetContentString(content).slice(0, 20)}...`
         }]
       })
     }
@@ -69,7 +87,7 @@ export default {
 </script>
 
 <style scoped>
-.wrap {
+.workshops-wrap {
   display: flex;
   justify-content: center;
   width: 100%;
@@ -83,5 +101,26 @@ export default {
 
 .intro {
   margin: 0;
+}
+
+.editor {
+  display: block;
+  height: 200px;
+  margin-bottom: 50px;
+  min-height: 200px;
+  transition: opacity 200ms;
+}
+
+.editor.saving {
+  opacity: 0.75;
+}
+
+.editor .wrap {
+  height: 100%;
+  width: 100%;
+}
+
+.finished {
+  margin-top: 20px;
 }
 </style>

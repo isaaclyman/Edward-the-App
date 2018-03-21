@@ -13,6 +13,10 @@ class Cache {
     allCacheKeys.push(key)
   }
 
+  cacheDelete () {
+    window.localStorage.removeItem(this.key)
+  }
+
   cacheGet () {
     return JSON.parse(window.localStorage.getItem(this.key))
   }

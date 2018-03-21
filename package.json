@@ -82,7 +82,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "babel-register": "^6.26.0",
     "copy-webpack-plugin": "^4.3.1",
-    "cypress": "^1.4.2",
+    "cypress": "^2.1.0",
     "eslint": "^3.19.0",
     "eslint-config-standard": "^6.2.1",
     "eslint-friendly-formatter": "^3.0.0",

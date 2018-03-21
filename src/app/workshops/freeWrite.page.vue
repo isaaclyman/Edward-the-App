@@ -24,11 +24,14 @@
 
 <script>
 import { ADD_WORKSHOP, UPDATE_WORKSHOPS_CONTENT } from '../shared/workshops.store'
+import Cache from '../shared/cache'
 import { GetContentString } from '../shared/deltaParser'
 import guid from '../shared/guid'
 import QuillEditor from '../shared/quillEditor.vue'
 import Timer from '../shared/timer.vue'
 import writingWorkshops from '../../../models/writingWorkshop'
+
+const exerciseCache = new Cache('FREE_WRITE_CURRENT_EXERCISE')
 
 export default {
   components: {
@@ -36,6 +39,9 @@ export default {
     Timer
   },
   computed: {
+    allWorkshops () {
+      return this.$store.state.workshop.workshops
+    },
     content () {
       return this.workshop ? this.workshop.content : null
     },
@@ -54,6 +60,33 @@ export default {
   methods: {
     begin () {
       this.begun = true
+
+      const cachedGuid = exerciseCache.cacheGet()
+      if (!cachedGuid) {
+        this.newWorkshop()
+      } else {
+        const workshop = this.allWorkshops.find(workshop => workshop.guid === cachedGuid)
+
+        if (!workshop) {
+          exerciseCache.cacheDelete()
+          this.newWorkshop()
+          return
+        }
+
+        this.workshop = workshop
+        this.begun = true
+      }
+    },
+    finish () {
+      this.$refs.quillEditor.disable()
+      this.saving = true
+      setTimeout(() => {
+        exerciseCache.cacheDelete()
+        this.finished = true
+        this.saving = false
+      }, 1000)
+    },
+    newWorkshop () {
       this.workshop = {
         archived: false,
         guid: guid(),
@@ -64,14 +97,7 @@ export default {
         date: new Date().toLocaleDateString()
       }
       this.$store.commit(ADD_WORKSHOP, { workshop: this.workshop })
-    },
-    finish () {
-      this.$refs.quillEditor.disable()
-      this.saving = true
-      setTimeout(() => {
-        this.finished = true
-        this.saving = false
-      }, 1000)
+      exerciseCache.cacheSet(this.workshop.guid)
     },
     updateContent (content) {
       this.$store.commit(UPDATE_WORKSHOPS_CONTENT, {
@@ -81,6 +107,11 @@ export default {
           newTitle: `${GetContentString(content).slice(0, 20)}...`
         }]
       })
+    }
+  },
+  mounted () {
+    if (exerciseCache.cacheGet()) {
+      this.begin()
     }
   }
 }

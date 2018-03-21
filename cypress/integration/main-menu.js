@@ -28,5 +28,8 @@ describe('the main menu', () => {
     cy.url().should('contain', '/write')
     cy.get('.main-menu').find('.main-menu--button').contains('Analyze').click()
     cy.url().should('contain', '/analyze')
+    cy.get('.main-menu').find('.main-menu--button').contains('Workshop').click()
+    cy.get('.swal-modal').find('.workshops').should('be.visible')
+    cy.get('.swal-modal').find('button').contains('Cancel').click()
   })
 })

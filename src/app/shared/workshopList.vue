@@ -69,7 +69,9 @@ export default {
       return this.activeWorkshops && this.activeWorkshops.length && this.activeWorkshops[0].title
     },
     selectableWorkshops () {
-      return this.viewingWorkshops.filter(workshop => workshop.order === 0)
+      return this.viewingWorkshops.filter(workshop => workshop.order === 0).concat().sort((a, b) => {
+        return new Date(a.date).getTime() - new Date(b.date).getTime()
+      })
     },
     viewingWorkshops () {
       return this.workshops.filter(workshop => workshop.workshopName === this.activeWorkshopName)

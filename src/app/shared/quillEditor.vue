@@ -37,7 +37,6 @@ export default {
   methods: {
     // disable/enable are provided for the parent component to use
     disable () {
-      console.log('disabling')
       this.quill.enable(false)
     },
     enable () {

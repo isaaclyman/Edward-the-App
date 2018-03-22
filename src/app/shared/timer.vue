@@ -1,40 +1,42 @@
 <template>
-  <div v-if="!begun" class="limit">
-    <div class="limit-option">
-      <input type="radio" id="wordLimit" name="limit" value="word" v-model="limitType">
-      <label for="wordLimit">Set a word limit</label>
+  <div>
+    <div v-show="!begun" class="limit">
+      <div class="limit-option">
+        <input type="radio" id="wordLimit" name="limit" value="word" v-model="limitType">
+        <label for="wordLimit">Set a word limit</label>
+      </div>
+      <div class="limit-option">
+        <input type="radio" id="timeLimit" name="limit" value="time" v-model="limitType">
+        <label for="timeLimit">Set a time limit</label>
+      </div>
+      <div class="limit-option">
+        <input type="radio" id ="noLimit" name="limit" :value="null" v-model="limitType">
+        <label for="noLimit">No limit</label>
+      </div>
+      <div class="set-limit" v-if="limitType">
+        <input type="number" id="setLimit" v-model="limit">
+        <label class="set-limit-label" for="setLimit">{{setLimitLabel}}</label>
+      </div>
+      <div class="begin">
+        <button class="button-green" @click="begin()" :disabled="!valid">Begin</button>
+      </div>
     </div>
-    <div class="limit-option">
-      <input type="radio" id="timeLimit" name="limit" value="time" v-model="limitType">
-      <label for="timeLimit">Set a time limit</label>
-    </div>
-    <div class="limit-option">
-      <input type="radio" id ="noLimit" name="limit" :value="null" v-model="limitType">
-      <label for="noLimit">No limit</label>
-    </div>
-    <div class="set-limit" v-if="limitType">
-      <input type="number" id="setLimit" v-model="limit">
-      <label class="set-limit-label" for="setLimit">{{setLimitLabel}}</label>
-    </div>
-    <div class="begin">
-      <button class="button-green" @click="begin()" :disabled="!valid">Begin</button>
-    </div>
-  </div>
-  <div v-else class="counter" :class="{ 'expired': limitReached }">
-    <div v-if="limitType === 'word'">
-      {{ wordCount }} of {{ limit }} words written
-    </div>
-    <div v-else-if="limitType === 'time'">
-      {{ timeDisplay }}
-    </div>
-    <div v-if="!limitReached && limitType !== null">
-      <button class="button-link" @click="reset()">Cancel</button>
-    </div>
-    <div v-if="limitReached">
-      <button class="button-link" @click="reset()">Set again</button>
-    </div>
-    <div v-if="limitType === null">
-      <button class="button-link" @click="reset()">Set a limit</button>
+    <div v-show="begun" class="counter" :class="{ 'expired': limitReached }">
+      <div v-if="limitType === 'word'">
+        {{ wordCount }} of {{ limit }} words written
+      </div>
+      <div v-else-if="limitType === 'time'">
+        {{ timeDisplay }}
+      </div>
+      <div v-if="!limitReached && limitType !== null">
+        <button class="button-link" @click="reset()">Cancel</button>
+      </div>
+      <div v-if="limitReached">
+        <button class="button-link" @click="reset()">Set again</button>
+      </div>
+      <div v-if="limitType === null">
+        <button class="button-link" @click="reset()">Set a limit</button>
+      </div>
     </div>
   </div>
 </template>

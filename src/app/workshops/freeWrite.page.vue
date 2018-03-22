@@ -6,15 +6,23 @@
         Write whatever comes to mind. Don't worry about style, grammar, or making sense.
       </p>
       <p class="intro" v-if="!begun">If you'd like, you can set a time or word limit:</p>
-      <div v-show="!finished">
+      <div v-if="!finished">
         <timer @begin="begin()" :fullText="fullText"></timer>
-        <div v-if="begun" class="editor" :class="{ 'saving': saving }">
-          <quill-editor :content="content" @update:content="updateContent($event)" ref="quillEditor"></quill-editor>
-        </div>
       </div>
-      <p class="finished" v-show="finished">
-        <strong>Saved!</strong> You can view this free write in the Workshops column of the Write page.
-      </p>
+      <div v-if="begun && !finished" class="editor" :class="{ 'saving': saving }">
+        <quill-editor :content="content" @update:content="updateContent($event)" ref="quillEditor"></quill-editor>
+      </div>
+      <template v-if="finished">
+        <p class="finished">
+          <template v-if="this.fullText.trim()">
+            <strong>Saved!</strong> You can view this free write in the Workshops column of the Write page.
+          </template>
+          <template v-else>
+            <strong>Deleted!</strong> This free write had no content.
+          </template>
+        </p>
+        <button class="button-green" @click="reset()">Start over</button>
+      </template>
       <div v-if="begun && !finished" class="done">
         <button class="button-green" @click="finish()">Done</button>
       </div>
@@ -23,7 +31,7 @@
 </template>
 
 <script>
-import { ADD_WORKSHOP, UPDATE_WORKSHOPS_CONTENT } from '../shared/workshops.store'
+import { ADD_WORKSHOP, DELETE_WORKSHOP, UPDATE_WORKSHOPS_CONTENT } from '../shared/workshops.store'
 import Cache from '../shared/cache'
 import { GetContentString } from '../shared/deltaParser'
 import guid from '../shared/guid'
@@ -58,23 +66,13 @@ export default {
     }
   },
   methods: {
-    begin () {
+    begin (currentWorkshop) {
       this.begun = true
 
-      const cachedGuid = exerciseCache.cacheGet()
-      if (!cachedGuid) {
+      if (!currentWorkshop) {
         this.newWorkshop()
       } else {
-        const workshop = this.allWorkshops.find(workshop => workshop.guid === cachedGuid)
-
-        if (!workshop) {
-          exerciseCache.cacheDelete()
-          this.newWorkshop()
-          return
-        }
-
-        this.workshop = workshop
-        this.begun = true
+        this.workshop = currentWorkshop
       }
     },
     finish () {
@@ -86,7 +84,17 @@ export default {
         this.saving = false
       }, 1000)
     },
+    getCurrentWorkshop () {
+      const cachedGuid = exerciseCache.cacheGet()
+      if (!cachedGuid) {
+        return null
+      }
+
+      const workshop = this.allWorkshops.find(workshop => workshop.guid === cachedGuid)
+      return workshop || null
+    },
     newWorkshop () {
+      exerciseCache.cacheDelete()
       this.workshop = {
         archived: false,
         guid: guid(),
@@ -99,6 +107,12 @@ export default {
       this.$store.commit(ADD_WORKSHOP, { workshop: this.workshop })
       exerciseCache.cacheSet(this.workshop.guid)
     },
+    reset () {
+      this.begun = false
+      this.finished = false
+      this.saving = false
+      this.workshop = null
+    },
     updateContent (content) {
       this.$store.commit(UPDATE_WORKSHOPS_CONTENT, {
         workshopUpdates: [{
@@ -109,9 +123,18 @@ export default {
       })
     }
   },
-  mounted () {
-    if (exerciseCache.cacheGet()) {
-      this.begin()
+  created () {
+    const workshop = this.getCurrentWorkshop()
+    if (workshop) {
+      this.begin(workshop)
+    }
+  },
+  beforeDestroy () {
+    if (!this.fullText.trim()) {
+      exerciseCache.cacheDelete()
+      if (this.workshop) {
+        this.$store.commit(DELETE_WORKSHOP, { workshop: this.workshop })
+      }
     }
   }
 }
@@ -143,7 +166,7 @@ export default {
 }
 
 .editor.saving {
-  opacity: 0.75;
+  opacity: 0.5;
 }
 
 .editor .wrap {

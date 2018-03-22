@@ -7,7 +7,7 @@
           <div>{{route.name}}</div>
         </button>
       </router-link>
-      <hr class="vert between" :key="route.name">
+      <hr class="vert between" :key="route.name + '-hr'">
     </template>
     <button class="main-menu--button" :title="toolsTooltip" v-tooltip @click="showWorkshops()">
       <div v-html="getIconSvg('tools')"></div>

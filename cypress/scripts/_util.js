@@ -81,6 +81,10 @@ export function createTestPlan (cy, isPremium, documentGuid) {
   ]).then(() => planGuids)
 }
 
+export function createTestWorkshop (cy) {
+  return cy.exec('node cypress/scripts/createTestWorkshop.js')
+}
+
 export function createTestUser (cy) {
   cy.exec('node cypress/scripts/createTestUser.js')
 }

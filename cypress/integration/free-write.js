@@ -3,6 +3,30 @@ import {
   createTestChapter, createTestDocument, createTestWorkshop, createTestUser, deleteTestUser, logIn, makeTestUserPremium
 } from '../scripts/_util'
 
+describe('the free write workshop (restricted)', () => {
+  before(() => {
+    deleteTestUser(cy)
+    createTestUser(cy)
+  })
+
+  beforeEach(() => {
+    logIn(cy, user.email, user.password)
+    createTestDocument(cy, false).then(() => createTestChapter(cy, false))
+  })
+
+  it('should not allow a Limited user to access the Free Write workshop via the workshops modal', () => {
+    cy.visit('/app.html#/write')
+    cy.get('select.document-dropdown').select('test')
+    cy.get('.main-menu').find('.main-menu--button').contains('Workshop').click()
+    cy.get('.swal-modal').find('.workshop').contains('Free Writing').should('not.be.visible')
+  })
+
+  it('should not allow a Limited user to visit the Free Write workshop directly', () => {
+    cy.visit('/app.html#/workshop/free-write')
+    cy.url().should('contain', '/write')
+  })
+})
+
 describe('the free write workshop', () => {
   before(() => {
     deleteTestUser(cy)

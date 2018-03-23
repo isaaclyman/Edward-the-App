@@ -10,7 +10,21 @@ import Planner from './planner/planner.page.vue'
 import Settings from './settings/settings.page.vue'
 import WFreeWrite from './workshops/freeWrite.page.vue'
 
+import userApi from './api/userApi'
+
 Vue.use(Router)
+
+const assertPremium = (to, from, next) => {
+  userApi.getUser().then(user => {
+    if (user.isPremium) {
+      next()
+    } else {
+      next({ path: '/write' })
+    }
+  }, err => {
+    console.error(err)
+  })
+}
 
 export default new Router({
   routes: [
@@ -56,7 +70,8 @@ export default new Router({
     {
       path: '/workshop/free-write',
       name: 'Free Write',
-      component: WFreeWrite
+      component: WFreeWrite,
+      beforeEnter: assertPremium
     }
   ]
 })

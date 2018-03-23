@@ -7,7 +7,7 @@
     <div class="workshop-list">
       <div class="workshop-list-header">
         <div class="workshop-list-title">
-          {{ activeWorkshopDisplayName }}
+          {{ currentWorkshopDisplayName }}
         </div>
       </div>
       <div class="workshop-list-body">
@@ -16,7 +16,7 @@
             Select a workshop:
           </div>
           <select class="workshop-select-dropdown" v-model="selectedWorkshopGuid">
-            <option v-for="workshop in selectableWorkshops" :key="workshop.guid" :value="workshop.guid">
+            <option v-for="workshop in selectableWorkshops" v-show="filterWorkshops(workshop)" :key="workshop.guid" :value="workshop.guid">
               {{ workshop.title }}
             </option>
           </select>
@@ -26,6 +26,11 @@
             <div class="workshop-header">
               <div class="workshop-title">
                 {{ activeWorkshopsTitle }} ({{ activeWorkshopsDate }})
+              </div>
+              <div class="workshop-actions">
+                <button class="workshop-action" v-show="!firstActiveWorkshop.archived" @click="archiveActiveWorkshops()">Archive</button>
+                <button class="workshop-action" v-show="firstActiveWorkshop.archived" @click="restoreActiveWorkshops()">Restore</button>
+                <button class="workshop-action button-red" v-show="firstActiveWorkshop.archived" @click="deleteActiveWorkshops()">Delete Forever</button>
               </div>
             </div>
             <div class="workshop-content" v-for="workshop in activeWorkshops" :key="workshop.guid">
@@ -39,6 +44,7 @@
 </template>
 
 <script>
+import { ARCHIVE_WORKSHOP, DELETE_WORKSHOP, RESTORE_WORKSHOP } from '../shared/workshops.store'
 import { GetHtml } from '../shared/deltaParser'
 import TabsList from '../shared/tabsList.vue'
 import uniq from 'lodash/uniq'
@@ -49,12 +55,13 @@ export default {
     TabsList
   },
   computed: {
-    activeWorkshopDisplayName () {
-      return writingWorkshops[this.activeWorkshopName].displayName
+    currentWorkshopDisplayName () {
+      return writingWorkshops[this.currentWorkshopName].displayName
     },
-    activeWorkshopName () {
+    currentWorkshopName () {
       if (this.activeWorkshopNameIndex < 0) {
         this.activeWorkshopNameIndex = 0
+        this.selectDefaultWorkshop()
       }
 
       return this.workshopNames[this.activeWorkshopNameIndex] || {}
@@ -66,7 +73,10 @@ export default {
       return this.activeWorkshops && this.activeWorkshops.length && new Date(this.activeWorkshops[0].date).toLocaleDateString()
     },
     activeWorkshopsTitle () {
-      return this.activeWorkshops && this.activeWorkshops.length && this.activeWorkshops[0].title
+      return this.firstActiveWorkshop.title
+    },
+    firstActiveWorkshop () {
+      return (this.activeWorkshops && this.activeWorkshops.length && this.activeWorkshops[0]) || {}
     },
     selectableWorkshops () {
       return this.viewingWorkshops.filter(workshop => workshop.order === 0).slice(0).sort((a, b) => {
@@ -74,7 +84,7 @@ export default {
       })
     },
     viewingWorkshops () {
-      return this.workshops.filter(workshop => workshop.workshopName === this.activeWorkshopName)
+      return this.workshops.filter(workshop => workshop.workshopName === this.currentWorkshopName)
     },
     workshopNames () {
       return uniq(this.workshops.map(workshop => workshop.workshopName))
@@ -93,8 +103,29 @@ export default {
     }
   },
   methods: {
+    archiveActiveWorkshops () {
+      for (const workshop of this.activeWorkshops) {
+        this.$store.commit(ARCHIVE_WORKSHOP, { workshop })
+      }
+    },
+    deleteActiveWorkshops () {
+      for (const workshop of this.activeWorkshops) {
+        this.$store.commit(DELETE_WORKSHOP, { workshop })
+      }
+
+      if (!(this.selectableWorkshops && this.selectableWorkshops.length)) {
+        return
+      }
+
+      this.selectedWorkshopGuid = this.selectableWorkshops[0].guid
+    },
     getHtml (workshop) {
       return GetHtml(workshop.content)
+    },
+    restoreActiveWorkshops () {
+      for (const workshop of this.activeWorkshops) {
+        this.$store.commit(RESTORE_WORKSHOP, { workshop })
+      }
     },
     selectWorkshopName (index) {
       this.activeWorkshopNameIndex = index
@@ -109,6 +140,12 @@ export default {
   },
   mounted () {
     this.selectDefaultWorkshop()
+  },
+  props: {
+    filterWorkshops: {
+      required: true,
+      type: Function
+    }
   }
 }
 </script>

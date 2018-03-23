@@ -12,10 +12,14 @@ const workshopGuids = [guid(), guid()]
 const workshop = index => ({
   archived: false,
   guid: workshopGuids[index - 1],
-  order: index - 1,
+  order: 0,
   title: `test workshop ${index}`,
   workshop_name: writingWorkshops.FREE_WRITE.name,
-  content: null,
+  content: {
+    ops: [{
+      insert: `test workshop ${index} content`
+    }]
+  },
   user_id: userId,
   document_id: docId
 })

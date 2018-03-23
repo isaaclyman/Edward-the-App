@@ -96,7 +96,7 @@ function deleteTestUser(knex, email) {
 
       const tablesToDeleteFrom = [
         'section_orders', 'sections', 'plan_orders', 'plans', 'chapter_topics', 'master_topic_orders',
-        'master_topics', 'chapter_orders', 'chapters', 'document_orders', 'documents'
+        'master_topics', 'chapter_orders', 'chapters', 'document_orders', 'documents', 'workshop_content'
       ]
 
       const deleteFns = tablesToDeleteFrom.map(table => () => {

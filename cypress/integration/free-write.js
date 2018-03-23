@@ -1,6 +1,6 @@
 import { user } from '../../test/_util'
 import {
-  createTestChapter, createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium
+  createTestChapter, createTestDocument, createTestWorkshop, createTestUser, deleteTestUser, logIn, makeTestUserPremium
 } from '../scripts/_util'
 
 describe('the free write workshop', () => {
@@ -23,7 +23,7 @@ describe('the free write workshop', () => {
     cy.url().should('contain', '/workshop/free-write')
   })
 
-  describe('the free write workshop', () => {
+  describe('the free write workshop (new workshop)', () => {
     beforeEach(() => {
       cy.clearLocalStorage()
       cy.visit('/app.html#/workshop/free-write')
@@ -96,21 +96,69 @@ describe('the free write workshop', () => {
     })
   
     it('should edit the same workshop if the page is refreshed', () => {
-      
+      cy.get('.limit-option label').contains('No limit').click()
+      cy.get('.begin .button-green').click()
+      const testContent = 'Test content for refresh'
+      typeContent(cy, '.ql-editor', testContent)
+      cy.reload()
+      cy.get('.ql-editor').should('contain', testContent)
     })
-  
+
     it('should show a new workshop if the workshop is completed', () => {
-  
+      cy.get('.limit-option label').contains('No limit').click()
+      cy.get('.begin .button-green').click()
+      const testContent = 'Test content for refresh'
+      typeContent(cy, '.ql-editor', testContent)
+      const clock = cy.clock()
+      cy.get('.done .button-green').click()
+      clock.tick(2000)
+      cy.reload()
+      cy.get('.ql-editor').should('not.be.visible')
     })
-  
+  })
+
+  describe('the free write workshop (compose page)', () => {
+    beforeEach(() => {
+      deleteTestUser(cy)
+      createTestUser(cy)
+      makeTestUserPremium(cy)
+      createTestDocument(cy, true).then(() => createTestChapter(cy, true))
+      createTestWorkshop(cy)
+      logIn(cy, user.email, user.password)
+      cy.visit('/app.html#/write')
+      cy.get('select.document-dropdown').select('test')
+      cy.get('.plan-switch').find('.switch-label').contains('Workshops').click()
+    })
+
     it('should show completed workshops on the Workshops column of the composer', () => {
-  
+      cy.get('.workshop-select').find('select').select('test workshop 1')
+      cy.get('.workshop').find('.workshop-content').should('contain', 'test workshop 1 content')
+      cy.get('.workshop-select').find('select').select('test workshop 2')
+      cy.get('.workshop').find('.workshop-content').should('contain', 'test workshop 2 content')
     })
-  
+
     it('should allow archiving and restoring a workshop from the compose page', () => {
-  
+      // Archive
+      cy.get('.workshop-select').find('select').select('test workshop 1')
+      cy.get('.workshop-action').contains('Archive').click()
+
+      // Make sure it's archived
+      cy.get('.workshop-select').find('select').select('test workshop 2')
+      cy.get('.workshop-select option').contains('test workshop 1').should('not.exist')
+
+      // Show archived
+      cy.get('.archived-filter input').check()
+      cy.get('.workshop-select option').contains('test workshop 1').should('exist')
+
+      // Restore
+      cy.get('.workshop-select').find('select').select('test workshop 1')
+      cy.get('.workshop-action').contains('Restore').click()
+
+      // Make sure it's restored
+      cy.get('.workshop-select').find('select').select('test workshop 2')
+      cy.get('.workshop-select option').contains('test workshop 1').should('exist')
     })
-  
+
     it('should allow deleting a workshop forever from the compose page', () => {
       
     })

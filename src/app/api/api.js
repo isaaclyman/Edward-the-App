@@ -63,7 +63,7 @@ class Api {
   }
 
   // EXPORT/IMPORT
-  docExport (documentGuid) { return this.simpleGet(route(`backup/export/${documentGuid}`)) }
+  docExport (documentGuid) { return this.simpleGet(route(`backup/export/document/${documentGuid}`)) }
   docImport ({ guid, name, chapters, topics, plans }) {
     return this.simplePost(route(`backup/import/document`), { guid, name, chapters, topics, plans })
   }

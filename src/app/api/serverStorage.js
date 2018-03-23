@@ -167,8 +167,8 @@ class ServerStorageApi {
 
   // EXPORT/IMPORT
 
-  docExport () {
-    return api.docExport()
+  docExport (documentGuid) {
+    return api.docExport(documentGuid)
   }
 
   docImport (doc) {

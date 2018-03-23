@@ -46,7 +46,13 @@
           Workshops are only available for Premium subscribers.
         </p>
         <div v-for="workshop in workshops" :key="workshop.name" @click="startWorkshop(workshop)">
-          <div class="workshop">
+          <div class="workshop" :class="{ 'restricted': !isPremium || !workshop.available }">
+            <div class="workshop-restricted" v-if="!workshop.available">
+              COMING SOON
+            </div>
+            <div class="workshop-restricted" v-if="workshop.available && !isPremium">
+              PREMIUM ONLY
+            </div>
             <div class="workshop-details">
               <div class="workshop-name">
                 {{workshop.displayName}}
@@ -153,6 +159,10 @@ export default {
       })
     },
     startWorkshop (workshop) {
+      if (!this.isPremium) {
+        return
+      }
+
       swal.close()
       this.$router.push(workshop.route)
     }
@@ -283,7 +293,25 @@ hr.between:last-of-type {
   justify-content: flex-start;
   margin-bottom: 12px;
   padding: 8px;
+  position: relative;
   text-decoration: none;
+}
+
+.workshop.restricted {
+  cursor: default;
+}
+
+.workshop-restricted {
+  background-color: rgba(255, 255, 255, 0.85);
+  bottom: 0;
+  font-size: 20px;
+  font-weight: bold;
+  left: 0;
+  padding-top: 5px;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
 }
 
 .workshop-details {

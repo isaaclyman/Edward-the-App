@@ -16,7 +16,7 @@
             Select a workshop:
           </div>
           <select class="workshop-select-dropdown" v-model="selectedWorkshopGuid">
-            <option v-for="workshop in selectableWorkshops" v-show="filterWorkshops(workshop)" :key="workshop.guid" :value="workshop.guid">
+            <option v-for="workshop in selectableWorkshops" v-if="filterWorkshops(workshop)" :key="workshop.guid" :value="workshop.guid">
               {{ workshop.title }}
             </option>
           </select>
@@ -46,6 +46,7 @@
 <script>
 import { ARCHIVE_WORKSHOP, DELETE_WORKSHOP, RESTORE_WORKSHOP } from '../shared/workshops.store'
 import { GetHtml } from '../shared/deltaParser'
+import swal from 'sweetalert'
 import TabsList from '../shared/tabsList.vue'
 import uniq from 'lodash/uniq'
 import writingWorkshops from '../../../models/writingWorkshop'
@@ -109,15 +110,26 @@ export default {
       }
     },
     deleteActiveWorkshops () {
-      for (const workshop of this.activeWorkshops) {
-        this.$store.commit(DELETE_WORKSHOP, { workshop })
-      }
+      swal({
+        buttons: true,
+        dangerMode: true,
+        icon: 'warning',
+        text: `Are you sure you want to delete this workshop? All of its content will be lost. This cannot be undone.`,
+        title: 'Delete Forever?'
+      }).then((willDelete) => {
+        if (!willDelete) {
+          return
+        }
+        for (const workshop of this.activeWorkshops) {
+          this.$store.commit(DELETE_WORKSHOP, { workshop })
+        }
 
-      if (!(this.selectableWorkshops && this.selectableWorkshops.length)) {
-        return
-      }
+        if (!(this.selectableWorkshops && this.selectableWorkshops.length)) {
+          return
+        }
 
-      this.selectedWorkshopGuid = this.selectableWorkshops[0].guid
+        this.selectedWorkshopGuid = this.selectableWorkshops[0].guid
+      })
     },
     getHtml (workshop) {
       return GetHtml(workshop.content)

@@ -118,7 +118,7 @@ describe('the free write workshop', () => {
   })
 
   describe('the free write workshop (compose page)', () => {
-    beforeEach(() => {
+    before(() => {
       deleteTestUser(cy)
       createTestUser(cy)
       makeTestUserPremium(cy)
@@ -160,7 +160,15 @@ describe('the free write workshop', () => {
     })
 
     it('should allow deleting a workshop forever from the compose page', () => {
-      
+      // Archive
+      cy.get('.workshop-select').find('select').select('test workshop 1')
+      cy.get('.workshop-action').contains('Archive').click()
+
+      // Delete
+      cy.get('.workshop-action').contains('Delete').click()
+      cy.get('.swal-modal').find('button').contains('OK').click()
+
+      cy.get('.workshop-select option').contains('test workshop 1').should('not.exist')
     })
   })
 })

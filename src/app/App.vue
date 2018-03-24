@@ -54,9 +54,6 @@ export default {
     currentDocument () {
       return this.$store.state.document.currentDocument || { guid: null }
     }
-  },
-  mounted () {
-
   }
 }
 </script>

@@ -310,6 +310,10 @@ ul li, ol li {
   margin-right: 12px;
 }
 
+.feature {
+  flex: 1;
+}
+
 .small {
   background-color: transparent;
   border: 1px solid transparent;

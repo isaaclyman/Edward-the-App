@@ -84,9 +84,26 @@ ul li, ol li {
 .header-links {
   display: flex;
   flex-direction: row;
-  font-size: 17px;
   justify-content: center;
   padding-bottom: 30px;
+}
+
+.header-links a {
+  background-color: rgba(255, 235, 59, 0.4);
+  border: 2px solid #ffeb3b;
+  color: #000;
+  display: inline-block;
+  font-size: 18px;  
+}
+
+.header-links a:hover {
+  background-color: #ffeb3b;
+  border-color: #ffeb3b;
+  box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.24);
+}
+
+.header-links a:not(:last-of-type) {
+  margin-right: 12px;
 }
 
 .hook {

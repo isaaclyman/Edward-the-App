@@ -186,13 +186,14 @@ ul li, ol li {
 .screenshot {
   box-shadow: 2px 2px 33px 1px rgba(0,0,0,0.75);
   margin: 16px 0;
-  max-width: 550px;
+  max-width: 105%;
+  width: 550px;
 }
 
 .features li {
   align-items: center;
   display: flex;
-  line-height: 1.3em;
+  line-height: 22px;
   list-style-type: none;
   padding-bottom: 8px;
   padding-top: 8px;

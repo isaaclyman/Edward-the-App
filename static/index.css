@@ -2,9 +2,12 @@
 
 html, body {
   font-family: 'Asap Condensed', sans-serif;
-  font-size: 16px;
   margin: 0;
   padding: 0;
+}
+
+body {
+  font-size: 16px;
 }
 
 * {
@@ -52,6 +55,12 @@ h4 {
   font-size: 22px;
 }
 
+@media (max-width: 800px) {
+  h1, h2, h3, h4 {
+    padding: 0 5px;
+  }
+}
+
 ul li, ol li {
   margin-left: 10px;
 }
@@ -64,8 +73,18 @@ ul li, ol li {
 .left-align h3,
 .left-align h4 {
   max-width: 100%;
+  padding: 0 5px;
   text-align: left;
-  width: 800px;
+}
+
+@media (min-width: 800px) {
+  .left-align .header,
+  .left-align h1,
+  .left-align h2,
+  .left-align h3,
+  .left-align h4 {
+    width: 800px;
+  }
 }
 
 .header {
@@ -93,7 +112,8 @@ ul li, ol li {
   border: 2px solid #ffeb3b;
   color: #000;
   display: inline-block;
-  font-size: 18px;  
+  font-size: 18px;
+  text-align: center;
 }
 
 .header-links a:hover {
@@ -131,7 +151,12 @@ ul li, ol li {
 .content > p, .content > ul, .content > ol {
   max-width: 100%;
   padding: 0 12px;
-  width: 800px;
+}
+
+@media (min-width: 800px) {
+  .content > p, .content > ul, .content > ol {
+    width: 800px;
+  }
 }
 
 .content-link {

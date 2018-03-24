@@ -2,7 +2,6 @@
 
 html, body {
   font-family: 'Asap Condensed', sans-serif;
-  font-size: 16px;
   margin: 0;
   padding: 0;
 }
@@ -52,8 +51,20 @@ h4 {
   font-size: 22px;
 }
 
+@media (max-width: 800px) {
+  h1, h2, h3, h4 {
+    padding: 0 5px;
+  }
+}
+
 ul li, ol li {
   margin-left: 10px;
+}
+
+@media (max-width: 800px) {
+  ul:not(.features) li {
+    margin-left: 15px;
+  }
 }
 
 /* CLASSES */
@@ -64,8 +75,18 @@ ul li, ol li {
 .left-align h3,
 .left-align h4 {
   max-width: 100%;
+  padding: 0 5px;
   text-align: left;
-  width: 800px;
+}
+
+@media (min-width: 800px) {
+  .left-align .header,
+  .left-align h1,
+  .left-align h2,
+  .left-align h3,
+  .left-align h4 {
+    width: 800px;
+  }
 }
 
 .header {
@@ -84,9 +105,30 @@ ul li, ol li {
 .header-links {
   display: flex;
   flex-direction: row;
-  font-size: 17px;
   justify-content: center;
   padding-bottom: 30px;
+}
+
+.header-links a {
+  background-color: rgba(255, 235, 59, 0.4);
+  border: 2px solid #ffeb3b;
+  box-shadow: none;
+  color: #000;
+  display: inline-block;
+  font-size: 18px;
+  text-align: center;
+  transition: background-color 200ms, box-shadow 200ms;
+  width: 84px;
+}
+
+.header-links a:hover {
+  background-color: #ffeb3b;
+  border-color: #ffeb3b;
+  box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.24);
+}
+
+.header-links a:not(:last-of-type) {
+  margin-right: 12px;
 }
 
 .hook {
@@ -103,6 +145,103 @@ ul li, ol li {
   padding-top: 30px;
 }
 
+.slider-wrap {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 30px 0;
+}
+
+.inner-slider-wrap {
+  /* box-shadow: 0px 0px 11px 6px rgba(240, 240, 240, 1); */
+  border: 2px solid rgba(0, 0, 0, 0.5);
+  max-width: 100%;
+  position: relative;
+  z-index: 20;
+}
+
+.slider-inset-shadow {
+  box-shadow: inset 0px 0px 11px 6px rgba(240, 240, 240, 1);
+  height: 100%;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 30;
+}
+
+.slider-button {
+  color: #666;
+  cursor: pointer;
+  font-size: 40px;
+  left: 0;
+  margin: 0;
+  position: relative;
+  transition: color 200ms, left 200ms, right 200ms;
+  z-index: 40;
+}
+
+.slider-button.left {
+  left: 40px;
+}
+
+.slider-button.right {
+  left: -40px;
+}
+
+.slider-button:hover {
+  color: #000;
+}
+
+@media (min-width: 800px) {
+  .slider-button {
+    z-index: 10;
+  }
+
+  .slider-button.left {
+    left: 8px;
+  }
+
+  .slider-button.right {
+    left: -8px;
+  }
+
+  .slider-button:hover {
+    left: 0;
+  }
+}
+
+.intro-slider {
+  background-color: #f0f0f0;
+  height: 380px;
+  max-width: 100%;
+  position: relative;
+  width: 700px;
+  z-index: 20;
+}
+
+.slider-item {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 380px;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.screenshot {
+  margin: 16px 0;
+  max-height: 270px;
+  max-width: 90%;
+}
+
+.caption {
+  font-size: 22px;
+  padding: 0 12px;
+}
+
 .content {
   align-items: center;
   display: flex;
@@ -114,22 +253,32 @@ ul li, ol li {
 .content > p, .content > ul, .content > ol {
   max-width: 100%;
   padding: 0 12px;
-  width: 800px;
+  width: 100%;
+}
+
+@media (min-width: 800px) {
+  .content > p, .content > ul, .content > ol {
+    width: 800px;
+  }
 }
 
 .content-link {
-  background-color: #ffeb3b;
-  border: 1px solid #c8b900;
-  border-radius: 3px;
+  background-color: rgba(255, 235, 59, 0.4);
+  border: 2px solid #ffeb3b;
+  box-shadow: none;
   color: #000;
-  font-size: 16px;
-  padding: 4px 10px;
+  display: inline-block;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 6px;
+  text-align: center;
   text-decoration: none;
-  transition: background-color 100ms;
+  transition: background-color 200ms, box-shadow 200ms;
 }
 
 .content-link:hover {
-  border-color: #c8b900;
+  background-color: #ffeb3b;
+  border-color: #ffeb3b;
   box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.24);
 }
 
@@ -141,16 +290,10 @@ ul li, ol li {
   text-align: center;
 }
 
-.screenshot {
-  box-shadow: 2px 2px 33px 1px rgba(0,0,0,0.75);
-  margin: 16px 0;
-  max-width: 550px;
-}
-
 .features li {
   align-items: center;
   display: flex;
-  line-height: 1.3em;
+  line-height: 22px;
   list-style-type: none;
   padding-bottom: 8px;
   padding-top: 8px;
@@ -165,6 +308,10 @@ ul li, ol li {
 
 .features svg {
   margin-right: 12px;
+}
+
+.feature {
+  flex: 1;
 }
 
 .small {

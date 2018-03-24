@@ -152,6 +152,7 @@ ul li, ol li {
 .content > p, .content > ul, .content > ol {
   max-width: 100%;
   padding: 0 12px;
+  width: 100%;
 }
 
 @media (min-width: 800px) {

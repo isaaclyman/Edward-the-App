@@ -114,6 +114,7 @@ ul li, ol li {
   display: inline-block;
   font-size: 18px;
   text-align: center;
+  width: 84px;
 }
 
 .header-links a:hover {

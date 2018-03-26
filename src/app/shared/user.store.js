@@ -18,6 +18,14 @@ const defaultUser = {
   verified: true
 }
 
+function setSentryUser (user) {
+  if (!window.Raven || typeof window.Raven.setUserContext !== 'function') {
+    return
+  }
+
+  window.Raven.setUserContext(user)
+}
+
 // We provide a userPromise from the beginning to prevent race conditions,
 //  which could be disastrous given that we store user data based on the
 //  user type. However, the actual user API call occurs later, so we allow
@@ -47,9 +55,11 @@ const store = {
     },
     [SET_DEFAULT_USER] (state) {
       state.user = defaultUser
+      setSentryUser()
     },
     [SET_USER] (state, user) {
       state.user = user
+      setSentryUser(user)
     },
     [SET_USER_PROMISE] (state, promise) {
       promise.then(data => {

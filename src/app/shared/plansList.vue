@@ -259,6 +259,7 @@ export default {
 
       this.$store.commit(UPDATE_SECTION, {
         plan: this.activePlan,
+        section: this.activePlan.sections[index],
         newTitle
       })
     },

@@ -9,6 +9,8 @@ Raven
     .addPlugin(RavenVue, Vue)
     .install()
 
+window.Raven = Raven
+
 import router from './app/router'
 import App from './app/App.vue'
 

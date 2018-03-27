@@ -23,6 +23,7 @@ class AdminApi {
 
   deleteUnverifiedUsers () { return this.simplePost(route('delete-unverified')) }
 
+  getPremiumSignups () { return this.simpleGet(route('premium-signups')) }
   getSpaceOverages () { return this.simpleGet(route('space-overages')) }
   getTotalUsers () { return this.simpleGet(route('total-users')) }
   getUnverifiedUsers () { return this.simpleGet(route('unverified-users')) }

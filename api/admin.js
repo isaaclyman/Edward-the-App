@@ -171,4 +171,13 @@ module.exports = function (app, passport, db, isAdmin) {
       res.status(500).send(err)
     })
   })
+
+  app.get(route('premium-signups'), isAdmin, (req, res, next) => {
+    db.knex('users').whereIn('account_type', [accountTypes.PREMIUM.name, accountTypes.GOLD.name])
+      .select().limit(150).orderBy('updated_at', 'asc').then(users => {
+        res.status(200).send(users)
+      }, err => {
+        res.status(500).send(err)
+      })
+  })
 }

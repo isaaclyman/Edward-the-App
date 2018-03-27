@@ -1,29 +1,37 @@
 <template>
   <idle-watcher>
-    <div id="app" class="app" v-if="currentDocument.guid">
-      <document-menu></document-menu>
-      <div class="app-header">
-        <div class="app-header--logo-wrap">
-          <img class="app-header--logo" src="../../static/logo.png">
+    <transition name="wrapper" mode="out-in">
+      <div id="app" class="app" v-if="loaded && currentDocument && currentDocument.guid" key="app">
+        <document-menu></document-menu>
+        <div class="app-header">
+          <div class="app-header--logo-wrap">
+            <img class="app-header--logo" src="../../static/logo.png">
+          </div>
+          <div class="app-header--menu">
+            <main-menu></main-menu>
+          </div>
         </div>
-        <div class="app-header--menu">
-          <main-menu></main-menu>
+        <div class="page">
+          <router-view></router-view>
         </div>
       </div>
-      <div class="page">
-        <router-view></router-view>
+      <div v-else-if="!loaded" class="loading" key="loading">
+        <img class="app-header--logo" src="../../static/logo.png">
+        <pulse-loader></pulse-loader>
       </div>
-    </div>
-    <div v-else class="page">
-      <wizard></wizard>
-    </div>
+      <div v-else class="page" key="wizard">
+        <wizard></wizard>
+      </div>
+    </transition>
   </idle-watcher>
 </template>
 
 <script>
 import DocumentMenu from './shared/documentMenu.vue'
 import IdleWatcher from './IdleWatcher.vue'
+import { INIT_DOCUMENTS } from './shared/document.store'
 import MainMenu from './shared/mainMenu.vue'
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import { SET_DEFAULT_USER, SET_USER, SET_USER_PROMISE } from './shared/user.store'
 import userApi from './api/userApi'
 import Wizard from './wizard/wizard.vue'
@@ -44,25 +52,51 @@ export default {
 
     this.$store.commit(SET_USER_PROMISE, userPromise)
   },
+  created () {
+    this.$store.dispatch(INIT_DOCUMENTS).then(() => {
+      this.loaded = true
+    }, err => {
+      console.error(err)
+      this.loaded = true
+    })
+  },
   components: {
     DocumentMenu,
     IdleWatcher,
     MainMenu,
+    PulseLoader,
     Wizard
   },
   computed: {
     currentDocument () {
-      return this.$store.state.document.currentDocument || { guid: null }
+      return this.$store.state.document.currentDocument
+    }
+  },
+  data () {
+    return {
+      loaded: false
     }
   }
 }
 </script>
 
 <style scoped>
+.wrapper-enter-active, .wrapper-leave-active {
+  transition: opacity 200ms;
+}
+
+.wrapper-enter, .wrapper-leave-to {
+  opacity: 0;
+}
+
+.wrapper-enter-to, .wrapper-leave {
+  opacity: 1;
+}
+
 .app {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
 }
 
 .app-header {
@@ -93,6 +127,15 @@ export default {
 
 .app-header--logo {
   height: 28px;
+}
+
+.loading {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
 }
 
 .page {

@@ -66,7 +66,7 @@ const store = {
             return
           }
 
-          dispatch(CHANGE_DOCUMENT, currentDocument)
+          return dispatch(CHANGE_DOCUMENT, currentDocument)
         })
       }, console.error)
     },

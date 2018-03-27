@@ -1,7 +1,7 @@
 <template>
   <div>
     <p>Accounts with a payment due date over 35 days from today:</p>
-    <p v-if="!compUsers.length">(none)</p>
+    <p v-if="!compUsers || !compUsers.length">(none)</p>
     <div v-for="user in compUsers" :key="user.id">
       <span>
         {{user.email}} (due {{user.payment_period_end}})

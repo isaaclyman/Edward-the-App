@@ -165,7 +165,7 @@ module.exports = function (app, passport, db, isAdmin) {
   })
 
   app.get(route('unverified-users'), isAdmin, (req, res, next) => {
-    db.knex('users').where('verified', false).select().limit(150).then(users => {
+    db.knex('users').where('verified', false).select().limit(150).orderBy('created_at', 'asc').then(users => {
       res.status(200).send(users)
     }, err => {
       res.status(500).send(err)

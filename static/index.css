@@ -17,6 +17,10 @@ h1, h2, h3, h4, h5, h6, p, li {
   font-size: 16px;
 }
 
+p, .feature {
+  line-height: 1.6em;
+}
+
 
 /* TAGS */
 a {
@@ -246,7 +250,6 @@ ul li, ol li {
   align-items: center;
   display: flex;
   flex-direction: column;
-  line-height: 30px;
   width: 100%;
 }
 
@@ -293,7 +296,6 @@ ul li, ol li {
 .features li {
   align-items: center;
   display: flex;
-  line-height: 22px;
   list-style-type: none;
   padding-bottom: 8px;
   padding-top: 8px;

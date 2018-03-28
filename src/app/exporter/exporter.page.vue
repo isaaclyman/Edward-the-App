@@ -49,6 +49,7 @@
 
 <script>
 import { backupToJsonFile, jsonFileToBackup } from './json'
+import { resetCache } from '../shared/cache'
 import { chaptersToPdf } from './pdf'
 import { CHANGE_DOCUMENT } from '../shared/document.store'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
@@ -102,6 +103,7 @@ export default {
         })
       }).then(backup => {
         this.loading = false
+        resetCache()
 
         swal({
           icon: 'success',

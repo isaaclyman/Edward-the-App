@@ -9,15 +9,20 @@
           <input id="includeArchived" v-if="!loading" type="checkbox" v-model="includeArchived">
           <label for="includeArchived" v-if="!loading">Include Archived</label>
         </div>
-        <button v-if="!loading" class="button-green export-button" @click="exportPdfChapters()">
-          Export all chapters
-        </button>
-        <button v-if="!loading" class="button-green export-button" @click="exportPdfPlans()">
-          Export all plans
-        </button>
-        <button v-if="!loading" class="button-green export-button" @click="exportPdfOutlines()">
-          Export all outlines
-        </button>
+        <template v-if="!loading">
+          <button class="button-green export-button" @click="exportPdfChapters()">
+            Export all chapters
+          </button>
+          <button class="button-green export-button" @click="exportPdfPlans()">
+            Export all plans
+          </button>
+          <button class="button-green export-button" @click="exportPdfOutlines()">
+            Export all outlines
+          </button>
+          <button class="button-green export-button" @click="exportPdfWorkshops()">
+            Export all workshops
+          </button>
+        </template>
       </div>
       <div class="export-option">
         <h3>Create a backup</h3>
@@ -53,8 +58,10 @@ import { resetCache } from '../shared/cache'
 import { chaptersToPdf } from './pdf'
 import { CHANGE_DOCUMENT } from '../shared/document.store'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
+import sortBy from 'lodash/sortBy'
 import { storageApiPromise } from '../api/storageSwitch'
 import swal from 'sweetalert'
+import writingWorkshops from '../../../models/writingWorkshop'
 
 export default {
   components: {
@@ -69,6 +76,9 @@ export default {
     },
     allTopics () {
       return this.$store.state.chapters.topics
+    },
+    allWorkshops () {
+      return this.$store.state.workshop.workshops
     },
     documentGuid () {
       return this.$store.state.document.currentDocument.guid
@@ -220,6 +230,36 @@ export default {
         swal({
           icon: 'error',
           text: `Could not export plans. DETAILS: "${err}"`
+        })
+        throw err
+      })
+    },
+    exportPdfWorkshops () {
+      this.loading = true
+      const workshops = this.allWorkshops.filter(workshop =>
+        !workshop.archived || this.includeArchived
+      ).map(workshop => {
+        return {
+          content: workshop.content,
+          date: workshop.date,
+          guid: workshop.guid,
+          order: workshop.order,
+          title: `${writingWorkshops[workshop.workshopName].displayName} (${workshop.date.toString()})`,
+          workshopName: workshop.workshopName
+        }
+      })
+
+      const sortedWorkshops = sortBy(workshops, workshop =>
+        `${workshop.workshopName}-${workshop.date.toString()}-${workshop.guid}-${workshop.order}`
+      )
+
+      chaptersToPdf(`${this.documentTitle}: Workshops`, sortedWorkshops).then(() => {
+        this.loading = false
+      }, err => {
+        this.loading = false
+        swal({
+          icon: 'error',
+          text: `Could not export workshops. DETAILS: "${err}"`
         })
         throw err
       })

@@ -133,7 +133,7 @@ export default {
         width: 15
       }),
       saveErrorText: `Your work may not be saved. Please check your Internet connection.`,
-      savingDebouncer: setTimeout(() => {}),
+      savingDebouncer: window.setTimeout(() => {}),
       toolsTooltip: 'Workshop your novel with free or prompted writing exercises.',
       workshops: Object.keys(writingWorkshops).map(key => writingWorkshops[key])
     }
@@ -176,7 +176,7 @@ export default {
       }
 
       clearTimeout(this.savingDebouncer)
-      this.savingDebouncer = setTimeout(() => {
+      this.savingDebouncer = window.setTimeout(() => {
         this.isSaving = this.saving
       }, 500)
     }

@@ -78,7 +78,7 @@ export default {
     finish () {
       this.$refs.quillEditor.disable()
       this.saving = true
-      setTimeout(() => {
+      window.setTimeout(() => {
         exerciseCache.cacheDelete()
         this.finished = true
         this.saving = false

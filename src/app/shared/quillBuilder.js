@@ -1,6 +1,5 @@
 import Octicons from 'octicons'
 import Quill from 'quill'
-import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import tooltip from './tippyBuilder'
 

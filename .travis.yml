@@ -8,3 +8,6 @@ build:
   - npm run build
   - npm run test
   - npm run integration
+branches:
+  only:
+    - _dev

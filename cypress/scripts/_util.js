@@ -2,9 +2,36 @@ const LocalStorageApi = require('../../src/app/api/localStorage')
 const lsa = new LocalStorageApi()
 const newGuid = require('uuid/v1')
 
-export function createTestChapter (cy, isPremium, documentGuid) {
+let seedArgs = []
+function resetSeed () {
+  seedArgs = []
+}
+
+function runSeed (cy, isPremium) {
+  if (!seedArgs.length) {
+    return
+  }
+  
+  const seedString = seedArgs.join(' ')
+  seedArgs = []
+  const seedCommand = `node cypress/scripts/seedData.js ${seedString}`
+  console.log(`seeding: ${seedCommand}`)
+  return cy.exec(seedCommand)
+}
+
+export function seed(cy, callback, isPremium) {
+  resetSeed()
+  const callbackResp = callback()
+  if (callbackResp && callbackResp.then) {
+    return callbackResp.then(() => runSeed(cy, isPremium))
+  }
+  return runSeed(cy, isPremium)
+}
+
+export function createTestChapter (isPremium, documentGuid) {
   if (isPremium) {
-    return cy.exec('node cypress/scripts/seedData.js --chapter')
+    seedArgs.push('--chapter')
+    return
   }
 
   const chapGuids = [newGuid(), newGuid(), newGuid()]
@@ -25,9 +52,10 @@ export function createTestChapter (cy, isPremium, documentGuid) {
   .then(() => chapGuids)
 }
 
-export function createTestDocument (cy, isPremium) {
+export function createTestDocument (isPremium) {
   if (isPremium) {
-    return cy.exec('node cypress/scripts/seedData.js --document')
+    seedArgs.push('--document')
+    return
   }
 
   const guid = newGuid()
@@ -35,9 +63,10 @@ export function createTestDocument (cy, isPremium) {
   return lsa.storage.clear().then(() => lsa.addDocument({ guid, name: 'test' }).then(() => guid))
 }
 
-export function createTestOutline (cy, isPremium, documentGuid) {
+export function createTestOutline (isPremium, documentGuid) {
   if (isPremium) {
-    return cy.exec('node cypress/scripts/seedData.js --outline')
+    seedArgs.push('--outline')
+    return
   }
 
   const guid = newGuid()
@@ -46,9 +75,10 @@ export function createTestOutline (cy, isPremium, documentGuid) {
   )
 }
 
-export function createTestPlan (cy, isPremium, documentGuid) {
+export function createTestPlan (isPremium, documentGuid) {
   if (isPremium) {
-    return cy.exec('node cypress/scripts/seedData.js --plan')
+    seedArgs.push('--plan')
+    return
   }
 
   const planGuids = [newGuid(), newGuid()]
@@ -81,16 +111,16 @@ export function createTestPlan (cy, isPremium, documentGuid) {
   ]).then(() => planGuids)
 }
 
-export function createTestWorkshop (cy) {
-  return cy.exec('node cypress/scripts/seedData.js --workshop')
+export function createTestWorkshop () {
+  seedArgs.push('--workshop')
 }
 
-export function createTestUser (cy) {
-  cy.exec('node cypress/scripts/seedData.js --user')
+export function createTestUser () {
+  seedArgs.push('--user')
 }
 
-export function deleteTestUser (cy) {
-  cy.exec('node cypress/scripts/seedData.js --delete')
+export function deleteTestUser () {
+  seedArgs.unshift('--delete')
   cy.clearLocalStorage()
 }
 
@@ -103,14 +133,14 @@ export function logIn (cy, email, password) {
   cy.getCookie('connect.sid').should('exist')
 }
 
-export function makeTestUserPremium (cy) {
-  cy.exec('node cypress/scripts/seedData.js --premium')
+export function makeTestUserPremium () {
+  seedArgs.push('--premium')
 }
 
-export function setTestUserVerifyKey (cy) {
-  cy.exec('node cypress/scripts/seedData.js --verify-key')
+export function setTestUserVerifyKey () {
+  seedArgs.push('--verify-key')
 }
 
-export function setTestUserResetKey (cy) {
-  cy.exec('node cypress/scripts/seedData.js --reset-key')
+export function setTestUserResetKey () {
+  seedArgs.push('--reset-key')
 }

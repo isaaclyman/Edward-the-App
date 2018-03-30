@@ -65,6 +65,8 @@ describe('the page idle watcher (premium)', () => {
     let reloaded = false
     window.onbeforeunload = () => { reloaded = true }
     cy.tick(45 * 60 * 1000)
+    cy.wait(500)
+    cy.get('.idle-page').find('.reload-button').should('be.visible')
     cy.get('.idle-page').find('.reload-button').click()
     cy.wrap(reloaded).should('be', true)
   })
@@ -73,6 +75,8 @@ describe('the page idle watcher (premium)', () => {
     let reloaded = false
     window.onbeforeunload = () => { reloaded = true }
     cy.tick(45 * 60 * 1000)
+    cy.wait(500)
+    cy.get('.idle-page').find('.cancel-button').should('be.visible')
     cy.get('.idle-page').find('.cancel-button').click()
     cy.get('.idle-page').should('not.exist')
     cy.get('.main-menu').should('exist')

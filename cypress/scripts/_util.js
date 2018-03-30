@@ -4,7 +4,7 @@ const newGuid = require('uuid/v1')
 
 export function createTestChapter (cy, isPremium, documentGuid) {
   if (isPremium) {
-    return cy.exec('node cypress/scripts/createTestChapter.js')
+    return cy.exec('node cypress/scripts/seedData.js --chapter')
   }
 
   const chapGuids = [newGuid(), newGuid(), newGuid()]
@@ -27,7 +27,7 @@ export function createTestChapter (cy, isPremium, documentGuid) {
 
 export function createTestDocument (cy, isPremium) {
   if (isPremium) {
-    return cy.exec('node cypress/scripts/createTestDocument.js')
+    return cy.exec('node cypress/scripts/seedData.js --document')
   }
 
   const guid = newGuid()
@@ -37,7 +37,7 @@ export function createTestDocument (cy, isPremium) {
 
 export function createTestOutline (cy, isPremium, documentGuid) {
   if (isPremium) {
-    return cy.exec('node cypress/scripts/createTestOutline.js')
+    return cy.exec('node cypress/scripts/seedData.js --outline')
   }
 
   const guid = newGuid()
@@ -48,7 +48,7 @@ export function createTestOutline (cy, isPremium, documentGuid) {
 
 export function createTestPlan (cy, isPremium, documentGuid) {
   if (isPremium) {
-    return cy.exec('node cypress/scripts/createTestPlan.js')
+    return cy.exec('node cypress/scripts/seedData.js --plan')
   }
 
   const planGuids = [newGuid(), newGuid()]
@@ -82,15 +82,15 @@ export function createTestPlan (cy, isPremium, documentGuid) {
 }
 
 export function createTestWorkshop (cy) {
-  return cy.exec('node cypress/scripts/createTestWorkshop.js')
+  return cy.exec('node cypress/scripts/seedData.js --workshop')
 }
 
 export function createTestUser (cy) {
-  cy.exec('node cypress/scripts/createTestUser.js')
+  cy.exec('node cypress/scripts/seedData.js --user')
 }
 
 export function deleteTestUser (cy) {
-  cy.exec('node cypress/scripts/deleteTestUser.js')
+  cy.exec('node cypress/scripts/seedData.js --delete')
   cy.clearLocalStorage()
 }
 
@@ -104,13 +104,13 @@ export function logIn (cy, email, password) {
 }
 
 export function makeTestUserPremium (cy) {
-  cy.exec('node cypress/scripts/makeTestUserPremium.js')
+  cy.exec('node cypress/scripts/seedData.js --premium')
 }
 
 export function setTestUserVerifyKey (cy) {
-  cy.exec('node cypress/scripts/setTestUserVerifyKey.js')
+  cy.exec('node cypress/scripts/seedData.js --verify-key')
 }
 
 export function setTestUserResetKey (cy) {
-  cy.exec('node cypress/scripts/setTestUserResetKey.js')
+  cy.exec('node cypress/scripts/seedData.js --reset-key')
 }

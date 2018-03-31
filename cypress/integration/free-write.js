@@ -1,17 +1,20 @@
 import { user } from '../../test/_util'
 import {
-  createTestChapter, createTestDocument, createTestWorkshop, createTestUser, deleteTestUser, logIn, makeTestUserPremium
+  createTestChapter, createTestDocument, createTestWorkshop, createTestUser, deleteTestUser, logIn, makeTestUserPremium,
+  seed
 } from '../scripts/_util'
 
 describe('the free write workshop (restricted)', () => {
   before(() => {
-    deleteTestUser(cy)
-    createTestUser(cy)
+    seed(cy, () => {
+      deleteTestUser()
+      createTestUser()
+    })
   })
 
   beforeEach(() => {
     logIn(cy, user.email, user.password)
-    createTestDocument(cy, false).then(() => createTestChapter(cy, false))
+    createTestDocument(false)
   })
 
   it('should not allow a Limited user to access the Free Write workshop via the workshops modal', () => {
@@ -29,10 +32,13 @@ describe('the free write workshop (restricted)', () => {
 
 describe('the free write workshop (navigation)', () => {
   before(() => {
-    deleteTestUser(cy)
-    createTestUser(cy)
-    makeTestUserPremium(cy)
-    return createTestDocument(cy, true).then(() => createTestChapter(cy, true))
+    return seed(cy, () => {
+      deleteTestUser()
+      createTestUser()
+      makeTestUserPremium()
+      createTestDocument(true)
+      createTestChapter(true)
+    })
   })
 
   beforeEach(() => {
@@ -147,11 +153,14 @@ describe('the free write workshop (new workshop)', () => {
 
 describe('the free write workshop (compose page)', () => {
   before(() => {
-    deleteTestUser(cy)
-    createTestUser(cy)
-    makeTestUserPremium(cy)
-    createTestDocument(cy, true).then(() => createTestChapter(cy, true))
-    createTestWorkshop(cy)
+    seed(cy, () => {
+      deleteTestUser()
+      createTestUser()
+      makeTestUserPremium()
+      createTestDocument(true)
+      createTestChapter(true)
+      createTestWorkshop()
+    })
     logIn(cy, user.email, user.password)
     cy.visit('/app.html#/write')
     cy.get('select.document-dropdown').select('test')

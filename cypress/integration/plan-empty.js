@@ -1,22 +1,27 @@
 import { user } from '../../test/_util'
-import { createTestChapter, createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium } from '../scripts/_util'
+import {
+  createTestChapter, createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium,
+  seed
+} from '../scripts/_util'
 
 const tests = isPremium => () => {
   before(() => {
-    deleteTestUser(cy)
-    createTestUser(cy)
-
-    if (isPremium) {
-      makeTestUserPremium(cy)
-      return createTestDocument(cy, isPremium)
-    }
+    seed(cy, () => {
+      deleteTestUser()
+      createTestUser()
+  
+      if (isPremium) {
+        makeTestUserPremium()
+        createTestDocument(isPremium)
+      }
+    })
   })
 
   beforeEach(() => {
     logIn(cy, user.email, user.password)
 
     if (!isPremium) {
-      createTestDocument(cy, isPremium)
+      createTestDocument(isPremium)
     }
 
     cy.visit('/app.html#/plan')

@@ -7,7 +7,7 @@ function resetSeed () {
   seedArgs = []
 }
 
-function runSeed (cy, isPremium) {
+function runSeed (cy) {
   if (!seedArgs.length) {
     return
   }
@@ -19,13 +19,13 @@ function runSeed (cy, isPremium) {
   return cy.exec(seedCommand)
 }
 
-export function seed(cy, callback, isPremium) {
+export function seed(cy, callback) {
   resetSeed()
   const callbackResp = callback()
   if (callbackResp && callbackResp.then) {
-    return callbackResp.then(() => runSeed(cy, isPremium))
+    return callbackResp.then(() => runSeed(cy))
   }
-  return runSeed(cy, isPremium)
+  return runSeed(cy)
 }
 
 export function createTestChapter (isPremium, documentGuid) {

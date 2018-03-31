@@ -7,7 +7,8 @@ import {
   createTestUser,
   deleteTestUser,
   logIn,
-  makeTestUserPremium
+  makeTestUserPremium,
+  seed
 } from '../scripts/_util'
 import localForage from 'localforage'
 localForage.setDriver(localForage.INDEXEDDB)
@@ -16,16 +17,18 @@ localForage.setDriver(localForage.INDEXEDDB)
 
 describe('upgrading as a limited user', () => {
   before(() => {
-    deleteTestUser(cy)
-    createTestUser(cy)
+    seed(cy, () => {
+      deleteTestUser()
+      createTestUser()
+    })
   })
   
   beforeEach(() => {
     logIn(cy, user.email, user.password)
-    createTestDocument(cy, false)
-      .then(docId => createTestChapter(cy, false, docId).then(() => docId))
-      .then(docId => createTestOutline(cy, false, docId).then(() => docId))
-      .then(docId => createTestPlan(cy, false, docId))
+    createTestDocument(false)
+      .then(docId => createTestChapter(false, docId).then(() => docId))
+      .then(docId => createTestOutline(false, docId).then(() => docId))
+      .then(docId => createTestPlan(false, docId))
     cy.clock()
     cy.visit('/app.html#/write')
     cy.get('select.document-dropdown').select('test')
@@ -98,17 +101,21 @@ describe('upgrading as a limited user', () => {
 
 describe('downgrading as a premium user', () => {
   before(() => {
-    deleteTestUser(cy)
-    createTestUser(cy)
-    makeTestUserPremium(cy)
+    seed(cy, () => {
+      deleteTestUser()
+      createTestUser()
+      makeTestUserPremium()
+    })
   })
   
   beforeEach(() => {
     logIn(cy, user.email, user.password)
-    createTestDocument(cy, true)
-      .then(docId => createTestChapter(cy, true, docId).then(() => docId))
-      .then(docId => createTestOutline(cy, true, docId).then(() => docId))
-      .then(docId => createTestPlan(cy, true, docId))
+    seed(cy, () => {
+      createTestDocument(true)
+      createTestChapter(true)
+      createTestOutline(true)
+      createTestPlan(true)
+    })
     cy.clock()
     cy.visit('/app.html#/write')
     cy.get('select.document-dropdown').select('test')

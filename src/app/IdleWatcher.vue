@@ -1,5 +1,5 @@
 <template>
-  <div class="page-wrap" :class="{ 'fade': fadeOn }" v-if="!needsReload"
+  <div class="page-wrap" :class="{ 'fade': fadeOn, 'hidden': needsReload }" v-if="!needsReload"
     @click.passive="resetIdleTime()"
     @mousemove.passive="resetIdleTime()"
     @scroll.passive="resetIdleTime()"
@@ -101,6 +101,11 @@ export default {
 
 .page-wrap.fade {
   opacity: 0.1;
+}
+
+.page-wrap.hidden {
+  pointer-events: none;
+  visibility: hidden;
 }
 
 .idle-page {

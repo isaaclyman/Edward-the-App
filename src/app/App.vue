@@ -87,6 +87,7 @@ export default {
 
 .wrapper-enter, .wrapper-leave-to {
   opacity: 0;
+  pointer-events: none;
 }
 
 .wrapper-enter-to, .wrapper-leave {
@@ -142,6 +143,7 @@ export default {
   display: flex;
   flex: 1;
   max-height: calc(100% - 62px);
+  overflow: auto;
   padding: 14px 14px;
 }
 

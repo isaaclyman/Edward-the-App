@@ -106,6 +106,7 @@ export default {
   display: flex;
   height: 60px;
   width: 100%;
+  z-index: 50;
 }
 
 .app-header--menu {

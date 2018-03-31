@@ -6,25 +6,33 @@
         Write whatever comes to mind. Don't worry about style, grammar, or making sense.
       </p>
       <p class="intro" v-if="!begun">If you'd like, you can set a time or word limit:</p>
-      <div v-if="!finished">
-        <timer @begin="begin()" :fullText="fullText"></timer>
-      </div>
-      <div v-if="begun && !finished" class="editor" :class="{ 'saving': saving }">
-        <quill-editor :content="content" @update:content="updateContent($event)" ref="quillEditor"></quill-editor>
-      </div>
-      <template v-if="finished">
-        <p class="finished">
-          <template v-if="this.fullText.trim()">
-            <strong>Saved!</strong> You can view this free write in the Workshops column of the Write page.
-          </template>
-          <template v-else>
-            <strong>Deleted!</strong> This free write had no content.
-          </template>
-        </p>
-        <button class="button-green" @click="reset()">Start over</button>
-      </template>
-      <div v-if="begun && !finished" class="done">
-        <button class="button-green" @click="finish()">Done</button>
+      <transition name="shrink">
+        <div class="timer-wrap" v-if="!finished">
+          <timer @begin="begin()" :fullText="fullText"></timer>
+        </div>
+      </transition>
+      <div class="content">
+        <transition name="fade" mode="out-in">
+          <div v-if="begun && !finished" class="content-inner" key="editor">
+            <div class="editor">
+              <quill-editor :content="content" @update:content="updateContent($event)" ref="quillEditor"></quill-editor>
+            </div>
+            <div class="done">
+              <button class="button-green" @click="finish()">Done</button>
+            </div>
+          </div>
+          <div v-else-if="finished" class="content-inner" key="done">
+            <p class="finished">
+              <template v-if="this.fullText.trim()">
+                <strong>Saved!</strong> You can view this free write in the Workshops column of the Write page.
+              </template>
+              <template v-else>
+                <strong>Deleted!</strong> This free write had no content.
+              </template>
+            </p>
+            <button class="button-green" @click="reset()">Start over</button>
+          </div>
+        </transition>
       </div>
     </div>
   </div>
@@ -61,7 +69,6 @@ export default {
     return {
       begun: false,
       finished: false,
-      saving: false,
       workshop: null
     }
   },
@@ -77,12 +84,8 @@ export default {
     },
     finish () {
       this.$refs.quillEditor.disable()
-      this.saving = true
-      window.setTimeout(() => {
-        exerciseCache.cacheDelete()
-        this.finished = true
-        this.saving = false
-      }, 1000)
+      exerciseCache.cacheDelete()
+      this.finished = true
     },
     getCurrentWorkshop () {
       const cachedGuid = exerciseCache.cacheGet()
@@ -110,7 +113,6 @@ export default {
     reset () {
       this.begun = false
       this.finished = false
-      this.saving = false
       this.workshop = null
     },
     updateContent (content) {
@@ -141,6 +143,32 @@ export default {
 </script>
 
 <style scoped>
+.shrink-enter-active, .shrink-leave-active {
+  transition: max-height 200ms, opacity 200ms;
+}
+
+.shrink-enter, .shrink-leave-to {
+  opacity: 0;
+  max-height: 0;
+}
+
+.shrink-enter-to, .shrink-leave {
+  opacity: 1;
+  max-height: 300px;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 500ms;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+.fade-leave, .fade-enter-to {
+  opacity: 1;
+}
+
 .workshops-wrap {
   display: flex;
   justify-content: center;
@@ -155,6 +183,22 @@ export default {
 
 .intro {
   margin: 0;
+}
+
+.timer-wrap {
+  overflow: hidden;
+}
+
+.content {
+  height: 300px;
+  position: relative;
+}
+
+.content-inner {
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
 }
 
 .editor {

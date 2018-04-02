@@ -12,7 +12,9 @@
           </div>
         </div>
         <div class="page">
-          <router-view></router-view>
+          <transition name="wrapper" mode="out-in">
+            <router-view></router-view>
+          </transition>
         </div>
       </div>
       <div v-else-if="!loaded" class="loading" key="loading">
@@ -59,6 +61,20 @@ export default {
       console.error(err)
       this.loaded = true
     })
+
+    let routeTransitionTimeout = null
+
+    this.$router.beforeEach((to, from, next) => {
+      routeTransitionTimeout = setTimeout(() => {
+        this.loaded = false
+      }, 800)
+      next()
+    })
+
+    this.$router.afterEach((to, from) => {
+      clearTimeout(routeTransitionTimeout)
+      this.loaded = true
+    })
   },
   components: {
     DocumentMenu,
@@ -82,7 +98,7 @@ export default {
 
 <style scoped>
 .wrapper-enter-active, .wrapper-leave-active {
-  transition: opacity 200ms;
+  transition: opacity 50ms;
 }
 
 .wrapper-enter, .wrapper-leave-to {

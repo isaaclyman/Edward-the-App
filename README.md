@@ -3,6 +3,7 @@
 Write your first novel.
 
 [![Cypress.io tests](https://img.shields.io/badge/cypress.io-tests-green.svg?style=flat-square)](https://cypress.io)
+[![Build Status](https://travis-ci.org/isaaclyman/Edward-the-App.svg?branch=_dev)](https://travis-ci.org/isaaclyman/Edward-the-App)
 
 ## Build Setup
 

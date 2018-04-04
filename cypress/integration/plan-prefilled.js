@@ -73,6 +73,42 @@ const tests = isPremium => () => {
     cy.get('.show-archived').uncheck()
     cy.get('.plan-chips').find('.chip').contains('1').should('be.visible')
   })
+
+  it('allows renaming a plan from the chips list', () => {
+    cy.get('.plan-chips').find('.chip').first().within(() => {
+      cy.get('.action-rename').click()
+      cy.get('input').type('renamed 1')
+      cy.get('button').contains('Cancel').click()
+    })
+
+    cy.get('.plan-chips').find('.chip').contains('renamed').should('not.be.visible')
+
+    cy.get('.plan-chips').find('.chip').first().within(() => {
+      cy.get('.action-rename').click()
+      cy.get('input').type('renamed 1')
+      cy.get('button').contains('Save').click()
+    })
+
+    cy.get('.plan-chips').find('.chip').contains('renamed').should('be.visible')
+  })
+
+  it('allows renaming a section from the chips list', () => {
+    cy.get('.section-chips').find('.chip').first().within(() => {
+      cy.get('.action-rename').click()
+      cy.get('input').type('renamed 1')
+      cy.get('button').contains('Cancel').click()
+    })
+
+    cy.get('.section-chips').find('.chip').contains('renamed').should('not.be.visible')
+
+    cy.get('.section-chips').find('.chip').first().within(() => {
+      cy.get('.action-rename').click()
+      cy.get('input').type('renamed 1')
+      cy.get('button').contains('Save').click()
+    })
+
+    cy.get('.section-chips').find('.chip').contains('renamed').should('be.visible')
+  })
 }
 
 describe('the prefilled plans page (limited)', tests(false))

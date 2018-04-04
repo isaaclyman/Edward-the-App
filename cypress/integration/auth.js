@@ -1,6 +1,7 @@
 import { user } from '../../test/_util'
 import {
-  createTestUser, deleteTestUser, logIn, makeTestUserPremium, setTestUserResetKey, setTestUserVerifyKey
+  createTestUser, deleteTestUser, logIn, makeTestUserPremium, setTestUserResetKey, setTestUserVerifyKey,
+  seed
 } from '../scripts/_util'
 
 describe('the auth page', () => {
@@ -41,8 +42,10 @@ describe('the auth page', () => {
     })
 
     it('allows logging in', () => {
-      deleteTestUser(cy)
-      createTestUser(cy)
+      seed(cy, () => {
+        deleteTestUser(cy)
+        createTestUser(cy)
+      })
 
       cy.get('@username').type(user.email)
       cy.get('@password').type(user.password)
@@ -54,9 +57,11 @@ describe('the auth page', () => {
     })
 
     it('allows logging in (premium)', () => {
-      deleteTestUser(cy)
-      createTestUser(cy)
-      makeTestUserPremium(cy)
+      seed(cy, () => {
+        deleteTestUser()
+        createTestUser()
+        makeTestUserPremium()
+      })
 
       cy.get('@username').type(user.email)
       cy.get('@password').type(user.password)
@@ -101,14 +106,18 @@ describe('the auth page', () => {
     })
 
     it('allows signing up', () => {
-      deleteTestUser(cy)
+      seed(cy, () => {
+        deleteTestUser()
+      })
       signUp()
       cy.url().should('contain', '/verification')
       cy.getCookie('connect.sid').should('exist')
     })
 
     it(`doesn't allow unverified users to visit the app`, () => {
-      deleteTestUser(cy)
+      seed(cy, () => {
+        deleteTestUser()
+      })
       signUp()
       cy.contains('Log out').click()
       cy.url().should('contain', '/login')
@@ -121,9 +130,13 @@ describe('the auth page', () => {
     })
 
     it('allows verifying your account', () => {
-      deleteTestUser(cy)
+      seed(cy, () => {
+        deleteTestUser()
+      })
       signUp()
-      setTestUserVerifyKey(cy)
+      seed(cy, () => {
+        setTestUserVerifyKey()
+      })
       cy.visit(`/auth.html#/verify/${encodeURIComponent(user.email)}/${user.verifyKey}`)
       cy.url().should('contain', '/limited')
     })
@@ -131,8 +144,10 @@ describe('the auth page', () => {
 
   describe('the password reset process', () => {
     beforeEach(() => {
-      deleteTestUser(cy)
-      createTestUser(cy)
+      seed(cy, () => {
+        deleteTestUser(cy)
+        createTestUser(cy)
+      })
       cy.visit('/auth.html#/login')
     })
 
@@ -145,7 +160,9 @@ describe('the auth page', () => {
     })
 
     it('allows you to reset your password', () => {
-      setTestUserResetKey(cy)
+      seed(cy, () => {
+        setTestUserResetKey(cy)
+      })
       cy.visit(`/auth.html#/reset/${encodeURIComponent(user.email)}/${user.resetKey}`)
       cy.get('.message').should('exist')
 
@@ -166,8 +183,10 @@ describe('the auth page', () => {
   
   describe('deleting an account', () => {
     beforeEach(() => {
-      deleteTestUser(cy)
-      createTestUser(cy)
+      seed(cy, () => {
+        deleteTestUser(cy)
+        createTestUser(cy)
+      })
       logIn(cy, user.email, user.password)
       cy.visit('/auth.html#/account')
     })

@@ -4,7 +4,6 @@ import authApi from './authApi'
 
 Vue.use(Router)
 
-import Account from './account.page.vue'
 import DeleteAccount from './deleteAccount.page.vue'
 import Forgot from './forgot.page.vue'
 import Limited from './limited.page.vue'
@@ -68,7 +67,7 @@ export default new Router({
     {
       path: '/account',
       name: 'Account',
-      component: Account,
+      component: () => import('./account.page.vue'),
       beforeEnter: assertLoggedIn,
       meta: { getCurrentUser }
     },

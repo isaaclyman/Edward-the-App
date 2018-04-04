@@ -12,5 +12,7 @@ new Vue({
   el: '#app',
   components: { Admin },
   router,
-  template: '<Admin/>'
+  render (h) {
+    return h('Admin')
+  }
 })

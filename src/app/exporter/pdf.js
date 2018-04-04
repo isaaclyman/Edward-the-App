@@ -1,4 +1,4 @@
-import pdfMake from 'pdfmake/build/pdfmake'
+import pdfMake from 'pdfmake/build/pdfmake.min'
 require('imports-loader?this=>window!pdfmake/build/vfs_fonts.js')
 
 export const chaptersToPdf = (title, chapters) => {

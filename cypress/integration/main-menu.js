@@ -1,13 +1,18 @@
 import { user } from '../../test/_util'
-import { createTestChapter, createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium } from '../scripts/_util'
+import {
+  createTestChapter, createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium,
+  seed
+} from '../scripts/_util'
 import localForage from 'localforage'
 localForage.setDriver(localForage.INDEXEDDB)
 
 describe('the main menu', () => {
   before(() => {
-    deleteTestUser(cy)
-    createTestUser(cy)
-    createTestDocument(cy, false)
+    seed(cy, () => {
+      deleteTestUser()
+      createTestUser()
+      createTestDocument(false)
+    })
   })
   
   beforeEach(() => {

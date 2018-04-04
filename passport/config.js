@@ -17,7 +17,8 @@ module.exports = function config (passport, knex) {
       }
       return done(null, user)
     }, err => {
-      return done(err, false)
+      console.error(err)
+      return done(null, false)
     })
   })
 
@@ -63,7 +64,7 @@ module.exports = function config (passport, knex) {
           return done(null, user)
         }, err => {
           console.error(err)
-          return done(err, false)
+          return done(null, false)
         })
       })
     })
@@ -92,7 +93,7 @@ module.exports = function config (passport, knex) {
       })
     }, err => {
       console.error(err)
-      return done(err)
+      return done(null, false)
     })
   }))
 }

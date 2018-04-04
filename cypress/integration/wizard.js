@@ -1,5 +1,8 @@
 import { user } from '../../test/_util'
-import { createTestUser, deleteTestUser, logIn, makeTestUserPremium } from '../scripts/_util'
+import {
+  createTestUser, deleteTestUser, logIn, makeTestUserPremium,
+  seed
+} from '../scripts/_util'
 
 const tests = (userType) => () => {
   before(() => {
@@ -7,13 +10,17 @@ const tests = (userType) => () => {
       case 'demo':
         break
       case 'limited':
-        deleteTestUser(cy)
-        createTestUser(cy)
+        seed(cy, () => {
+          deleteTestUser()
+          createTestUser()
+        })
         break
       case 'premium':
-        deleteTestUser(cy)
-        createTestUser(cy)
-        makeTestUserPremium(cy)
+        seed(cy, () => {
+          deleteTestUser()
+          createTestUser()
+          makeTestUserPremium()
+        })
         break
     }
   })

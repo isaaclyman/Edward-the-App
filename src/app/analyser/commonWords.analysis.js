@@ -1,4 +1,7 @@
-import _ from 'lodash'
+import flow from 'lodash/fp/flow'
+import groupBy from 'lodash/fp/groupBy'
+import orderBy from 'lodash/fp/orderBy'
+import take from 'lodash/fp/take'
 import * as d3 from 'd3'
 import { GetWordArray } from '../shared/deltaParser'
 
@@ -28,7 +31,10 @@ const CommonWords = ({ g: svg, maxHeight, maxWidth }, chapters) => {
       .map(word => word.toLowerCase())
       .filter(word => !ignoredWords.includes(word))
   ))
-  const wordDict = _.chain(wordArray).groupBy(word => word).value()
+
+  const wordDict = flow(
+    groupBy(word => word)
+  )(wordArray)
 
   const frequencies = []
   for (var key of Object.keys(wordDict)) {
@@ -42,7 +48,11 @@ const CommonWords = ({ g: svg, maxHeight, maxWidth }, chapters) => {
     })
   }
 
-  const orderedFrequencies = _.chain(frequencies).orderBy([obj => obj.frequency], ['desc']).take(10).value()
+  const orderedFrequencies = flow(
+    orderBy([obj => obj.frequency], ['desc']),
+    take(10)
+  )(frequencies)
+
   if (!orderedFrequencies.length) {
     throw new Error('No content was found.')
   }

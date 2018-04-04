@@ -21,5 +21,7 @@ new Vue({
   el: '#app',
   components: { Auth },
   router,
-  template: '<Auth/>'
+  render (h) {
+    return h('Auth')
+  }
 })

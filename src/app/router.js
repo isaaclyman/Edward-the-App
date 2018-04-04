@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Analyser from './analyser/analyser.page.vue'
 import Composer from './composer/composer.page.vue'
 import DocumentEdit from './documentEdit/documentEdit.page.vue'
-import Exporter from './exporter/exporter.page.vue'
 import Outliner from './outliner/outliner.page.vue'
 import Planner from './planner/planner.page.vue'
 import Settings from './settings/settings.page.vue'
@@ -50,12 +48,12 @@ export default new Router({
     {
       path: '/analyze',
       name: 'Analyze',
-      component: Analyser
+      component: () => import('./analyser/analyser.page.vue')
     },
     {
       path: '/export',
       name: 'Export',
-      component: Exporter
+      component: () => import('./exporter/exporter.page.vue')
     },
     {
       path: '/documentEdit',

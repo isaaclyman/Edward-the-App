@@ -14,7 +14,7 @@ describe('the free write workshop (restricted)', () => {
 
   beforeEach(() => {
     logIn(cy, user.email, user.password)
-    createTestDocument(false)
+    createTestDocument(false).then(docId => createTestChapter(false, docId))
   })
 
   it('should not allow a Limited user to access the Free Write workshop via the workshops modal', () => {
@@ -27,6 +27,12 @@ describe('the free write workshop (restricted)', () => {
   it('should not allow a Limited user to visit the Free Write workshop directly', () => {
     cy.visit('/app.html#/workshop/free-write')
     cy.url().should('contain', '/write')
+  })
+
+  it('should not show the Workshops column on the Write page', () => {
+    cy.visit('/app.html#/write')
+    cy.get('select.document-dropdown').select('test')
+    cy.get('.plan-switch').find('.switch-label').contains('Workshops').should('not.exist')
   })
 })
 

@@ -1,5 +1,8 @@
-import pdfMake from 'pdfmake/build/pdfmake.min'
-require('imports-loader?this=>window!pdfmake/build/vfs_fonts.js')
+import pdfMake from 'pdfmake/build/pdfmake'
+import pdfFonts from 'pdfmake/build/vfs_fonts.js'
+import FileSaver from 'file-saver'
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs
 
 export const chaptersToPdf = (title, chapters) => {
   return new Promise((resolve) => {
@@ -134,8 +137,14 @@ export const chaptersToPdf = (title, chapters) => {
 
     definition.content = definition.content.concat(...splitContent)
 
-    pdfMake.createPdf(definition).download(`${title}.pdf`)
-    resolve()
+    pdfMake.createPdf(definition).getBlob(blob => {
+      if (window && window._integration) {
+        window._pdfSuccess = true
+        return resolve()
+      }
+      FileSaver.saveAs(blob, `${title}.pdf`)
+      resolve()
+    })
   })
 }
 

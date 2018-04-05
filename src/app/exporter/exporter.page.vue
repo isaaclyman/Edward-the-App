@@ -19,7 +19,7 @@
           <button class="button-green export-button" @click="exportPdfOutlines()">
             Export all outlines
           </button>
-          <button class="button-green export-button" @click="exportPdfWorkshops()">
+          <button v-if="isPremium" class="button-green export-button" @click="exportPdfWorkshops()">
             Export all workshops
           </button>
         </template>
@@ -150,6 +150,13 @@ export default {
           })
           throw err
         })
+      }, err => {
+        this.loading = false
+        swal({
+          icon: 'error',
+          text: `Could not export the document. DETAILS: "${err}"`
+        })
+        throw err
       })
     },
     exportPdfChapters () {

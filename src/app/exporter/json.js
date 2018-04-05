@@ -6,6 +6,12 @@ export const backupToJsonFile = (title, backup) => {
     const blob = new Blob([json], { type: 'application/json' })
     const today = new Date()
     const date = `${today.getDate()}.${today.getMonth() + 1}.${today.getFullYear()}`
+
+    if (window && window._integration) {
+      window._pdfSuccess = true
+      return resolve()
+    }
+
     FileSaver.saveAs(blob, `${title}--${date}.json`)
     resolve()
   })

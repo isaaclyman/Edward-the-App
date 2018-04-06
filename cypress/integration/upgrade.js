@@ -127,7 +127,7 @@ describe('downgrading as a premium user', () => {
     topic: 'Test topic 1',
     section: 'Test section 1'
   }
-  it('should allow upgrading to a premium account and keep your content', () => {
+  it('should allow downgrading to a limited account and keep your content', () => {
     // Add chapter content
     cy.get('@chapterEditor').type(testContent.chap)
     cy.tick(1000)

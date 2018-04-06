@@ -343,7 +343,7 @@ class LocalStorageApi {
       this._getAllTopics(guid),
       this._getAllPlans(guid).then(plans => {
         return Promise.all(plans.map(plan => {
-          this._getAllSections(guid, plan.guid).then(sections => {
+          return this._getAllSections(guid, plan.guid).then(sections => {
             plan.sections = sections
             return plan
           })

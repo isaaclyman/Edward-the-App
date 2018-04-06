@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const express = require('express')
+const expressStaticGzip = require("express-static-gzip")
 const passport = require('passport')
 const path = require('path')
 const timeout = require('connect-timeout')
@@ -16,7 +17,8 @@ const app = express()
 
 // Serve static files
 app.use('/static', express.static(path.join(__dirname, 'static')))
-app.use(express.static(path.join(__dirname, 'dist')))
+app.use('/', expressStaticGzip(path.join(__dirname, 'dist'), { indexFromEmptyFile: false }))
+// app.use(express.static(path.join(__dirname, 'dist')))
 app.use(bodyParser.json({
   // For Stripe webhooks, we compute the raw body so its signature can be verified
   verify: (req, res, buf) => {

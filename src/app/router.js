@@ -6,6 +6,7 @@ import DocumentEdit from './documentEdit/documentEdit.page.vue'
 import Outliner from './outliner/outliner.page.vue'
 import Planner from './planner/planner.page.vue'
 import Settings from './settings/settings.page.vue'
+
 import WFreeWrite from './workshops/freeWrite.page.vue'
 
 import userApi from './api/userApi'
@@ -69,6 +70,12 @@ export default new Router({
       path: '/workshop/free-write',
       name: 'Free Write',
       component: WFreeWrite,
+      beforeEnter: assertPremium
+    },
+    {
+      path: '/workshop/novel-quickstart',
+      name: 'Novel Quickstart',
+      component: () => import('./workshops/novelQuickstart.page.vue'),
       beforeEnter: assertPremium
     }
   ]

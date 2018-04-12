@@ -21,7 +21,7 @@
             </option>
           </select>
         </div>
-        <div class="workshops">
+        <div class="workshops" v-show="activeWorkshopsTitle">
           <div class="workshop">
             <div class="workshop-header">
               <div class="workshop-title">
@@ -33,7 +33,7 @@
                 <button class="workshop-action button-red" v-show="firstActiveWorkshop.archived" @click="deleteActiveWorkshops()">Delete Forever</button>
               </div>
             </div>
-            <div class="workshop-content" v-for="workshop in activeWorkshops" :key="workshop.guid">
+            <div class="workshop-content" v-for="workshop in activeWorkshops" :key="`${workshop.guid}|${workshop.order}`">
               <div v-html="getHtml(workshop)"></div>            
             </div>
           </div>

@@ -8,19 +8,19 @@ const workshops = {
     '/workshop/free-write', true),
   NOVEL_QUICKSTART: createWorkshop('NOVEL_QUICKSTART', 'Novel Quickstart',
     'Answer a few basic prompts to get ideas flowing for your novel.',
-    '/workshop/novel-quickstart', false),
+    '/workshop/novel-quickstart', true),
+  WRITERS_UNBLOCK: createWorkshop('WRITERS_UNBLOCK', 'Writer\'s Unblock',
+    'Got writer\'s block? Get moving again by doing a word incorporation exercise.',
+    '/workshop/unblock', false),
+  PLOT_WORKSHOP: createWorkshop('PLOT_WORKSHOP', 'Plot Workshop',
+    'Figure out what happens next by responding to curated prompts.',
+    '/workshop/plot', false),
   CHARACTER_WORKSHOP: createWorkshop('CHARACTER_WORKSHOP', 'Character Workshop',
     'Get to know your characters by responding to curated prompts.',
     '/workshop/character', false),
   SETTING_WORKSHOP: createWorkshop('SETTING_WORKSHOP', 'Setting Workshop',
     'Build a stronger sense of place by exploring the setting of your novel.',
-    '/workshop/setting', false),
-  PLOT_WORKSHOP: createWorkshop('PLOT_WORKSHOP', 'Plot Workshop',
-    'Figure out what happens next by responding to curated prompts.',
-    '/workshop/plot', false),
-  WRITERS_UNBLOCK: createWorkshop('WRITERS_UNBLOCK', 'Writer\'s Unblock',
-    'Got writer\'s block? Get moving again by doing a random word incorporation exercise.',
-    '/workshop/unblock', false)
+    '/workshop/setting', false)
 }
 
 module.exports = workshops

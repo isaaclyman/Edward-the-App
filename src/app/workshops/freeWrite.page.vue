@@ -27,7 +27,7 @@
                 <strong>Saved!</strong> You can view this free write in the Workshops column of the Write page.
               </template>
               <template v-else>
-                <strong>Deleted!</strong> This free write had no content.
+                <strong>Deleted!</strong> This free write was empty.
               </template>
             </p>
             <button class="button-green" @click="reset()">Start over</button>
@@ -171,6 +171,7 @@ export default {
 
 .workshops-wrap {
   display: flex;
+  font-size: 16px;
   justify-content: center;
   width: 100%;
 }

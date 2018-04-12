@@ -45,7 +45,10 @@ const store = {
         }
 
         workshop.content = newContent
-        workshop.title = newTitle
+
+        if (newTitle) {
+          workshop.title = newTitle
+        }
       }
     },
 

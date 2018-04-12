@@ -3,13 +3,13 @@
     <div class="write">
       <div class="intro">
         <h1>Novel Quickstart</h1>
-        <p>
+        <p v-if="!finished">
           <strong>Answer the following prompts.</strong> You'll start simple and add more details as you go along.
           By the end, you'll be ready to start plotting and outlining your novel.
         </p>
       </div>
       <transition name="fade" mode="out-in">
-        <div v-if="!finished" class="content">
+        <div v-if="!finished" class="content" key="content">
           <!-- Title -->
           <p class="description">Write the title of your novel:</p>
           <div class="editor short title">
@@ -56,7 +56,7 @@
           </div>
           <button class="button-green" @click="finish()">Finish</button>
         </div>
-        <div v-else class="finished">
+        <div v-else class="finished" key="finished">
           <div v-if="this.fullText.trim()">
             <p>
               Saved! You can view what you've written in the Workshops column of the Write page.
@@ -114,6 +114,10 @@ export default {
       }
     },
     fullText () {
+      if (!this.workshops || !this.workshops.length) {
+        return ''
+      }
+
       return this.workshops.reduce((acc, el) => acc + GetContentString(el.content), '')
     }
   },
@@ -164,6 +168,7 @@ export default {
     reset () {
       this.finished = false
       this.workshops = null
+      this.begin()
     },
     updateContent (index, content) {
       this.$store.commit(UPDATE_WORKSHOPS_CONTENT, {

@@ -7,7 +7,7 @@
           <div>{{route.name}}</div>
         </button>
       </router-link>
-      <hr class="vert between" :key="route.name + '-hr'">
+      <hr class="vert between mobile-hide" :key="route.name + '-hr'">
     </template>
     <button class="main-menu--button" :title="toolsTooltip" v-tooltip @click="showWorkshops()">
       <div v-html="getIconSvg('tools')"></div>
@@ -204,6 +204,12 @@ export default {
 
 .main-menu--button:hover {
   color: #000;
+}
+
+@media (max-width: 800px) {
+  .main-menu--button {
+    padding: 6px 10px;
+  }
 }
 
 .router-link-active > .main-menu--button {

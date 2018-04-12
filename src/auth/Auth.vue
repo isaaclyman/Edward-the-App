@@ -39,6 +39,7 @@ export default {
   display: flex;
   flex-direction: column;
   margin: 0 auto;
+  max-width: 100%;
   min-height: 400px;
   width: 700px;
 }

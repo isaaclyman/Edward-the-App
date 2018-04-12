@@ -72,6 +72,7 @@
               Deleted! This workshop was empty.
             </p>
           </div>
+          <button class="button-green" @click="reset()">Start over</button>
         </div>
       </transition>      
     </div>
@@ -217,19 +218,22 @@ export default {
   display: flex;
   flex: 1;
   flex-direction: column;
-  max-width: 1050px;
+  max-width: 100%;
+  width: 1050px;
 }
 
 .intro {
   margin: 0;
   margin-bottom: 20px;
+  max-width: 100%;
   width: 600px;
 }
 
 .content {
   margin-bottom: 30px;
-  max-width: 600px;
+  max-width: 100%;;
   position: relative;
+  width: 600px;
 }
 
 .description {
@@ -271,6 +275,7 @@ export default {
 
 .finished {
   margin-top: 20px;
-  max-width: 600px;
+  max-width: 100%;
+  width: 600px;
 }
 </style>

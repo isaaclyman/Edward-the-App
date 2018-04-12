@@ -242,3 +242,9 @@ textarea {
 .help-icon--svg {
   fill: #444;
 }
+
+@media (max-width: 800px) {
+  .mobile-hide {
+    display: none !important;
+  }
+}

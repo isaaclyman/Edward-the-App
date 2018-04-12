@@ -10,7 +10,7 @@
         </button>
       </router-link>
       <router-link to="/export">
-        <button class="menu-button">
+        <button class="menu-button mobile-hide">
           Download / Upload
         </button>
       </router-link>
@@ -22,19 +22,19 @@
     <div class="spacer"></div>
     <div class="menu-item" v-if="notDemo">
       <router-link to="/settings">
-        <button class="menu-button">
+        <button class="menu-button mobile-hide">
           Settings
         </button>
       </router-link>
       <a href="/auth#/account">
-        <button class="menu-button button-green">
+        <button class="menu-button button-green mobile-hide">
           Upgrade
         </button>
       </a>
     </div>
     <div class="menu-item" v-if="!notDemo">
       <a href="/auth#/signup">
-        <button class="menu-button button-green">
+        <button class="menu-button button-green mobile-hide">
           Upgrade
         </button>
       </a>

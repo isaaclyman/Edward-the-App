@@ -496,4 +496,10 @@ export default {
     display: none;
   }
 }
+
+@media (max-width: 700px) {
+  .sidebar-wrap {
+    display: none;
+  }
+}
 </style>

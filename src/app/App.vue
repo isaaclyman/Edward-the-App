@@ -4,8 +4,8 @@
       <div id="app" class="app" v-if="loaded && currentDocument && currentDocument.guid" key="app">
         <document-menu></document-menu>
         <div class="app-header">
-          <div class="app-header--logo-wrap">
-            <img class="app-header--logo" src="../../static/logo.png">
+          <div class="logo-wrap">
+            <img class="logo" src="../../static/logo.png">
           </div>
           <div class="app-header--menu">
             <main-menu></main-menu>
@@ -18,7 +18,7 @@
         </div>
       </div>
       <div v-else-if="!loaded" class="loading" key="loading">
-        <img class="app-header--logo" src="../../static/logo.png">
+        <img class="logo" src="../../static/logo.png">
         <pulse-loader></pulse-loader>
       </div>
       <div v-else class="page" key="wizard">
@@ -131,7 +131,7 @@ export default {
   height: 100%;
 }
 
-.app-header--logo-wrap {
+.logo-wrap {
   align-items: center;
   color: #FFF;
   display: flex;
@@ -143,8 +143,19 @@ export default {
   padding-right: 30px;
 }
 
-.app-header--logo {
+.logo {
   height: 28px;
+}
+
+@media (max-width: 800px) {
+  .logo-wrap {
+    padding-left: 12px;
+    padding-right: 4px;
+  }
+
+  .logo-wrap .logo {
+    height: 14px;
+  }
 }
 
 .loading {

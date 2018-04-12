@@ -179,7 +179,8 @@ export default {
 .write {
   display: block;
   flex: 1;
-  max-width: 1050px;
+  max-width: 100%;
+  width: 1050px;
 }
 
 .intro {

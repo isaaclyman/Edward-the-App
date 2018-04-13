@@ -54,7 +54,7 @@
           <div class="editor long report">
             <quill-editor :content="content.report" @update:content="updateContent(5, $event)"></quill-editor>
           </div>
-          <button class="button-green" @click="finish()">Finish</button>
+          <button class="button-green done" @click="finish()">Finish</button>
         </div>
         <div v-else class="finished" key="finished">
           <div v-if="this.fullText.trim()">

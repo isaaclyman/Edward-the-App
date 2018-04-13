@@ -5,6 +5,7 @@ const orderPromises = require('../../utilities').orderPromises
 const createTestOutline = require('./createTestOutline')
 const createTestPlan = require('./createTestPlan')
 const createTestWorkshop = require('./createTestWorkshop')
+const writingWorkshops = require('../../models/writingWorkshop')
 
 const seedPromiseFns = []
 const seedArgs = {
@@ -15,7 +16,8 @@ const seedArgs = {
   '--chapter': () => util.createTestChapter(knex),
   '--outline': () => createTestOutline(knex),
   '--plan': () => createTestPlan(knex),
-  '--workshop': () => createTestWorkshop(knex),
+  '--free-write': () => createTestWorkshop(knex, writingWorkshops.FREE_WRITE.name),
+  '--novel-quickstart': () => createTestWorkshop(knex, writingWorkshops.NOVEL_QUICKSTART.name),
   '--reset-key': () => util.setTestUserResetKey(knex),
   '--verify-key': () => util.setTestUserVerifyKey(knex)
 }

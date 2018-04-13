@@ -171,6 +171,7 @@ describe('the free write workshop (compose page)', () => {
     cy.visit('/app.html#/write')
     cy.get('select.document-dropdown').select('test')
     cy.get('.plan-switch').find('.switch-label').contains('Workshops').click()
+    cy.get('.workshops-wrap .button-tab').contains('Free Writing').click()
   })
 
   it('should show completed workshops on the Workshops column of the composer', () => {

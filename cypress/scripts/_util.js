@@ -1,6 +1,7 @@
 const LocalStorageApi = require('../../src/app/api/localStorage')
 const lsa = new LocalStorageApi()
 const newGuid = require('uuid/v1')
+const writingWorkshops = require('../../models/writingWorkshop')
 
 let seedArgs = []
 function resetSeed () {
@@ -111,8 +112,14 @@ export function createTestPlan (isPremium, documentGuid) {
   ]).then(() => planGuids)
 }
 
-export function createTestWorkshop () {
-  seedArgs.push('--workshop')
+export function createTestWorkshop (type) {
+  if (!type) {
+    seedArgs.push('--free-write')
+  }
+
+  if (type === writingWorkshops.NOVEL_QUICKSTART.name) {
+    seedArgs.push('--novel-quickstart')
+  }
 }
 
 export function createTestUser () {

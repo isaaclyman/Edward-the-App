@@ -127,6 +127,11 @@ export default {
         location: '/analyze',
         name: 'Analyze',
         tooltip: 'Get data-driven insights into your writing.'
+      }, {
+        icon: 'search',
+        location: '/search',
+        name: 'Search',
+        tooltip: 'Search your entire document for a word or phrase.'
       }],
       savedIcon: Octicons.check.toSVG({
         height: 15,
@@ -159,7 +164,7 @@ export default {
       })
     },
     startWorkshop (workshop) {
-      if (!this.isPremium) {
+      if (!this.isPremium || !workshop.available) {
         return
       }
 

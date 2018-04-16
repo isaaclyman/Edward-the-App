@@ -11,10 +11,10 @@
     <div class="button-tab add-tab" v-show="showAddItem" v-if="canAdd">
       <input class="tab-input" v-model="newItem" :placeholder="`New ${itemName}...`">
       <button class="button-green tab-internal-button" @click="addItem">
-        <span class="u-center-all" v-html="saveSvg"></span> Save
+        <span class="u-center-all icon" v-html="saveSvg"></span> Save
       </button>
       <button class="button-red tab-internal-button" @click="cancelAddItem">
-          <span class="u-center-all" v-html="cancelSvg"></span> Cancel
+          <span class="u-center-all icon" v-html="cancelSvg"></span> Cancel
         </button>
     </div>
   </div>
@@ -142,5 +142,10 @@ export default {
 
 .tab-internal-button:not(:first-of-type) {
   margin-left: 6px;
+}
+
+.icon {
+  display: inline-block;
+  margin-right: 4px;
 }
 </style>

@@ -47,6 +47,7 @@ mark {
   cursor: pointer;
   display: inline-block;
   position: relative;
+  white-space: pre-wrap;
   z-index: 10;
 }
 

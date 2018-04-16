@@ -21,11 +21,11 @@ export default {
   components: {},
   computed: {
     gDefineUrl () {
-      const urlWord = this.word.replace(/\s+/g, '+')
+      const urlWord = this.word.trim().replace(/\s+/g, '+')
       return `https://www.google.com/#q=define+${urlWord}`
     },
     gSynonymUrl () {
-      const urlWord = encodeURI(this.word)
+      const urlWord = encodeURI(this.word.trim())
       return `http://www.thesaurus.com/browse/${urlWord}`
     },
     showActions () {

@@ -67,6 +67,9 @@ export default {
   computed: {
     hasDocuments () {
       return this.$store.state.document.ownedDocuments.length > 0
+    },
+    isPremium () {
+      return this.$store.state.user.user.isPremium
     }
   },
   data () {
@@ -94,8 +97,12 @@ export default {
 
       this.saving = true
       this.error = false
+
       this.$store.dispatch(SET_UP_DOCUMENT, { document: newDocument, type }).then(() => {
         this.saving = false
+        if (this.isPremium && type.name === 'Novel') {
+          this.$router.push('/workshop/novel-quickstart')
+        }
       }, () => {
         this.error = true
         this.saving = false

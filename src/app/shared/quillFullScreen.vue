@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap full-screen">
+  <div class="full-screen-wrap full-screen">
     <div class="actions">
       <button v-show="!isWideView" class="action wide-view" v-html="wideSvg" @click="showWideView()"
         title="Wide view" v-tooltip></button>
@@ -116,7 +116,7 @@ export default {
 </script>
 
 <style scoped>
-.wrap {
+.full-screen-wrap {
   background-color: rgba(255, 255, 255, 0.98);
   display: flex;
   flex-direction: column;
@@ -157,7 +157,7 @@ export default {
   align-self: center;
   height: calc(100% - 40px);
   max-width: 500px;
-  padding-top: 20px;
+  padding: 20px 0;
   width: 100%;
 }
 

@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import NotFound from './NotFound.vue'
+
 import Composer from './composer/composer.page.vue'
 import DocumentEdit from './documentEdit/documentEdit.page.vue'
 import Outliner from './outliner/outliner.page.vue'
@@ -77,6 +79,11 @@ export default new Router({
       name: 'Novel Quickstart',
       component: () => import('./workshops/novelQuickstart.page.vue'),
       beforeEnter: assertPremium
+    },
+    {
+      path: '*',
+      name: 'Page does not exist',
+      component: NotFound
     }
   ]
 })

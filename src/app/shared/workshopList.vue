@@ -3,7 +3,7 @@
     <tabs-list :active-index="activeWorkshopNameIndex" :data-array="workshopNameTabs" :filter-tabs="() => true"
               item-name="Workshop"
               :can-add="false"
-              @update:activeIndex="selectWorkshopName"></tabs-list>
+              @update:activeIndex="selectWorkshopNameIndex"></tabs-list>
     <div class="workshop-list">
       <div class="workshop-list-header">
         <div class="workshop-list-title">
@@ -139,7 +139,14 @@ export default {
         this.$store.commit(RESTORE_WORKSHOP, { workshop })
       }
     },
-    selectWorkshopName (index) {
+    // The following two methods are available for use by parent components
+    selectWorkshopGuid (guid) {
+      this.selectedWorkshopGuid = guid
+    },
+    selectWorkshopName (name) {
+      this.activeWorkshopNameIndex = this.workshopNames.indexOf(name)
+    },
+    selectWorkshopNameIndex (index) {
       this.activeWorkshopNameIndex = index
     },
     selectDefaultWorkshop () {

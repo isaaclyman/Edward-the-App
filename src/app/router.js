@@ -45,7 +45,7 @@ export default new Router({
       component: Outliner
     },
     {
-      path: '/write/:chapterGuid?',
+      path: '/write',
       name: 'Write',
       component: Composer
     },

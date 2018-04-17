@@ -95,7 +95,7 @@
         <!-- Workshops -->
         <div class="sidebar-content" v-show="sidebar === 'workshop'">
           <template v-if="hasWorkshops">
-            <workshop-list :filter-workshops="showWorkshop"></workshop-list>
+            <workshop-list ref="workshopList" :filter-workshops="showWorkshop"></workshop-list>
           </template>
           <template v-else>
             <div>No workshops completed yet.</div>
@@ -353,11 +353,20 @@ export default {
     this.editorElement = this.$refs.textEditor
     this.sidebar = planSwitch.cacheGet() || 'outline'
 
-    const chapterGuid = this.$route.params.chapterGuid
-    if (this.$route.params.chapterGuid) {
+    const chapterGuid = this.$route.query.chapter
+    if (chapterGuid) {
       const activeChapter = this.allChapters.find(chapter => chapter.guid === chapterGuid)
       this.activeChapterIndex = this.allChapters.indexOf(activeChapter) || -1
     }
+
+    const workshopGuid = this.$route.query.workshop
+    const workshopName = this.$route.query.workshopName
+    if (workshopName && workshopGuid) {
+      this.switchWorkshops()
+      this.$refs.workshopList.selectWorkshopName(workshopName)
+      this.$refs.workshopList.selectWorkshopGuid(workshopGuid)
+    }
+
     this.$router.push('/write')
   }
 }

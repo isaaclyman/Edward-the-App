@@ -74,9 +74,6 @@ export default {
     allPlans () {
       return this.$store.state.chapters.plans
     },
-    allTopics () {
-      return this.$store.state.chapters.topics
-    },
     allWorkshops () {
       return this.$store.state.workshop.workshops
     },

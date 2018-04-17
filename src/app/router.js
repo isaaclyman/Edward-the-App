@@ -7,6 +7,7 @@ import Composer from './composer/composer.page.vue'
 import DocumentEdit from './documentEdit/documentEdit.page.vue'
 import Outliner from './outliner/outliner.page.vue'
 import Planner from './planner/planner.page.vue'
+import Search from './search/search.page.vue'
 import Settings from './settings/settings.page.vue'
 
 import WFreeWrite from './workshops/freeWrite.page.vue'
@@ -44,7 +45,7 @@ export default new Router({
       component: Outliner
     },
     {
-      path: '/write',
+      path: '/write/:chapterGuid?',
       name: 'Write',
       component: Composer
     },
@@ -67,6 +68,11 @@ export default new Router({
       path: '/settings',
       name: 'Settings',
       component: Settings
+    },
+    {
+      path: '/search',
+      name: 'Search',
+      component: Search
     },
     {
       path: '/workshop/free-write',

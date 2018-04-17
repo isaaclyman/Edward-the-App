@@ -34,3 +34,26 @@ export const GetHtml = (delta) => {
   const converter = new DeltaToHtmlConverter(delta.ops, {})
   return converter.convert()
 }
+
+// Inspired by Tim Down
+// https://stackoverflow.com/a/3410557/4347245
+export const GetIndicesOf = (search, str) => {
+  const fullString = str.toLowerCase()
+  const searchString = search.toLowerCase()
+
+  const searchStringLength = searchString.length
+  if (searchStringLength === 0 || !fullString.trim()) {
+    return []
+  }
+
+  const indices = []
+  let startIndex = 0
+  let index = fullString.indexOf(searchString, startIndex)
+  while (index > -1) {
+    indices.push(index)
+    startIndex = index + searchStringLength
+    index = fullString.indexOf(searchString, startIndex)
+  }
+
+  return indices
+}

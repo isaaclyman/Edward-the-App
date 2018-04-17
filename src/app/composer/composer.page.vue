@@ -352,6 +352,13 @@ export default {
     this.editorContainerNode = this.$refs.editorContainer
     this.editorElement = this.$refs.textEditor
     this.sidebar = planSwitch.cacheGet() || 'outline'
+
+    const chapterGuid = this.$route.params.chapterGuid
+    if (this.$route.params.chapterGuid) {
+      const activeChapter = this.allChapters.find(chapter => chapter.guid === chapterGuid)
+      this.activeChapterIndex = this.allChapters.indexOf(activeChapter) || -1
+    }
+    this.$router.push('/write')
   }
 }
 </script>

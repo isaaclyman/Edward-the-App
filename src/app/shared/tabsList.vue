@@ -9,7 +9,7 @@
     </button>
     <button v-if="canAdd" @click="showNewItem" class="button-tab add-button" v-show="!showAddItem" v-html="addSvg"></button>
     <div class="button-tab add-tab" v-show="showAddItem" v-if="canAdd">
-      <input class="tab-input" v-model="newItem" :placeholder="`New ${itemName}...`">
+      <input class="tab-input" v-model="newItem" :placeholder="`New ${itemName}...`" @keyup.enter="addItem">
       <button class="button-green tab-internal-button" @click="addItem">
         <span class="u-center-all icon" v-html="saveSvg"></span> Save
       </button>

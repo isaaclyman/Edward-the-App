@@ -54,7 +54,7 @@
                   <span class="button-link-icon" v-html="doneSvg"></span>Done Editing
                 </button>
               </div>
-              <div class="content-static" v-if="!isEditing(index)">
+              <div class="content-static" :class="{ 'space-above': section.archived }" v-if="!isEditing(index)">
                 <div v-html="getHtml(section)"></div>
                 <span class="content-placeholder" v-if="!section.archived && !getTextContent(section.content)">
                   No content yet. Click "Edit" to add some.
@@ -423,6 +423,10 @@ export default {
   font-family: 'Khula', sans-serif;
   font-size: 13px;
   white-space: pre-wrap;
+}
+
+.content-static.space-above {
+  margin-top: 30px;
 }
 
 .content-placeholder {

@@ -24,7 +24,7 @@
                     @update="renamePlan"></chips-list>
       </div>
       <hr>
-      <plans-list :filter-plans="showPlan" :filter-sections="showSection"></plans-list>
+      <plans-list ref="plansList" :filter-plans="showPlan" :filter-sections="showSection"></plans-list>
     </div>
 
     <!-- Plans: [?] Modal -->
@@ -136,6 +136,18 @@ export default {
   },
   mounted () {
     this.helpPlanChipsModal = this.$refs.helpPlanChipsModal
+
+    const planGuid = this.$route.query.plan
+    if (planGuid) {
+      const activePlan = this.allPlans.find(plan => plan.guid === planGuid)
+      if (activePlan.archived) {
+        this.filters.archived = true
+      }
+
+      this.$refs.plansList.selectPlan(this.allPlans.indexOf(activePlan))
+    }
+
+    this.$router.replace('/plan')
   }
 }
 </script>

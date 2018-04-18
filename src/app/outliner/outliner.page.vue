@@ -136,7 +136,13 @@ export default {
   },
   computed: {
     activeChapter () {
-      if (this.activeChapterIndex < 0) {
+      // If no active chapter has been set, default to the first one
+      if (this.activeChapterIndex === -1) {
+        this.activeChapterIndex = 0
+      }
+
+      // If viewing an archived chapter but "show archived" is false
+      if (this.allChapters[this.activeChapterIndex].archived && !this.filters.archived) {
         this.activeChapterIndex = this.allChapters.indexOf(this.viewingChapters[0])
       }
 
@@ -321,6 +327,18 @@ export default {
     this.helpChapterBlocksNode = this.$refs.helpChapterBlocksModal
     this.helpChapterChipsNode = this.$refs.helpChapterChipsModal
     this.helpTopicChipsNode = this.$refs.helpTopicChipsModal
+
+    const chapterGuid = this.$route.query.chapter
+    if (chapterGuid) {
+      const activeChapter = this.allChapters.find(chapter => chapter.guid === chapterGuid)
+      if (activeChapter.archived) {
+        this.filters.archived = true
+      }
+
+      this.activeChapterIndex = this.allChapters.indexOf(activeChapter)
+    }
+
+    this.$router.replace('/outline')
   }
 }
 </script>

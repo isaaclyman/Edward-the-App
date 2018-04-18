@@ -7,7 +7,8 @@
         that match it.
       </p>
       <div class="search-box">
-        <input class="search-input" v-model="searchText" type="text" placeholder="Search text" @keyup.enter="search()">
+        <input class="search-input" v-model="searchText" type="text" placeholder="Search text"
+          @keyup.enter="search()" ref="searchInput">
         <button class="button-green" @click="search()">Search</button>
       </div>
       <transition name="fade" mode="out-in">
@@ -266,6 +267,9 @@ export default {
       this.matches.workshops = this.getMatchingWorkshops(this.searchText.toLowerCase())
       this.loading = false
     }
+  },
+  mounted () {
+    this.$refs.searchInput.focus()
   }
 }
 </script>

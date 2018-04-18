@@ -356,6 +356,10 @@ export default {
     const chapterGuid = this.$route.query.chapter
     if (chapterGuid) {
       const activeChapter = this.allChapters.find(chapter => chapter.guid === chapterGuid)
+      if (activeChapter.archived) {
+        this.filters.archived = true
+      }
+
       this.activeChapterIndex = this.allChapters.indexOf(activeChapter) || -1
     }
 
@@ -363,11 +367,16 @@ export default {
     const workshopName = this.$route.query.workshopName
     if (workshopName && workshopGuid) {
       this.switchWorkshops()
+      const activeWorkshop = this.allWorkshops.find(workshop => workshop.guid === workshopGuid)
+      if (activeWorkshop.archived) {
+        this.filters.archived = true
+      }
+
       this.$refs.workshopList.selectWorkshopName(workshopName)
       this.$refs.workshopList.selectWorkshopGuid(workshopGuid)
     }
 
-    this.$router.push('/write')
+    this.$router.replace('/write')
   }
 }
 </script>

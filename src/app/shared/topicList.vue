@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="topic-content">
-        <div class="content-actions" v-if="!getMasterTopic(topic).archived">
+        <div class="content-actions" v-if="showActions(topic)">
           <button class="button-link" v-if="!isEditing(index)" @click="editTopic(index)">
             <span class="button-link-icon" v-html="editSvg"></span>Edit
           </button>
@@ -20,9 +20,9 @@
             <span class="button-link-icon" v-html="doneSvg"></span>Done Editing
           </button>
         </div>
-        <div class="content-static" v-if="!isEditing(index)">
+        <div class="content-static" :class="{ 'space-above': !showActions(topic) }" v-if="!isEditing(index)">
           <div v-html="getHtml(topic)"></div>
-          <span class="content-placeholder" v-if="!getMasterTopic(topic).archived && !getTextContent(topic.content)">
+          <span class="content-placeholder" v-if="showActions(topic) && !getTextContent(topic.content)">
             No content yet. Click "Edit" to add some.
           </span>
         </div>
@@ -117,6 +117,9 @@ export default {
     },
     restoreTopic ({ index }) {
       this.$store.commit(RESTORE_TOPIC, { topic: this.topics[index] })
+    },
+    showActions (chapterTopic) {
+      return !this.getMasterTopic(chapterTopic).archived && !this.chapter.archived
     },
     showTopic (chapterTopic) {
       if (!chapterTopic) {
@@ -219,6 +222,10 @@ export default {
   font-family: 'Khula', sans-serif;
   font-size: 13px;
   white-space: pre-wrap;
+}
+
+.content-static.space-above {
+  margin-top: 30px;
 }
 
 .content-placeholder {

@@ -124,7 +124,7 @@ export default {
       return this.user.paymentDue ? new Date(this.user.paymentDue).toLocaleDateString() : null
     },
     user () {
-      const meta = this.$route.matched.find(record => record.meta.getCurrentUser).meta
+      const meta = this.$route.matched.find(record => record && record.meta.getCurrentUser).meta
       return meta.getCurrentUser()
     }
   },

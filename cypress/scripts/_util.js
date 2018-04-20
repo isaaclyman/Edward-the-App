@@ -14,7 +14,7 @@ function runSeed (cy) {
   }
   
   const seedString = seedArgs.join(' ')
-  seedArgs = []
+  resetSeed()
   const seedCommand = `node cypress/scripts/seedData.js ${seedString}`
   console.log(`seeding: ${seedCommand}`)
   return cy.exec(seedCommand)

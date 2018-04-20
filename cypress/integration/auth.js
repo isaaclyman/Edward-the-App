@@ -88,6 +88,7 @@ describe('the auth page', () => {
       cy.get('@username').type(user.email)
       cy.get('@password').type(user.password)
       cy.get('@signUp').click()
+      cy.url().should('contain', '/verification')      
     }
 
     beforeEach(() => {
@@ -110,7 +111,6 @@ describe('the auth page', () => {
         deleteTestUser()
       })
       signUp()
-      cy.url().should('contain', '/verification')
       cy.getCookie('connect.sid').should('exist')
     })
 

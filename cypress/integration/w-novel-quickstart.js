@@ -115,6 +115,7 @@ describe('the novel quickstart workshop (new workshop)', () => {
     clock.tick(2000)
     cy.visit('/app.html#/write')
     cy.visit('/app.html#/workshop/novel-quickstart')
+    cy.url().should('contain', '/novel-quickstart')
     cy.get('.ql-editor').should('have.text', '')
   })
 })

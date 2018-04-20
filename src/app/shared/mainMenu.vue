@@ -28,8 +28,8 @@
         </div>
       </div>
     </div>
-    <hr class="vert">
-    <a class="disguised" href="/auth#/account">
+    <hr class="vert mobile-hide">
+    <a class="disguised mobile-hide" href="/auth#/account">
       <div class="account" :title="accountType.description" v-tooltip>
         <div class="email">
           {{ email }}

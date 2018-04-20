@@ -57,7 +57,7 @@ export default {
       return this.user && this.user.email
     },
     user () {
-      const meta = this.$route.matched.find(record => record.meta.getCurrentUser).meta
+      const meta = this.$route.matched.find(record => record && record.meta.getCurrentUser).meta
       return meta.getCurrentUser()
     }
   },

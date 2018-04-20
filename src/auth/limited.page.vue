@@ -44,7 +44,7 @@ import { goToApp } from './shared'
 export default {
   computed: {
     user () {
-      const meta = this.$route.matched.find(record => record.meta.getCurrentUser).meta
+      const meta = this.$route.matched.find(record => record && record.meta.getCurrentUser).meta
       return meta.getCurrentUser()
     }
   },

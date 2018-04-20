@@ -18,7 +18,7 @@ module.exports = (knex) => {
   const sectionGuids = [guid(), guid(), guid()]
   const section = (index, planId) => ({
     archived: false,
-    content: null,
+    content: { ops: [{ insert: `test section ${index} content searchable`}] },
     guid: sectionGuids[index - 1],
     tags: '[]',
     title: `test section ${index}`,

@@ -34,7 +34,10 @@
               </div>
             </div>
           </template>
-          <div class="result-set" v-if="matches.chapters.length && filters.showChapters">
+          <div v-if="searched && !hasResults">
+            <strong>No results found.</strong>
+          </div>
+          <div class="result-set chapter-results" v-if="matches.chapters.length && filters.showChapters">
             <h3>Chapters</h3>
             <div class="result" v-for="chapter in matches.chapters" :key="chapter.guid">
               <p class="result-title">
@@ -48,7 +51,7 @@
               </div>
             </div>
           </div>
-          <div class="result-set" v-if="matches.outlines.length && filters.showOutlines">
+          <div class="result-set outline-results" v-if="matches.outlines.length && filters.showOutlines">
             <h3>Outlines</h3>
             <div class="result" v-for="topicMatch in matches.outlines" :key="topicMatch.chapterGuid + topicMatch.topicGuid">
               <p class="result-title">
@@ -62,7 +65,7 @@
               </div>
             </div>
           </div>
-          <div class="result-set" v-if="matches.plans.length && filters.showPlans">
+          <div class="result-set plan-results" v-if="matches.plans.length && filters.showPlans">
             <h3>Plans</h3>
             <div class="result" v-for="sectionMatch in matches.plans" :key="sectionMatch.planGuid + sectionMatch.sectionGuid">
               <p class="result-title">
@@ -76,7 +79,7 @@
               </div>
             </div>
           </div>
-          <div class="result-set" v-if="matches.workshops.length && filters.showWorkshops">
+          <div class="result-set workshop-results" v-if="matches.workshops.length && filters.showWorkshops">
             <h3>Workshops</h3>
             <div class="result" v-for="workshopMatch in matches.workshops" :key="workshopMatch.guid">
               <p class="result-title">
@@ -114,16 +117,16 @@ export default {
   },
   computed: {
     allChapters () {
-      return this.$store.state.chapters.chapters
+      return this.$store.state.chapters.chapters || []
     },
     allPlans () {
-      return this.$store.state.chapters.plans
+      return this.$store.state.chapters.plans || []
     },
     allTopics () {
-      return this.$store.state.chapters.topics
+      return this.$store.state.chapters.topics || []
     },
     allWorkshops () {
-      return this.$store.state.workshop.workshops
+      return this.$store.state.workshop.workshops || []
     },
     hasResults () {
       return (
@@ -153,6 +156,7 @@ export default {
         plans: [],
         workshops: []
       },
+      searched: false,
       searchText: ''
     }
   },
@@ -261,10 +265,12 @@ export default {
     },
     search () {
       this.loading = true
+      this.searched = false
       this.matches.chapters = this.getMatchingChapters(this.searchText.toLowerCase())
       this.matches.outlines = this.getMatchingOutlines(this.searchText.toLowerCase())
       this.matches.plans = this.getMatchingPlans(this.searchText.toLowerCase())
       this.matches.workshops = this.getMatchingWorkshops(this.searchText.toLowerCase())
+      this.searched = true
       this.loading = false
     }
   },

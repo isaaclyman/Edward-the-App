@@ -33,6 +33,8 @@ describe('the main menu', () => {
     cy.url().should('contain', '/write')
     cy.get('.main-menu').find('.main-menu--button').contains('Analyze').click()
     cy.url().should('contain', '/analyze')
+    cy.get('.main-menu').find('.main-menu--button').contains('Search').click()
+    cy.url().should('contain', '/search')
     const clock = cy.clock()
     cy.get('.main-menu').find('.main-menu--button').contains('Workshop').click()
     clock.tick(2000)

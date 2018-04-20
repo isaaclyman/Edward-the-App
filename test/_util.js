@@ -67,7 +67,7 @@ function createTestChapter (knex) {
 
   const chapter = (index) => ({
     archived: false,
-    content: null,
+    content: { ops: [{ insert: 'test chapter content searchable' }] },
     guid: chapGuids[index - 1],
     title: `test chapter ${index}`,
     'user_id': userId,

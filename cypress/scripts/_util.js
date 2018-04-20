@@ -38,7 +38,7 @@ export function createTestChapter (isPremium, documentGuid) {
   const chapGuids = [newGuid(), newGuid(), newGuid()]
   const chapter = index => ({
     archived: false,
-    content: null,
+    content: { ops: [{ insert: `test chapter ${index} content searchable` }] },
     guid: chapGuids[index - 1],
     title: `test chapter ${index}`,
     topics: {}
@@ -73,7 +73,18 @@ export function createTestOutline (isPremium, documentGuid) {
   const guid = newGuid()
   return lsa.updateTopic(documentGuid, guid,
     { archived: false, guid, title: 'test topic 1' }
-  )
+  ).then(() => {
+    return lsa.getAllChapters(documentGuid)
+  }).then(chapters => {
+    chapters[0].topics = {
+      [guid]: {
+        content: { ops: [{ insert: 'test chapter topic 1 content searchable' }]},
+        guid
+      }
+    }
+
+    return lsa.updateChapter(documentGuid, chapters[0].guid, chapters[0])
+  })
 }
 
 export function createTestPlan (isPremium, documentGuid) {
@@ -93,7 +104,7 @@ export function createTestPlan (isPremium, documentGuid) {
   const sectionGuids = [newGuid(), newGuid(), newGuid()]
   const section = index => ({
     archived: false,
-    content: null,
+    content: { ops: [{ insert: `test section ${index} content searchable` }] },
     guid: sectionGuids[index - 1],
     tags: [],
     title: `test section ${index}`
@@ -113,7 +124,7 @@ export function createTestPlan (isPremium, documentGuid) {
 }
 
 export function createTestWorkshop (type) {
-  if (!type) {
+  if (!type || type === writingWorkshops.FREE_WRITE.name) {
     seedArgs.push('--free-write')
   }
 

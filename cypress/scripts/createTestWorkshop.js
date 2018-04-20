@@ -17,7 +17,7 @@ module.exports = (knex, workshopName) => {
     workshop_name: workshopName,
     content: {
       ops: [{
-        insert: `test workshop ${index} content`
+        insert: `test workshop ${index} content searchable`
       }]
     },
     user_id: userId,

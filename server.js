@@ -46,6 +46,11 @@ app.get('/terms', (req, res) => {
   res.sendFile(path.join(__dirname, 'legal', 'terms.html'))
 })
 
+// Serve press kit
+app.get('/press', (req, res) => {
+  res.sendFile(path.join(__dirname, 'press', 'press.html'))
+})
+
 // Database ORM
 const knex = require('./db')
 const { db, dbReady } = require('./models/_index')(knex)

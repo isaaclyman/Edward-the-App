@@ -6,7 +6,7 @@
           <strong>Welcome to Edward.</strong>
         </p>
         <p>
-          New here? <a href="http://isaaclyman.com/blog/tags/edward/">Read the documentation.</a>
+          New here? <a target="_blank" href="https://www.youtube.com/watch?v=OvERL5CPPXM">Watch the introductory video.</a>
         </p>
       </div>
       <div class="content border-bottom">

@@ -328,7 +328,7 @@ test('import and export a document with content', async t => {
       title: 'Workshop 1',
       order: 0,
       archived: false,
-      date: new Date().toLocaleDateString()
+      date: new Date().toLocaleDateString('en-US')
     }]
   })
 

@@ -76,7 +76,7 @@ export default {
         icon: 'warning',
         text: `Are you sure you want to delete this topic? It will be deleted from every chapter.
                This cannot be undone.`,
-        title: 'Delete Forever?'
+        title: 'Delete from every chapter?'
       }).then((willDelete) => {
         if (!willDelete) {
           return

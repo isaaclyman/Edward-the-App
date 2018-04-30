@@ -159,7 +159,7 @@ export default {
         order,
         workshopName: writingWorkshops.NOVEL_QUICKSTART.name,
         content: null,
-        date: new Date().toLocaleDateString()
+        date: new Date().toLocaleDateString('en-US')
       }))
 
       this.workshops.forEach(workshop => this.$store.commit(ADD_WORKSHOP, { workshop }))

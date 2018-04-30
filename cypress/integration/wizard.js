@@ -63,7 +63,7 @@ const tests = (userType) => () => {
 
   it('has a wizard', () => {
     cy.contains('Welcome')
-    cy.get('a').contains('documentation')
+    cy.get('a').contains('video')
     selectTemplate('Novel')
     selectTemplate('Blank')
   })

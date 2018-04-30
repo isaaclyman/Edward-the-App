@@ -177,7 +177,7 @@ export default {
     archivePlan ({ index }) {
       this.$store.commit(ARCHIVE_PLAN, { plan: this.allPlans[index] })
 
-      if (index === this.activePlanIndex) {
+      if (index === this.activePlanIndex && !this.filterPlans(this.allPlans[index])) {
         this.activePlanIndex = -1
       }
     },

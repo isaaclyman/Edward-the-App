@@ -10,7 +10,9 @@
     <hr>
     <user-emails></user-emails>
     <hr>
-    <comp-accounts></comp-accounts>
+    <!-- Comping accounts doesn't really work yet (can't migrate content from the user's computer without an explicit flow).
+    For now I can do it manually. -->
+    <!-- <comp-accounts></comp-accounts> -->
   </div>
 </template>
 

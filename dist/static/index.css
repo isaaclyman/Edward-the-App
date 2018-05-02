@@ -17,7 +17,7 @@ h1, h2, h3, h4, h5, h6, p, li {
   font-size: 16px;
 }
 
-p, .feature {
+p, .feature, li {
   line-height: 1.6em;
 }
 
@@ -63,6 +63,7 @@ h4 {
 
 ul li, ol li {
   margin-left: 10px;
+  padding: 8px 0;
 }
 
 @media (max-width: 800px) {

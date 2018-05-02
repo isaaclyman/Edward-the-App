@@ -55,7 +55,7 @@ const getWorkshops = function (db, userId, docGuid) {
     workshopName: 'workshop_name'
   }).orderBy('workshop_name').orderBy('order', 'asc').then(workshops => {
     return workshops.map(workshop => {
-      workshop.date = new Date(workshop.date).toLocaleDateString()
+      workshop.date = new Date(workshop.date).toLocaleDateString('en-US')
       return workshop
     })
   })

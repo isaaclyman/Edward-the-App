@@ -1,6 +1,6 @@
 import { user } from '../../test/_util'
 import {
-  createTestChapter, createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium,
+  createTestChapter, createTestDocument, createTestUser, createTestOutline, deleteTestUser, logIn, makeTestUserPremium,
   seed
 } from '../scripts/_util'
 
@@ -14,6 +14,7 @@ const tests = isPremium => () => {
         makeTestUserPremium()
         createTestDocument(isPremium)
         createTestChapter(isPremium)
+        createTestOutline(isPremium)
       }
     })
 
@@ -23,7 +24,9 @@ const tests = isPremium => () => {
     logIn(cy, user.email, user.password)
 
     if (!isPremium) {
-      createTestDocument(isPremium).then(docId => createTestChapter(isPremium, docId))
+      createTestDocument(isPremium)
+        .then(docId => createTestChapter(isPremium, docId).then(() => docId))
+        .then(docId => createTestOutline(isPremium, docId))
     }
 
     cy.visit('/app.html#/outline')
@@ -45,7 +48,24 @@ const tests = isPremium => () => {
 
   it('has an outline view with tabs', () => {
     cy.get('div.chapters').find('div.tabs').find('button.button-tab')
-    cy.get('div.chapters').find('div.chapter').contains('test')
+    cy.get('div.chapters').find('div.chapter').contains('test chapter 1')
+  })
+
+  it('allows deleting a chapter', () => {
+    cy.get('#showArchivedCheckbox').check()
+    cy.get('.button-tab').contains('test chapter 3').click()
+    cy.get('button.chapter-action').contains('Archive').click()
+    cy.get('button.chapter-action').contains('Delete').click()
+    cy.get('.swal-button').contains('OK').click()
+    cy.contains('test chapter 3').should('not.exist')
+  })
+
+  it('allows deleting a topic', () => {
+    cy.get('#showArchivedCheckbox').check()
+    cy.get('.topic-action').contains('Archive').click()
+    cy.get('.topic-action').contains('Delete').click()
+    cy.get('.swal-button').contains('OK').click()
+    cy.contains('test topic 1').should('not.exist')
   })
 }
 

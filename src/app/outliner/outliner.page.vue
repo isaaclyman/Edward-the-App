@@ -236,7 +236,7 @@ export default {
     archiveChapter ({ index }) {
       this.$store.commit(ARCHIVE_CHAPTER, { chapter: this.allChapters[index] })
 
-      if (index === this.activeChapterIndex) {
+      if (index === this.activeChapterIndex && !this.filters.archived) {
         this.activeChapterIndex = -1
       }
     },
@@ -257,6 +257,10 @@ export default {
         }
 
         this.$store.commit(DELETE_CHAPTER, { chapter: this.allChapters[index] })
+
+        if (index === this.activeChapterIndex) {
+          this.activeChapterIndex = -1
+        }
       })
     },
     getMasterTopic (chapterTopic) {

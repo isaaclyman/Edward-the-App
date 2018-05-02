@@ -20,6 +20,7 @@ module.exports = (knex, workshopName) => {
         insert: `test workshop ${index} content searchable`
       }]
     },
+    date: new Date().toLocaleDateString('en-US'),
     user_id: userId,
     document_id: docId
   })

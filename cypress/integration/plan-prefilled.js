@@ -109,6 +109,23 @@ const tests = isPremium => () => {
 
     cy.get('.section-chips').find('.chip').contains('renamed').should('be.visible')
   })
+
+  it('allows deleting a plan', () => {
+    cy.get('#showArchivedCheckbox').check()
+    cy.get('.button-tab').contains('test plan 2').click()
+    cy.get('.plan-action').contains('Archive').click()
+    cy.get('.plan-action').contains('Delete').click()
+    cy.get('.swal-button').contains('OK').click()
+    cy.contains('test plan 2').should('not.exist')
+  })
+
+  it('allows deleting a section', () => {
+    cy.get('#showArchivedCheckbox').check()
+    cy.get('.section-action').contains('Archive').click()
+    cy.get('.section-action').contains('Delete').click()
+    cy.get('.swal-button').contains('OK').click()
+    cy.contains('test section 1').should('not.exist')
+  })
 }
 
 describe('the prefilled plans page (limited)', tests(false))

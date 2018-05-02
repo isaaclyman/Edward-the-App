@@ -105,7 +105,7 @@ export default {
         order: 0,
         workshopName: writingWorkshops.FREE_WRITE.name,
         content: null,
-        date: new Date().toLocaleDateString()
+        date: new Date().toLocaleDateString('en-US')
       }
       this.$store.commit(ADD_WORKSHOP, { workshop: this.workshop })
       exerciseCache.cacheSet(this.workshop.guid)

@@ -81,7 +81,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     doc.addParagraph(pTitle)
 
     resetNumbering()
-    getChapters(db, userId, guid).then(chpaters => {
+    getChapters(db, userId, guid).then(chapters => {
       const styledArray = getStyledArrayFromChapters(chapters)
 
       let lastPara = null
@@ -99,7 +99,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
           }
         }
 
-        if (line.pageBreak === 'before') {
+        if (line.pageBreak === 'before' && lastPara) {
           lastPara.pageBreak()
         }
         
@@ -111,7 +111,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       }
 
       const exporter = new docx.ExpressPacker(doc, res)
-      exporter.pack(title)
+      exporter.pack(title || 'Document')
     })
   })
 }

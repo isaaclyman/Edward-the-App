@@ -34,6 +34,7 @@ module.exports = function (app, passport, db) {
   require('./plan').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./section').registerApis(app, passport, db, isPremiumUserMiddleware)
   require('./workshops').registerApis(app, passport, db, isPremiumUserMiddleware)
+  require('./word.export').registerApis(app, passport, db, isPremiumUserMiddleware)
 
   // Serve webhook APIs
   require('./payments.events').registerApis(app, db)

@@ -21,10 +21,10 @@ function orderPromises (promiseFns) {
 
 // getNewLine, getNewSegment, getStyles, getStyledArrayFromChapters:
 // From an array of Edward chapters, produce an array of Line objects.
-// Line { text: string | Segment[], style: string | string[] }
+// Line { text: string | Segment[], style: string | string[], pageBreak: undefined | 'before' }
 // Segment { text: string, style: string[] }
-// Line style strings: h1|h2|h3|blockquote|ul|ol
-// style string: bold|italic|underline|strike
+// Line style strings: h1|h2|h3|blockquote|ul|ol|chapterHeading
+// Segment style strings: bold|italic|underline|strike
 
 function getNewLine () {
   return {

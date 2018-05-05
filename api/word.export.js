@@ -40,9 +40,6 @@ const registerApis = function (app, passport, db, isPremiumUser) {
           case 'h3':
             paragraph.heading4()
             break
-          case 'blockquote':
-            paragraph.indent(720)
-            break
           case 'ul':
             paragraph.bullet()
             break
@@ -53,7 +50,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       }
     }
 
-    const formatSegment = function (segment, textRun) {
+    const formatSegment = function (segment, textRun, line) {
       for (const style of segment.style) {
         switch (style) {
           case 'bold':
@@ -69,6 +66,10 @@ const registerApis = function (app, passport, db, isPremiumUser) {
             textRun.strike()
             break
         }
+      }
+
+      if (line.style.includes('blockquote')) {
+        textRun.tab()
       }
     }
 
@@ -93,13 +94,14 @@ const registerApis = function (app, passport, db, isPremiumUser) {
       for (let index = 0; index < styledArray.length; index++) {
         const line = styledArray[index]
         const para = new docx.Paragraph()
+        formatLine(line, para)
 
         if (typeof line.text === 'string') {
           para.addRun(new docx.TextRun(line.text))
         } else if (Array.isArray(line.text)) {
           for (const segment of line.text) {
             const run = new docx.TextRun(segment.text)
-            formatSegment(segment, run)
+            formatSegment(segment, run, line)
             para.addRun(run)
           }
         }
@@ -107,8 +109,6 @@ const registerApis = function (app, passport, db, isPremiumUser) {
         if (line.pageBreak === 'before' && lastPara) {
           lastPara.pageBreak()
         }
-        
-        formatLine(line, para)
 
         doc.addParagraph(para)
 

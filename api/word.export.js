@@ -83,7 +83,7 @@ const registerApis = function (app, passport, db, isPremiumUser) {
 
     resetNumbering()
     return getChapters(db, userId, guid).then(chapters => {
-      if (!includeArchived) {
+      if (includeArchived.toLowerCase() === 'false') {
         return chapters.filter(chapter => !chapter.archived)
       }
       return chapters

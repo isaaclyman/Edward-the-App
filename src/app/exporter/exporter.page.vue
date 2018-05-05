@@ -25,7 +25,7 @@
       </div>
       <div class="export-option">
         <h3>Export to Microsoft Word document</h3>
-        <div>(Premium only)</div>
+        <div>(Premium users only)</div>
         <pulse-loader v-if="loading"></pulse-loader>
         <div class="export-checkbox">
           <input id="wordIncludeArchived" v-if="!loading" type="checkbox" v-model="wordIncludeArchived">

@@ -3,11 +3,10 @@
     <div class="exporter">
       <div class="export-option">
         <h3>Export to PDF</h3>
-        <div>(You can open PDFs in Microsoft Word.)</div>
         <pulse-loader v-if="loading"></pulse-loader>
         <div class="export-checkbox">
-          <input id="includeArchived" v-if="!loading" type="checkbox" v-model="includeArchived">
-          <label for="includeArchived" v-if="!loading">Include Archived</label>
+          <input id="pdfIncludeArchived" v-if="!loading" type="checkbox" v-model="pdfIncludeArchived">
+          <label for="pdfIncludeArchived" v-if="!loading">Include Archived</label>
         </div>
         <template v-if="!loading">
           <button class="button-green export-button" @click="exportPdfChapters()">
@@ -25,6 +24,20 @@
         </template>
       </div>
       <div class="export-option">
+        <h3>Export to Microsoft Word document</h3>
+        <div>(Premium only)</div>
+        <pulse-loader v-if="loading"></pulse-loader>
+        <div class="export-checkbox">
+          <input id="wordIncludeArchived" v-if="!loading" type="checkbox" v-model="wordIncludeArchived">
+          <label for="wordIncludeArchived" v-if="!loading">Include Archived</label>
+        </div>
+        <template v-if="!loading">
+          <button class="button-green export-button" @click="exportWordChapters()">
+            Export all chapters
+          </button>
+        </template>
+      </div>
+      <div class="export-option">
         <h3>Create a backup</h3>
         <div>(You can recover your document from this file later.)</div>
         <pulse-loader v-if="loading"></pulse-loader>
@@ -35,7 +48,7 @@
       <div class="export-option">
         <h3>Import a backup</h3>
         <div>
-          (Warning: This will overwrite the current document completely, including all chapters, plans and outlines.)
+          (Warning: This will overwrite the current document completely, including all chapters, plans, outlines and workshops.)
         </div>
         <div class="file-input-container">
           <pulse-loader v-if="loading"></pulse-loader>
@@ -92,8 +105,9 @@ export default {
   },
   data () {
     return {
-      includeArchived: false,
-      loading: false
+      pdfIncludeArchived: false,
+      loading: false,
+      wordIncludeArchived: false
     }
   },
   methods: {
@@ -160,7 +174,7 @@ export default {
       this.loading = true
 
       const chaptersToExport = this.allChapters.filter(chapter =>
-        !chapter.archived || this.includeArchived
+        !chapter.archived || this.pdfIncludeArchived
       )
 
       chaptersToPdf(this.documentTitle, chaptersToExport).then(() => {
@@ -178,7 +192,7 @@ export default {
       this.loading = true
 
       const nestedTopics = this.allChapters.filter(chapter =>
-        !chapter.archived || this.includeArchived
+        !chapter.archived || this.pdfIncludeArchived
       ).map(chapter => {
         const chapterTopics = Object.keys(chapter.topics).map(guid => {
           const topic = chapter.topics[guid]
@@ -187,7 +201,7 @@ export default {
           topic.title = `${chapter.title} - ${masterTopic.title}`
           return topic
         }).filter(topic =>
-          !topic.archived || this.includeArchived
+          !topic.archived || this.pdfIncludeArchived
         )
 
         return chapterTopics
@@ -209,10 +223,10 @@ export default {
     exportPdfPlans () {
       this.loading = true
       const nestedPlans = this.allPlans.filter(plan =>
-        !plan.archived || this.includeArchived
+        !plan.archived || this.pdfIncludeArchived
       ).map(plan => {
         return plan.sections.filter(section =>
-          !section.archived || this.includeArchived
+          !section.archived || this.pdfIncludeArchived
         ).map(section => {
           const title = plan.title === section.title
             ? plan.title
@@ -241,7 +255,7 @@ export default {
     exportPdfWorkshops () {
       this.loading = true
       const workshops = this.allWorkshops.filter(workshop =>
-        !workshop.archived || this.includeArchived
+        !workshop.archived || this.pdfIncludeArchived
       ).map(workshop => {
         return {
           content: workshop.content,
@@ -264,6 +278,36 @@ export default {
         swal({
           icon: 'error',
           text: `Could not export workshops. DETAILS: "${err}"`
+        })
+        throw err
+      })
+    },
+    exportWordChapters () {
+      if (!this.isPremium) {
+        swal({
+          button: 'OK',
+          dangerMode: true,
+          icon: 'error',
+          text: `Only Premium users can export to a Microsoft Word document. Please upgrade to a Premium subscription to continue.`,
+          title: 'Not allowed'
+        })
+        return
+      }
+
+      this.loading = true
+      storageApiPromise.then(storage => {
+        return storage.exportToWord({
+          guid: this.documentGuid,
+          title: this.documentTitle,
+          includeArchived: this.wordIncludeArchived
+        })
+      }).then(() => {
+        this.loading = false
+      }, err => {
+        this.loading = false
+        swal({
+          icon: 'error',
+          text: `Could not export to Word. DETAILS: "${err}"`
         })
         throw err
       })

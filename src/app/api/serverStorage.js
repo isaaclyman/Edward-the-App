@@ -183,6 +183,10 @@ class ServerStorageApi {
     const data = JSON.parse(json)
     return api.fullImport(data)
   }
+
+  exportToWord ({ guid, title, includeArchived }) {
+    return api.exportToWord({ guid, title, includeArchived })
+  }
 }
 
 export default ServerStorageApi

@@ -5,10 +5,10 @@ const { getStyledArrayFromChapters } = require('../utilities')
 const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/word/${route}`
 
-  // POST { guid, title }
-  app.post(route('export-chapters'), isPremiumUser, (req, res, next) => {
+  // GET params: guid, title, includeArchived
+  app.get(route('export-chapters'), isPremiumUser, (req, res, next) => {
     const userId = req.user.id
-    const { guid, title } = req.body
+    const { guid, title, includeArchived } = req.query
 
     const numbering = new docx.Numbering();
     const numberedAbstract = numbering.createAbstractNumbering();
@@ -81,7 +81,12 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     doc.addParagraph(pTitle)
 
     resetNumbering()
-    getChapters(db, userId, guid).then(chapters => {
+    return getChapters(db, userId, guid).then(chapters => {
+      if (!includeArchived) {
+        return chapters.filter(chapter => !chapter.archived)
+      }
+      return chapters
+    }).then(chapters => {
       const styledArray = getStyledArrayFromChapters(chapters)
 
       let lastPara = null

@@ -69,6 +69,12 @@ class Api {
   }
   fullExport () { return this.simpleGet(route('backup/export')) }
   fullImport (data) { return this.simplePost(route('backup/import'), data) }
+  exportToWord ({ guid, title, includeArchived }) {
+    return new Promise(resolve => {
+      window.open(route(`word/export-chapters?guid=${guid}&title=${title}&includeArchived=${!!includeArchived}`), '_blank')
+      resolve()
+    })
+  }
 }
 
 export default new Api()

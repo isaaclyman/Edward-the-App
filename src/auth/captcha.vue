@@ -18,7 +18,7 @@ export default {
   },
   methods: {
     mountCaptcha () {
-      if (!window.grecaptcha) {
+      if (!window.grecaptcha || !window.grecaptcha.render) {
         return false
       }
 

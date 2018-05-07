@@ -96,23 +96,37 @@ ul li, ol li {
 }
 
 .header {
+  background-color: #FFF;
+  border-bottom: 1px solid rgba(1, 171, 109, 0.1);
+  box-shadow: 0 4px 16px -1px rgba(1, 171, 109, 0.3);
+  overflow: hidden;
+  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-inner {
   align-items: center;
   display: flex;
   flex-direction: row;
-  height: 95px;
-  justify-content: center;
-  padding: 15px 0;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 100%;
+  position: sticky;
+  width: 800px;
 }
 
 .logo {
-  height: 60px;
+  height: 50px;
+  margin-top: 4px;
 }
 
 .header-links {
   display: flex;
+  flex: 1;
   flex-direction: row;
-  justify-content: center;
-  padding-bottom: 30px;
+  justify-content: flex-end;
 }
 
 .header-links a {
@@ -136,6 +150,12 @@ ul li, ol li {
 
 .header-links a:not(:last-of-type) {
   margin-right: 12px;
+}
+
+.hook-icon {
+  font-size: 80px;
+  padding-top: 40px;
+  text-align: center;
 }
 
 .hook {
@@ -353,6 +373,5 @@ ul li, ol li {
   box-shadow: 0px 0px 16px 1px rgba(170, 170, 170, 1);
   margin: 0 auto;
   max-width: 100%;
-  padding-top: 10px;
   width: 1200px;
 }

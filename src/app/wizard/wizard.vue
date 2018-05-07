@@ -191,7 +191,7 @@ export default {
 
 .type.selected {
   background-color: #F0F0F0;
-  border-color: #8bc34a;
+  border-color: rgb(1,171,109);
 }
 
 .title {

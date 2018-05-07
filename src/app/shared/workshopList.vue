@@ -179,7 +179,7 @@ export default {
 
 .workshop-list-header {
   align-items: center;
-  background-color: rgba(139, 195, 74, 0.85);
+  background-color: rgba(1, 171, 109, 1);
   color: #FFF;
   display: flex;
   flex-direction: row;
@@ -191,7 +191,7 @@ export default {
 }
 
 .workshop-list-body {
-  background-color: rgba(139, 195, 74, 0.05);
+  background-color: rgba(1, 171, 109, 0.05);
 }
 
 .workshop-select {
@@ -211,13 +211,13 @@ export default {
 }
 
 .workshop {
-  border: 1px solid rgba(139, 195, 74, 0.85);
+  border: 1px solid rgba(1, 171, 109, 1);
   margin-bottom: 20px; 
 }
 
 .workshop-header {
   align-items: center;
-  background-color: rgba(139, 195, 74, 0.85);
+  background-color: rgba(1, 171, 109, 1);
   color: #FFF;
   display: flex;
   flex-direction: row;

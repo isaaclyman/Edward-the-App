@@ -375,7 +375,7 @@ export default {
 }
 
 .chips-wrap {
-  border-left: 2px solid rgb(232, 204, 132);
+  border-left: 2px solid rgba(5, 133, 157, 0.5);
   margin-bottom: 16px;
   padding-bottom: 4px;
   padding-left: 8px;
@@ -396,15 +396,16 @@ export default {
 
 .chapter-head {
   align-items: center;
-  background-color: rgba(232, 204, 132, 0.75);
-  border: 1px solid rgba(232, 204, 132, 0.75);
+  background-color: rgba(5, 133, 157, 1);
+  border: 1px solid rgba(5, 133, 157, 1);
+  color: #FFF;
   display: flex;
   flex-direction: row;
   padding: 8px;
 }
 
 .chapter-head.light {
-  background-color: rgba(232, 204, 132, 0.5);
+  background-color: rgba(5, 133, 157, 0.5);
 }
 
 .chapter-title {
@@ -415,18 +416,19 @@ export default {
 .chapter-action {
   background-color: transparent;
   border-color: #FFF;
-  color: #000;
+  color: #FFF;
   margin-right: 6px;
   transition: background-color 100ms;
 }
 
 .chapter-action:hover {
   background-color: #FFF;
+  color: #000;
 }
 
 .chapter-content {
-  background-color: rgba(232, 204, 132, 0.1);
-  border: 1px solid rgba(232, 204, 132, 0.75);
+  background-color: rgba(5, 133, 157, 0.05);
+  border: 1px solid rgba(5, 133, 157, 0.75);
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   border-top: none;

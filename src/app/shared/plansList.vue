@@ -305,7 +305,7 @@ export default {
 
 <style scoped>
 .chips-wrap {
-  border-left: 2px solid #e8cc84;
+  border-left: 2px solid rgba(13, 91, 166, 0.5);
   margin-bottom: 16px;
   padding-bottom: 4px;
   padding-left: 8px;
@@ -321,7 +321,7 @@ export default {
 
 .plan-header {
   align-items: center;
-  background-color: rgba(0, 92, 178, 0.85);
+  background-color: rgba(13, 91, 166, 1);
   color: #FFF;
   display: flex;
   flex-direction: row;
@@ -345,7 +345,7 @@ export default {
 }
 
 .plan-body {
-  background-color: rgba(0, 92, 178, 0.05);
+  background-color: rgba(13, 91, 166, 0.05);
   padding-top: 8px;
 }
 
@@ -358,13 +358,13 @@ export default {
 }
 
 .section {
-  border: 1px solid rgba(0, 92, 178, 0.85);
+  border: 1px solid rgba(13, 91, 166, 1);
   margin-bottom: 20px; 
 }
 
 .section-header {
   align-items: center;
-  background-color: rgba(0, 92, 178, 0.85);
+  background-color: rgba(13, 91, 166, 1);
   color: #FFF;
   display: flex;
   flex-direction: row;

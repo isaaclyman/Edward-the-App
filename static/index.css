@@ -122,6 +122,7 @@ ul li, ol li {
   display: inline-block;
   font-size: 18px;
   text-align: center;
+  text-decoration: none;
   transition: background-color 200ms, box-shadow 200ms;
   width: 84px;
 }

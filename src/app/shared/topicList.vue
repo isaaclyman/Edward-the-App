@@ -159,14 +159,16 @@ export default {
 }
 
 .topic {
-  border: 1px solid rgba(232, 204, 132, 0.75);
-  border-top: none;  
+  border: 1px solid rgba(5, 133, 157, 1);
+  border-top: none;
+  color: #FFF;
   margin-bottom: 20px;
 }
 
 .topic-head {
   align-items: center;
-  background-color: rgba(232, 204, 132, 0.75);
+  background-color: rgba(5, 133, 157, 1);
+  color: #FFF;
   display: flex;
   flex-direction: row;
   height: 28px;
@@ -188,7 +190,7 @@ export default {
   border-left: 1px solid #fff;
   border-radius: 0;
   border-right: 1px solid #fff;
-  color: #000;
+  color: #FFF;
   height: 100%;
   margin-right: 6px;
   padding: 3px 6px;
@@ -197,6 +199,7 @@ export default {
 
 .topic-action:hover {
   background-color: #FFF;
+  color: #000;
 }
 
 .topic-content {

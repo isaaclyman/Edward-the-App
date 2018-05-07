@@ -251,8 +251,8 @@ hr.between:last-of-type {
 }
 
 .status-saved {
-  color: green;
-  fill: green;
+  color: rgb(1,171,109);
+  fill: rgb(1,171,109);
 }
 
 .status-error {
@@ -279,13 +279,13 @@ hr.between:last-of-type {
 }
 
 .email {
-  color: #005cb2;
+  color: rgb(13, 91, 166);
   font-size: 14px;
   margin-right: 20px;
 }
 
 .account-type {
-  color: #005cb2;
+  color: rgb(13, 91, 166);
   font-size: 14px;
   margin-right: 20px;
 }
@@ -296,7 +296,7 @@ hr.between:last-of-type {
 
 .workshop {
   align-items: center;
-  border: 1px solid #8bc34a;
+  border: 1px solid rgb(1, 171, 109);
   color: #000;
   cursor: pointer;
   display: flex;

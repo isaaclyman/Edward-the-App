@@ -178,7 +178,7 @@ export default {
 <style scoped>
 .limit {
   background-color: #FFF;
-  border: 1px solid #ffeb3b;
+  border: 1px solid rgba(13, 91, 166, 0.5);
   display: inline-block;
   margin: 20px 0;
   min-width: 250px;
@@ -198,7 +198,7 @@ export default {
 }
 
 .counter {
-  color: #8bc34a;
+  color: rgb(1,171,109);
   display: inline-block;
   font-size: 24px;
   margin: 20px 0;

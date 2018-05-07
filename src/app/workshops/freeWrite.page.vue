@@ -11,7 +11,7 @@
           <timer @begin="begin()" :fullText="fullText"></timer>
         </div>
       </transition>
-      <div class="content">
+      <div class="content" v-show="begun">
         <transition name="fade" mode="out-in">
           <div v-if="begun && !finished" class="content-inner" key="editor">
             <div class="editor">
@@ -178,7 +178,6 @@ export default {
 
 .write {
   display: block;
-  flex: 1;
   max-width: 100%;
   width: 1050px;
 }

@@ -170,7 +170,7 @@ export default {
 }
 
 .chips-wrap {
-  border-left: 2px solid #e8cc84;
+  border-left: 2px solid rgba(13, 91, 166, 0.5);
   margin-bottom: 16px;
   padding-bottom: 4px;
   padding-left: 8px;

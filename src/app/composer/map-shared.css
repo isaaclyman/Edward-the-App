@@ -1,6 +1,6 @@
 .map {
   background-color: #F8F8F8;
-  border: 1px solid #e8cc84;
+  border: 1px solid rgba(13, 91, 166, 0.5);
   cursor: default;
   font-size: 3px;
   height: 100%;
@@ -52,7 +52,7 @@ mark {
 }
 
 mark:after {
-  background-color: rgba(139, 195, 74, 0.7);
+  background-color: rgba(1, 171, 109, 0.5);
   bottom: -2px;
   content: '';
   cursor: pointer;
@@ -63,5 +63,5 @@ mark:after {
 }
 
 mark:hover:after {
-  background-color: rgba(139, 195, 74, 0.7);
+  background-color: rgba(1, 171, 109, 0.5);
 }

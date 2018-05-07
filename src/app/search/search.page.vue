@@ -316,7 +316,7 @@ export default {
 }
 
 .result-set h3 {
-  border-left: 2px solid #8bc34a;
+  border-left: 2px solid rgb(1,171,109);
   padding-left: 8px;
 }
 

@@ -1,6 +1,7 @@
 /* PAGE */
 
 html, body {
+  background-color: #FFF;
   font-family: 'Asap Condensed', sans-serif;
   margin: 0;
   padding: 0;
@@ -342,41 +343,15 @@ ul li, ol li {
 
 /* BACKGROUNDS */
 
-.background-gray, .background-pink, .background-blue, .background-purple, .background-green,
-.background-yellow, .background-orange {
+.background-green {
+  background-color: rgba(1, 171, 109, 0.25);
   padding: 0 30px;
 }
 
-/* .background-pink > div,  */
-.background-gray > div, .background-blue > div, .background-purple > div,
-.background-green > div, .background-yellow > div, .background-orange > div {
-  background-color: #fff;
-}
-
-.background-gray {
-  background-color: #f0f0f0;
-}
-
-.background-pink {
-  background-color: #ffbdbd;
-}
-
-.background-blue {
-  background-color: #c9c9ff;
-}
-
-.background-purple {
-  background-color: #f1cbff;
-}
-
-.background-green {
-  background-color: #e1f7d5;
-}
-
-.background-yellow {
-  background-color: #ffffba;
-}
-
-.background-orange {
-  background-color: #ffdfba;
+.background-inner {
+  background-color: #FFF;
+  box-shadow: 0px 0px 16px 1px rgba(170, 170, 170, 1);
+  margin: 0 auto;
+  max-width: 100%;
+  width: 1200px;
 }

@@ -161,7 +161,7 @@ export default {
 .topic {
   border: 1px solid rgba(5, 133, 157, 1);
   border-top: none;
-  color: #FFF;
+  color: #000;
   margin-bottom: 20px;
 }
 

@@ -196,7 +196,7 @@ ul li, ol li {
 .below-hook h4 {
   padding: 0 10px;
   max-width: 100%;
-  width: 675px;
+  width: 700px;
 }
 
 .intro {
@@ -221,7 +221,7 @@ ul li, ol li {
   .content > p, .content > ul, .content > ol {
     max-width: 100%;
     padding: 0 10px;
-    width: 675px;
+    width: 700px;
   }
 }
 

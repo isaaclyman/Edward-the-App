@@ -7,8 +7,8 @@ describe('the landing page', () => {
     cy.visit('/')
   })
 
-  it('includes a screenshot of the app', () => {
-    cy.get('img.screenshot').should('exist').should('be.visible')
+  it('includes a hook image', () => {
+    cy.get('.hook-img img').should('exist').should('be.visible')
   })
 
   it('includes an explanation of what Edward is', () => {

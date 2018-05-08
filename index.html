@@ -31,8 +31,10 @@
           <div class="header-inner">
             <img class="logo" src="./static/logo.svg">
             <div class="header-links">
-              <a class="small" href="/login">Log in</a>
-              <a class="small" href="/auth#/signup">Sign up</a>
+              <a class="small mobile-hide" href="#features">Features</a>
+              <a class="small mobile-hide" href="#pricing">Pricing</a>
+              <a class="small primary" href="/login">Log in</a>
+              <a class="small primary" href="/auth#/signup">Sign up</a>
             </div>
           </div>
         </div>
@@ -47,11 +49,15 @@
           <h4 class="center">
             Edward is an app for new authors. He makes it easier to write a novel.
           </h4>
+          <p class="intro">
+            Unlike word processors, Edward is designed for every stage of writing: world-building, brainstorming, plotting, writing and rewriting. And he's full of useful tech.
+          </p>
+        </div>
+        <hr>
+        <div class="content" id="features">
+          <h3>Features</h3>
         </div>
         <div class="content">
-          <p>
-            Unlike word processors, Edward is designed for every stage of writing: world-building, character creation, brainstorming, plotting, writing and rewriting. And he's full of useful features.
-          </p>
           <ul class="features">
             <li>
               <div class="feature-image">
@@ -74,7 +80,7 @@
                 <img src="./static/Time-Burn.svg">
               </div>
               <div class="feature">
-                Get an instant <strong>word, paragraph, and minute count</strong> for the current chapter and document at any time. Whether your goal is 80,000 words or 300 minutes, it's easy to keep an eye on your progress and stay motivated.
+                Get an instant <strong>word, paragraph, page, and minute count</strong> for the current chapter and document any time. Whether your goal is 80,000 words or 300 minutes, it's easy to keep an eye on your progress and stay motivated.
               </div>
             </li>
             <li>
@@ -122,15 +128,7 @@
                 <img src="./static/Download-Book.svg">
               </div>
               <div class="feature">
-                <strong>Download a PDF, Microsoft Word document, or full backup</strong> of your novel at any time. As soon as you're ready to publish, all you have to do is click a button.
-              </div>
-            </li>
-            <li>
-              <div class="feature-image">
-                <img src="./static/Piggy-Bank-2.svg">
-              </div>
-              <div class="feature">
-                <strong>Your Limited account is free forever.</strong> Try out the app for as long as you want (no credit card required) and upgrade when you're ready.
+                <strong>Download a PDF, Microsoft Word document, or full backup</strong> whenever you like. As soon as you're ready to publish, all you have to do is click a button.
               </div>
             </li>
             <li>
@@ -143,8 +141,54 @@
             </li>
           </ul>
         </div>
+        <hr>
+        <div class="content" id="pricing">
+          <h3>Pricing</h3>
+        </div>
+        <div class="content pricing">
+          <div class="pricing-box">
+            <div class="pricing-header">
+              <h4>Free</h4>
+              <span class="pricing-subheader">Limited account</span>
+            </div>
+            <ul class="pricing-features">
+              <li>Free forever. No credit card required.</li>
+              <li>Full writing interface.</li>
+              <li>All plans, outlines, and templates included.</li>
+              <li>Export to PDF or a backup any time.</li>
+              <li>5 MB of insecure storage on your own computer.</li>
+            </ul>
+          </div>
+          <div class="pricing-box">
+            <div class="pricing-header">
+              <h4>$2.46 / month</h4>
+              <span class="subheader">Premium account</span>
+            </div>
+            <ul class="pricing-features">
+              <li>All Limited features.</li>
+              <li>20 MB (about 10,000 pages) of storage on our servers.</li>
+              <li>Regular backups to keep your writing safe and secure.</li>
+              <li>Export to a Microsoft Word document.</li>
+              <li>The Novel Quickstart, a series of writing prompts to help you expand your idea into a novel.</li>
+              <li>
+                Workshops with writing prompts to help you figure out what happens next.
+                <span class="gray">(Coming soon!)</span>
+              </li>
+            </ul>
+          </div>
+          <div class="pricing-box">
+            <div class="pricing-header">
+              <h4>$10 / month</h4>
+              <span class="subheader">Gold account</span>
+            </div>
+            <ul class="pricing-features">
+              <li>All Premium features.</li>
+              <li>250 MB (about 125,000 pages) of storage on our servers.</li>
+            </ul>
+          </div>
+        </div>
         <div class="content center">
-          <a class="content-link content-button" href="/auth#/signup">
+          <a class="signup-link" href="/auth#/signup">
             Get your free account
           </a>
         </div>

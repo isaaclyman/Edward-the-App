@@ -3,6 +3,7 @@ const { getChapters } = require('./chapter')
 const { getTopics } = require('./topic')
 const { getPlans } = require('./plan')
 const { getWorkshops } = require('./workshops')
+const orderPromises = require('../utilities').orderPromises
 const find = require('lodash/find')
 
 const getDocExport = (db, userId, docGuid) => {  
@@ -55,17 +56,15 @@ const importDoc = (db, userId, doc) => {
 }
 
 const importFull = (db, userId, docs) => {
-  const addPromises = docs.map(doc => {
+  const addFns = docs.map(doc => () => {
     return addDocument(db, userId, doc).then(() => {
       return saveAllContent(db, userId, doc.guid, doc.chapters, doc.topics, doc.plans, doc.workshops)
-    }).then(result => ({ result, success: true }), err => ({ err, success: false }))
+    })
   })
 
-  return Promise.all(addPromises).then(results => {
-    const failures = results.filter(res => !res.success)
-    if (failures.length) {
-      throw new Error(`Unable to add document. ${failures.map(f => f.err)}`)
-    }
+  return orderPromises(addFns).then(() => { }, err => {
+    console.error(err)
+    throw new Error(`Unable to add document. ${err}`)
   })
 }
 
@@ -164,4 +163,4 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   })
 }
 
-module.exports = { registerApis }
+module.exports = { registerApis, getFullExport, importFull }

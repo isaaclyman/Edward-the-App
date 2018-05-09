@@ -22,6 +22,10 @@ const user = {
   verifyKey: '5cf197a4-1029-4250-91cc-6f0ef75bca77'
 }
 
+function getTestUserId (knex) {
+  return knex('users').where('email', user.email).first('id').then(({ id }) => id)
+}
+
 function createTestUser (knex) {
   return modelUtil.getHash(user.password).then(hash => {
     return (
@@ -29,7 +33,8 @@ function createTestUser (knex) {
         email: user.email,
         password: hash,
         'account_type': accountTypes.LIMITED.name,
-        verified: true
+        verified: true,
+        payment_period_end: knex.raw(`(SELECT 'now'::timestamp + '1 days'::interval)`)
       })).returning(['id', 'email', 'account_type']).then(([user]) => user)
     )
   })
@@ -83,7 +88,7 @@ function createTestChapter (knex) {
   })
 }
 
-function deleteTestUser(knex, email) {
+function deleteTestUser(knex, email, deleteContentOnly = false) {
   email = email || user.email
 
   return (
@@ -104,7 +109,12 @@ function deleteTestUser(knex, email) {
       })
 
       return orderPromises(deleteFns)
-    }).then(() => knex('users').where('email', email).del())
+    }).then(() => {
+      if (deleteContentOnly) {
+        return
+      }
+      return knex('users').where('email', email).del()
+    })
   )
 }
 
@@ -244,6 +254,7 @@ module.exports = {
   createTestDocument,
   createTestChapter,
   deleteTestUser,
+  getTestUserId,
   makeTestUserAdmin,
   makeTestUserDemo,
   makeTestUserPremium,

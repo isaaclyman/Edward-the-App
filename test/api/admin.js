@@ -64,7 +64,3 @@ test('export, then import a full backup', async t => {
     t.is(documents.length, 2)
   })
 })
-
-// test(`import a full backup without overwriting anyone else's stuff`, async t => {
-
-// })

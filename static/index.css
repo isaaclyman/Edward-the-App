@@ -332,7 +332,6 @@ ul li, ol li {
 .pricing-box {
   border: 4px solid #59C8A0;
   border-radius: 8px;
-  box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.2);
   flex: 1;
   margin: 0 4px;
   padding: 0;

@@ -1,7 +1,7 @@
 const accountTypes = require('../models/accountType')
 const Email = require('./email.helper')
 const { getUsersOverLimit } = require('./space-used.helper')
-const { getFullExport, importFull } = require('./backup')
+const { getFullExport, importFullWithSafeDelete } = require('./backup')
 
 // APIs in this file do not update created_at, updated_at columns
 module.exports = function (app, passport, db, isAdmin) {
@@ -188,6 +188,11 @@ module.exports = function (app, passport, db, isAdmin) {
   app.get(route('backup/:userId'), isAdmin, (req, res, next) => {
     const { userId } = req.params
 
+    if (!userId) {
+      res.status(500).send('No user ID was provided.')
+      return
+    }
+
     getFullExport(db, userId).then(documents => {
       res.status(200).send(documents)
     }, err => {
@@ -200,7 +205,12 @@ module.exports = function (app, passport, db, isAdmin) {
   app.post(route('backup/restore'), isAdmin, (req, res, next) => {
     const { userId, documents } = req.body
 
-    importFull(db, userId, documents).then(() => {
+    if (!userId || !documents) {
+      res.status(500).send('User ID or documents were not provided.')
+      return
+    }
+
+    importFullWithSafeDelete(db, userId, documents).then(() => {
       res.status(200).send(documents)
     }, err => {
       console.error(err)

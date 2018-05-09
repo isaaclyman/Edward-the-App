@@ -3,10 +3,13 @@ import { app as server, knex, serverReady } from '../server'
 import request from 'supertest'
 import test from 'ava'
 import {
+  alternateUser,
   createTestChapter,
   createTestDocument,
   createTestUser,
+  createAlternateTestUser,
   deleteTestUser,
+  getDocuments,
   getTestUserId,
   makeTestUserAdmin,
   makeTestUserDemo,
@@ -35,12 +38,14 @@ const boundCreateTestUser = async (overrideApp) => {
     })
   )
 }
+const boundCreateAlternateTestUser = () => createAlternateTestUser(knex)
 const boundDeleteTestUser = (email, deleteContentOnly = false) => deleteTestUser(knex, email, deleteContentOnly)
+const boundGetDocuments = (email) => getDocuments(knex, email)
 const boundGetTestUserId = () => getTestUserId(knex)
 const boundMakeTestUserAdmin = () => makeTestUserAdmin(knex)
 const boundMakeTestUserDemo = () => makeTestUserDemo(knex)
 const boundMakeTestUserPremium = () => makeTestUserPremium(knex)
-const boundCreateTestDocument = () => createTestDocument(knex)
+const boundCreateTestDocument = (overrideEmail) => createTestDocument(knex, overrideEmail)
 const boundCreateTestChapter = () => createTestChapter(knex)
 const boundSetTestUserPaymentDueDate = daysFromNow => setTestUserPaymentDueDate(knex, daysFromNow)
 const boundSetTestUserResetKey = () => setTestUserResetKey(knex)
@@ -49,11 +54,14 @@ const boundSetTestUserVerifyKey = () => setTestUserVerifyKey(knex)
 
 export {
   accountTypes,
+  alternateUser,
   app,
   boundCreateTestChapter as createTestChapter,
   boundCreateTestDocument as createTestDocument,
   boundCreateTestUser as createTestUser,
+  boundCreateAlternateTestUser as createAlternateTestUser,
   boundDeleteTestUser as deleteTestUser,
+  boundGetDocuments as getDocuments,
   boundMakeTestUserAdmin as makeTestUserAdmin,
   boundMakeTestUserDemo as makeTestUserDemo,
   boundMakeTestUserPremium as makeTestUserPremium,

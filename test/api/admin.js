@@ -1,8 +1,11 @@
 import {
+  alternateUser,
+  createAlternateTestUser,
   createTestDocument,
   createTestChapter,
   createTestUser,
   deleteTestUser,
+  getDocuments,
   getPersistentAgent,
   getTestUserId,
   makeTestUserAdmin,
@@ -62,5 +65,34 @@ test('export, then import a full backup', async t => {
   )
   await checkDocuments(t, app, documents => {
     t.is(documents.length, 2)
+  })
+})
+
+test(`import a full backup without overwriting anyone else's stuff`, async t => {
+  await deleteTestUser(alternateUser.email)
+  const userDocGuids = await createTestDocument()
+  const alternate = await createAlternateTestUser()
+  const alternateDocGuids = await createTestDocument(alternateUser.email)
+  let documents
+  await (
+    app.get(route(`admin/backup/${alternate.id}`))
+    .expect(200)
+    .expect(response => {
+      documents = response.body
+    })
+  )
+  await (
+    app.post(route(`admin/backup/restore`))
+    .send({ userId: alternate.id, documents })
+  )
+  await checkDocuments(t, app, documents => {
+    t.is(documents.length, 2)
+    t.is(documents[0].guid, userDocGuids[0])
+    t.is(documents[1].guid, userDocGuids[1])
+  })
+  await getDocuments(alternate.email).then(documents => {
+    t.is(documents.length, 2)
+    t.is(documents[0].guid, alternateDocGuids[0])
+    t.is(documents[1].guid, alternateDocGuids[1])
   })
 })

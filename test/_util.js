@@ -22,6 +22,9 @@ const user = {
   verifyKey: '5cf197a4-1029-4250-91cc-6f0ef75bca77'
 }
 
+const alternateUser = {}
+Object.assign(alternateUser, user, { email: 'trash2@edwardtheapp.com' })
+
 function getTestUserId (knex) {
   return knex('users').where('email', user.email).first('id').then(({ id }) => id)
 }
@@ -40,11 +43,25 @@ function createTestUser (knex) {
   })
 }
 
-function createTestDocument (knex) {
+function createAlternateTestUser (knex) {
+  return modelUtil.getHash(alternateUser.password).then(hash => {
+    return (
+      knex('users').insert(modelUtil.addTimestamps(knex, {
+        email: alternateUser.email,
+        password: hash,
+        'account_type': accountTypes.LIMITED.name,
+        verified: true,
+        payment_period_end: knex.raw(`(SELECT 'now'::timestamp + '1 days'::interval)`)
+      })).returning(['id', 'email', 'account_type']).then(([user]) => user)
+    )
+  })
+}
+
+function createTestDocument (knex, overrideEmail = null) {
   const docGuid1 = guid()
   const docGuid2 = guid()
 
-  const userQuery = `(SELECT id FROM users WHERE email = '${user.email}' LIMIT 1)`
+  const userQuery = `(SELECT id FROM users WHERE email = '${overrideEmail || user.email}' LIMIT 1)`
   const userId = knex.raw(userQuery)
 
   return knex('documents').insert([{
@@ -60,7 +77,7 @@ function createTestDocument (knex) {
       order: JSON.stringify([docGuid1, docGuid2]),
       'user_id': userId
     })
-  })
+  }).then(() => ([docGuid1, docGuid2]))
 }
 
 function createTestChapter (knex) {
@@ -116,6 +133,13 @@ function deleteTestUser(knex, email, deleteContentOnly = false) {
       return knex('users').where('email', email).del()
     })
   )
+}
+
+function getDocuments(knex, email) {
+  const userQuery = `(SELECT id FROM users WHERE email = '${email}' LIMIT 1)`
+  const userId = knex.raw(userQuery)
+
+  return knex('documents').where('user_id', userId).select()
 }
 
 function makeTestUserAdmin(knex) {
@@ -250,10 +274,13 @@ const workshopGuids = ['7f796320-3f2d-11e8-9fe0-af1b5e8b1c51', '7f796321-3f2d-11
 
 module.exports = {
   user,
+  alternateUser,
   createTestUser,
+  createAlternateTestUser,
   createTestDocument,
   createTestChapter,
   deleteTestUser,
+  getDocuments,
   getTestUserId,
   makeTestUserAdmin,
   makeTestUserDemo,

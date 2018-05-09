@@ -109,6 +109,7 @@ export default {
 
 .new-email input, .new-email textarea {
   margin-bottom: 12px;
+  max-width: 100%;
   width: 400px;
 }
 

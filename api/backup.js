@@ -69,6 +69,33 @@ const importFull = (db, userId, docs) => {
 }
 
 const uuidRx = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+const importFullWithSafeDelete = (db, userId, newDocs) => {
+  let oldDocs
+  return getFullExport(db, userId).then(docs => {
+    oldDocs = docs
+  }).then(
+    () => Promise.all(oldDocs.map(doc => deleteDocument(db, userId, doc.guid)))
+  ).then(
+    () => importFull(db, userId, newDocs)
+  ).then(() => {
+    return true
+  }, err => {
+    console.error('[BACKUP IMPORT ERROR.]', err)
+    const docsToDelete = [...oldDocs, ...newDocs].filter(doc => doc && uuidRx.test(doc.guid))
+
+    return Promise.all(
+      docsToDelete.map(doc => deleteDocument(db, userId, doc.guid))
+    ).then(() => {
+      return importFull(db, userId, oldDocs)
+    }).then(docs => {
+      throw new Error(`[IMPORT REVERTED.] ${err}`)
+    }, revertErr => {
+      console.error('[IMPORT REVERT ERROR.]', revertErr)
+      throw new Error(`[IMPORT REVERT FAILED.] ${revertErr}`)
+    })
+  })
+}
+
 const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/backup/${route}`
 
@@ -77,29 +104,10 @@ const registerApis = function (app, passport, db, isPremiumUser) {
     const userId = req.user.id
     const newDocs = req.body
     
-    let oldDocs
-    getFullExport(db, userId).then(docs => {
-      oldDocs = docs
-    }).then(
-      () => Promise.all(oldDocs.map(doc => deleteDocument(db, userId, doc.guid)))
-    ).then(
-      () => importFull(db, userId, newDocs)
-    ).then(() => {
+    importFullWithSafeDelete(db, userId, newDocs).then(() => {
       res.status(200).send()
     }, err => {
-      console.error('[BACKUP IMPORT ERROR.]', err)
-      const docsToDelete = [...oldDocs, ...newDocs].filter(doc => doc && uuidRx.test(doc.guid))
-
-      Promise.all(
-        docsToDelete.map(doc => deleteDocument(db, userId, doc.guid))
-      ).then(() => {
-        return importFull(db, userId, oldDocs)
-      }).then(docs => {
-        res.status(500).send(`[IMPORT REVERTED.] ${err}`)
-      }, revertErr => {
-        console.error('[IMPORT REVERT ERROR.]', revertErr)
-        res.status(500).send(`[IMPORT REVERT FAILED.] ${revertErr}`)
-      })
+      res.status(500).send(err.toString())
     })
   })
 
@@ -163,4 +171,4 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   })
 }
 
-module.exports = { registerApis, getFullExport, importFull }
+module.exports = { registerApis, getFullExport, importFull, importFullWithSafeDelete }

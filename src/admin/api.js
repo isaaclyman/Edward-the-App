@@ -31,6 +31,11 @@ class AdminApi {
   compUser ({ id, months }) { return this.simplePost(route('comp'), { id, months }) }
   getCompUsers () { return this.simpleGet(route('comp-users')) }
   uncompUser ({ id }) { return this.simplePost(route('uncomp'), { id }) }
+
+  getBackup ({ userId }) { return this.simpleGet(route(`backup/${userId}`)) }
+  restoreBackup ({ userId, documents }) { return this.simplePost(route(`backup/restore`), { userId, documents }) }
+
+  getUserId ({ email }) { return this.simpleGet(route(`user-id/${email}`)) }
 }
 
 export default new AdminApi()

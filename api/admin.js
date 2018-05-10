@@ -10,6 +10,17 @@ module.exports = function (app, passport, db, isAdmin) {
   const countUsersQuery = accountType =>
     db.knex('users').count('id as count').where('account_type', accountType).then(([{ count }]) => count)
 
+  // User data
+
+  app.get(route('user-id/:email'), isAdmin, (req, res, next) => {
+    const { email } = req.params
+    db.knex('users').where('email', 'like', `%${email}%`).limit(50).select().then(users => {
+      res.status(200).send(users)
+    }, err => {
+      res.status(500).send(err)
+    })
+  })
+
   // Emails to all users
 
   app.get(route('emails/csv'), isAdmin, (req, res, next) => {

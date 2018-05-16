@@ -10,8 +10,6 @@ import Planner from './planner/planner.page.vue'
 import Search from './search/search.page.vue'
 import Settings from './settings/settings.page.vue'
 
-import WFreeWrite from './workshops/freeWrite.page.vue'
-
 import userApi from './api/userApi'
 
 Vue.use(Router)
@@ -77,13 +75,19 @@ export default new Router({
     {
       path: '/workshop/free-write',
       name: 'Free Write',
-      component: WFreeWrite,
+      component: () => import('./workshops/freeWrite.page.vue'),
       beforeEnter: assertPremium
     },
     {
       path: '/workshop/novel-quickstart',
       name: 'Novel Quickstart',
       component: () => import('./workshops/novelQuickstart.page.vue'),
+      beforeEnter: assertPremium
+    },
+    {
+      path: '/workshop/unblock',
+      name: `Writer's Unblock`,
+      component: () => import('./workshops/writersUnblock.vue'),
       beforeEnter: assertPremium
     },
     {

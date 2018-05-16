@@ -1,6 +1,6 @@
 <template>
-  <div class="workshops-wrap">
-    <div class="write">
+  <div class="workshop-wrap">
+    <div class="workshop">
       <h1>Free Write</h1>
       <p class="intro">
         Write whatever comes to mind. Don't worry about style, grammar, or making sense.
@@ -167,19 +167,6 @@ export default {
 
 .fade-leave, .fade-enter-to {
   opacity: 1;
-}
-
-.workshops-wrap {
-  display: flex;
-  font-size: 16px;
-  justify-content: center;
-  width: 100%;
-}
-
-.write {
-  display: block;
-  max-width: 100%;
-  width: 1050px;
 }
 
 .intro {

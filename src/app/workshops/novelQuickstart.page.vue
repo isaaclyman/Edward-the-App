@@ -1,6 +1,6 @@
 <template>
-  <div class="workshops-wrap">
-    <div class="write">
+  <div class="workshop-wrap">
+    <div class="workshop">
       <div class="intro">
         <h1>Novel Quickstart</h1>
         <p v-if="!finished">
@@ -205,26 +205,6 @@ export default {
 
 .fade-leave, .fade-enter-to {
   opacity: 1;
-}
-
-.workshops-wrap {
-  display: flex;
-  font-size: 16px;
-  justify-content: center;
-  width: 100%;
-}
-
-.workshops-wrap a {
-  font-size: 16px;
-}
-
-.write {
-  align-items: center;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  max-width: 100%;
-  width: 1050px;
 }
 
 .intro {

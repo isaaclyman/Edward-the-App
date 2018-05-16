@@ -11,7 +11,7 @@ const workshops = {
     '/workshop/novel-quickstart', true),
   WRITERS_UNBLOCK: createWorkshop('WRITERS_UNBLOCK', 'Writer\'s Unblock',
     'Got writer\'s block? Get moving again by doing a word incorporation exercise.',
-    '/workshop/unblock', false),
+    '/workshop/unblock', true),
   PLOT_WORKSHOP: createWorkshop('PLOT_WORKSHOP', 'Plot Workshop',
     'Figure out what happens next by responding to curated prompts.',
     '/workshop/plot', false),

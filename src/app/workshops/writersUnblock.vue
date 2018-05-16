@@ -13,17 +13,21 @@
       <button v-if="!begun" class="button-green" @click="begin()">Begin</button>
       <div v-if="begun">
         <div class="prompt">
-          <p class="sentence">
-            <strong>Sentence:</strong>
-            {{ sentence }}
-          </p>
+          <div class="sentence">
+            <p>
+              <strong>Sentence:</strong>
+            </p>
+            <p>
+              {{ sentence }}
+            </p>
+          </div>
           <div class="words">
             <p>
               <strong>Words:</strong>
             </p>
             <p class="word" v-for="word in words" :key="word">
               {{ word }}
-              <a :href="getDefineLink(word)">Define</a>
+              <a class="define-link" :href="getDefineLink(word)" target="_blank">define</a>
             </p>
           </div>
         </div>
@@ -76,14 +80,14 @@ export default {
       const fullText = chapters.map(chapter => GetContentString(chapter.content)).join('. ')
       const sentences = fullText.replace(/\.[ *.]+/g, '.').split('.')
       const sentenceNum = this.randomInt(sentences.length - 2)
-      let sentence = sentences[sentenceNum]
-      let lastSentence = sentences[sentenceNum - 1] || ''
-      let nextSentence = sentences[sentenceNum + 1] || ''
+      let sentence = sentences[sentenceNum].trim()
+      let lastSentence = (sentences[sentenceNum - 1] || '').trim()
+      let nextSentence = (sentences[sentenceNum + 1] || '').trim()
 
-      if (sentence.length < 30) {
+      if (sentence.length < 30 && lastSentence) {
         sentence = lastSentence + '. ' + sentence
       }
-      if (sentence.length < 30) {
+      if (sentence.length < 30 && nextSentence) {
         sentence = sentence + '. ' + nextSentence
       }
 
@@ -117,5 +121,31 @@ export default {
 </script>
 
 <style>
+.prompt {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+}
 
+.sentence {
+  border-right: 1px solid #CCC;
+  flex: 1;
+  padding-right: 20px;
+}
+
+.words {
+  flex: 1;
+  padding-left: 20px;
+}
+
+a.define-link {
+  color: #444;
+  display: inline-block;
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.write {
+  margin-bottom: 12px;
+}
 </style>

@@ -124,12 +124,16 @@ export function createTestPlan (isPremium, documentGuid) {
 }
 
 export function createTestWorkshop (type) {
-  if (!type || type === writingWorkshops.FREE_WRITE.name) {
-    seedArgs.push('--free-write')
-  }
-
-  if (type === writingWorkshops.NOVEL_QUICKSTART.name) {
-    seedArgs.push('--novel-quickstart')
+  switch (type) {
+    case writingWorkshops.NOVEL_QUICKSTART.name:
+      seedArgs.push('--novel-quickstart')
+      break
+    case writingWorkshops.WRITERS_UNBLOCK.name:
+      seedArgs.push('--writers-unblock')
+      break
+    case writingWorkshops.FREE_WRITE.name:
+    default:
+      seedArgs.push('--free-write')
   }
 }
 

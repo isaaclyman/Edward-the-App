@@ -18,6 +18,7 @@ const seedArgs = {
   '--plan': () => createTestPlan(knex),
   '--free-write': () => createTestWorkshop(knex, writingWorkshops.FREE_WRITE.name),
   '--novel-quickstart': () => createTestWorkshop(knex, writingWorkshops.NOVEL_QUICKSTART.name),
+  '--writers-unblock': () => createTestWorkshop(knex, writingWorkshops.WRITERS_UNBLOCK.name),
   '--reset-key': () => util.setTestUserResetKey(knex),
   '--verify-key': () => util.setTestUserVerifyKey(knex)
 }

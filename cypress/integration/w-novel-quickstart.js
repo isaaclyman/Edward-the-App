@@ -113,10 +113,18 @@ describe('the novel quickstart workshop (new workshop)', () => {
     const clock = cy.clock()
     cy.get('.button-green.done').click()
     clock.tick(2000)
+    cy.get('.ql-editor').should('not.be.visible')
+    cy.get('.finished').should('contain', 'Saved')
+
     cy.visit('/app.html#/write')
     cy.visit('/app.html#/workshop/novel-quickstart')
     cy.url().should('contain', '/novel-quickstart')
     cy.get('.ql-editor').should('have.text', '')
+
+    cy.visit('/app.html#/write')
+    cy.get('.plan-switch').find('.switch-label').contains('Workshops').click()
+    cy.get('.workshops-wrap .button-tab').contains(`Novel Quickstart`).click()
+    cy.get('.workshop-select').find('select option').contains(`Novel Quickstart`)
   })
 })
 

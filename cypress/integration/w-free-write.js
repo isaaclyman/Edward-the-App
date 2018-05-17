@@ -107,7 +107,7 @@ describe('the free write workshop (new workshop)', () => {
     cy.get('.done .button-green').click()
   })
 
-  it('should allow continuing without a limit', () => {
+  it('should allow continuing without a limit and save the workshop', () => {
     cy.get('.limit-option label').contains('No limit').click()
     cy.get('.begin .button-green').click()
     cy.get('.limit-option').should('not.be.visible')
@@ -118,6 +118,11 @@ describe('the free write workshop (new workshop)', () => {
     clock.tick(2000)
     cy.get('.ql-editor').should('not.be.visible')
     cy.get('.finished').should('contain', 'Saved')
+
+    cy.visit('/app.html#/write')
+    cy.get('.plan-switch').find('.switch-label').contains('Workshops').click()
+    cy.get('.workshops-wrap .button-tab').contains(`Free Writing`).click()
+    cy.get('.workshop-select').find('select option').contains(`Testing`)
   })
 
   it('should indicate that the workshop was deleted if no content was entered', () => {

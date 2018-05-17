@@ -54,7 +54,9 @@
 </template>
 
 <script>
+import { ADD_WORKSHOP, DELETE_WORKSHOP, UPDATE_WORKSHOPS_CONTENT } from '../shared/workshops.store'
 import { GetContentString } from '../shared/deltaParser'
+import guid from '../shared/guid'
 import QuillEditor from '../shared/quillEditor.vue'
 import randomWords from './resources/random-words'
 import writingWorkshops from '../../../models/writingWorkshop'
@@ -90,7 +92,7 @@ export default {
     }
   },
   methods: {
-    begin (workshop) {
+    begin (currentWorkshop) {
       this.begun = true
 
       if (!currentWorkshop) {

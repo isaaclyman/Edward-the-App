@@ -3,7 +3,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 const planIds = {
   LIMITED: 'LIMITED18',
-  PREMIUM: 'PREMIUM18',
+  PREMIUM: 'PREMIUM18+',
   GOLD: 'GOLD18'
 }
 

@@ -34,7 +34,7 @@
         <p class="above-small">
           Upgrade to a Premium account to access your novels from anywhere.
         </p>
-        <p class="price">($2.46 per month, up to 10,000 pages)</p>
+        <p class="price">($2.99 per month, up to 10,000 pages)</p>
         <button class="button-green" @click="limitedToPremium()">
           Go Premium
         </button>
@@ -93,7 +93,7 @@ const storage = new LocalStorageApi()
 
 const accountPayments = {
   [accountTypes.LIMITED.name]: { display: 'Edward Limited monthly subscription', amount: 0 },
-  [accountTypes.PREMIUM.name]: { display: 'Edward Premium monthly subscription', amount: 246 },
+  [accountTypes.PREMIUM.name]: { display: 'Edward Premium monthly subscription', amount: 299 },
   [accountTypes.GOLD.name]: { display: 'Edward Gold monthly subscription', amount: 1000 }
 }
 

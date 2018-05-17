@@ -21,7 +21,7 @@
         <router-link to="/account">
           <strong>Or upgrade to a Premium account</strong>
         </router-link>
-        to get <strong>private, safe, permanent online storage</strong> for all your documents. It's only $2.46 per month.
+        to get <strong>private, safe, permanent online storage</strong> for all your documents. It's only $2.99 per month.
       </p>
     </div>
     <div class="fill"></div>

@@ -25,8 +25,8 @@ const store = {
     ownedDocuments: [] // document[]
   },
   actions: {
-    [CHANGE_DOCUMENT] ({ commit, dispatch }, { guid, name }) {
-      return dispatch(UNLOAD_CURRENT_DOCUMENT).then(() => {
+    [CHANGE_DOCUMENT] ({ commit, dispatch }, { guid, name, shouldReset }) {
+      return dispatch(UNLOAD_CURRENT_DOCUMENT, { shouldReset }).then(() => {
         return storageApiPromise.then(storage => {
           // Get the new document from storage
           const promises = [
@@ -66,7 +66,7 @@ const store = {
             return
           }
 
-          return dispatch(CHANGE_DOCUMENT, currentDocument)
+          return dispatch(CHANGE_DOCUMENT, { ...currentDocument, shouldReset: false })
         })
       }, console.error)
     },
@@ -107,9 +107,11 @@ const store = {
       .then(() => state.ownedDocuments.push(document))
       .then(() => dispatch(CHANGE_DOCUMENT, document))
     },
-    [UNLOAD_CURRENT_DOCUMENT] ({ commit }) {
+    [UNLOAD_CURRENT_DOCUMENT] ({ commit }, { shouldReset }) {
       return new Promise(resolve => {
-        resetCache()
+        if (shouldReset) {
+          resetCache()
+        }
         commit(UPDATE_DOCUMENT_METADATA, { guid: null, name: null })
         commit(NUKE_CONTENT)
         commit(NUKE_WORKSHOPS)

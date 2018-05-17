@@ -82,10 +82,19 @@ export default {
         this.workshop = currentWorkshop
       }
     },
+    checkForDeletion () {
+      if (!this.fullText.trim()) {
+        exerciseCache.cacheDelete()
+        if (this.workshop && this.allWorkshops.includes(this.workshop)) {
+          this.$store.commit(DELETE_WORKSHOP, { workshop: this.workshop })
+        }
+      }
+    },
     finish () {
       this.$refs.quillEditor.disable()
       exerciseCache.cacheDelete()
       this.finished = true
+      this.checkForDeletion()
     },
     getCurrentWorkshop () {
       const cachedGuid = exerciseCache.cacheGet()
@@ -132,12 +141,7 @@ export default {
     }
   },
   beforeDestroy () {
-    if (!this.fullText.trim()) {
-      exerciseCache.cacheDelete()
-      if (this.workshop) {
-        this.$store.commit(DELETE_WORKSHOP, { workshop: this.workshop })
-      }
-    }
+    this.checkForDeletion()
   }
 }
 </script>

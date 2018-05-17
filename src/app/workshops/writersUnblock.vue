@@ -10,7 +10,10 @@
         Write a few paragraphs to follow the sentence, and try to use each random word at least once.
         Consider that the words may have multiple meanings.
       </p>
-      <button v-if="!begun" class="button-green" @click="begin()">Begin</button>
+      <div class="warn" v-if="!hasChapterContent">
+        <p>You can't do this workshop until you've written at least one sentence in a chapter.</p>
+      </div>
+      <button v-if="!begun" class="button-green" @click="begin()" :disabled="!hasChapterContent">Begin</button>
       <div v-if="begun && !finished">
         <div class="prompt">
           <div class="sentence">
@@ -55,6 +58,7 @@
 
 <script>
 import { ADD_WORKSHOP, DELETE_WORKSHOP, UPDATE_WORKSHOPS_CONTENT } from '../shared/workshops.store'
+import Cache from '../shared/cache'
 import { GetContentString } from '../shared/deltaParser'
 import guid from '../shared/guid'
 import QuillEditor from '../shared/quillEditor.vue'
@@ -62,6 +66,7 @@ import randomWords from './resources/random-words'
 import writingWorkshops from '../../../models/writingWorkshop'
 
 const exerciseCache = new Cache('WRITERS_UNBLOCK_CURRENT_EXERCISE')
+const promptCache = new Cache('WRITERS_UNBLOCK_PROMPTS')
 
 export default {
   components: {
@@ -77,6 +82,11 @@ export default {
     content () {
       return this.workshop ? this.workshop.content : null
     },
+    hasChapterContent () {
+      const sentences = this.getChapterSentences()
+      const text = sentences.join('').trim()
+      return !!text.length
+    },
     fullText () {
       return GetContentString(this.content)
     }
@@ -84,7 +94,6 @@ export default {
   data () {
     return {
       begun: false,
-      content: null,
       finished: false,
       sentence: '',
       words: [],
@@ -92,18 +101,48 @@ export default {
     }
   },
   methods: {
-    begin (currentWorkshop) {
+    begin (currentWorkshop, currentPrompts) {
       this.begun = true
 
       if (!currentWorkshop) {
         this.newWorkshop()
       } else {
         this.workshop = currentWorkshop
+
+        if (currentPrompts) {
+          this.sentence = currentPrompts.sentence
+          this.words = currentPrompts.words
+        }
+      }
+    },
+    checkForDeletion () {
+      if (!this.fullText.trim()) {
+        exerciseCache.cacheDelete()
+        promptCache.cacheDelete()
+        if (this.workshop && this.allWorkshops.includes(this.workshop)) {
+          this.$store.commit(DELETE_WORKSHOP, { workshop: this.workshop })
+        }
       }
     },
     finish () {
       exerciseCache.cacheDelete()
+      promptCache.cacheDelete()
       this.finished = true
+      this.checkForDeletion()
+    },
+    getChapterSentences () {
+      const chapters = this.allChapters.slice(-10)
+      const fullText = chapters.map(chapter => GetContentString(chapter.content)).join('. ')
+      const sentences = fullText.replace(/\.[ *.]+/g, '.').split('.')
+      return sentences.filter(sentence => !!sentence.trim())
+    },
+    getCurrentPrompts () {
+      const cachedPrompts = promptCache.cacheGet()
+      if (!cachedPrompts) {
+        return null
+      }
+
+      return cachedPrompts
     },
     getCurrentWorkshop () {
       const cachedGuid = exerciseCache.cacheGet()
@@ -119,9 +158,7 @@ export default {
       return `https://www.google.com/#q=define+${urlWord}`
     },
     getRandomSentence () {
-      const chapters = this.allChapters.slice(-10)
-      const fullText = chapters.map(chapter => GetContentString(chapter.content)).join('. ')
-      const sentences = fullText.replace(/\.[ *.]+/g, '.').split('.')
+      const sentences = this.getChapterSentences()
       const sentenceNum = this.randomInt(sentences.length - 2)
       let sentence = sentences[sentenceNum].trim()
       let lastSentence = (sentences[sentenceNum - 1] || '').trim()
@@ -148,8 +185,10 @@ export default {
       return [firstWord, secondWord]
     },
     newWorkshop () {
+      promptCache.cacheDelete()
       this.sentence = this.getRandomSentence()
       this.words = this.getRandomWords()
+      promptCache.cacheSet({ sentence: this.sentence, words: this.words })
 
       exerciseCache.cacheDelete()
       this.workshop = {
@@ -184,16 +223,12 @@ export default {
   created () {
     const workshop = this.getCurrentWorkshop()
     if (workshop) {
-      this.begin(workshop)
+      const prompts = this.getCurrentPrompts()
+      this.begin(workshop, prompts)
     }
   },
   beforeDestroy () {
-    if (!this.fullText.trim()) {
-      exerciseCache.cacheDelete()
-      if (this.workshop) {
-        this.$store.commit(DELETE_WORKSHOP, { workshop: this.workshop })
-      }
-    }
+    this.checkForDeletion()
   }
 }
 </script>
@@ -203,6 +238,10 @@ export default {
   display: flex;
   flex-direction: row;
   margin-top: 20px;
+}
+
+.warn {
+  color: red;
 }
 
 .sentence {

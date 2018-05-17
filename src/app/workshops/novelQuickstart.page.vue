@@ -135,9 +135,18 @@ export default {
         this.workshops = currentWorkshops
       }
     },
+    checkForDeletion () {
+      if (!this.fullText.trim()) {
+        exerciseCache.cacheDelete()
+        if (this.workshops && this.workshops.length && this.allWorkshops.includes(this.workshops[0])) {
+          this.workshops.forEach(workshop => this.$store.commit(DELETE_WORKSHOP, { workshop }))
+        }
+      }
+    },
     finish () {
       exerciseCache.cacheDelete()
       this.finished = true
+      this.checkForDeletion()
     },
     getCurrentWorkshop () {
       const cachedGuid = exerciseCache.cacheGet()
@@ -184,12 +193,7 @@ export default {
     this.begin(workshops || null)
   },
   beforeDestroy () {
-    if (!this.fullText.trim()) {
-      exerciseCache.cacheDelete()
-      if (this.workshops) {
-        this.workshops.forEach(workshop => this.$store.commit(DELETE_WORKSHOP, { workshop }))
-      }
-    }
+    this.checkForDeletion()
   }
 }
 </script>

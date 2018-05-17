@@ -11,7 +11,7 @@
         Consider that the words may have multiple meanings.
       </p>
       <button v-if="!begun" class="button-green" @click="begin()">Begin</button>
-      <div v-if="begun">
+      <div v-if="begun && !finished">
         <div class="prompt">
           <div class="sentence">
             <p>
@@ -34,7 +34,20 @@
         <div class="write">
           <quill-editor :content="content" @update:content="updateContent($event)" ref="quillEditor"></quill-editor>
         </div>
-        <button class="button-green" @click="done()">Done</button>
+        <div class="actions">
+          <button class="button-green" @click="finish()">Done</button>
+        </div>
+      </div>
+      <div v-else-if="finished">
+        <p class="finished">
+          <template v-if="this.fullText.trim()">
+            <strong>Saved!</strong> You can view this free write in the Workshops column of the Write page.
+          </template>
+          <template v-else>
+            <strong>Deleted!</strong> This free write was empty.
+          </template>
+        </p>
+        <button class="button-green" @click="reset()">Start over</button>
       </div>
     </div>
   </div>
@@ -44,6 +57,9 @@
 import { GetContentString } from '../shared/deltaParser'
 import QuillEditor from '../shared/quillEditor.vue'
 import randomWords from './resources/random-words'
+import writingWorkshops from '../../../models/writingWorkshop'
+
+const exerciseCache = new Cache('WRITERS_UNBLOCK_CURRENT_EXERCISE')
 
 export default {
   components: {
@@ -52,24 +68,49 @@ export default {
   computed: {
     allChapters () {
       return this.$store.state.chapters.chapters
+    },
+    allWorkshops () {
+      return this.$store.state.workshop.workshops
+    },
+    content () {
+      return this.workshop ? this.workshop.content : null
+    },
+    fullText () {
+      return GetContentString(this.content)
     }
   },
   data () {
     return {
       begun: false,
       content: null,
+      finished: false,
       sentence: '',
-      words: []
+      words: [],
+      workshop: null
     }
   },
   methods: {
-    begin () {
-      this.sentence = this.getRandomSentence()
-      this.words = this.getRandomWords()
+    begin (workshop) {
       this.begun = true
-    },
-    done () {
 
+      if (!currentWorkshop) {
+        this.newWorkshop()
+      } else {
+        this.workshop = currentWorkshop
+      }
+    },
+    finish () {
+      exerciseCache.cacheDelete()
+      this.finished = true
+    },
+    getCurrentWorkshop () {
+      const cachedGuid = exerciseCache.cacheGet()
+      if (!cachedGuid) {
+        return null
+      }
+
+      const workshop = this.allWorkshops.find(workshop => workshop.guid === cachedGuid)
+      return workshop || null
     },
     getDefineLink (word) {
       const urlWord = word.trim().replace(/\s+/g, '+')
@@ -104,17 +145,52 @@ export default {
       const secondWord = randomWords[secondWordNum]
       return [firstWord, secondWord]
     },
+    newWorkshop () {
+      this.sentence = this.getRandomSentence()
+      this.words = this.getRandomWords()
+
+      exerciseCache.cacheDelete()
+      this.workshop = {
+        archived: false,
+        guid: guid(),
+        title: `Writer's Unblock ${new Date().toLocaleDateString()}`,
+        order: 0,
+        workshopName: writingWorkshops.WRITERS_UNBLOCK.name,
+        content: null,
+        date: new Date().toLocaleDateString('en-US')
+      }
+      this.$store.commit(ADD_WORKSHOP, { workshop: this.workshop })
+      exerciseCache.cacheSet(this.workshop.guid)
+    },
     randomInt (max) {
       return Math.floor(Math.random() * Math.floor(max + 1))
     },
+    reset () {
+      this.begun = false
+      this.finished = false
+      this.workshop = null
+    },
     updateContent (content) {
-      // this.$store.commit(UPDATE_WORKSHOPS_CONTENT, {
-      //   workshopUpdates: [{
-      //     workshop: this.workshop,
-      //     newContent: content,
-      //     newTitle: `${GetContentString(content).slice(0, 20)}...`
-      //   }]
-      // })
+      this.$store.commit(UPDATE_WORKSHOPS_CONTENT, {
+        workshopUpdates: [{
+          workshop: this.workshop,
+          newContent: content
+        }]
+      })
+    }
+  },
+  created () {
+    const workshop = this.getCurrentWorkshop()
+    if (workshop) {
+      this.begin(workshop)
+    }
+  },
+  beforeDestroy () {
+    if (!this.fullText.trim()) {
+      exerciseCache.cacheDelete()
+      if (this.workshop) {
+        this.$store.commit(DELETE_WORKSHOP, { workshop: this.workshop })
+      }
     }
   }
 }
@@ -146,6 +222,11 @@ a.define-link {
 }
 
 .write {
+  height: 300px;
   margin-bottom: 12px;
+}
+
+.actions {
+  margin-bottom: 20px;
 }
 </style>

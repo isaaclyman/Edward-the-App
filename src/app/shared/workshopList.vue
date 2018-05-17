@@ -125,6 +125,7 @@ export default {
         }
 
         if (!(this.selectableWorkshops && this.selectableWorkshops.length)) {
+          this.activeWorkshopNameIndex = -1
           return
         }
 

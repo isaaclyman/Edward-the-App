@@ -13,7 +13,7 @@
       <div class="warn" v-if="!hasChapterContent">
         <p>You can't do this workshop until you've written at least one sentence in a chapter.</p>
       </div>
-      <button v-if="!begun" class="button-green" @click="begin()" :disabled="!hasChapterContent">Begin</button>
+      <button v-if="!begun" class="begin button-green" @click="begin()" :disabled="!hasChapterContent">Begin</button>
       <div v-if="begun && !finished">
         <div class="prompt">
           <div class="sentence">
@@ -38,7 +38,7 @@
           <quill-editor :content="content" @update:content="updateContent($event)" ref="quillEditor"></quill-editor>
         </div>
         <div class="actions">
-          <button class="button-green" @click="finish()">Done</button>
+          <button class="done button-green" @click="finish()">Done</button>
         </div>
       </div>
       <div v-else-if="finished">

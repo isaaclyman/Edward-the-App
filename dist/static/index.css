@@ -208,6 +208,7 @@ ul li, ol li {
   align-items: center;
   display: flex;
   flex-direction: column;
+  padding: 0 30px;
   width: 100%;
 }
 

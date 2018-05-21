@@ -107,7 +107,7 @@ const store = {
       .then(() => state.ownedDocuments.push(document))
       .then(() => dispatch(CHANGE_DOCUMENT, document))
     },
-    [UNLOAD_CURRENT_DOCUMENT] ({ commit }, { shouldReset }) {
+    [UNLOAD_CURRENT_DOCUMENT] ({ commit }, { shouldReset } = { shouldReset: false }) {
       return new Promise(resolve => {
         if (shouldReset) {
           resetCache()

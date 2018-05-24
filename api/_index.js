@@ -7,7 +7,7 @@ module.exports = function (app, passport, db) {
     res.sendFile(path.join(__dirname, '../dist/auth.html'))
   })
 
-  app.get('/login', (req, res) => {
+  app.get('/login', httpsMiddleware, (req, res) => {
     if (req.isAuthenticated()) {
       return isPremiumUser(req.user.account_type) ? res.redirect('/app') : res.redirect('/auth#/limited')
     } else {

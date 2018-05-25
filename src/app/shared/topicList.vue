@@ -27,7 +27,7 @@
           </span>
         </div>
         <div class="content-editable" v-show="isEditing(index)">
-          <quill-editor :content="topic.content" ref="quillEditor" @update:content="updateContent(topic, $event)"
+          <quill-editor :content="topic.content" :content-id="chapter.guid" ref="quillEditor" @update:content="updateContent(topic, $event)"
             @shortcut:done="endEditTopic(index)"></quill-editor>
         </div>
       </div>
@@ -48,6 +48,9 @@ export default {
     QuillEditor
   },
   computed: {
+    allChapters () {
+      return this.$store.state.chapters.chapters
+    },
     chapterTopics () {
       return this.topics.map(topic => this.getTopic(this.chapter, topic)).filter(topic => !!topic)
     }
@@ -128,11 +131,13 @@ export default {
 
       return this.filterTopics(chapterTopic)
     },
-    updateContent (topic, { content: newContent }) {
+    updateContent (topic, { content: newContent, contentId: guid }) {
+      const chapter = this.allChapters.find(chapter => chapter.guid === guid)
+      const chapterTopic = chapter.topics[topic.guid]
       this.$store.commit(UPDATE_TOPIC_CONTENT, {
-        chapter: this.chapter,
+        chapter,
         newContent,
-        topic
+        topic: chapterTopic
       })
     }
   },

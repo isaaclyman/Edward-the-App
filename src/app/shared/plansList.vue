@@ -272,7 +272,7 @@ export default {
     selectPlan (index) {
       this.activePlanIndex = index
     },
-    updateContent (section, newContent) {
+    updateContent (section, { content: newContent }) {
       this.$store.commit(UPDATE_SECTION_CONTENT, {
         plan: this.activePlan,
         newContent,

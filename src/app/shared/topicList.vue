@@ -128,7 +128,7 @@ export default {
 
       return this.filterTopics(chapterTopic)
     },
-    updateContent (topic, newContent) {
+    updateContent (topic, { content: newContent }) {
       this.$store.commit(UPDATE_TOPIC_CONTENT, {
         chapter: this.chapter,
         newContent,

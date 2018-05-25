@@ -107,9 +107,6 @@ export default {
   props: {
     content: {
       required: true
-    },
-    selection: {
-      type: Object
     }
   }
 }

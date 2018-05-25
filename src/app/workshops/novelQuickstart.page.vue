@@ -179,7 +179,7 @@ export default {
       this.workshops = null
       this.begin()
     },
-    updateContent (index, content) {
+    updateContent (index, { content }) {
       this.$store.commit(UPDATE_WORKSHOPS_CONTENT, {
         workshopUpdates: [{
           workshop: this.workshops[index],

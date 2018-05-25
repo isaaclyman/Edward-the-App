@@ -5,9 +5,9 @@
     </div>
     <div v-if="showFullScreen">
       <quill-full-screen 
-        :content="content"
+        :content="content" :content-id="contentId"
         @close="hideFullScreen()"
-        @update:content="emitContent"
+        @update:content="emitFullscreenContent"
         @update:selection="emitSelection"></quill-full-screen>
     </div>
   </div>
@@ -45,6 +45,9 @@ export default {
     },
     emitContent (content, contentId) {
       this.$emit('update:content', { content, contentId })
+    },
+    emitFullscreenContent ({ content, contentId }) {
+      this.emitContent(content, contentId)
     },
     emitDone () {
       this.$emit('shortcut:done')

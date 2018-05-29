@@ -41,15 +41,15 @@ const tests = isPremium => () => {
     chapterTab(cy).contains(chapterNumber.toString()).click()
   }
 
-  const typeChapter = (cy, chapterNumber, content) => {
+  const typeChapter = (cy, chapterNumber, content, halfTick = 1000) => {
     selectChapter(cy, chapterNumber)
     cy.get('@chapterEditor').clear()
     cy.get('@chapterEditor').type(content)
     cy.get('@chapterEditor').should('contain', content)
 
     // Because there are two debounces and a promise between typing something and having it saved, we need two ticks
-    cy.tick(1000)
-    cy.tick(1000)
+    cy.tick(halfTick)
+    cy.tick(halfTick)
   }
 
   it('has a text editor with tabs', () => {
@@ -106,6 +106,16 @@ const tests = isPremium => () => {
     cy.reload()
     selectChapter(cy, 4)
     cy.get('@chapterEditor').should('contain', chapterName)
+  })
+
+  it(`doesn't overwrite a chapter if you switch to it quickly after writing in another chapter`, () => {
+    const chapterText = 'test chapter 1'
+    typeChapter(cy, 1, 'test chapter 1', 100)
+    selectChapter(cy, 2)
+    cy.tick(2000)
+    cy.get('@chapterEditor').should('not.contain', chapterText)
+    selectChapter(cy, 1)
+    cy.get('@chapterEditor').should('contain', chapterText)
   })
 }
 

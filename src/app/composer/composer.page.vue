@@ -34,10 +34,11 @@
           <div class="define">
             <word-define :word="mark"></word-define>
           </div>
-          <text-editor ref="textEditor" :content="activeChapter.content" :scroll-to="scrollTo" :selection="selection"
+          <quill-editor ref="textEditor" :content="activeChapter.content" :content-id="activeChapter.guid"
+                      :scroll-to="scrollTo"
                       :container="editorContainerNode"
                       @update:content="updateContent"
-                      @update:selection="updateSelection"></text-editor>
+                      @update:selection="updateSelection"></quill-editor>
         </div>
       </div>
       <div class="sidebar-wrap">
@@ -122,8 +123,8 @@ import { GetContentString } from '../shared/deltaParser'
 import guid from '../shared/guid'
 import Octicons from 'octicons'
 import PlansList from '../shared/plansList.vue'
+import QuillEditor from '../shared/quillEditor.vue'
 import TabsList from '../shared/tabsList.vue'
-import TextEditor from './textEditor.vue'
 import TextMap from './textMap.vue'
 import TopicList from '../shared/topicList.vue'
 import { UPDATE_SELECTION } from './composer.store'
@@ -137,8 +138,8 @@ const planSwitch = new Cache('COMPOSER_PLAN_SWITCH')
 export default {
   components: {
     PlansList,
+    QuillEditor,
     TabsList,
-    TextEditor,
     TextMap,
     TopicList,
     VueSwitch,
@@ -338,9 +339,14 @@ export default {
     unhoverChapter () {
       this.showStats = false
     },
-    updateContent (newContent) {
+    updateContent ({ content: newContent, contentId: guid }) {
+      const chapter = this.allChapters.find(chapter => chapter.guid === guid)
+      if (!chapter) {
+        return
+      }
+
       this.$store.commit(UPDATE_CHAPTER_CONTENT, {
-        chapter: this.allChapters[this.activeChapterIndex],
+        chapter,
         newContent
       })
     },

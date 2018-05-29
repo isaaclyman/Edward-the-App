@@ -5,9 +5,9 @@
     </div>
     <div v-if="showFullScreen">
       <quill-full-screen 
-        :content="content" :selection="selection"
+        :content="content" :content-id="contentId"
         @close="hideFullScreen()"
-        @update:content="emitContent"
+        @update:content="emitFullscreenContent"
         @update:selection="emitSelection"></quill-full-screen>
     </div>
   </div>
@@ -29,6 +29,7 @@ export default {
   },
   data () {
     return {
+      cachedContentId: null,
       handlers: [],
       quill: null,
       showFullScreen: false
@@ -42,8 +43,11 @@ export default {
     enable () {
       this.quill.enable()
     },
-    emitContent (content) {
-      this.$emit('update:content', content)
+    emitContent (content, contentId) {
+      this.$emit('update:content', { content, contentId })
+    },
+    emitFullscreenContent ({ content, contentId }) {
+      this.emitContent(content, contentId)
     },
     emitDone () {
       this.$emit('shortcut:done')
@@ -79,15 +83,16 @@ export default {
         selectionChanged(selection)
       }
 
-      const textChanged = debounce(content => {
-        this.emitContent(content)
+      const textChanged = debounce((content, contentId) => {
+        this.emitContent(content, contentId)
       }, 750, { maxWait: 2000 })
 
       const onTextChange = () => {
         const selection = quill.getSelection()
         onSelectionChange(selection)
         const content = quill.getContents()
-        textChanged(content)
+        const contentId = this.contentId
+        textChanged(content, contentId)
       }
 
       quill.on('text-change', onTextChange)
@@ -121,10 +126,11 @@ export default {
     content: {
       required: true
     },
-    scrollTo: {
-      type: Object
+    contentId: {
+      required: false,
+      default: null
     },
-    selection: {
+    scrollTo: {
       type: Object
     }
   },
@@ -134,7 +140,13 @@ export default {
         return
       }
 
-      this.quill.setContents(delta, 'api')
+      if (this.contentId !== this.cachedContentId) {
+        this.cachedContentId = this.contentId
+        this.quill.setContents(null, 'silent')
+        this.quill.setContents(delta, 'silent')
+      } else {
+        this.updateQuill(this.quill, delta, true)
+      }
     },
     scrollTo (descriptor) {
       if (!descriptor || !~descriptor.paragraphIndex) {
@@ -156,13 +168,6 @@ export default {
       const searchRanges = getAllOccurrences(search, contents)
       const selectedRange = searchRanges[descriptor.searchTermIndex]
       this.quill.setSelection(selectedRange, 'api')
-    },
-    selection (selection) {
-      if (!selection || isEqual(selection, this.quill.getSelection())) {
-        return
-      }
-
-      this.quill.setSelection(selection, 'api')
     }
   }
 }

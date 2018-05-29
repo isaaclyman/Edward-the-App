@@ -124,7 +124,7 @@ export default {
       this.finished = false
       this.workshop = null
     },
-    updateContent (content) {
+    updateContent ({ content }) {
       this.$store.commit(UPDATE_WORKSHOPS_CONTENT, {
         workshopUpdates: [{
           workshop: this.workshop,

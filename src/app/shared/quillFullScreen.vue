@@ -23,12 +23,16 @@ import tooltip from './tooltip.directive'
 const width = new Cache('FULL_SCREEN_EDITOR_WIDTH')
 
 export default {
+  beforeDestroy () {
+    this.handlers.forEach(([name, fn]) => this.quill.off(name, fn))
+  },
   data () {
     return {
       exitSvg: Octicons.x.toSVG({
         height: 30,
         width: 30
       }),
+      handlers: [],
       isWideView: false,
       narrowSvg: Octicons['screen-normal'].toSVG({
         height: 30,
@@ -48,16 +52,24 @@ export default {
     close () {
       this.$emit('close')
     },
-    emitContent (content) {
-      this.$emit('update:content', content)
+    emitContent (content, contentId) {
+      this.$emit('update:content', { content, contentId })
     },
     emitSelection (selection) {
       this.$emit('update:selection', selection)
     },
     listenQuill (quill) {
-      quill.on('text-change', () => this.emitContent(quill.getContents()))
+      const textChanged = debounce((content, contentId) => {
+        this.emitContent(content, contentId)
+      }, 750, { maxWait: 2000 })
 
-      quill.on('selection-change', debounce((range) => {
+      const onTextChange = () => {
+        const content = quill.getContents()
+        const contentId = this.contentId
+        textChanged(content, contentId)
+      }
+
+      const onSelectionChange = debounce((range) => {
         if (!range) {
           return
         }
@@ -76,7 +88,12 @@ export default {
         }
 
         this.emitSelection(selection)
-      }, 500))
+      }, 500)
+
+      quill.on('text-change', onTextChange)
+      quill.on('selection-change', onSelectionChange)
+
+      this.handlers.push(['text-change', onTextChange], ['selection-change', onSelectionChange])
     },
     showNarrowView () {
       this.isWideView = false
@@ -108,8 +125,8 @@ export default {
     content: {
       required: true
     },
-    selection: {
-      type: Object
+    contentId: {
+      required: false
     }
   }
 }

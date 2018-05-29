@@ -61,7 +61,7 @@
                 </span>
               </div>
               <div class="content-editable" v-show="isEditing(index)">
-                <quill-editor :content="section.content" ref="quillEditor" @update:content="updateContent(section, $event)"
+                <quill-editor :content="section.content" :content-id="activePlan.guid" ref="quillEditor" @update:content="updateContent(section, $event)"
                   @shortcut:done="endEditSection(index)"></quill-editor>
               </div>
             </div>
@@ -272,9 +272,10 @@ export default {
     selectPlan (index) {
       this.activePlanIndex = index
     },
-    updateContent (section, newContent) {
+    updateContent (section, { content: newContent, contentId: planGuid }) {
+      const plan = this.allPlans.find(plan => plan.guid === planGuid)
       this.$store.commit(UPDATE_SECTION_CONTENT, {
-        plan: this.activePlan,
+        plan,
         newContent,
         section
       })

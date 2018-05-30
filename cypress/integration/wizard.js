@@ -1,6 +1,6 @@
 import { user } from '../../test/_util'
 import {
-  createTestUser, deleteTestUser, logIn, makeTestUserPremium,
+  createTestUser, deleteTestUser, logIn, makeTestUserPremium, createTestDocument,
   seed
 } from '../scripts/_util'
 
@@ -20,18 +20,23 @@ const tests = (userType) => () => {
           deleteTestUser()
           createTestUser()
           makeTestUserPremium()
+          createTestDocument(true)
         })
         break
     }
   })
 
   beforeEach(() => {
-    if (userType !== 'demo') {
+    if (userType === 'demo') {
       cy.visit('/auth.html#/login')
       cy.get('button').contains('demo').click()
       cy.url().should('contain', '/app')
     } else {
       logIn(cy, user.email, user.password)
+    }
+
+    if (userType !== 'premium') {
+      createTestDocument(false)
     }
 
     cy.visit('/app.html')
@@ -86,7 +91,7 @@ const tests = (userType) => () => {
       .should('have.length.above', 1)
   })
 
-  it('allow creating a blank document', () => {
+  it('allows creating a blank document', () => {
     selectTemplate('Blank')
     setTitle('Test Blank')
     create()
@@ -98,6 +103,15 @@ const tests = (userType) => () => {
     showPlans()
     cy.get('div.sidebar-content').contains('No plans')
   })
+
+  if (userType !== 'demo') {
+    it(`allows selecting a document, then returning to the wizard`, () => {
+      cy.get('select.document-dropdown').select('test')
+      goToWrite()
+      cy.get('.menu').find('button').contains('New').click()
+      cy.get('button.type').contains('Novel')
+    })
+  }
 }
 
 describe('the wizard page (demo)', tests('demo'))

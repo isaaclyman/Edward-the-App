@@ -126,7 +126,19 @@ export default {
         integration: this.isTest
       }).then(result => {
         this.loading = false
-        this.$router.push('/verification')
+
+        if (typeof window.gtag_report_conversion === 'function') {
+          window.gtag_report_conversion(() => this.$router.push('/verification'))
+
+          window.setTimeout(() => {
+            if (!window.location.href.includes('/verification')) {
+              this.$router.push('/verification')
+            }
+          }, 3000)
+        } else {
+          console.warn('Google Analytics conversion monitoring had an error.')
+          this.$router.push('/verification')
+        }
       }, () => {
         this.loading = false
         this.$refs.captcha.reset()

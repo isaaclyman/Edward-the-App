@@ -34,6 +34,7 @@
     "localforage": "1.5.6",
     "lodash": "4.17.4",
     "mark.js": "8.11.0",
+    "markov-chains-text": "^1.0.0",
     "mysql": "2.15.0",
     "node-env-file": "0.1.8",
     "nodemailer": "4.4.1",

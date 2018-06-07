@@ -6,6 +6,7 @@
           Select an analysis:
         </h4>
         <button class="analysis-button" v-for="(analysis, index) in Analyses" :key="index"
+                :class="{ 'button-green': currentAnalysis === analysis }"
                 @click="selectAnalysis(analysis)" :title="analysis.description" v-tooltip>
           {{ analysis.title }}
         </button>

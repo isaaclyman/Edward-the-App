@@ -7,9 +7,11 @@ Analysis: {
 }
 */
 
-import CommonWords from './commonWords.analysis'
 import * as d3 from 'd3'
 import swal from 'sweetalert'
+
+import AiGhostwriter from './aiGhostwriter.analysis'
+import CommonWords from './commonWords.analysis'
 import WordOverTime from './wordOverTime.analysis'
 
 const clearPrevious = (el) => {
@@ -26,7 +28,7 @@ const makeSvg = (el) => {
     .attr('width', maxWidth)
     .append('g')
 
-  return { g, maxHeight, maxWidth }
+  return { g, el, maxHeight, maxWidth }
 }
 
 const safelyRunAnalysis = (analysisFn, args, onError) => {
@@ -92,9 +94,27 @@ const wordOverTime = {
   title: 'Word over time'
 }
 
+const aiGhostwriter = {
+  description: 'See a computer-generated sentence based on your work',
+  inputs: null,
+  run (resultsWindow, { chapters }) {
+    clearPrevious(resultsWindow)
+
+    const chaptersWithContent = chapters.filter(chapter => !!chapter.content)
+
+    safelyRunAnalysis(
+      AiGhostwriter,
+      [makeSvg(resultsWindow), chaptersWithContent],
+      () => clearPrevious(resultsWindow)
+    )
+  },
+  title: 'A.I. ghostwriter'
+}
+
 const all = [
   wordFrequency,
-  wordOverTime
+  wordOverTime,
+  aiGhostwriter
 ].map(analysis => {
   analysis.args = {}
   return analysis

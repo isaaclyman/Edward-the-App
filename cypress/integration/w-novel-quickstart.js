@@ -120,6 +120,7 @@ describe('the novel quickstart workshop (new workshop)', () => {
     cy.visit('/app.html#/workshop/novel-quickstart')
     cy.url().should('contain', '/novel-quickstart')
     cy.get('.ql-editor').should('have.text', '')
+    clock.tick(2000)
 
     cy.visit('/app.html#/write')
     cy.get('.plan-switch').find('.switch-label').contains('Workshops').click()

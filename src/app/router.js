@@ -91,6 +91,12 @@ export default new Router({
       beforeEnter: assertPremium
     },
     {
+      path: '/workshop/plot',
+      name: `Plot Workshop`,
+      component: () => import('./workshops/plotWorkshop.vue'),
+      beforeEnter: assertPremium
+    },
+    {
       path: '*',
       name: 'Page does not exist',
       component: NotFound

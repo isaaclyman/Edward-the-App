@@ -10,7 +10,7 @@ const guids = ['8104b1fb-c177-4ca1-b995-a75dcbe6911c', '2ae71a48-7873-4316-bf18-
 
 export const workshops = [{
   guid: guids[0],
-  workshopName: writingWorkshops.CHARACTER_WORKSHOP.name,
+  workshopName: writingWorkshops.PLOT_WORKSHOP.name,
   content: { ops: [{ insert: '1' }] },
   title: 'Workshop 1',
   order: 0,
@@ -18,7 +18,7 @@ export const workshops = [{
   date: new Date().toLocaleDateString()
 }, {
   guid: guids[1],
-  workshopName: writingWorkshops.CHARACTER_WORKSHOP.name,
+  workshopName: writingWorkshops.PLOT_WORKSHOP.name,
   content: { ops: [{ insert: '2' }] },
   title: 'Workshop 2',
   order: 1,

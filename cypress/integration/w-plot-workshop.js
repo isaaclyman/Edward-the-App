@@ -5,7 +5,7 @@ import {
 } from '../scripts/_util'
 import writingWorkshops from '../../models/writingWorkshop'
 
-describe(`the Writer's Unblock workshop (restricted)`, () => {
+describe(`the Plot workshop (restricted)`, () => {
   before(() => {
     seed(cy, () => {
       deleteTestUser()
@@ -18,20 +18,20 @@ describe(`the Writer's Unblock workshop (restricted)`, () => {
     createTestDocument(false).then(docId => createTestChapter(false, docId))
   })
 
-  it(`should not allow a Limited user to access the Writer's Unblock workshop via the workshops modal`, () => {
+  it(`should not allow a Limited user to access the Plot workshop via the workshops modal`, () => {
     cy.visit('/app.html#/write')
     cy.get('select.document-dropdown').select('test')
     cy.get('.main-menu').find('.main-menu--button').contains('Workshop').click()
-    cy.get('.swal-modal').find('.workshop').contains(`Writer's Unblock`).should('not.be.visible')
+    cy.get('.swal-modal').find('.workshop').contains(`Plot & Character`).should('not.be.visible')
   })
 
-  it(`should not allow a Limited user to visit the Writer's Unblock workshop directly`, () => {
-    cy.visit('/app.html#/workshop/unblock')
+  it(`should not allow a Limited user to visit the Plot workshop directly`, () => {
+    cy.visit('/app.html#/workshop/plot')
     cy.url().should('contain', '/write')
   })
 })
 
-describe(`the Writer's Unblock workshop (navigation)`, () => {
+describe(`the Plot workshop (navigation)`, () => {
   before(() => {
     return seed(cy, () => {
       deleteTestUser()
@@ -46,20 +46,20 @@ describe(`the Writer's Unblock workshop (navigation)`, () => {
     logIn(cy, user.email, user.password)
   })
 
-  it(`should navigate to the Writer's Unblock workshop from the workshops modal`, () => {
+  it(`should navigate to the Plot workshop from the workshops modal`, () => {
     cy.visit('/app.html#/write')
     cy.get('select.document-dropdown').select('test')
     cy.get('.main-menu').find('.main-menu--button').contains('Workshop').click()
-    cy.get('.swal-modal').find('.workshop').contains(`Writer's Unblock`).click()
-    cy.url().should('contain', '/workshop/unblock')
+    cy.get('.swal-modal').find('.workshop').contains(`Plot & Character`).click()
+    cy.url().should('contain', '/workshop/plot')
   })
 })
 
-describe(`the Writer's Unblock workshop (new workshop)`, () => {
+describe(`the Plot workshop (new workshop)`, () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     logIn(cy, user.email, user.password)
-    cy.visit('/app.html#/workshop/unblock')
+    cy.visit('/app.html#/workshop/plot')
     cy.get('select.document-dropdown').select('test')
   })
 
@@ -86,8 +86,8 @@ describe(`the Writer's Unblock workshop (new workshop)`, () => {
 
     cy.visit('/app.html#/write')
     cy.get('.plan-switch').find('.switch-label').contains('Workshops').click()
-    cy.get('.workshops-wrap .button-tab').contains(`Writer's Unblock`).click()
-    cy.get('.workshop-select').find('select option').contains(`Writer's Unblock`)
+    cy.get('.workshops-wrap .button-tab').contains(`Plot & Character`).click()
+    cy.get('.workshop-select').find('select option').contains(`Plot Workshop`)
   })
 
   it('should indicate that the workshop was deleted if no content was entered', () => {
@@ -105,7 +105,7 @@ describe(`the Writer's Unblock workshop (new workshop)`, () => {
     const testContent = 'Test content for refresh'
     typeContent(cy, '.ql-editor', testContent)
     cy.visit('/app.html#/write')
-    cy.visit('/app.html#/workshop/unblock')
+    cy.visit('/app.html#/workshop/plot')
     cy.get('.ql-editor').should('contain', testContent)
   })
 
@@ -117,12 +117,12 @@ describe(`the Writer's Unblock workshop (new workshop)`, () => {
     cy.get('.done.button-green').click()
     clock.tick(2000)
     cy.visit('/app.html#/write')
-    cy.visit('/app.html#/workshop/unblock')
+    cy.visit('/app.html#/workshop/plot')
     cy.get('.ql-editor').should('not.be.visible')
   })
 })
 
-describe('the Writers Unblock workshop (compose page)', () => {
+describe('the Plot workshop (compose page)', () => {
   before(() => {
     seed(cy, () => {
       deleteTestUser()
@@ -130,13 +130,13 @@ describe('the Writers Unblock workshop (compose page)', () => {
       makeTestUserPremium()
       createTestDocument(true)
       createTestChapter(true)
-      createTestWorkshop(writingWorkshops.WRITERS_UNBLOCK.name)
+      createTestWorkshop(writingWorkshops.PLOT_WORKSHOP.name)
     })
     logIn(cy, user.email, user.password)
     cy.visit('/app.html#/write')
     cy.get('select.document-dropdown').select('test')
     cy.get('.plan-switch').find('.switch-label').contains('Workshops').click()
-    cy.get('.workshops-wrap .button-tab').contains(`Writer's Unblock`).click()
+    cy.get('.workshops-wrap .button-tab').contains(`Plot & Character`).click()
   })
 
   it('should show completed workshops on the Workshops column of the composer', () => {

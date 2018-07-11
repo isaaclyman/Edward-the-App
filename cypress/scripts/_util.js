@@ -125,6 +125,9 @@ export function createTestPlan (isPremium, documentGuid) {
 
 export function createTestWorkshop (type) {
   switch (type) {
+    case writingWorkshops.PLOT_WORKSHOP.name:
+      seedArgs.push('--plot-workshop')
+      break
     case writingWorkshops.NOVEL_QUICKSTART.name:
       seedArgs.push('--novel-quickstart')
       break

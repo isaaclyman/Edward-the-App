@@ -88,7 +88,7 @@ export default {
     return {
       captchaResponse: '',
       email: '',
-      emailInfo: `We won't email you unless it's important.`,
+      emailInfo: `Please enter a valid email address so you can verify your account. We won't email you unless it's important.`,
       infoSvg: infoIcon,
       loading: false,
       message: '',

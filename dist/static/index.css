@@ -54,6 +54,7 @@ h3 {
 
 h4 {
   font-size: 22px;
+  line-height: 36px;
 }
 
 @media (max-width: 800px) {
@@ -199,9 +200,51 @@ ul li, ol li {
   width: 700px;
 }
 
-.intro {
-  font-size: 18px;
+.big-quote {
+  color: rgba(0, 0, 0, 0.075);
+  fill: rgba(0, 0, 0, 0.075);
+  display: block;
+  font-size: 42px;
+  height: 14px;
+  position: relative;
+}
+
+.big-quote svg {
+  position: absolute;
+}
+
+.big-quote-start {
+  margin-top: 24px;
+}
+
+.big-quote-end {
+  margin-bottom: 24px;
+}
+
+.big-quote-start svg {
+  left: -14px;
+  top: 0;
+}
+
+.big-quote-end svg {
+  right: -14px;
+  bottom: 0;
+}
+
+.content > p.blurb {
+  color: #333;
+  font-size: 28px;
   padding: 0;
+  padding-left: 18px;
+  padding-top: 6px;
+  margin: 0;
+}
+
+.content > p.attribution {
+  color: #444;
+  font-size: 16px;
+  margin: 0;
+  text-align: right;
 }
 
 .content {
@@ -209,17 +252,18 @@ ul li, ol li {
   display: flex;
   flex-direction: column;
   padding: 0 30px;
+  position: relative;
   width: 100%;
 }
 
-.content > p, .content > ul, .content > ol {
+.content > p, .content > ul, .content > ol, .content > .content-child {
   max-width: 100%;
   padding: 0 10px;
   width: 100%;
 }
 
 @media (min-width: 800px) {
-  .content > p, .content > ul, .content > ol {
+  .content > p, .content > ul, .content > ol, .content > .content-child {
     max-width: 100%;
     padding: 0 10px;
     width: 700px;
@@ -317,6 +361,14 @@ ul li, ol li {
 .feature {
   flex: 1;
   max-width: 450px;
+}
+
+.app-screenshot {
+  box-shadow: 2px 0px 15px 0px rgba(153,153,153,0.72);
+  margin-bottom: 6px;
+  margin-top: 30px;
+  max-width: 100%;
+  width: 700px;
 }
 
 .pricing {

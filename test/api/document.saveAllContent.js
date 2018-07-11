@@ -61,7 +61,7 @@ test('save all content', async t => {
   const workshopGuid = uuid()
   const workshops = ['It was the best of...', 'It was the worst of...'].map((title, index) => ({
     guid: workshopGuid,
-    workshopName: writingWorkshops.CHARACTER_WORKSHOP.name,
+    workshopName: writingWorkshops.PLOT_WORKSHOP.name,
     content: null,
     title: title,
     order: index,

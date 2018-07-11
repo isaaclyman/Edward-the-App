@@ -52,7 +52,7 @@ test('add workshop content', async t => {
       const list = response.body
       t.truthy(Array.isArray(list))
       t.is(list.length, 2)
-      t.true(list.every(item => item.workshopName === writingWorkshops.CHARACTER_WORKSHOP.name))
+      t.true(list.every(item => item.workshopName === writingWorkshops.PLOT_WORKSHOP.name))
       t.true(list.every(item => item.date !== null))
       const comparableList = list.map(item => {
         item.date = new Date(item.date).toLocaleDateString()
@@ -84,7 +84,7 @@ test('update content', async t => {
       const list = response.body
       t.truthy(Array.isArray(list))
       t.is(list.length, 2)
-      t.true(list.every(item => item.workshopName === writingWorkshops.CHARACTER_WORKSHOP.name))
+      t.true(list.every(item => item.workshopName === writingWorkshops.PLOT_WORKSHOP.name))
       t.true(list.every(item => item.date !== null))
       const comparableList = list.map(item => {
         item.date = new Date(item.date).toLocaleDateString()
@@ -123,7 +123,7 @@ test('delete content', async t => {
       t.is(list.length, 1)
 
       item = list[0]
-      t.true(item.workshopName === writingWorkshops.CHARACTER_WORKSHOP.name)
+      t.true(item.workshopName === writingWorkshops.PLOT_WORKSHOP.name)
       t.true(item.date !== null)
 
       const comparableList = list.map(item => {

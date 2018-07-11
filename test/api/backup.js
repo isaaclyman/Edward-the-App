@@ -323,7 +323,7 @@ test('import and export a document with content', async t => {
     }],
     workshops: [{
       guid: uuid(),
-      workshopName: writingWorkshops.CHARACTER_WORKSHOP.name,
+      workshopName: writingWorkshops.PLOT_WORKSHOP.name,
       content: null,
       title: 'Workshop 1',
       order: 0,

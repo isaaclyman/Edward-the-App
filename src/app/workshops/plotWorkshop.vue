@@ -175,8 +175,6 @@ export default {
 
 <style>
 .prompt {
-  display: flex;
-  flex-direction: row;
   margin-top: 20px;
 }
 

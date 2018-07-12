@@ -1,5 +1,11 @@
 <template>
   <div id="app" class="app">
+    <div class="error" v-if="incompatible">
+      <p>
+        This web browser does not support all the features of Edward.
+        For the best experience, the latest version of <a href="https://www.google.com/chrome/">Google Chrome</a> is recommended.
+      </p>
+    </div>
     <div class="page">
       <div class="logo" @click="goToLogin()">
         <img src="../../static/logo.png">
@@ -17,7 +23,9 @@
 <script>
 export default {
   data () {
-    return {}
+    return {
+      incompatible: (typeof ''.includes !== 'function' || !('serviceWorker' in navigator))
+    }
   },
   methods: {
     goToLogin () {
@@ -30,6 +38,14 @@ export default {
 <style scoped>
 .app {
   padding-top: 20px;
+}
+
+.error {
+  color: red;
+  font-size: 16px;
+  margin: 0 auto;
+  max-width: 100%;
+  width: 700px;
 }
 
 .page {

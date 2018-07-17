@@ -15,7 +15,7 @@
         </button>
       </router-link>
       <hr class="vert-flex">
-      <button class="menu-button" @click="showWizard()">
+      <button class="menu-button" @click="showWizard()" :disabled="!isOnline">
         New
       </button>
     </div>
@@ -49,6 +49,7 @@
 
 <script>
 import DocumentPicker from './documentPicker.vue'
+import { Statuses } from './status.store'
 import swal from 'sweetalert'
 import { UNLOAD_CURRENT_DOCUMENT } from './document.store'
 import userApi from '../api/userApi'
@@ -58,6 +59,9 @@ export default {
     DocumentPicker
   },
   computed: {
+    isOnline () {
+      return this.$store.state.status.status !== Statuses.OFFLINE
+    },
     notDemo () {
       return this.$store.state.user.user.accountType.name !== 'DEMO'
     }

@@ -1,6 +1,6 @@
 import api from './api'
 import VueInstance from '../../main'
-import { CLEAR_ERROR, SET_STATUS_DONE, SET_STATUS_ERROR, SET_STATUS_SAVING } from '../shared/status.store'
+import { SET_STATUS_DONE, SET_STATUS_ERROR, SET_STATUS_SAVING } from '../shared/status.store'
 
 class ServerStorageApi {
   constructor () {
@@ -9,7 +9,6 @@ class ServerStorageApi {
 
     const saving = () => {
       savingCounter++
-      store.commit(CLEAR_ERROR)
       store.commit(SET_STATUS_SAVING)
     }
     const done = (isError) => {

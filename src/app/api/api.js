@@ -14,6 +14,8 @@ class Api {
     })
   }
 
+  isOnline () { return this.simpleGet(route('online')) }
+
   saveAllContent (data) { return this.simplePost(route('document/saveAll'), data) }
 
   // DOCUMENTS

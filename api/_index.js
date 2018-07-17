@@ -25,6 +25,11 @@ module.exports = function (app, passport, db) {
     res.sendFile(path.join(__dirname, '../dist/admin.html'))
   })
 
+  // Check if the client is online
+  app.get('/api/online', isLoggedInMiddleware, (req, res) => {
+    res.status(200).send()
+  })
+
   // Serve user-facing APIs
   require('./user')(app, passport, db, isPremiumUser, isOverdue, isLoggedInMiddleware, isNotDemoMiddleware, isVerifiedMiddleware)
   require('./document').registerApis(app, passport, db, isPremiumUserMiddleware, isNotOverdueMiddleware)

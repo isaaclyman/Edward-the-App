@@ -1,5 +1,5 @@
 <template>
-  <select class="document-dropdown" v-model="documentValue" @change="changeDocument">
+  <select class="document-dropdown" v-model="documentValue" @change="changeDocument" :disabled="!isOnline">
     <option v-if="!currentDocument" value="">No document selected</option>
     <option v-for="document in allDocuments" :key="document.guid" :value="document.guid">
       {{document.name}}
@@ -9,6 +9,7 @@
 
 <script>
 import { CHANGE_DOCUMENT } from './document.store'
+import { Statuses } from './status.store'
 
 export default {
   computed: {
@@ -17,6 +18,9 @@ export default {
     },
     currentDocument () {
       return this.$store.state.document.currentDocument
+    },
+    isOnline () {
+      return this.$store.state.status.status !== Statuses.OFFLINE
     }
   },
   data () {
@@ -46,7 +50,12 @@ export default {
   background-color: #777;
   color: #FFF;
   font-size: 14px;
+  opacity: 1;
   padding: 4px;
+}
+
+.document-dropdown[disabled] {
+  opacity: 0.5;
 }
 
 .document-dropdown /deep/ option {

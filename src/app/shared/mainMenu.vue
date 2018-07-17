@@ -14,20 +14,7 @@
       <div>Workshop</div>
     </button>
     <div class="spacer"></div>
-    <div class="status-wrap" v-if="!isDemo">
-      <div class="status">
-        <div class="status-saving" :class="{ 'show': isSaving }">
-          Saving...
-        </div>
-        <div class="status-saved" :class="{ 'show': !isSaving && !saveError }">
-          Saved <span v-html="savedIcon"></span>
-        </div>
-        <div class="status-error" :class="{ 'show': !isSaving && saveError }" v-show="saveError"
-             :title="saveErrorText" v-tooltip>
-          Error <span v-html="errorIcon"></span>
-        </div>
-      </div>
-    </div>
+    <status-signal></status-signal>
     <hr class="vert mobile-hide">
     <a class="disguised mobile-hide" href="/auth#/account">
       <div class="account" :title="accountType.description" v-tooltip>
@@ -75,11 +62,15 @@
 
 <script>
 import Octicons from 'octicons'
+import StatusSignal from './statusSignal.vue'
 import swal from 'sweetalert'
 import tooltip from './tooltip.directive'
 import writingWorkshops from '../../../models/writingWorkshop'
 
 export default {
+  components: {
+    StatusSignal
+  },
   computed: {
     accountType () {
       return this.$store.state.user.user.accountType || {}
@@ -87,26 +78,12 @@ export default {
     email () {
       return this.$store.state.user.user.email || ''
     },
-    isDemo () {
-      return this.accountType.name === 'DEMO'
-    },
     isPremium () {
       return this.$store.state.user.user.isPremium
-    },
-    saveError () {
-      return this.$store.state.status.error
-    },
-    saving () {
-      return this.$store.state.status.saving
     }
   },
   data () {
     return {
-      errorIcon: Octicons.alert.toSVG({
-        height: 15,
-        width: 15
-      }),
-      isSaving: false,
       routes: [{
         icon: 'telescope',
         location: '/plan',
@@ -133,12 +110,6 @@ export default {
         name: 'Search',
         tooltip: 'Search your entire document for a word or phrase.'
       }],
-      savedIcon: Octicons.check.toSVG({
-        height: 15,
-        width: 15
-      }),
-      saveErrorText: `Your work may not be saved. Please check your Internet connection.`,
-      savingDebouncer: window.setTimeout(() => {}),
       toolsTooltip: 'Workshop your novel with free or prompted writing exercises.',
       workshops: Object.keys(writingWorkshops).map(key => writingWorkshops[key])
     }
@@ -170,20 +141,6 @@ export default {
 
       swal.close()
       this.$router.push(workshop.route)
-    }
-  },
-  watch: {
-    // A bit of trickery to make the "Saving" indicator show for at least 500ms.
-    // This comforts me.
-    saving (saving) {
-      if (saving) {
-        this.isSaving = true
-      }
-
-      clearTimeout(this.savingDebouncer)
-      this.savingDebouncer = window.setTimeout(() => {
-        this.isSaving = this.saving
-      }, 500)
     }
   }
 }
@@ -227,48 +184,6 @@ hr.between:last-of-type {
 
 .spacer {
   flex: 1;
-}
-
-.status-wrap {
-  align-items: center;
-  display: flex;
-  font-size: 17px;
-  justify-content: center;
-  margin-right: 8px;
-}
-
-.status {
-  cursor: default;
-  height: 20px;
-  position: relative;
-  text-align: right;
-  width: 65px;
-}
-
-.status-saving {
-  color: orange;
-  fill: orange;
-}
-
-.status-saved {
-  color: rgb(1,171,109);
-  fill: rgb(1,171,109);
-}
-
-.status-error {
-  color: red;
-  fill: red;
-}
-
-.status-saving, .status-saved, .status-error {
-  cursor: default;
-  opacity: 0;
-  position: absolute;
-  transition: opacity 500ms;
-}
-
-.status-saving.show, .status-saved.show, .status-error.show {
-  opacity: 1;
 }
 
 .account {

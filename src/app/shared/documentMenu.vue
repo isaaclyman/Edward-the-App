@@ -10,7 +10,7 @@
         </button>
       </router-link>
       <router-link to="/export">
-        <button class="menu-button mobile-hide">
+        <button class="menu-button mobile-hide" :disabled="!isOnline">
           Download / Upload
         </button>
       </router-link>
@@ -22,25 +22,25 @@
     <div class="spacer"></div>
     <div class="menu-item" v-if="notDemo">
       <router-link to="/settings">
-        <button class="menu-button mobile-hide">
+        <button class="menu-button mobile-hide" :disabled="!isOnline">
           Settings
         </button>
       </router-link>
       <a href="/auth#/account">
-        <button class="menu-button button-green mobile-hide">
+        <button class="menu-button button-green mobile-hide" :disabled="!isOnline">
           Upgrade
         </button>
       </a>
     </div>
     <div class="menu-item" v-if="!notDemo">
       <a href="/auth#/signup">
-        <button class="menu-button button-green mobile-hide">
+        <button class="menu-button button-green mobile-hide" :disabled="!isOnline">
           Upgrade
         </button>
       </a>
     </div>
     <div class="menu-item">
-      <button class="menu-button" @click="logOut()">
+      <button class="menu-button" @click="logOut()" :disabled="!isOnline">
         Log Out
       </button>
     </div>

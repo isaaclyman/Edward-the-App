@@ -1,23 +1,23 @@
 <template>
   <div class="main-menu">
     <template v-for="route in routes">
-      <router-link :to="route.location" :key="route.name">
-        <button class="main-menu--button" :title="route.tooltip" v-tooltip>
+      <router-link :to="(route.worksOffline || isOnline) ? route.location : '#'" :key="route.name">
+        <button class="main-menu--button" :title="route.tooltip" v-tooltip :disabled="!route.worksOffline && !isOnline">
           <div v-html="getIconSvg(route.icon)"></div>
           <div>{{route.name}}</div>
         </button>
       </router-link>
       <hr class="vert between mobile-hide" :key="route.name + '-hr'">
     </template>
-    <button class="main-menu--button" :title="toolsTooltip" v-tooltip @click="showWorkshops()">
+    <button class="main-menu--button" :title="toolsTooltip" v-tooltip @click="showWorkshops()" :disabled="!isOnline">
       <div v-html="getIconSvg('tools')"></div>
       <div>Workshop</div>
     </button>
     <div class="spacer"></div>
     <status-signal></status-signal>
     <hr class="vert mobile-hide">
-    <a class="disguised mobile-hide" href="/auth#/account">
-      <div class="account" :title="accountType.description" v-tooltip>
+    <a class="disguised mobile-hide" :href="isOnline ? '/auth#/account' : '#'">
+      <div class="account" :class="{ 'offline': !isOnline }" :title="accountType.description" v-tooltip>
         <div class="email">
           {{ email }}
         </div>
@@ -62,6 +62,7 @@
 
 <script>
 import Octicons from 'octicons'
+import { Statuses } from './status.store'
 import StatusSignal from './statusSignal.vue'
 import swal from 'sweetalert'
 import tooltip from './tooltip.directive'
@@ -78,6 +79,9 @@ export default {
     email () {
       return this.$store.state.user.user.email || ''
     },
+    isOnline () {
+      return this.$store.state.status.status !== Statuses.OFFLINE
+    },
     isPremium () {
       return this.$store.state.user.user.isPremium
     }
@@ -88,27 +92,32 @@ export default {
         icon: 'telescope',
         location: '/plan',
         name: 'Plan',
-        tooltip: 'Make general notes about characters, topics, settings, and more.'
+        tooltip: 'Make general notes about characters, topics, settings, and more.',
+        worksOffline: true
       }, {
         icon: 'list-unordered',
         location: '/outline',
         name: 'Outline',
-        tooltip: 'Create and organize chapters and chapter-specific notes.'
+        tooltip: 'Create and organize chapters and chapter-specific notes.',
+        worksOffline: true
       }, {
         icon: 'pencil',
         location: '/write',
         name: 'Write',
-        tooltip: 'Write, search and measure your content.'
+        tooltip: 'Write, search and measure your content.',
+        worksOffline: true
       }, {
         icon: 'pulse',
         location: '/analyze',
         name: 'Analyze',
-        tooltip: 'Get data-driven insights into your writing.'
+        tooltip: 'Get data-driven insights into your writing.',
+        worksOffline: false
       }, {
         icon: 'search',
         location: '/search',
         name: 'Search',
-        tooltip: 'Search your entire document for a word or phrase.'
+        tooltip: 'Search your entire document for a word or phrase.',
+        worksOffline: true
       }],
       toolsTooltip: 'Workshop your novel with free or prompted writing exercises.',
       workshops: Object.keys(writingWorkshops).map(key => writingWorkshops[key])
@@ -164,7 +173,7 @@ export default {
   transition: color 100ms ease-in-out;
 }
 
-.main-menu--button:hover {
+.main-menu--button:not([disabled]):hover {
   color: #000;
 }
 
@@ -190,7 +199,13 @@ hr.between:last-of-type {
   color: inherit;
   cursor: pointer;
   margin-left: 8px;
+  opacity: 1;
   text-decoration: none;
+}
+
+.account.offline {
+  cursor: default;
+  opacity: 0.5;
 }
 
 .email {
@@ -269,7 +284,7 @@ hr.between:last-of-type {
   transition: fill 100ms ease-in-out;
 }
 
-.main-menu--button:hover .main-menu--icon {
+.main-menu--button:not([disabled]):hover .main-menu--icon {
   fill: #000;
 }
 

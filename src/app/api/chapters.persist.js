@@ -42,11 +42,12 @@ const mutations = {
 }
 
 let debouncedUpdateChapter = null
+let chapterStorage = null
 
-const getDebouncedUpdateChapter = (storage) => {
+const getDebouncedUpdateChapter = () => {
   if (!debouncedUpdateChapter) {
     debouncedUpdateChapter = debounce((...args) => {
-      storage.updateChapter.apply(storage, args)
+      chapterStorage.updateChapter.apply(chapterStorage, args)
     }, 50)
   }
 
@@ -59,7 +60,8 @@ export const chapterAutosaverPlugin = store => {
     state.user.userPromise.then(user => {
       const isOffline = state.status.status === Statuses.OFFLINE
       const storage = getStorageApi(user, isOffline)
-      handleMutation(mutation, state, storage, getDebouncedUpdateChapter(storage))
+      chapterStorage = storage
+      handleMutation(mutation, state, storage, getDebouncedUpdateChapter())
     })
   })
 }

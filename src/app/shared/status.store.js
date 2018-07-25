@@ -25,7 +25,9 @@ const store = {
       state.status = Statuses.OFFLINE
     },
     [SET_STATUS_SAVING] (state) {
-      state.status = Statuses.SAVING
+      if (state.status !== Statuses.OFFLINE) {
+        state.status = Statuses.SAVING
+      }
     }
   }
 }

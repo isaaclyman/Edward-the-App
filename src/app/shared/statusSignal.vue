@@ -20,7 +20,7 @@
 <script>
 import api from '../api/api'
 import Octicons from 'octicons'
-import { Statuses, SET_STATUS_OFFLINE } from './status.store'
+import { Statuses, SET_STATUS_DONE, SET_STATUS_OFFLINE } from './status.store'
 import tooltip from './tooltip.directive'
 
 let offlineInterval
@@ -30,6 +30,7 @@ export default {
     offlineInterval = setInterval(() => {
       api.isOnline().then(online => {
         // TODO: If previously offline, then upsync to the server
+        this.$store.commit(SET_STATUS_DONE)
       }, () => {
         this.$store.commit(SET_STATUS_OFFLINE)
       })

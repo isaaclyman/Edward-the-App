@@ -27,7 +27,7 @@ const store = {
   actions: {
     [CHANGE_DOCUMENT] ({ commit, dispatch }, { guid, name, shouldReset }) {
       return dispatch(UNLOAD_CURRENT_DOCUMENT, { shouldReset }).then(() => {
-        return storageApiPromise.then(storage => {
+        return storageApiPromise().then(storage => {
           // Get the new document from storage
           const promises = [
             storage.getAllChapters(guid),
@@ -57,7 +57,7 @@ const store = {
       })
     },
     [INIT_DOCUMENTS] ({ commit, dispatch, state }) {
-      return storageApiPromise.then(storage => {
+      return storageApiPromise().then(storage => {
         return storage.getAllDocuments().then(documents => {
           commit(LOAD_DOCUMENTS, documents)
           const currentDocument = cache.cacheGet()
@@ -98,7 +98,7 @@ const store = {
         title
       }))
 
-      return storageApiPromise.then(storage => {
+      return storageApiPromise().then(storage => {
         return Promise.resolve(storage.addDocument(document)).then(() => storage)
       }).then(storage => {
         return storage.saveAllContent(document.guid, { chapters, plans, topics })

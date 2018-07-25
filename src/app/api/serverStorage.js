@@ -1,6 +1,6 @@
 import api from './api'
 import VueInstance from '../../main'
-import { SET_STATUS_DONE, SET_STATUS_ERROR, SET_STATUS_SAVING } from '../shared/status.store'
+import { SET_STATUS_DONE, SET_STATUS_ERROR, SET_STATUS_OFFLINE, SET_STATUS_SAVING } from '../shared/status.store'
 
 class ServerStorageApi {
   constructor () {
@@ -11,24 +11,39 @@ class ServerStorageApi {
       savingCounter++
       store.commit(SET_STATUS_SAVING)
     }
-    const done = (isError) => {
+    
+    const done = (isError, isOffline) => {
       savingCounter--
       if (savingCounter > 0) {
         return
       }
       savingCounter = 0
 
-      if (isError) {
-        store.commit(SET_STATUS_ERROR)
-      } else {
+      if (!isError) {
         store.commit(SET_STATUS_DONE)
+        return
       }
+
+      if (isOffline) {
+        store.commit(SET_STATUS_OFFLINE)
+        return
+      }
+
+      store.commit(SET_STATUS_ERROR)
+      return
     }
+
     this.wrapStatus = promise => {
       saving()
-      promise.then(() => done(), () => done(true))
+      promise.then(
+        () => done(false),
+        () => {
+          api.isOnline().then(() => done(true, false), () => done(true, true))
+        }
+      )
       return promise
     }
+
     this.waitUntilDone = () => {
       return new Promise((resolve, reject) => {
         let counter = 0

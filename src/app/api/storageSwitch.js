@@ -2,22 +2,36 @@ import DemoStorageApi from './demoStorage'
 import LocalStorageApi from './localStorage'
 import ServerStorageApi from './serverStorage'
 
-let storageApiResolve
-export const storageApiPromise = new Promise((resolve) => {
-  storageApiResolve = resolve
-})
+let storageApi
+const setStorageApi = function(storage) {
+  storageApi = storage
+  return storage
+}
 
-export function getStorageApi (user) {
-  let storage
+export const storageApiPromise = function () {
+  return Promise.resolve(storageApi)
+}
 
-  if (user && user.isPremium) {
-    storage = new ServerStorageApi()
-  } else if (user.accountType.name === 'DEMO') {
-    storage = new DemoStorageApi()
-  } else {
-    storage = new LocalStorageApi()
+export function getStorageApi (user, isOffline) {
+  if (!user || !user.accountType) {
+    return setStorageApi(new LocalStorageApi())
   }
 
-  storageApiResolve(storage)
-  return storage
+  if (user.accountType.name === 'DEMO') {
+    return setStorageApi(new DemoStorageApi())
+  }
+
+  if (!user.isPremium) {
+    return setStorageApi(new LocalStorageApi())
+  }
+
+  if (isOffline) {
+    return setStorageApi(new LocalStorageApi())
+  }
+
+  if (user.isPremium) {
+    return setStorageApi(new ServerStorageApi())
+  }
+
+  return setStorageApi(new LocalStorageApi())
 }

@@ -119,7 +119,7 @@ export default {
         backup.guid = this.documentGuid
         backup.name = this.documentTitle
 
-        return storageApiPromise.then(storage => {
+        return storageApiPromise().then(storage => {
           return storage.docImport(backup)
         })
       }).then(backup => {
@@ -148,7 +148,7 @@ export default {
     exportJsonDocument () {
       this.loading = true
 
-      storageApiPromise.then(storage => {
+      storageApiPromise().then(storage => {
         return storage.docExport(this.documentGuid, this.documentTitle)
       }).then(backup => {
         backupToJsonFile(this.documentTitle, backup).then(() => {
@@ -295,7 +295,7 @@ export default {
       }
 
       this.loading = true
-      storageApiPromise.then(storage => {
+      storageApiPromise().then(storage => {
         return storage.exportToWord({
           guid: this.documentGuid,
           title: this.documentTitle,

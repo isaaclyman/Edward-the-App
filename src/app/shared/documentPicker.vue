@@ -8,8 +8,9 @@
 </template>
 
 <script>
+import api from '../api/api'
 import { CHANGE_DOCUMENT } from './document.store'
-import { Statuses } from './status.store'
+import { Statuses, SET_STATUS_OFFLINE } from './status.store'
 
 export default {
   computed: {
@@ -33,13 +34,18 @@ export default {
   },
   methods: {
     changeDocument (value) {
-      const document = this.allDocuments.find(doc => doc.guid === this.documentValue)
+      api.isOnline().then(() => {
+        const document = this.allDocuments.find(doc => doc.guid === this.documentValue)
 
-      if (!document || (this.currentDocument && (document.guid === this.currentDocument.guid))) {
-        return
-      }
+        if (!document || (this.currentDocument && (document.guid === this.currentDocument.guid))) {
+          return
+        }
 
-      this.$store.dispatch(CHANGE_DOCUMENT, document)
+        this.$store.dispatch(CHANGE_DOCUMENT, document)
+      }, () => {
+        this.$store.commit(SET_STATUS_OFFLINE)
+        this.documentValue = this.currentDocument.guid
+      })
     }
   }
 }

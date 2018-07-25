@@ -11,7 +11,7 @@ class ServerStorageApi {
       savingCounter++
       store.commit(SET_STATUS_SAVING)
     }
-    
+
     const done = (isError, isOffline) => {
       savingCounter--
       if (savingCounter > 0) {

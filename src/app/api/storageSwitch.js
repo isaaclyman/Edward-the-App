@@ -3,13 +3,26 @@ import LocalStorageApi from './localStorage'
 import ServerStorageApi from './serverStorage'
 
 let storageApi
-const setStorageApi = function(storage) {
+let temporaryStoragePromiseResolve
+const temporaryStoragePromise = new Promise((resolve) => {
+  temporaryStoragePromiseResolve = resolve
+})
+
+const setStorageApi = function (storage) {
+  if (!storageApi) {
+    temporaryStoragePromiseResolve(storage)
+  }
+
   storageApi = storage
   return storage
 }
 
 export const storageApiPromise = function () {
-  return Promise.resolve(storageApi)
+  if (storageApi) {
+    return Promise.resolve(storageApi)
+  }
+
+  return temporaryStoragePromise
 }
 
 export function getStorageApi (user, isOffline) {

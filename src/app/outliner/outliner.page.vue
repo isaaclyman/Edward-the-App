@@ -40,7 +40,7 @@
                     @update="renameTopic"></chips-list>
       </div>
       <hr>
-      <div class="chapters">
+      <div class="chapters" v-if="allChapters.length > 0">
         <div class="section-title">
           <h3>Outline</h3>
           <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpChapterBlocksNode, 'Outline')"></button>
@@ -139,6 +139,10 @@ export default {
       // If no active chapter has been set, default to the first one
       if (this.activeChapterIndex === -1) {
         this.activeChapterIndex = 0
+      }
+
+      if (!this.allChapters[this.activeChapterIndex]) {
+        return {}
       }
 
       // If viewing an archived chapter but "show archived" is false

@@ -2,4 +2,7 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'UA-109036711-1');</script><link href=/static/css/app.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=/static/js/app.0761af290f2598be6685.js></script></body></html>
+      gtag('config', 'UA-109036711-1');</script><script>// Detect environment, set globals
+      var isLocal = !!~['127.0.0.1', 'localhost'].indexOf(window.location.hostname)
+      var isDev = !!~window.location.hostname.indexOf('herokuapp.com')
+      window.isProd = !(isLocal || isDev)</script><link href=/static/css/app.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=/static/js/app.c1ea2997aa616697b348.js></script></body></html>

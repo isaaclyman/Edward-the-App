@@ -4,12 +4,14 @@ import Vue from 'vue'
 import Raven from 'raven-js'
 import RavenVue from 'raven-js/plugins/vue'
 
-Raven
+if (window && window.isProd !== false) {
+  Raven
     .config('https://1deaeecd96244297ad475854be0d5502@sentry.io/540818')
     .addPlugin(RavenVue, Vue)
     .install()
 
-window.Raven = Raven
+  window.Raven = Raven
+}
 
 import router from './app/router'
 import App from './app/App.vue'

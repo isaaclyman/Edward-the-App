@@ -61,7 +61,7 @@ const store = {
       state.workshops = workshops
     },
     [NUKE_WORKSHOPS] (state) {
-      state.workshops = null
+      state.workshops = []
     }
   }
 }

@@ -23,6 +23,7 @@
     "d3-axis": "1.0.8",
     "d3-scale": "1.0.6",
     "d3-shape": "1.2.0",
+    "detect-browser": "^3.0.0",
     "docx": "^3.6.0",
     "escape-string-regexp": "1.0.5",
     "eventsource-polyfill": "0.9.6",

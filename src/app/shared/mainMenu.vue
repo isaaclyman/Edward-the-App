@@ -1,5 +1,8 @@
 <template>
   <div class="main-menu">
+    <div style="display:none">
+      <offline-storage></offline-storage>
+    </div>
     <template v-for="route in routes">
       <router-link :to="(route.worksOffline || isOnline) ? route.location : '#'" :key="route.name">
         <button class="main-menu--button" :title="route.tooltip" v-tooltip :disabled="!route.worksOffline && !isOnline">
@@ -57,31 +60,21 @@
         </div>
       </div>
     </div>
-    <!-- Offline storage permissions modal -->
-    <div style="display: none">
-      <div class="offline-storage" ref="offlinePermissionModal">
-        <p>
-          If you want to use Edward offline, you'll need to give permission to store files on your system.
-          Do you want to allow this?
-        </p>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
-import Cache from './cache'
 import Octicons from 'octicons'
+import OfflineStorage from '../offlineStorage/offlineStorage.vue'
 import { Statuses } from './status.store'
 import StatusSignal from './statusSignal.vue'
 import swal from 'sweetalert'
 import tooltip from './tooltip.directive'
 import writingWorkshops from '../../../models/writingWorkshop'
 
-const offlineModalSeen = new Cache('OFFLINE_MODAL_SEEN')
-
 export default {
   components: {
+    OfflineStorage,
     StatusSignal
   },
   computed: {
@@ -100,7 +93,6 @@ export default {
   },
   data () {
     return {
-      allowsOffline: true,
       routes: [{
         icon: 'telescope',
         location: '/plan',
@@ -140,45 +132,11 @@ export default {
     tooltip
   },
   methods: {
-    checkOfflineStorage () {
-      if (navigator.storage && navigator.storage.persisted) {
-        navigator.storage.persisted().then(persistent => {
-          this.allowsOffline = persistent
-
-          const seen = offlineModalSeen.cacheGet()
-          if (!seen && this.isPremium && !persistent) {
-            this.promptOfflineStorage()
-          }
-        })
-      }
-    },
     getIconSvg (iconName) {
       return Octicons[iconName].toSVG({
         class: 'main-menu--icon',
         height: 25,
         width: 25
-      })
-    },
-    promptOfflineStorage () {
-      swal({
-        content: this.$refs.offlinePermissionModal,
-        title: 'Offline Permissions',
-        buttons: {
-          cancel: 'No',
-          confirm: 'Yes'
-        }
-      }).then(allow => {
-        offlineModalSeen.cacheSet(true)
-        if (allow) {
-          navigator.storage.persist().then(persist => {
-            this.allowsOffline = persist
-            if (!persist) {
-              this.promptOfflineStorage()
-            }
-          })
-        } else {
-          this.allowsOffline = false
-        }
       })
     },
     showWorkshops () {
@@ -198,9 +156,6 @@ export default {
       swal.close()
       this.$router.push(workshop.route)
     }
-  },
-  mounted () {
-    this.checkOfflineStorage()
   }
 }
 </script>

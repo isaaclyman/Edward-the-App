@@ -98,7 +98,12 @@ export default {
         offlineModalSeen.cacheSet(true)
         if (allow) {
           askPermission().then(() => {
-            this.allowsOffline = true
+            return navigator.storage.persist().then(persist => {
+              this.allowsOffline = persist
+              if (!persist) {
+                throw new Error('Could not obtain persistent storage permissions.')
+              }
+            })
           }, () => {
             this.permissionFailed()
           })

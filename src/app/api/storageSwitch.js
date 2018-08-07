@@ -27,7 +27,7 @@ export const storageApiPromise = function () {
 
 export function getStorageApi (user, isOffline) {
   if (!user || !user.accountType) {
-    return setStorageApi(new LocalStorageApi())
+    return setStorageApi(new LocalStorageApi('unknown'))
   }
 
   if (user.accountType.name === 'DEMO') {
@@ -35,16 +35,16 @@ export function getStorageApi (user, isOffline) {
   }
 
   if (!user.isPremium) {
-    return setStorageApi(new LocalStorageApi())
+    return setStorageApi(new LocalStorageApi(user.email))
   }
 
   if (isOffline) {
-    return setStorageApi(new LocalStorageApi())
+    return setStorageApi(new LocalStorageApi(user.email))
   }
 
   if (user.isPremium) {
     return setStorageApi(new ServerStorageApi())
   }
 
-  return setStorageApi(new LocalStorageApi())
+  return setStorageApi(new LocalStorageApi(user.email))
 }

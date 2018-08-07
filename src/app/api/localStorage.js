@@ -4,7 +4,7 @@ import { orderPromises } from '../../../utilities'
 import uniq from 'lodash/uniq'
 
 class LocalStorageApi {
-  constructor () {
+  constructor (username) {
     localForage.setDriver([localForage.INDEXEDDB, localForage.WEBSQL, localForage.LOCALSTORAGE])
     this.storage = localForage
     window._storage = this.storage
@@ -26,7 +26,8 @@ class LocalStorageApi {
     this.topicOrderKey = documentGuid => `${documentGuid}_TOPIC_ORDER`
     this.getTopicKey = (documentGuid, topicGuid) => `${this.topicKeyPrefix(documentGuid)}${topicGuid}`
 
-    this.documentGuidsKey = 'DOCUMENT_IDS'
+    this.legacyDocumentGuids = `DOCUMENT_IDS`
+    this.documentGuidsKey = `${username}_DOCUMENT_IDS`
     this.documentsKey = documentGuid => `DOCUMENT_${documentGuid}`
   }
 
@@ -136,7 +137,21 @@ class LocalStorageApi {
   }
 
   _getAllDocumentGuids () {
-    return this.storage.getItem(this.documentGuidsKey).then(guids => uniq(guids) || [])
+    // Migrate old document guids to an email-identified key
+    return Promise.all([
+      this.storage.getItem(this.legacyDocumentGuids),
+      this.storage.getItem(this.documentGuidsKey)
+    ]).then(([legacyGuids, guids]) => {
+      if (Array.isArray(legacyGuids)) {
+        var allGuids = uniq(legacyGuids.concat(guids || []))
+        return (
+          this.storage.setItem(this.documentGuidsKey, allGuids)
+            .then(() => this.storage.removeItem(this.legacyDocumentGuids))
+            .then(() => allGuids)
+        )
+      }
+      return uniq(guids || [])
+    })
   }
 
   _getAllDocuments () {

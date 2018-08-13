@@ -1,6 +1,7 @@
 import DemoStorageApi from './demoStorage'
 import LocalStorageApi from './localStorage'
 import ServerStorageApi from './serverStorage'
+import OfflineStorageApi from './offlineStorage'
 
 let storageApi
 let temporaryStoragePromiseResolve
@@ -39,7 +40,7 @@ export function getStorageApi (user, isOffline) {
   }
 
   if (isOffline) {
-    return setStorageApi(new LocalStorageApi(user.email))
+    return setStorageApi(new OfflineStorageApi(user.email))
   }
 
   if (user.isPremium) {

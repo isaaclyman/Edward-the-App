@@ -45,7 +45,7 @@
           Export entire document
         </button>
       </div>
-      <div class="export-option">
+      <div class="export-option" v-if="isOnline">
         <h3>Import a backup</h3>
         <div>
           (Warning: This will overwrite the current document completely, including all chapters, plans, outlines and workshops.)
@@ -95,6 +95,9 @@ export default {
     },
     documentTitle () {
       return this.$store.state.document.currentDocument.name
+    },
+    isOnline () {
+      return this.$store.state.status.status !== Statuses.OFFLINE
     },
     isPremium () {
       return this.$store.state.user.user.isPremium
@@ -316,6 +319,10 @@ export default {
       return this.masterTopics.find(topic => topic.guid === chapterTopic.guid)
     },
     setFile (event) {
+      if (!this.isOnline) {
+        return
+      }
+
       swal({
         buttons: true,
         dangerMode: true,

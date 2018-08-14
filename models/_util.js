@@ -35,9 +35,9 @@ const isCorrectPassword = (attempt, realHash) => {
 
 const addTimestamps = (knex, config, isUpdate) => {
   if (!isUpdate) {
-    config['created_at'] = knex.raw('current_timestamp')
+    config['created_at'] = knex.raw('current_timestamp at time zone \'utc\'')
   }
-  config['updated_at'] = knex.raw('current_timestamp')
+  config['updated_at'] = knex.raw('current_timestamp at time zone \'utc\'')
 
   return config
 }

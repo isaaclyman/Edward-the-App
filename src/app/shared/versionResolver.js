@@ -10,7 +10,7 @@ class VersionResolver {
   }
 
   timestampEach (arr) {
-    arr.forEach(this.timestamp)
+    arr.forEach(obj => this.timestamp(obj))
   }
 
   getTimestamp (obj) {

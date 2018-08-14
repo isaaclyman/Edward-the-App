@@ -10,10 +10,13 @@ class OfflineStorageApi {
     this.storage = localForage
     window._storage = this.storage
 
+    this.offlinePrefix = 'OFFLINE'
     this.docGuid = () => this.store.state.document.currentDocument.guid
-    this.docKey = () => `USER_${username}_DOCUMENT_${this.docGuid()}`
+    this.docKey = () => `${this.offlinePrefix}_USER_${username}_DOCUMENT_${this.docGuid()}`
+  }
 
-    this.updateStorage()
+  init() {
+    return this.clearOldStorage().then(() => this.updateStorage())
   }
 
   isPremium() {
@@ -22,6 +25,13 @@ class OfflineStorageApi {
 
   getStoredDocument() {
     return this.storage.getItem(this.docKey())
+  }
+
+  clearOldStorage() {
+    return this.storage.keys().then(keys => {
+      const deletePromises = keys.filter(key => key.startsWith('OFFLINE')).map(key => this.storage.removeItem(key))
+      return Promise.all(deletePromises)
+    })
   }
 
   updateStorage() {

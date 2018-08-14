@@ -26,26 +26,57 @@ export const storageApiPromise = function () {
   return temporaryStoragePromise
 }
 
+const cachedStorage = {
+  Local: {
+    cached: null,
+    get: username => new LocalStorageApi(username)
+  },
+  Demo: {
+    cached: null,
+    get: () => new DemoStorageApi()
+  },
+  Server: {
+    cached: null,
+    get: () => new ServerStorageApi()
+  },
+  Offline: {
+    cached: null,
+    get: username => new OfflineStorageApi(username)
+  }
+}
+
+const getCached = (storage, username = 'unknown') => {
+  if (!storage.cached) {
+    storage.cached = storage.get(username)
+  }
+
+  if (typeof storage.cached.init === 'function' && storageApi !== storage.cached) {
+    storage.cached.init()
+  }
+
+  return storage.cached
+}
+
 export function getStorageApi (user, isOffline) {
   if (!user || !user.accountType) {
-    return setStorageApi(new LocalStorageApi('unknown'))
+    return setStorageApi(getCached(cachedStorage.Local))
   }
 
   if (user.accountType.name === 'DEMO') {
-    return setStorageApi(new DemoStorageApi())
+    return setStorageApi(getCached(cachedStorage.Demo))
   }
 
   if (!user.isPremium) {
-    return setStorageApi(new LocalStorageApi(user.email))
+    return setStorageApi(getCached(cachedStorage.Local, user.email))
   }
 
   if (isOffline) {
-    return setStorageApi(new OfflineStorageApi(user.email))
+    return setStorageApi(getCached(cachedStorage.Offline, user.email))
   }
 
   if (user.isPremium) {
-    return setStorageApi(new ServerStorageApi())
+    return setStorageApi(getCached(cachedStorage.Server))
   }
 
-  return setStorageApi(new LocalStorageApi(user.email))
+  return setStorageApi(getCached(cachedStorage.Local, user.email))
 }

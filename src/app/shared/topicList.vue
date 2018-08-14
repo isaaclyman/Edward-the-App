@@ -103,7 +103,7 @@ export default {
     },
     getTopic (chapter, topic) {
       if (!chapter.topics) {
-        throw new Error(`Chapter ${chapter.title} was created incorrectly and has no 'topics' dictionary.`)
+        chapter.topics = {}
       }
 
       if (!chapter.topics[topic.guid]) {

@@ -1,4 +1,5 @@
 import difference from 'lodash/difference'
+import VersionResolver from './versionResolver'
 
 // These two commands will be used together
 export const NUKE_CONTENT = 'NUKE_CONTENT'
@@ -68,6 +69,7 @@ const store = {
     },
     // PLANS
     [ADD_PLAN] (state, { plan }) {
+      VersionResolver.timestamp(plan)
       state.plans.push(plan)
     },
     [ARCHIVE_PLAN] (state, { plan }) {
@@ -75,6 +77,7 @@ const store = {
         throw new Error(`ARCHIVE_PLAN: Cannot archive plan "${plan.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(plan)
       plan.archived = true
     },
     [DELETE_PLAN] (state, { plan }) {
@@ -82,6 +85,7 @@ const store = {
         throw new Error(`DELETE_PLAN: Cannot delete plan "${plan.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(plan)
       state.plans.splice(state.plans.indexOf(plan), 1)
     },
     [REARRANGE_PLANS] (state, { plans }) {
@@ -89,6 +93,7 @@ const store = {
         throw new Error(`REARRANGE_PLANS: Cannot rearrange plans: an invalid plan array was received.`)
       }
 
+      VersionResolver.timestampEach(plans)
       state.plans = plans
     },
     [RESTORE_PLAN] (state, { plan }) {
@@ -96,6 +101,7 @@ const store = {
         throw new Error(`RESTORE_PLAN: Cannot restore plan "${plan.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(plan)
       plan.archived = false
     },
     [UPDATE_PLAN] (state, { plan, newTitle }) {
@@ -103,6 +109,7 @@ const store = {
         throw new Error(`UPDATE_PLAN: Cannot update plan "${plan.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(plan)
       plan.title = newTitle
     },
     // SECTIONS
@@ -111,6 +118,8 @@ const store = {
         throw new Error(`ADD_SECTION: Cannot mutate plan "${plan.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(plan)
+      VersionResolver.timestamp(section)
       plan.sections.push(section)
     },
     [ARCHIVE_SECTION] (state, { plan, section }) {
@@ -122,6 +131,8 @@ const store = {
         throw new Error(`ARCHIVE_SECTION: Cannot archive section "${section.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(plan)
+      VersionResolver.timestamp(section)
       section.archived = true
     },
     [DELETE_SECTION] (state, { plan, section }) {
@@ -133,6 +144,8 @@ const store = {
         throw new Error(`DELETE_SECTION: Cannot delete section "${section.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(plan)
+      VersionResolver.timestamp(section)
       plan.sections.splice(plan.sections.indexOf(section), 1)
     },
     [REARRANGE_SECTIONS] (state, { plan, sections }) {
@@ -144,6 +157,8 @@ const store = {
         throw new Error(`REARRANGE_SECTIONS: Cannot rearrange sections: an invalid section array was received.`)
       }
 
+      VersionResolver.timestamp(plan)
+      VersionResolver.timestampEach(sections)
       plan.sections = sections
     },
     [RESTORE_SECTION] (state, { plan, section }) {
@@ -155,6 +170,8 @@ const store = {
         throw new Error(`RESTORE_SECTION: Cannot restore section "${section.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(plan)
+      VersionResolver.timestamp(section)
       section.archived = false
     },
     [UPDATE_SECTION] (state, { plan, section, newTitle }) {
@@ -166,6 +183,8 @@ const store = {
         throw new Error(`UPDATE_SECTION: Cannot update section "${section.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(plan)
+      VersionResolver.timestamp(section)
       section.title = newTitle
     },
     [UPDATE_SECTION_CONTENT] (state, { plan, section, newContent }) {
@@ -177,6 +196,8 @@ const store = {
         throw new Error(`UPDATE_SECTION_CONTENT: Cannot update section "${section.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(plan)
+      VersionResolver.timestamp(section)
       section.content = newContent
     },
     [UPDATE_SECTION_TAGS] (state, { plan, section, newTags }) {
@@ -188,10 +209,13 @@ const store = {
         throw new Error(`UPDATE_SECTION_TAGS: Cannot update section "${section.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(plan)
+      VersionResolver.timestamp(section)
       section.tags = newTags
     },
     // CHAPTERS
     [ADD_CHAPTER] (state, { chapter }) {
+      VersionResolver.timestamp(chapter)
       state.chapters.push(chapter)
     },
     [ADD_TOPIC_TO_CHAPTER] (state, { chapter, topic }) {
@@ -203,6 +227,7 @@ const store = {
         throw new Error(`ADD_TOPIC_TO_CHAPTER: Cannot include topic "${topic.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(chapter)
       chapter.topics[topic.guid] = {
         content: null,
         guid: topic.guid
@@ -213,6 +238,7 @@ const store = {
         throw new Error(`ARCHIVE_CHAPTER: Cannot archive chapter "${chapter.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(chapter)
       chapter.archived = true
     },
     [DELETE_CHAPTER] (state, { chapter }) {
@@ -220,6 +246,7 @@ const store = {
         throw new Error(`DELETE_CHAPTER: Cannot delete chapter "${chapter.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(chapter)
       state.chapters.splice(state.chapters.indexOf(chapter), 1)
     },
     [REARRANGE_CHAPTERS] (state, { chapters }) {
@@ -227,6 +254,7 @@ const store = {
         throw new Error('REARRANGE_CHAPTERS: Cannot rearrange chapters: an invalid chapter array was received.')
       }
 
+      VersionResolver.timestampEach(chapters)
       state.chapters = chapters
     },
     [RESTORE_CHAPTER] (state, { chapter }) {
@@ -234,6 +262,7 @@ const store = {
         throw new Error(`RESTORE_CHAPTER: Cannot restore chapter "${chapter.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(chapter)
       chapter.archived = false
     },
     [UPDATE_CHAPTER] (state, { chapter, newTitle }) {
@@ -241,6 +270,7 @@ const store = {
         throw new Error(`UPDATE_CHAPTER: Cannot update chapter "${chapter.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(chapter)
       chapter.title = newTitle
     },
     [UPDATE_CHAPTER_CONTENT] (state, { chapter, newContent }) {
@@ -248,10 +278,12 @@ const store = {
         throw new Error(`UPDATE_CHAPTER_CONTENT: Cannot update content of chapter "${chapter.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(chapter)
       chapter.content = newContent
     },
     // TOPICS
     [ADD_TOPIC] (state, { topic }) {
+      VersionResolver.timestamp(topic)
       state.topics.push(topic)
     },
     [ARCHIVE_TOPIC] (state, { topic }) {
@@ -259,6 +291,7 @@ const store = {
         throw new Error(`ARCHIVE_TOPIC: Cannot archive topic "${topic.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(topic)
       topic.archived = true
     },
     [DELETE_TOPIC] (state, { topic }) {
@@ -266,6 +299,7 @@ const store = {
         throw new Error(`DELETE_TOPIC: Cannot archive topic "${topic.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(topic)
       state.topics.splice(state.topics.indexOf(topic), 1)
 
       state.chapters = state.chapters.map(chapter => {
@@ -281,6 +315,7 @@ const store = {
         throw new Error('REARRANGE_TOPICS: Cannot rearrange topics: an invalid topic array was received.')
       }
 
+      VersionResolver.timestampEach(topics)
       state.topics = topics
     },
     [RESTORE_TOPIC] (state, { topic }) {
@@ -288,6 +323,7 @@ const store = {
         throw new Error(`RESTORE_TOPIC: Cannot restore topic "${topic.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(topic)
       topic.archived = false
     },
     [UPDATE_TOPIC] (state, { topic, newTitle }) {
@@ -295,6 +331,7 @@ const store = {
         throw new Error(`UPDATE_TOPIC: Cannot update topic "${topic.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(topic)
       topic.title = newTitle
     },
     [UPDATE_TOPIC_CONTENT] (state, { chapter, topic, newContent }) {
@@ -306,6 +343,7 @@ const store = {
         throw new Error(`UPDATE_TOPIC_CONTENT: Cannot update content of topic "${topic.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(topic)
       topic.content = newContent
     }
   }

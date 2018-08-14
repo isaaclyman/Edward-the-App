@@ -1,3 +1,5 @@
+import VersionResolver from './versionResolver'
+
 export const ADD_WORKSHOP = 'ADD_WORKSHOP'
 export const ARCHIVE_WORKSHOP = 'ARCHIVE_WORKSHOP'
 export const DELETE_WORKSHOP = 'DELETE_WORKSHOP'
@@ -15,6 +17,7 @@ const store = {
   mutations: {
     // Standard workshop mutations
     [ADD_WORKSHOP] (state, { workshop }) {
+      VersionResolver.timestamp(workshop)
       state.workshops.push(workshop)
     },
     [ARCHIVE_WORKSHOP] (state, { workshop }) {
@@ -22,6 +25,7 @@ const store = {
         throw new Error(`${ARCHIVE_WORKSHOP}: Cannot archive workshop "${workshop.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(workshop)
       workshop.archived = true
     },
     [DELETE_WORKSHOP] (state, { workshop }) {
@@ -29,6 +33,7 @@ const store = {
         throw new Error(`${DELETE_WORKSHOP}: Cannot delete workshop "${workshop.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(workshop)
       state.workshops.splice(state.workshops.indexOf(workshop), 1)
     },
     [RESTORE_WORKSHOP] (state, { workshop }) {
@@ -36,6 +41,7 @@ const store = {
         throw new Error(`${RESTORE_WORKSHOP}: Cannot restore workshop "${workshop.title}": does not exist.`)
       }
 
+      VersionResolver.timestamp(workshop)
       workshop.archived = false
     },
     [UPDATE_WORKSHOPS_CONTENT] (state, { workshopUpdates: [...workshopUpdates] }) {
@@ -44,6 +50,7 @@ const store = {
           throw new Error(`${UPDATE_WORKSHOPS_CONTENT}: Cannot update workshop "${workshop.title}": does not exist.`)
         }
 
+        VersionResolver.timestamp(workshop)
         workshop.content = newContent
 
         if (newTitle) {

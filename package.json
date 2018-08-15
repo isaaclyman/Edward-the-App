@@ -56,7 +56,7 @@
     "shelljs": "0.7.6",
     "stripe": "5.6.0",
     "sweetalert": "2.0.3",
-    "tippy.js": "1.2.2",
+    "tippy.js": "2.5.4",
     "uuid": "3.1.0",
     "vue": "2.5.16",
     "vue-router": "2.7.0",

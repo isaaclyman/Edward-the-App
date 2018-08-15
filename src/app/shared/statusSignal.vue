@@ -7,10 +7,12 @@
       <div class="status-saved" :class="{ 'show': !isSaving && saved }">
         Saved <span v-html="savedIcon"></span>
       </div>
-      <div class="status-error" :class="{ 'show': !isSaving && saveError }" :title="saveErrorText" v-tooltip>
+      <div class="status-error" :class="{ 'show': !isSaving && saveError }"
+        :title="saveErrorText" ref="errorStatus">
         Error <span v-html="errorIcon"></span>
       </div>
-      <div class="status-offline" :class="{ 'show': offline }" :title="offlineText" v-tooltip>
+      <div class="status-offline" :class="{ 'show': !isSaving && offline }"
+        :title="offlineText" v-tooltip ref="offlineStatus">
         Offline <span v-html="offlineIcon"></span>
       </div>
     </div>
@@ -70,8 +72,10 @@ export default {
         height: 15,
         width: 15
       }),
-      offlineText: `No internet connection is available. Your work is saved locally and will be synced up again once you go online.`,
-      saveErrorText: `Your work may not be saved. Please check your Internet connection.`,
+      offlineText:
+        `No internet connection is available. Your work is saved locally. ` +
+        `To avoid losing work, don't edit this document on any other device until the connection is restored.`,
+      saveErrorText: `An error has occurred. Your work may not be saved.`,
       savedIcon: Octicons.check.toSVG({
         height: 15,
         width: 15
@@ -83,6 +87,19 @@ export default {
     tooltip
   },
   watch: {
+    offline (isOffline, wasOffline) {
+      if (isOffline === wasOffline || !isOffline) {
+        return
+      }
+
+      const el = this.$refs.offlineStatus
+      if (!el._tippy) {
+        console.warn('Expected a Tippy.js instance on statusSignal')
+        return
+      }
+
+      el._tippy.show()
+    },
     // A bit of trickery to make the "Saving" indicator show for at least 500ms.
     // This comforts me.
     saving (saving) {

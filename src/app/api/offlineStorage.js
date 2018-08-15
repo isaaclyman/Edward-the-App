@@ -15,26 +15,26 @@ class OfflineStorageApi {
     this.docKey = () => `${this.offlinePrefix}_USER_${username}_DOCUMENT_${this.docGuid()}`
   }
 
-  init() {
+  init () {
     return this.clearOldStorage().then(() => this.updateStorage())
   }
 
-  isPremium() {
+  isPremium () {
     return true
   }
 
-  getStoredDocument() {
+  getStoredDocument () {
     return this.storage.getItem(this.docKey())
   }
 
-  clearOldStorage() {
+  clearOldStorage () {
     return this.storage.keys().then(keys => {
       const deletePromises = keys.filter(key => key.startsWith('OFFLINE')).map(key => this.storage.removeItem(key))
       return Promise.all(deletePromises)
     })
   }
 
-  updateStorage() {
+  updateStorage () {
     const doc = clone(this.store.state.document.currentDocument)
     doc.chapters = this.store.state.chapters.chapters
     doc.topics = this.store.state.chapters.topics
@@ -43,7 +43,7 @@ class OfflineStorageApi {
     return this.storage.setItem(this.docKey(), doc)
   }
 
-  notAllowedError() {
+  notAllowedError () {
     throw new Error('This action is not available while offline.')
   }
 
@@ -66,7 +66,7 @@ class OfflineStorageApi {
   deleteChapter () { return this.updateStorage() }
 
   deletePlan () { return this.updateStorage() }
-    
+
   deleteSection () { return this.updateStorage() }
 
   deleteTopic () { return this.updateStorage() }
@@ -115,14 +115,13 @@ class OfflineStorageApi {
     return this.getStoredDocument().then(doc => doc.topics)
   }
 
-  getAllWorkshops () {
+  getAllWorkshops (documentGuid) {
     if (documentGuid !== this.docGuid()) {
       throw new Error('Cannot get workshops from a different document while offline.')
     }
 
     return this.getStoredDocument().then(doc => doc.workshops)
   }
-  
 
   /*
     FULL EXPORT / IMPORT

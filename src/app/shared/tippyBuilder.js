@@ -1,12 +1,15 @@
 import tippy from 'tippy.js'
 
-const tooltip = ({ arrow = true, content, distance = 10, el, interactive, position = 'bottom' } = {}) => {
-  tippy(el, {
+const tooltip = ({
+  arrow = true, content, distance = 10, el, interactive, placement = 'bottom', hideOnClick = true
+} = {}) => {
+  return tippy(el, {
     arrow,
     distance,
+    hideOnClick,
     html: content,
     interactive,
-    position
+    placement
   })
 }
 

@@ -1,7 +1,7 @@
 import clone from 'lodash/clone'
 
 class VersionResolver {
-  constructor() {
+  constructor () {
     this.timestampField = 'updated_at'
   }
 

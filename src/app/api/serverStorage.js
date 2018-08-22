@@ -65,6 +65,10 @@ class ServerStorageApi {
         }, 100)
       })
     }
+
+    api.isOnline().then(() => {}, () => {
+      store.commit(SET_STATUS_OFFLINE)
+    })
   }
 
   // INFO

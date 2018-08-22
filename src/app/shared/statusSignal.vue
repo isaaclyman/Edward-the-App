@@ -8,11 +8,11 @@
         Saved <span v-html="savedIcon"></span>
       </div>
       <div class="status-error" :class="{ 'show': !isSaving && saveError }"
-        :title="saveErrorText" ref="errorStatus">
+        :title="saveErrorText" v-tooltip="{ enabled: !isSaving && saveError }">
         Error <span v-html="errorIcon"></span>
       </div>
       <div class="status-offline" :class="{ 'show': !isSaving && offline }"
-        :title="offlineText" v-tooltip ref="offlineStatus">
+        :title="offlineText" v-tooltip="{ enabled: !isSaving && offline }" ref="offlineStatus">
         Offline <span v-html="offlineIcon"></span>
       </div>
     </div>
@@ -98,7 +98,9 @@ export default {
         return
       }
 
-      el._tippy.show()
+      setTimeout(() => {
+        el._tippy.show()
+      }, 1000)
     },
     // A bit of trickery to make the "Saving" indicator show for at least 500ms.
     // This comforts me.

@@ -14,6 +14,9 @@ class VersionResolver {
   }
 
   getTimestamp (obj) {
+    if (!obj[this.timestampField]) {
+      return null
+    }
     return new Date(obj[this.timestampField]).getTime()
   }
 
@@ -21,7 +24,7 @@ class VersionResolver {
     const defaultTimestamp = this.getTimestamp(defaultObj)
     const timestamp2 = this.getTimestamp(obj2)
 
-    if (timestamp2 > defaultTimestamp) {
+    if (!!timestamp2 && timestamp2 > defaultTimestamp) {
       return obj2
     }
 

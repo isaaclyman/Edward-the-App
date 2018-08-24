@@ -23,13 +23,23 @@ class OfflineStorageApi {
     return true
   }
 
+  getLatestStoredDocument () {
+    return this.storage.keys().then(keys => {
+      const docKey = keys.filter(key => key.startsWith(this.offlinePrefix))[0]
+      if (!docKey) {
+        return null
+      }
+      return this.storage.getItem(docKey)
+    })
+  }
+
   getStoredDocument () {
     return this.storage.getItem(this.docKey())
   }
 
   clearOldStorage () {
     return this.storage.keys().then(keys => {
-      const deletePromises = keys.filter(key => key.startsWith('OFFLINE')).map(key => this.storage.removeItem(key))
+      const deletePromises = keys.filter(key => key.startsWith(this.offlinePrefix)).map(key => this.storage.removeItem(key))
       return Promise.all(deletePromises)
     })
   }

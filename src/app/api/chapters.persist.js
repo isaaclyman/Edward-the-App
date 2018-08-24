@@ -59,9 +59,10 @@ export const chapterAutosaverPlugin = store => {
     // Make sure we know the user type before handling mutations
     state.user.userPromise.then(user => {
       const isOffline = state.status.status === Statuses.OFFLINE
-      const storage = getStorageApi(user, isOffline)
-      chapterStorage = storage
-      handleMutation(mutation, state, storage, getDebouncedUpdateChapter())
+      getStorageApi(user, isOffline).then(storage => {
+        chapterStorage = storage
+        handleMutation(mutation, state, storage, getDebouncedUpdateChapter())
+      })
     })
   })
 }

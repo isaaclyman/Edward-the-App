@@ -51,32 +51,36 @@ const getCached = (storage, username = 'unknown') => {
   }
 
   if (typeof storage.cached.init === 'function' && storageApi !== storage.cached) {
-    storage.cached.init()
+    return storage.cached.init().then(() => {
+      setStorageApi(storage.cached)
+      return storage.cached
+    })
   }
 
-  return storage.cached
+  setStorageApi(storage.cached)
+  return Promise.resolve(storage.cached)
 }
 
 export function getStorageApi (user, isOffline) {
   if (!user || !user.accountType) {
-    return setStorageApi(getCached(cachedStorage.Local))
+    return getCached(cachedStorage.Local)
   }
 
   if (user.accountType.name === 'DEMO') {
-    return setStorageApi(getCached(cachedStorage.Demo))
+    return getCached(cachedStorage.Demo)
   }
 
   if (!user.isPremium) {
-    return setStorageApi(getCached(cachedStorage.Local, user.email))
+    return getCached(cachedStorage.Local, user.email)
   }
 
   if (isOffline) {
-    return setStorageApi(getCached(cachedStorage.Offline, user.email))
+    return getCached(cachedStorage.Offline, user.email)
   }
 
   if (user.isPremium) {
-    return setStorageApi(getCached(cachedStorage.Server))
+    return getCached(cachedStorage.Server)
   }
 
-  return setStorageApi(getCached(cachedStorage.Local, user.email))
+  return getCached(cachedStorage.Local, user.email)
 }

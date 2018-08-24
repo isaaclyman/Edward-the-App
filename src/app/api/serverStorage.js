@@ -1,4 +1,6 @@
 import api from './api'
+import OfflineStorageApi from './offlineStorage'
+import VersionResolver from '../shared/versionResolver'
 import VueInstance from '../../main'
 import { SET_STATUS_DONE, SET_STATUS_ERROR, SET_STATUS_OFFLINE, SET_STATUS_SAVING } from '../shared/status.store'
 
@@ -68,6 +70,34 @@ class ServerStorageApi {
 
     api.isOnline().then(() => {}, () => {
       store.commit(SET_STATUS_OFFLINE)
+    })
+  }
+
+  init () {
+    const offlineStorage = new OfflineStorageApi()
+    return Promise.all([
+      offlineStorage.getLatestStoredDocument(),
+      this.getAllDocuments()
+    ]).then(([offlineDoc, onlineDocs]) => {
+      if (!offlineDoc || !offlineDoc.guid) {
+        return
+      }
+
+      const onlineDoc = onlineDocs.find(doc => doc.guid === offlineDoc.guid)
+
+      if (!onlineDoc) {
+        return this.docImport(offlineDoc)
+      }
+
+      const matchBy = obj => obj.guid
+      const markDeleted = obj => { obj.title = `[DELETED] ${obj.title}` }
+      onlineDoc.name = offlineDoc.name
+      onlineDoc.chapters = VersionResolver.getMostRecentEach(onlineDoc.chapters, offlineDoc.chapters, matchBy, markDeleted)
+      onlineDoc.topics = VersionResolver.getMostRecentEach(onlineDoc.topics, offlineDoc.topics, matchBy, markDeleted)
+      onlineDoc.plans = VersionResolver.getMostRecentEach(onlineDoc.plans, offlineDoc.plans, matchBy, markDeleted)
+      onlineDoc.workshops = VersionResolver.getMostRecentEach(onlineDoc.workshops, offlineDoc.workshops,
+        workshop => `${workshop.guid}|${workshop.order}`, markDeleted)
+      return this.docImport(onlineDoc)
     })
   }
 

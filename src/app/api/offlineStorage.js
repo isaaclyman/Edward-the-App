@@ -10,7 +10,7 @@ class OfflineStorageApi {
     this.storage = localForage
     window._storage = this.storage
 
-    this.offlinePrefix = 'OFFLINE'
+    this.offlinePrefix = '@OFFLINE'
     this.docGuid = () => this.store.state.document.currentDocument.guid
     this.docKey = () => `${this.offlinePrefix}_USER_${username}_DOCUMENT_${this.docGuid()}`
   }

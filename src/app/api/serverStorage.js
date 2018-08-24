@@ -92,7 +92,7 @@ class ServerStorageApi {
         return this.docImport(onlineDoc)
       }, () => {
         return this.docImport(offlineDoc)
-      })
+      }).then(() => offlineStorage.clearOldStorage())
     })
   }
 

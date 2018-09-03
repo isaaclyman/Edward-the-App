@@ -1,4 +1,11 @@
-import axios from 'axios'
+import axiosBase from 'axios'
+
+const axios = axiosBase.create({
+  headers: {
+    'Pragma': 'no-cache',
+    'Cache-Control': 'no-store'
+  }
+})
 
 const route = route => `/api/${route}`
 

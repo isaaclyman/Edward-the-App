@@ -17,7 +17,11 @@ module.exports = function (app, passport, db) {
 
   // Serve main app
   app.get('/app', httpsMiddleware, isLoggedInMiddleware, isNotOverdueMiddleware, (req, res) => {
-    res.sendFile(path.join(__dirname, '../dist/app.html'))
+    res.sendFile(path.join(__dirname, '../dist/app.html'), {
+      headers: {
+        'Cache-Control': 'no-store'
+      }
+    })
   })
 
   // Serve admin page

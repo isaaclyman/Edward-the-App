@@ -205,6 +205,8 @@ test('when the import breaks, it is reverted', async t => {
 // SINGLE DOCUMENT
 
 test('import a single empty document (overwrite)', async t => {
+  await expectOneItemArray(t, app.get(route('documents')))
+
   const importable = {}
   Object.assign(importable, doc, {
     chapters: [],

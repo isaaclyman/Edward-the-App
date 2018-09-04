@@ -88,7 +88,7 @@ class ServerStorageApi {
         onlineDoc.topics = VersionResolver.getMostRecentEach(onlineDoc.topics, offlineDoc.topics, matchBy, markDeleted)
         onlineDoc.plans = VersionResolver.getMostRecentEach(onlineDoc.plans, offlineDoc.plans, matchBy, markDeleted)
         onlineDoc.workshops = VersionResolver.getMostRecentEach(onlineDoc.workshops, offlineDoc.workshops,
-          workshop => `${workshop.guid}|${workshop.order}`, markDeleted)
+          workshop => workshop.guid ? `${workshop.guid}|${workshop.order}` : null, markDeleted)
         return this.docImport(onlineDoc)
       }, () => {
         return this.docImport(offlineDoc)

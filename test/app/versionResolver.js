@@ -35,20 +35,42 @@ test('getMostRecent returns the most recently timestamped element or default', a
   t.is(VersionResolver.getMostRecent(sameObj, oldObj), sameObj)
 })
 
+test('getMostRecentEach returns an empty array if two empty arrays are passed (with string matcher)', t => {
+  var result = VersionResolver.getMostRecentEach([], [], obj => `${obj.id}`, obj => { obj.deleted = true })
+  t.true(Array.isArray(result))
+  t.is(0, result.length)
+})
+
+test('getMostRecentEach replaces every item in an array if it is empty (with string matcher)', t => {
+  var arr1 = []
+  var arr2 = [{id: 1}, {id: 2}]
+
+  var result = VersionResolver.getMostRecentEach(arr1, arr2, obj => `${obj.id}`, obj => { obj.deleted = true })
+
+  t.is(2, result.length)
+  t.true(result.some(obj => obj.id === 1))
+  t.true(result.some(obj => obj.id === 2))
+})
+
 test('getMostRecentEach merges two arrays, marking exclusive items as deleted', t => {
-  var [obj1, obj2, obj3] = [{id: 1}, {id: 2}, {id: 3}]
+  var [obj1, obj2, obj3, obj4, obj5] = [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: undefined}]
   var arr1 = [obj1, obj2]
-  var arr2 = [obj1, obj3]
+  var arr2 = [obj1, obj3, obj4, obj5]
   
   var result = VersionResolver.getMostRecentEach(arr1, arr2, obj => obj.id, obj => { obj.deleted = true })
   
   t.true(result.some(obj => obj.id === 1))
   t.true(result.some(obj => obj.id === 2))
   t.true(result.some(obj => obj.id === 3))
+  t.true(result.some(obj => obj.id === 4))
+  t.false(result.some(obj => obj.id === undefined))
 
   t.falsy(result.find(obj => obj.id === 1).deleted)
   t.true(result.find(obj => obj.id === 2).deleted)
   t.true(result.find(obj => obj.id === 3).deleted)
+  t.true(result.find(obj => obj.id === 4).deleted)  
+
+  t.true(result.every(obj => !!obj.id))
 })
 
 test('getMostRecentEach merges two arrays, keeping the most recent version of each element', async t => {

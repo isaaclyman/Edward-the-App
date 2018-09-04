@@ -4,36 +4,38 @@ const directive = {
   bind: (el, { value = {} }) => {
     const { content, distance = 10, interactive = false, enabled = true } = value
 
-    tooltip({
+    const tippy = tooltip({
       content,
       distance,
       el,
       interactive
     })
 
+    if (!tippy) {
+      console.warn('Expected a Tippy.js instance to be returned')
+      return
+    }
+
     if (enabled) {
       return
     }
 
-    if (!el._tippy) {
-      console.warn('Expected a Tippy.js instance on el with v-tooltip')
-      return
-    }
-
-    el._tippy.disable()
+    tippy.disable()
   },
   update: (el, { value = {} }) => {
     const { enabled = true } = value
 
-    if (!el._tippy) {
+    const tippy = el._tippy
+
+    if (!tippy) {
       console.warn('Expected a Tippy.js instance on el with v-tooltip')
       return
     }
 
     if (enabled) {
-      el._tippy.enable()
+      tippy.enable()
     } else {
-      el._tippy.disable()
+      tippy.disable()
     }
   }
 }

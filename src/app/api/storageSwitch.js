@@ -51,8 +51,8 @@ const getCached = (storage, username = 'unknown') => {
   }
 
   if (typeof storage.cached.init === 'function' && storageApi !== storage.cached) {
+    setStorageApi(storage.cached)
     return storage.cached.init().then(() => {
-      setStorageApi(storage.cached)
       return storage.cached
     })
   }

@@ -32,10 +32,15 @@ class VersionResolver {
   }
 
   getMostRecentEach (defaultArr, arr2, matchBy, markAsDeleted) {
-    const returnList = clone(defaultArr)
+    const returnList = []
 
-    for (let index in returnList) {
-      const obj = returnList[index]
+    for (let index in defaultArr) {
+      const obj = clone(defaultArr[index])
+      if (!matchBy(obj)) {
+        continue
+      }
+
+      returnList.push(obj)
       const arr2match = arr2.find(arrObj => matchBy(arrObj) === matchBy(obj))
 
       if (!arr2match) {
@@ -45,6 +50,10 @@ class VersionResolver {
 
     for (let index in arr2) {
       const obj = clone(arr2[index])
+      if (!matchBy(obj)) {
+        continue
+      }
+
       const defaultMatch = returnList.find(returnObj => matchBy(returnObj) === matchBy(obj))
 
       if (!defaultMatch) {

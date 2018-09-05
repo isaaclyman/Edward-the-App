@@ -115,15 +115,10 @@ const getChapters = (db, userId, docGuid) => {
       'document_id': docId(),
       'user_id': userId
     }).first('order').then(({ order = '[]' } = {}) => { return JSON.parse(order) }),
-    db.knex('chapters').where('chapters.user_id', userId)
-    .innerJoin('documents', 'chapters.document_id', 'documents.id').where('documents.guid', docGuid)
-    .select({
-      archived: 'chapters.archived',
-      content: 'chapters.content',
-      guid: 'chapters.guid',
-      id: 'chapters.id',
-      title: 'chapters.title'
-    })
+    db.knex('chapters').where({
+      'document_id': docId(),
+      'user_id': userId
+    }).select()
   ]).then(([_chapterOrder, _chapters]) => {
     chapterOrder = _chapterOrder
     chapters = _chapters

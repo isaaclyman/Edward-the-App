@@ -45,20 +45,18 @@ const cachedStorage = {
   }
 }
 
+let waitForInit = Promise.resolve()
 const getCached = (storage, username = 'unknown') => {
   if (!storage.cached) {
     storage.cached = storage.get(username)
   }
 
   if (typeof storage.cached.init === 'function' && storageApi !== storage.cached) {
-    setStorageApi(storage.cached)
-    return storage.cached.init().then(() => {
-      return storage.cached
-    })
+    waitForInit = storage.cached.init()
   }
 
   setStorageApi(storage.cached)
-  return Promise.resolve(storage.cached)
+  return waitForInit.then(() => storage.cached)
 }
 
 export function getStorageApi (user, isOffline) {

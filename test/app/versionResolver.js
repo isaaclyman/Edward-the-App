@@ -35,6 +35,13 @@ test('getMostRecent returns the most recently timestamped element or default', a
   t.is(VersionResolver.getMostRecent(sameObj, oldObj), sameObj)
 })
 
+test('getMostRecent correctly handles different timestamp formats', t => {
+  var oldObj = { updated_at: '2018-09-04T09:24:48.783Z' }
+  var newObj = { updated_at: 1536117990932 }
+  
+  t.is(VersionResolver.getMostRecent(oldObj, newObj), newObj)
+})
+
 test('getMostRecentEach returns an empty array if two empty arrays are passed (with string matcher)', t => {
   var result = VersionResolver.getMostRecentEach([], [], obj => `${obj.id}`, obj => { obj.deleted = true })
   t.true(Array.isArray(result))

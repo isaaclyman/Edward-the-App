@@ -8,7 +8,7 @@
             <span class="chip-draggable">
               {{ chip[nameProp] }}
             </span>
-            <button v-show="isDeletable(chip)" class="button-icon chip-action-button action-rename" @click="renameChip(index)" v-html="editSvg"></button>
+            <button v-show="isDeletable(chip)" class="button-icon chip-action-button action-rename" @click="renameChip(index, chip[nameProp])" v-html="editSvg"></button>
             <button v-show="isDeletable(chip)" class="button-icon chip-action-button action-delete" @click="deleteChip(index)" v-html="deleteSvg"></button>
             <button v-show="!isDeletable(chip)" class="button-icon chip-action-button action-restore" @click="restoreChip(index)" v-html="addSvg"></button>
           </div>
@@ -120,14 +120,16 @@ export default {
     deleteChip (index) {
       this.$emit('delete', { index })
     },
-    renameChip (index) {
-      this.$set(this.chipValues, index, '')
+    renameChip (index, name) {
+      this.$set(this.chipValues, index, name)
     },
     restoreChip (index) {
       this.$emit('restore', { index })
     },
     saveChipValue (index) {
-      const isUnique = this.assertUnique(this.dataArray, this.nameProp, this.chipValues[index])
+      const otherChips = this.dataArray.slice()
+      otherChips.splice(index, 1)
+      const isUnique = this.assertUnique(otherChips, this.nameProp, this.chipValues[index])
 
       if (!isUnique) {
         return

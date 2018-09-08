@@ -3,6 +3,8 @@ import OfflineStorageApi from './offlineStorage'
 import VersionResolver from '../shared/versionResolver'
 import VueInstance from '../../main'
 import { SET_STATUS_DONE, SET_STATUS_ERROR, SET_STATUS_OFFLINE, SET_STATUS_SAVING } from '../shared/status.store'
+import { LOAD_CONTENT } from '../shared/chapters.store'
+import { LOAD_WORKSHOPS } from '../shared/workshops.store'
 
 class ServerStorageApi {
   constructor () {
@@ -68,6 +70,15 @@ class ServerStorageApi {
       })
     }
 
+    this.loadDocument = document => {
+      store.commit(LOAD_CONTENT, {
+        chapters: document.chapters || [],
+        plans: document.plans || [],
+        topics: document.topics || []
+      })
+      store.commit(LOAD_WORKSHOPS, { workshops: document.workshops || [] })
+    }
+
     api.isOnline().then(() => {}, () => {
       store.commit(SET_STATUS_OFFLINE)
     })
@@ -80,19 +91,29 @@ class ServerStorageApi {
         return
       }
 
+      let resolvedDoc
       return api.docExport(offlineDoc.guid).then(onlineDoc => {
-        const matchBy = obj => obj.guid
-        const markDeleted = obj => { obj.title = `[DELETED] ${obj.title}` }
+        const matchBy = obj => obj && obj.guid
+        const markDeleted = obj => {
+          if (!obj) return
+          obj.title = `${obj.title} [RESTORED]`
+        }
         onlineDoc.name = offlineDoc.name
         onlineDoc.chapters = VersionResolver.getMostRecentEach(onlineDoc.chapters, offlineDoc.chapters, matchBy, markDeleted)
         onlineDoc.topics = VersionResolver.getMostRecentEach(onlineDoc.topics, offlineDoc.topics, matchBy, markDeleted)
         onlineDoc.plans = VersionResolver.getMostRecentEach(onlineDoc.plans, offlineDoc.plans, matchBy, markDeleted)
         onlineDoc.workshops = VersionResolver.getMostRecentEach(onlineDoc.workshops, offlineDoc.workshops,
-          workshop => workshop.guid ? `${workshop.guid}|${workshop.order}` : null, markDeleted)
+          workshop => workshop && workshop.guid ? `${workshop.guid}|${workshop.order}` : null, markDeleted)
+        resolvedDoc = onlineDoc
         return this.docImport(onlineDoc)
       }, () => {
+        resolvedDoc = offlineDoc
         return this.docImport(offlineDoc)
-      }).then(() => offlineStorage.clearOldStorage())
+      }).then(
+        () => offlineStorage.clearOldStorage()
+      ).then(() => {
+        this.loadDocument(resolvedDoc)
+      })
     })
   }
 

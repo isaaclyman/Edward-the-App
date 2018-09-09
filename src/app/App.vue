@@ -65,6 +65,7 @@ export default {
     let routeTransitionTimeout = null
 
     this.$router.beforeEach((to, from, next) => {
+      clearTimeout(routeTransitionTimeout)
       routeTransitionTimeout = setTimeout(() => {
         this.loaded = false
       }, 800)
@@ -72,6 +73,11 @@ export default {
     })
 
     this.$router.afterEach((to, from) => {
+      clearTimeout(routeTransitionTimeout)
+      this.loaded = true
+    })
+
+    this.$router.onError(() => {
       clearTimeout(routeTransitionTimeout)
       this.loaded = true
     })

@@ -11,19 +11,53 @@ import Search from './search/search.page.vue'
 import Settings from './settings/settings.page.vue'
 
 import userApi from './api/userApi'
+import api from './api/api'
 
 Vue.use(Router)
 
-const assertPremium = (to, from, next) => {
-  userApi.getUser().then(user => {
+const assertPremium = () => {
+  return userApi.getUser().then(user => {
     if (user.isPremium) {
-      next()
+      return true
     } else {
-      next({ path: '/write' })
+      throw new Error('Can\'t access this route with a Limited account.')
     }
-  }, err => {
-    console.error(err)
   })
+}
+
+const assertOnline = () => {
+  return api.isOnline().then(
+    () => true,
+    () => {
+      throw new Error('Can\'t access this route while offline.')
+    }
+  )
+}
+
+/*
+We can't use next(false) in any guard because there's no global hook that's called
+ when navigation is cancelled. This would leave the app in a 'loading' state forever
+ (see App.vue). Instead, we need to use next(error) to cancel navigation.
+*/
+const compose = (...guards) => {
+  return function (to, from, next) {
+    const guardPromises = guards.map(guard => guard())
+    Promise.all(guardPromises).then((...results) => {
+      const blocks = results.filter(res => res !== true)
+      if (blocks.length === 0) {
+        return next()
+      }
+
+      const nav = results.filter(res => typeof res === 'object')[0]
+      if (nav) {
+        return next(nav)
+      }
+
+      return next(new Error('Navigation was not allowed.'))
+    }, err => {
+      return next(err)
+    })
+  }
 }
 
 export default new Router({
@@ -50,12 +84,14 @@ export default new Router({
     {
       path: '/analyze',
       name: 'Analyze',
-      component: () => import('./analyser/analyser.page.vue')
+      component: () => import('./analyser/analyser.page.vue'),
+      beforeEnter: compose(assertOnline)
     },
     {
       path: '/export',
       name: 'Export',
-      component: () => import('./exporter/exporter.page.vue')
+      component: () => import('./exporter/exporter.page.vue'),
+      beforeEnter: compose(assertOnline)
     },
     {
       path: '/documentEdit',
@@ -76,25 +112,25 @@ export default new Router({
       path: '/workshop/free-write',
       name: 'Free Write',
       component: () => import('./workshops/freeWrite.page.vue'),
-      beforeEnter: assertPremium
+      beforeEnter: compose(assertOnline, assertPremium)
     },
     {
       path: '/workshop/novel-quickstart',
       name: 'Novel Quickstart',
       component: () => import('./workshops/novelQuickstart.page.vue'),
-      beforeEnter: assertPremium
+      beforeEnter: compose(assertOnline, assertPremium)
     },
     {
       path: '/workshop/unblock',
       name: `Writer's Unblock`,
       component: () => import('./workshops/writersUnblock.vue'),
-      beforeEnter: assertPremium
+      beforeEnter: compose(assertOnline, assertPremium)
     },
     {
       path: '/workshop/plot',
       name: `Plot Workshop`,
       component: () => import('./workshops/plotWorkshop.vue'),
-      beforeEnter: assertPremium
+      beforeEnter: compose(assertOnline, assertPremium)
     },
     {
       path: '*',

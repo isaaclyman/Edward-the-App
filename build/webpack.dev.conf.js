@@ -5,6 +5,7 @@ var merge = require('webpack-merge')
 var baseWebpackConfig = require('./webpack.base.conf')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+var WorkboxPlugin = require('workbox-webpack-plugin')
 
 // add hot-reload related code to entry chunks
 Object.keys(baseWebpackConfig.entry).forEach(function (name) {
@@ -49,6 +50,11 @@ module.exports = merge(baseWebpackConfig, {
       inject: true,
       chunks: ['vendor', 'manifest', 'admin']
     }),
-    new FriendlyErrorsPlugin()
+    new FriendlyErrorsPlugin(),
+    new WorkboxPlugin.GenerateSW({
+      swDest: 'serviceworker.js',
+      clientsClaim: true,
+      skipWaiting: true
+    })
   ]
 })

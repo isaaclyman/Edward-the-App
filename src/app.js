@@ -24,6 +24,16 @@ import 'tippy.js/dist/tippy.css'
 import './main.css'
 import store from './store'
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/serviceworker.js').then(registration => {
+      console.log('SW registered: ', registration)
+    }).catch(registrationError => {
+      console.log('SW registration failed: ', registrationError)
+    })
+  })
+}
+
 /* eslint-disable no-new */
 export default new Vue({
   el: '#app',

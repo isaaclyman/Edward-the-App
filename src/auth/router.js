@@ -67,7 +67,7 @@ export default new Router({
     {
       path: '/account',
       name: 'Account',
-      component: () => import('./account.page.vue'),
+      component: () => import('./account.page.vue' /* webpackChunkName: "account-page" */),
       beforeEnter: assertLoggedIn,
       meta: { getCurrentUser }
     },

@@ -84,13 +84,13 @@ export default new Router({
     {
       path: '/analyze',
       name: 'Analyze',
-      component: () => import('./analyser/analyser.page.vue'),
+      component: () => import('./analyser/analyser.page.vue' /* webpackChunkName: "analyser" */),
       beforeEnter: compose(assertOnline)
     },
     {
       path: '/export',
       name: 'Export',
-      component: () => import('./exporter/exporter.page.vue'),
+      component: () => import('./exporter/exporter.page.vue' /* webpackChunkName: "exporter" */),
       beforeEnter: compose(assertOnline)
     },
     {
@@ -111,25 +111,25 @@ export default new Router({
     {
       path: '/workshop/free-write',
       name: 'Free Write',
-      component: () => import('./workshops/freeWrite.page.vue'),
+      component: () => import('./workshops/freeWrite.page.vue' /* webpackChunkName: "w-free-write" */),
       beforeEnter: compose(assertOnline, assertPremium)
     },
     {
       path: '/workshop/novel-quickstart',
       name: 'Novel Quickstart',
-      component: () => import('./workshops/novelQuickstart.page.vue'),
+      component: () => import('./workshops/novelQuickstart.page.vue' /* webpackChunkName: "w-novel-quickstart" */),
       beforeEnter: compose(assertOnline, assertPremium)
     },
     {
       path: '/workshop/unblock',
       name: `Writer's Unblock`,
-      component: () => import('./workshops/writersUnblock.vue'),
+      component: () => import('./workshops/writersUnblock.vue' /* webpackChunkName: "w-writers-unblock" */),
       beforeEnter: compose(assertOnline, assertPremium)
     },
     {
       path: '/workshop/plot',
       name: `Plot Workshop`,
-      component: () => import('./workshops/plotWorkshop.vue'),
+      component: () => import('./workshops/plotWorkshop.vue' /* webpackChunkName: "w-plot-workshop" */),
       beforeEnter: compose(assertOnline, assertPremium)
     },
     {

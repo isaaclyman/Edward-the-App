@@ -8,7 +8,7 @@
       </div>
       <hr>
       <!-- Chapter Chips -->
-      <div class="chips-wrap">
+      <div class="chips-wrap chapter-chips">
         <div class="section-title">
           <h3>Chapters</h3>
           <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpChapterChipsNode, 'Chapter List')"></button>
@@ -24,7 +24,7 @@
                     @update="renameChapter"></chips-list>
       </div>
       <!-- Topic Chips -->
-      <div class="chips-wrap">
+      <div class="chips-wrap topic-chips">
         <div class="section-title">
           <h3>Topics</h3>
           <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpTopicChipsNode, 'Topic List')"></button>
@@ -40,7 +40,7 @@
                     @update="renameTopic"></chips-list>
       </div>
       <hr>
-      <div class="chapters" v-if="allChapters.length > 0">
+      <div class="chapters" v-if="viewingChapters.length > 0">
         <div class="section-title">
           <h3>Outline</h3>
           <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpChapterBlocksNode, 'Outline')"></button>

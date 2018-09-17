@@ -205,7 +205,7 @@ export default {
       return this.getWordCount(this.documentFullText)
     },
     hasChapters () {
-      return this.allChapters && this.allChapters.length
+      return this.viewingChapters && this.viewingChapters.length
     },
     hasPlans () {
       return this.allPlans && this.allPlans.length

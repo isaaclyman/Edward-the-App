@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import Cache from './shared/cache'
 import DocumentMenu from './shared/documentMenu.vue'
 import IdleWatcher from './IdleWatcher.vue'
 import { INIT_DOCUMENTS } from './shared/document.store'
@@ -38,21 +39,32 @@ import { SET_DEFAULT_USER, SET_USER, SET_USER_PROMISE } from './shared/user.stor
 import userApi from './api/userApi'
 import Wizard from './wizard/wizard.vue'
 
+const userCache = new Cache('CURRENT_USER')
+
 export default {
   beforeCreate () {
     const userPromise = userApi.getUser()
-    userPromise.then(user => {
+    const safeUserPromise = userPromise.then(user => {
       if (!user.verified) {
         window.location.href = '/auth#/verification'
         return
       }
 
+      userCache.cacheSet(user)
       this.$store.commit(SET_USER, user)
+      return user
     }, () => {
+      const cachedUser = userCache.cacheGet()
+      if (cachedUser) {
+        this.$store.commit(SET_USER, cachedUser)
+        return cachedUser
+      }
+
       this.$store.commit(SET_DEFAULT_USER)
+      return this.$store.state.user.user
     })
 
-    this.$store.commit(SET_USER_PROMISE, userPromise)
+    this.$store.commit(SET_USER_PROMISE, safeUserPromise)
   },
   created () {
     this.$store.dispatch(INIT_DOCUMENTS).then(() => {

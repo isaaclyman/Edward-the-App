@@ -65,6 +65,7 @@ const store = {
       promise.then(data => {
         userPromiseResolve(data)
       }, err => {
+        console.error(err)
         userPromiseResolve(null, err)
       })
     },

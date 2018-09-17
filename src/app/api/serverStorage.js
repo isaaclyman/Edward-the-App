@@ -1,7 +1,8 @@
 import api from './api'
 import OfflineStorageApi from './offlineStorage'
+import shallowEqualArrays from 'shallow-equal/arrays'
 import VersionResolver from '../shared/versionResolver'
-import VueInstance from '../../main'
+import VueInstance from '../../app'
 import { SET_STATUS_DONE, SET_STATUS_ERROR, SET_STATUS_OFFLINE, SET_STATUS_SAVING } from '../shared/status.store'
 import { LOAD_CONTENT } from '../shared/chapters.store'
 import { LOAD_WORKSHOPS } from '../shared/workshops.store'
@@ -11,9 +12,12 @@ class ServerStorageApi {
     let savingCounter = 0
     const store = VueInstance.$store
 
+    this.offlineStorage = new OfflineStorageApi()
+
     const saving = () => {
       savingCounter++
       store.commit(SET_STATUS_SAVING)
+      this.offlineStorage.updateStorage()
     }
 
     const done = (isError, isOffline) => {
@@ -85,8 +89,7 @@ class ServerStorageApi {
   }
 
   init () {
-    const offlineStorage = new OfflineStorageApi()
-    return offlineStorage.getLatestStoredDocument().then(offlineDoc => {
+    return this.offlineStorage.getLatestStoredDocument().then(offlineDoc => {
       if (!offlineDoc || !offlineDoc.guid) {
         return
       }
@@ -98,22 +101,43 @@ class ServerStorageApi {
           if (!obj) return
           obj.title = `${obj.title} [RESTORED]`
         }
-        onlineDoc.name = offlineDoc.name
-        onlineDoc.chapters = VersionResolver.getMostRecentEach(onlineDoc.chapters, offlineDoc.chapters, matchBy, markDeleted)
-        onlineDoc.topics = VersionResolver.getMostRecentEach(onlineDoc.topics, offlineDoc.topics, matchBy, markDeleted)
-        onlineDoc.plans = VersionResolver.getMostRecentEach(onlineDoc.plans, offlineDoc.plans, matchBy, markDeleted)
-        onlineDoc.workshops = VersionResolver.getMostRecentEach(onlineDoc.workshops, offlineDoc.workshops,
+
+        const resolvedChapters = VersionResolver.getMostRecentEach(onlineDoc.chapters, offlineDoc.chapters, matchBy, markDeleted)
+        const resolvedTopics = VersionResolver.getMostRecentEach(onlineDoc.topics, offlineDoc.topics, matchBy, markDeleted)
+        const resolvedPlans = VersionResolver.getMostRecentEach(onlineDoc.plans, offlineDoc.plans, matchBy, markDeleted)
+        const resolvedWorkshops = VersionResolver.getMostRecentEach(onlineDoc.workshops, offlineDoc.workshops,
           workshop => workshop && workshop.guid ? `${workshop.guid}|${workshop.order}` : null, markDeleted)
-        resolvedDoc = onlineDoc
-        return this.docImport(onlineDoc)
+
+        const newDoc = {
+          name: offlineDoc.name,
+          chapters: resolvedChapters,
+          topics: resolvedTopics,
+          plans: resolvedPlans,
+          workshops: resolvedWorkshops
+        }
+
+        if (
+          offlineDoc.name === onlineDoc.name &&
+          shallowEqualArrays(resolvedChapters, onlineDoc.chapters) &&
+          shallowEqualArrays(resolvedTopics, onlineDoc.topics) &&
+          shallowEqualArrays(resolvedPlans, onlineDoc.plans) &&
+          shallowEqualArrays(resolvedWorkshops, onlineDoc.workshops)
+        ) {
+          return
+        }
+
+        resolvedDoc = Object.assign(onlineDoc, newDoc)
+        return this.docImport(resolvedDoc)
       }, () => {
         resolvedDoc = offlineDoc
         return this.docImport(offlineDoc)
       }).then(
-        () => offlineStorage.clearOldStorage()
+        () => this.offlineStorage.clearOldStorage()
       ).then(() => {
         this.loadDocument(resolvedDoc)
       })
+    }).then(() => {
+      return this.offlineStorage.init()
     })
   }
 

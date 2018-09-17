@@ -1,6 +1,6 @@
 import clone from 'lodash/clone'
 import localForage from 'localforage'
-import VueInstance from '../../main'
+import VueInstance from '../../app'
 
 class OfflineStorageApi {
   constructor (username) {

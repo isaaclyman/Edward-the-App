@@ -103,6 +103,8 @@ describe('the novel quickstart workshop (new workshop)', () => {
   })
 
   it('should show a new workshop if the workshop is completed', () => {
+    const clock = cy.clock()
+
     const testContent = 'Test content for refresh '
     typeContent(cy, '.title .ql-editor', testContent + 'title')
     typeContent(cy, '.tagline .ql-editor', testContent + 'tagline')
@@ -110,7 +112,6 @@ describe('the novel quickstart workshop (new workshop)', () => {
     typeContent(cy, '.theme .ql-editor', testContent + 'theme')
     typeContent(cy, '.jacket .ql-editor', testContent + 'jacket')
     typeContent(cy, '.report .ql-editor', testContent + 'report')
-    const clock = cy.clock()
     cy.get('.button-green.done').click()
     clock.tick(2000)
     cy.get('.ql-editor').should('not.be.visible')
@@ -119,8 +120,7 @@ describe('the novel quickstart workshop (new workshop)', () => {
     cy.visit('/app.html#/write')
     cy.visit('/app.html#/workshop/novel-quickstart')
     cy.url().should('contain', '/novel-quickstart')
-    cy.get('.ql-editor').should('have.text', '')
-    clock.tick(2000)
+    cy.get('.ql-editor').should('have.text', '').then(function () { this.clock.restore() })
 
     cy.visit('/app.html#/write')
     cy.get('.plan-switch').find('.switch-label').contains('Workshops').click()

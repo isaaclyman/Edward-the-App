@@ -51,13 +51,16 @@ const tests = isPremium => () => {
     cy.get('div.chapters').find('div.chapter').contains('test chapter 1')
   })
 
-  it('allows deleting a chapter', () => {
+  it('allows deleting and recreating a chapter', () => {
     cy.get('#showArchivedCheckbox').check()
     cy.get('.button-tab').contains('test chapter 3').click()
     cy.get('button.chapter-action').contains('Archive').click()
     cy.get('button.chapter-action').contains('Delete').click()
     cy.get('.swal-button').contains('OK').click()
     cy.contains('test chapter 3').should('not.exist')
+    cy.get('.chapter-chips .chip-input').type('test chapter 3')
+    cy.get('.chapter-chips .chip-add-button').click()
+    cy.contains('test chapter 3').should('exist')
   })
 
   it('allows deleting a topic', () => {
@@ -66,6 +69,17 @@ const tests = isPremium => () => {
     cy.get('.topic-action').contains('Delete').click()
     cy.get('.swal-button').contains('OK').click()
     cy.contains('test topic 1').should('not.exist')
+  })
+
+  it('allows archiving all chapters, then returning to the Composer', () => {
+    cy.get('.button-tab').contains('test chapter 1').click()
+    cy.get('button.chapter-action').contains('Archive').click()
+    cy.get('.button-tab').contains('test chapter 2').click()
+    cy.get('button.chapter-action').contains('Archive').click()    
+    cy.get('.button-tab').contains('test chapter 3').click()
+    cy.get('button.chapter-action').contains('Archive').click()
+    cy.visit('app.html#/write')
+    cy.get('.composer-wrap').contains('No chapters yet').should('exist')
   })
 }
 

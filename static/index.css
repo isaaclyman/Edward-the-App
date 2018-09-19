@@ -453,6 +453,11 @@ ul li, ol li {
   top: 0;
 }
 
+.pricing-features li.con:before {
+  color: #FF0000;
+  content: "–";
+}
+
 @media (max-width: 800px) {
   .pricing {
     flex-direction: column;

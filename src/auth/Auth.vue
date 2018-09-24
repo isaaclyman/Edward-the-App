@@ -24,7 +24,12 @@
 export default {
   data () {
     return {
-      incompatible: (typeof ''.includes !== 'function' || !('serviceWorker' in navigator) || !('storage' in navigator))
+      incompatible: (
+        typeof ''.includes !== 'function' ||
+        !('serviceWorker' in navigator) ||
+        !('storage' in navigator) ||
+        typeof window.Promise !== 'function'
+      )
     }
   },
   methods: {

@@ -1,4 +1,5 @@
 import axiosBase from 'axios'
+import debounce from 'lodash/debounce'
 
 const axios = axiosBase.create({
   headers: {
@@ -10,18 +11,23 @@ const axios = axiosBase.create({
 const route = route => `/api/${route}`
 
 class Api {
+  constructor () {
+    this.isOnline = debounce(function () {
+      return this.simpleGet(route('online'))
+    }, 10000, { leading: true, trailing: false })
+  }
+
   simpleGet (route) {
     return axios.get(route).then(response => {
       return response.data
     })
   }
+
   simplePost (route, body) {
     return axios.post(route, body).then(response => {
       return response.data
     })
   }
-
-  isOnline () { return this.simpleGet(route('online')) }
 
   saveAllContent (data) { return this.simplePost(route('document/saveAll'), data) }
 

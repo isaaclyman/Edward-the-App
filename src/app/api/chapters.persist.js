@@ -14,7 +14,6 @@ import { ADD_WORKSHOP, ARCHIVE_WORKSHOP, DELETE_WORKSHOP, RESTORE_WORKSHOP,
   UPDATE_WORKSHOPS_CONTENT } from '../shared/workshops.store'
 
 import { getStorageApi } from './storageSwitch'
-import { Statuses } from '../shared/status.store'
 
 const mutations = {
   addDocument: [ADD_DOCUMENT],
@@ -58,8 +57,7 @@ export const chapterAutosaverPlugin = store => {
   store.subscribe((mutation, state) => {
     // Make sure we know the user type before handling mutations
     state.user.userPromise.then(user => {
-      const isOffline = state.status.status === Statuses.OFFLINE
-      getStorageApi(user, isOffline).then(storage => {
+      getStorageApi(user).then(storage => {
         chapterStorage = storage
         handleMutation(mutation, state, storage, getDebouncedUpdateChapter())
       })

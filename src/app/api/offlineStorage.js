@@ -1,3 +1,4 @@
+import Cache, { UNRESETTABLE } from '../shared/cache'
 import clone from 'lodash/clone'
 import localForage from 'localforage'
 import VueInstance from '../../app'
@@ -5,6 +6,8 @@ import VueInstance from '../../app'
 class OfflineStorageApi {
   constructor (username) {
     this.store = VueInstance.$store
+
+    this.requiresSyncCache = new Cache(`${UNRESETTABLE}_HAS_GONE_OFFLINE`)
 
     localForage.setDriver([localForage.INDEXEDDB, localForage.WEBSQL, localForage.LOCALSTORAGE])
     this.storage = localForage
@@ -16,6 +19,7 @@ class OfflineStorageApi {
   }
 
   init () {
+    this.requiresSyncCache.cacheSet(true)
     return this.clearOldStorage().then(() => this.updateStorage())
   }
 
@@ -46,6 +50,12 @@ class OfflineStorageApi {
 
   updateStorage () {
     const doc = clone(this.store.state.document.currentDocument)
+
+    if (!doc) {
+      console.warn('Document not yet loaded.')
+      return
+    }
+
     doc.chapters = this.store.state.chapters.chapters
     doc.topics = this.store.state.chapters.topics
     doc.plans = this.store.state.chapters.plans
@@ -106,7 +116,7 @@ class OfflineStorageApi {
   }
 
   getAllDocuments () {
-    throw new Error('Cannot get all documents while offline.')
+    return this.getLatestStoredDocument().then(doc => (doc ? [doc] : []))
   }
 
   getAllPlans (documentGuid) {

@@ -1,3 +1,4 @@
+import api from './api'
 import DemoStorageApi from './demoStorage'
 import LocalStorageApi from './localStorage'
 import ServerStorageApi from './serverStorage'
@@ -52,33 +53,35 @@ const getCached = (storage, username = 'unknown') => {
   }
 
   if (typeof storage.cached.init === 'function' && storageApi !== storage.cached) {
-    waitForInit = storage.cached.init()
+    waitForInit = storage.cached.init() || Promise.resolve()
   }
 
   setStorageApi(storage.cached)
   return waitForInit.then(() => storage.cached)
 }
 
-export function getStorageApi (user, isOffline) {
-  if (!user || !user.accountType) {
-    return getCached(cachedStorage.Local)
-  }
+export function getStorageApi (user) {
+  return api.isOnline().then(() => true, () => false).then(isOnline => {
+    if (!user || !user.accountType) {
+      return getCached(cachedStorage.Local)
+    }
 
-  if (user.accountType.name === 'DEMO') {
-    return getCached(cachedStorage.Demo)
-  }
+    if (user.accountType.name === 'DEMO') {
+      return getCached(cachedStorage.Demo)
+    }
 
-  if (!user.isPremium) {
+    if (!user.isPremium) {
+      return getCached(cachedStorage.Local, user.email)
+    }
+
+    if (!isOnline) {
+      return getCached(cachedStorage.Offline, user.email)
+    }
+
+    if (user.isPremium) {
+      return getCached(cachedStorage.Server)
+    }
+
     return getCached(cachedStorage.Local, user.email)
-  }
-
-  if (isOffline) {
-    return getCached(cachedStorage.Offline, user.email)
-  }
-
-  if (user.isPremium) {
-    return getCached(cachedStorage.Server)
-  }
-
-  return getCached(cachedStorage.Local, user.email)
+  })
 }

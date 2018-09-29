@@ -1,6 +1,8 @@
 const cacheKeysStorage = '_all-cache-keys'
 const allCacheKeys = JSON.parse(window.localStorage.getItem(cacheKeysStorage)) || []
 
+export const UNRESETTABLE = 'UNRESETTABLE'
+
 export function resetCache () {
   for (const key of allCacheKeys) {
     window.localStorage.removeItem(key)
@@ -12,7 +14,9 @@ export function resetCache () {
 class Cache {
   constructor (key) {
     this.key = key
-    allCacheKeys.push(key)
+    if (!key.includes(UNRESETTABLE)) {
+      allCacheKeys.push(key)
+    }
     window.localStorage.setItem(cacheKeysStorage, JSON.stringify(allCacheKeys))
   }
 

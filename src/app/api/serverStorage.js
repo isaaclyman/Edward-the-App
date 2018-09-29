@@ -34,6 +34,7 @@ class ServerStorageApi {
 
       if (isOffline) {
         store.commit(SET_STATUS_OFFLINE)
+        this.offlineStorage.updateStorage()
         return
       }
 
@@ -82,13 +83,17 @@ class ServerStorageApi {
       })
       store.commit(LOAD_WORKSHOPS, { workshops: document.workshops || [] })
     }
-
-    api.isOnline().then(() => {}, () => {
-      store.commit(SET_STATUS_OFFLINE)
-    })
   }
 
   init () {
+    if (!this.offlineStorage.requiresSyncCache.cacheGet()) {
+      return
+    }
+
+    return this.syncCache()
+  }
+
+  syncCache () {
     return this.offlineStorage.getLatestStoredDocument().then(offlineDoc => {
       if (!offlineDoc || !offlineDoc.guid) {
         return
@@ -137,7 +142,11 @@ class ServerStorageApi {
         this.loadDocument(resolvedDoc)
       })
     }).then(() => {
-      return this.offlineStorage.init()
+      return (
+        this.offlineStorage.clearOldStorage()
+        .then(() => this.offlineStorage.updateStorage())
+        .then(() => this.offlineStorage.requiresSyncCache.cacheSet(false))
+      )
     })
   }
 

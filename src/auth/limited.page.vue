@@ -24,9 +24,11 @@
         to get <strong>private, safe, permanent online storage</strong> for all your documents. It's only $2.99 per month.
       </p>
     </div>
-    <div class="fill"></div>
+    <div class="fill"/>
     <div class="actions">
-      <button class="continue-button button-green" @click="noPremium()">
+      <button 
+        class="continue-button button-green" 
+        @click="noPremium()">
         Continue to the app
       </button>
       <router-link to="/account">
@@ -43,25 +45,25 @@ import { goToApp } from './shared'
 
 export default {
   computed: {
-    user () {
+    user() {
       const meta = this.$route.matched.find(record => record && record.meta.getCurrentUser).meta
       return meta.getCurrentUser()
-    }
+    },
   },
-  created () {
+  created() {
     if (this.user.isPremium) {
       goToApp()
     }
   },
-  data () {
+  data() {
     return {}
   },
   methods: {
-    noPremium () {
+    noPremium() {
       goToApp()
-    }
+    },
   },
-  props: {}
+  props: {},
 }
 </script>
 

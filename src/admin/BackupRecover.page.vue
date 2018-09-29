@@ -5,14 +5,22 @@
     </p>
     <div class="pad">
       <p>Enter user ID:</p>
-      <input type="number" v-model="userId">
+      <input 
+        type="number" 
+        v-model="userId">
     </div>
     <div v-if="userId">
-      <button class="button-green" @click="getBackup()">Get backup for this user</button>
+      <button 
+        class="button-green" 
+        @click="getBackup()">Get backup for this user</button>
     </div>
     <div v-if="userId">
       <label for="dataRecoveryUpload">Upload a backup for this user: </label>
-      <input id="dataRecoveryUpload" type="file" accept=".json" @change="setFile">
+      <input 
+        id="dataRecoveryUpload" 
+        type="file" 
+        accept=".json" 
+        @change="setFile">
     </div>
   </div>
 </template>
@@ -23,15 +31,15 @@ import FileSaver from 'file-saver'
 import swal from 'sweetalert'
 
 export default {
-  data () {
+  data() {
     return {
       backupFile: null,
-      userId: null
+      userId: null,
     }
   },
   methods: {
-    getBackup () {
-      adminApi.getBackup({ userId: this.userId }).then(backup => {
+    getBackup() {
+      adminApi.getBackup({ userId: this.userId }).then((backup) => {
         const json = JSON.stringify(backup)
         const blob = new Blob([json], { type: 'application/json' })
         const today = new Date()
@@ -40,7 +48,7 @@ export default {
         FileSaver.saveAs(blob, `ADMIN_BACKUP_${this.userId}--${date}.json`)
       })
     },
-    importBackup (file) {
+    importBackup(file) {
       const reader = new FileReader()
 
       reader.onload = () => {
@@ -49,7 +57,7 @@ export default {
           const backup = JSON.parse(json)
           adminApi.restoreBackup({ userId: this.userId, documents: backup }).then(() => {
             swal('Backup was restored!')
-          }, err => {
+          }, (err) => {
             throw err
           })
         } catch (e) {
@@ -58,22 +66,22 @@ export default {
       }
       reader.readAsText(file)
     },
-    setFile (event) {
+    setFile(event) {
       swal({
         buttons: true,
         dangerMode: true,
         icon: 'warning',
-        text: `Are you sure you want to import this file? It will overwrite all of this user's content.`,
-        title: 'Overwrite user content?'
-      }).then(willOverwrite => {
+        text: 'Are you sure you want to import this file? It will overwrite all of this user\'s content.',
+        title: 'Overwrite user content?',
+      }).then((willOverwrite) => {
         if (!willOverwrite) {
           return
         }
 
         this.importBackup(event.target.files[0])
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

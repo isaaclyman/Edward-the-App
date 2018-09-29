@@ -10,7 +10,9 @@
             Back to account settings
           </button>
         </router-link>
-        <button class="button-green" @click="finished()">
+        <button 
+          class="button-green" 
+          @click="finished()">
           Go to the app
         </button>
       </div>
@@ -22,14 +24,14 @@
 import { goToApp } from './shared'
 
 export default {
-  data () {
+  data() {
     return {}
   },
   methods: {
-    finished () {
+    finished() {
       goToApp()
-    }
-  }
+    },
+  },
 }
 </script>
 

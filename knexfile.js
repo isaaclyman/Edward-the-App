@@ -1,5 +1,6 @@
-var pg = require('pg');
-pg.defaults.ssl = true;
+const pg = require('pg')
+
+pg.defaults.ssl = true
 
 module.exports = {
   client: 'pg',
@@ -8,6 +9,6 @@ module.exports = {
     port: '5432',
     user: 'postgres',
     password: 'postgres',
-    database: 'postgres'
-  }
+    database: 'postgres',
+  },
 }

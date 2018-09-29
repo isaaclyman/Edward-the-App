@@ -1,37 +1,44 @@
 <template>
-  <div class="magnifier-wrap" :class="{ 'show': show }" ref="wrap">
-    <div class="magnifier" ref="magnifier">
-      <div class="magnifier-content map" ref="magnifierContent"></div>
+  <div 
+    class="magnifier-wrap" 
+    :class="{ 'show': show }" 
+    ref="wrap">
+    <div 
+      class="magnifier" 
+      ref="magnifier">
+      <div 
+        class="magnifier-content map" 
+        ref="magnifierContent"/>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       cachedHtml: '',
       magnifyRadius: 50,
       scale: 5,
       show: false,
-      wrapElBoundingClientRect: null
+      wrapElBoundingClientRect: null,
     }
   },
-  destroyed () {
+  destroyed() {
     this.magnifyEl.removeEventListener('mousemove', this.mouseMove)
     this.magnifyEl.removeEventListener('mouseleave', this.mouseLeave)
   },
   methods: {
-    getRelativeCoords (event, bounds) {
+    getRelativeCoords(event, bounds) {
       // https://stackoverflow.com/a/33347664/4347245
       const x = event.clientX - bounds.left
       const y = event.clientY - bounds.top
       return { x, y }
     },
-    mouseLeave () {
+    mouseLeave() {
       this.show = false
     },
-    mouseMove (event) {
+    mouseMove(event) {
       if (this.cachedHtml !== this.html) {
         this.cachedHtml = this.html
       }
@@ -46,17 +53,17 @@ export default {
 
       this.show = true
     },
-    refresh () {
+    refresh() {
       const clone = this.magnifyEl.cloneNode(true)
       const content = this.$refs.magnifierContent
       content.innerHTML = ''
       content.appendChild(clone)
     },
-    transformCoord (value, adjust) {
+    transformCoord(value, adjust) {
       return -(value * this.scale) + adjust
-    }
+    },
   },
-  mounted () {
+  mounted() {
     const instance = this
 
     this.$nextTick(() => {
@@ -69,26 +76,29 @@ export default {
   props: {
     html: {
       required: true,
-      type: String
+      type: String,
     },
     magnifyEl: {
-      required: true
+      required: true,
+      type: Object
     },
     mark: {
-      required: true
+      required: true,
+      type: String
     },
     wrapEl: {
-      required: true
-    }
+      required: true,
+      type: Object
+    },
   },
   watch: {
-    cachedHtml () {
+    cachedHtml() {
       this.refresh()
     },
-    mark () {
+    mark() {
       this.refresh()
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -98,7 +108,7 @@ export default {
   border: 1px solid #CCC;
   height: 100px;
   left: 170px;
-  opacity: 0;  
+  opacity: 0;
   overflow: hidden;
   pointer-events: none;
   position: absolute;

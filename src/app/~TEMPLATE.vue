@@ -1,16 +1,16 @@
 <template>
-
+  <div/>
 </template>
 
 <script>
 export default {
   components: {},
   computed: {},
-  data () {
+  data() {
     return {}
   },
   methods: {},
-  props: {}
+  props: {},
 }
 </script>
 

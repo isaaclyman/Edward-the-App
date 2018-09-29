@@ -22,55 +22,51 @@ const cache = new Cache('CURRENT_DOCUMENT')
 const store = {
   state: {
     currentDocument: null, // document { guid String, name String }
-    ownedDocuments: [] // document[]
+    ownedDocuments: [], // document[]
   },
   actions: {
-    [CHANGE_DOCUMENT] ({ commit, dispatch }, { guid, name, shouldReset }) {
-      return dispatch(UNLOAD_CURRENT_DOCUMENT, { shouldReset }).then(() => {
-        return storageApiPromise().then(storage => {
-          // Get the new document from storage
-          const promises = [
-            storage.getAllChapters(guid),
-            storage.getAllPlans(guid),
-            storage.getAllTopics(guid),
-            storage.isPremium() ? storage.getWorkshops(guid) : Promise.resolve(false)
-          ]
+    [CHANGE_DOCUMENT]({ commit, dispatch }, { guid, name, shouldReset }) {
+      return dispatch(UNLOAD_CURRENT_DOCUMENT, { shouldReset }).then(() => storageApiPromise().then((storage) => {
+        // Get the new document from storage
+        const promises = [
+          storage.getAllChapters(guid),
+          storage.getAllPlans(guid),
+          storage.getAllTopics(guid),
+          storage.isPremium() ? storage.getWorkshops(guid) : Promise.resolve(false),
+        ]
 
-          return Promise.all(promises).then(([chapters, plans, topics, workshops]) => {
-            commit(LOAD_CONTENT, { plans, chapters, topics })
+        return Promise.all(promises).then(([chapters, plans, topics, workshops]) => {
+          commit(LOAD_CONTENT, { plans, chapters, topics })
 
-            if (workshops) {
-              commit(LOAD_WORKSHOPS, { workshops })
-            }
+          if (workshops) {
+            commit(LOAD_WORKSHOPS, { workshops })
+          }
 
-            commit(UPDATE_DOCUMENT_METADATA, { guid, name })
-            cache.cacheSet({ guid, name })
-          }, err => {
-            throw err
-          })
+          commit(UPDATE_DOCUMENT_METADATA, { guid, name })
+          cache.cacheSet({ guid, name })
+        }, (err) => {
+          throw err
         })
-      })
+      }))
     },
-    [DELETE_DOCUMENT] ({ commit, dispatch }, { guid }) {
+    [DELETE_DOCUMENT]({ commit, dispatch }, { guid }) {
       dispatch(UNLOAD_CURRENT_DOCUMENT).then(() => {
         commit(REMOVE_OWNED_DOCUMENT, { guid })
       })
     },
-    [INIT_DOCUMENTS] ({ commit, dispatch, state }) {
-      return storageApiPromise().then(storage => {
-        return storage.getAllDocuments().then(documents => {
-          commit(LOAD_DOCUMENTS, documents)
-          const currentDocument = cache.cacheGet()
+    [INIT_DOCUMENTS]({ commit, dispatch, state }) {
+      return storageApiPromise().then(storage => storage.getAllDocuments().then((documents) => {
+        commit(LOAD_DOCUMENTS, documents)
+        const currentDocument = cache.cacheGet()
 
-          if (!currentDocument || !state.ownedDocuments.some(document => document.guid === currentDocument.guid)) {
-            return
-          }
+        if (!currentDocument || !state.ownedDocuments.some(document => document.guid === currentDocument.guid)) {
+          return
+        }
 
-          return dispatch(CHANGE_DOCUMENT, { ...currentDocument, shouldReset: false })
-        })
-      }, console.error)
+        return dispatch(CHANGE_DOCUMENT, { ...currentDocument, shouldReset: false })
+      }), console.error)
     },
-    [SET_UP_DOCUMENT] ({ commit, dispatch, state }, { document, type }) {
+    [SET_UP_DOCUMENT]({ dispatch, state }, { document, type }) {
       const plans = type.plans.map(title => ({
         archived: false,
         guid: guid(),
@@ -80,8 +76,8 @@ const store = {
           content: null,
           guid: guid(),
           tags: [],
-          title
-        }]
+          title,
+        }],
       }))
 
       const chapters = type.chapters.map(title => ({
@@ -89,26 +85,22 @@ const store = {
         content: null,
         guid: guid(),
         title,
-        topics: {}
+        topics: {},
       }))
 
       const topics = type.topics.map(title => ({
         archived: false,
         guid: guid(),
-        title
+        title,
       }))
 
-      return storageApiPromise().then(storage => {
-        return Promise.resolve(storage.addDocument(document)).then(() => storage)
-      }).then(storage => {
-        return storage.saveAllContent(document.guid, { chapters, plans, topics })
-      })
+      return storageApiPromise().then(storage => Promise.resolve(storage.addDocument(document)).then(() => storage)).then(storage => storage.saveAllContent(document.guid, { chapters, plans, topics }))
       // Don't use the ADD_DOCUMENT mutation here or it will try to add the document to storage again
-      .then(() => state.ownedDocuments.push(document))
-      .then(() => dispatch(CHANGE_DOCUMENT, document))
+        .then(() => state.ownedDocuments.push(document))
+        .then(() => dispatch(CHANGE_DOCUMENT, document))
     },
-    [UNLOAD_CURRENT_DOCUMENT] ({ commit }, { shouldReset } = { shouldReset: false }) {
-      return new Promise(resolve => {
+    [UNLOAD_CURRENT_DOCUMENT]({ commit }, { shouldReset } = { shouldReset: false }) {
+      return new Promise((resolve) => {
         if (shouldReset) {
           resetCache()
         }
@@ -117,16 +109,16 @@ const store = {
         commit(NUKE_WORKSHOPS)
         resolve()
       })
-    }
+    },
   },
   mutations: {
-    [ADD_DOCUMENT] (state, { guid, name }) {
+    [ADD_DOCUMENT](state, { guid, name }) {
       state.ownedDocuments.push({ guid, name })
     },
-    [LOAD_DOCUMENTS] (state, documents) {
+    [LOAD_DOCUMENTS](state, documents) {
       state.ownedDocuments = documents
     },
-    [REMOVE_OWNED_DOCUMENT] (state, { guid }) {
+    [REMOVE_OWNED_DOCUMENT](state, { guid }) {
       let documentIndex
       state.ownedDocuments.some((document, index) => {
         if (document.guid === guid) {
@@ -136,21 +128,21 @@ const store = {
       })
       state.ownedDocuments.splice(documentIndex, 1)
     },
-    [UPDATE_DOCUMENT_METADATA] (state, { guid, name }) {
+    [UPDATE_DOCUMENT_METADATA](state, { guid, name }) {
       state.currentDocument = { guid, name }
     },
-    [UPDATE_DOCUMENT_NAME] (state, { guid, name }) {
+    [UPDATE_DOCUMENT_NAME](state, { guid, name }) {
       state.currentDocument.name = name
       cache.cacheSet({ guid, name })
 
-      state.ownedDocuments.some(document => {
+      state.ownedDocuments.some((document) => {
         if (document.guid === guid) {
           document.name = name
           return true
         }
       })
-    }
-  }
+    },
+  },
 }
 
 export default store

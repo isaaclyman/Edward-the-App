@@ -1,26 +1,45 @@
 <template>
   <div class="main-menu">
     <div style="display:none">
-      <offline-storage></offline-storage>
+      <offline-storage/>
     </div>
     <template v-for="route in routes">
-      <router-link :to="(route.worksOffline || isOnline) ? route.location : '#'" :key="route.name">
-        <button class="main-menu--button" :title="route.tooltip" v-tooltip :disabled="!route.worksOffline && !isOnline">
-          <div v-html="getIconSvg(route.icon)"></div>
-          <div>{{route.name}}</div>
+      <router-link 
+        :to="(route.worksOffline || isOnline) ? route.location : '#'" 
+        :key="route.name">
+        <button 
+          class="main-menu--button" 
+          :title="route.tooltip" 
+          v-tooltip 
+          :disabled="!route.worksOffline && !isOnline">
+          <div v-html="getIconSvg(route.icon)"/>
+          <div>{{ route.name }}</div>
         </button>
       </router-link>
-      <hr class="vert between mobile-hide" :key="route.name + '-hr'">
+      <hr 
+        class="vert between mobile-hide" 
+        :key="route.name + '-hr'">
     </template>
-    <button class="main-menu--button" :title="toolsTooltip" v-tooltip @click="showWorkshops()" :disabled="!isOnline">
-      <div v-html="getIconSvg('tools')"></div>
+    <button 
+      class="main-menu--button" 
+      :title="toolsTooltip" 
+      v-tooltip 
+      @click="showWorkshops()" 
+      :disabled="!isOnline">
+      <div v-html="getIconSvg('tools')"/>
       <div>Workshop</div>
     </button>
-    <div class="spacer"></div>
-    <status-signal></status-signal>
+    <div class="spacer"/>
+    <status-signal/>
     <hr class="vert mobile-hide">
-    <a class="disguised mobile-hide" :href="isOnline ? '/auth#/account' : '#'">
-      <div class="account" :class="{ 'offline': !isOnline }" :title="accountType.description" v-tooltip>
+    <a 
+      class="disguised mobile-hide" 
+      :href="isOnline ? '/auth#/account' : '#'">
+      <div 
+        class="account" 
+        :class="{ 'offline': !isOnline }" 
+        :title="accountType.description" 
+        v-tooltip>
         <div class="email">
           {{ email }}
         </div>
@@ -31,24 +50,37 @@
     </a>
     <!-- Workshops modal -->
     <div style="display: none">
-      <div class="workshops" ref="workshopsModal">
-        <p v-if="!isPremium" class="warn">
+      <div 
+        class="workshops" 
+        ref="workshopsModal">
+        <p 
+          v-if="!isPremium" 
+          class="warn">
           Workshops are only available for Premium subscribers.
         </p>
-        <div v-for="workshop in workshops" :key="workshop.name" @click="startWorkshop(workshop)">
-          <div class="workshop" :class="{ 'restricted': !isPremium || !workshop.available }">
-            <div class="workshop-restricted" v-if="!workshop.available">
+        <div 
+          v-for="workshop in workshops" 
+          :key="workshop.name" 
+          @click="startWorkshop(workshop)">
+          <div 
+            class="workshop" 
+            :class="{ 'restricted': !isPremium || !workshop.available }">
+            <div 
+              class="workshop-restricted" 
+              v-if="!workshop.available">
               COMING SOON
             </div>
-            <div class="workshop-restricted" v-if="workshop.available && !isPremium">
+            <div 
+              class="workshop-restricted" 
+              v-if="workshop.available && !isPremium">
               PREMIUM ONLY
             </div>
             <div class="workshop-details">
               <div class="workshop-name">
-                {{workshop.displayName}}
+                {{ workshop.displayName }}
               </div>
               <div class="workshop-description">
-                {{workshop.description}}
+                {{ workshop.description }}
               </div>
             </div>
             <div class="workshop-button">
@@ -75,88 +107,88 @@ import writingWorkshops from '../../../models/writingWorkshop'
 export default {
   components: {
     OfflineStorage,
-    StatusSignal
+    StatusSignal,
   },
   computed: {
-    accountType () {
+    accountType() {
       return this.$store.state.user.user.accountType || {}
     },
-    email () {
+    email() {
       return this.$store.state.user.user.email || ''
     },
-    isOnline () {
+    isOnline() {
       return this.$store.state.status.status !== Statuses.OFFLINE
     },
-    isPremium () {
+    isPremium() {
       return this.$store.state.user.user.isPremium
-    }
+    },
   },
-  data () {
+  data() {
     return {
       routes: [{
         icon: 'telescope',
         location: '/plan',
         name: 'Plan',
         tooltip: 'Make general notes about characters, topics, settings, and more.',
-        worksOffline: true
+        worksOffline: true,
       }, {
         icon: 'list-unordered',
         location: '/outline',
         name: 'Outline',
         tooltip: 'Create and organize chapters and chapter-specific notes.',
-        worksOffline: true
+        worksOffline: true,
       }, {
         icon: 'pencil',
         location: '/write',
         name: 'Write',
         tooltip: 'Write, search and measure your content.',
-        worksOffline: true
+        worksOffline: true,
       }, {
         icon: 'pulse',
         location: '/analyze',
         name: 'Analyze',
         tooltip: 'Get data-driven insights into your writing.',
-        worksOffline: false
+        worksOffline: false,
       }, {
         icon: 'search',
         location: '/search',
         name: 'Search',
         tooltip: 'Search your entire document for a word or phrase.',
-        worksOffline: true
+        worksOffline: true,
       }],
       toolsTooltip: 'Workshop your novel with free or prompted writing exercises.',
-      workshops: Object.keys(writingWorkshops).map(key => writingWorkshops[key])
+      workshops: Object.keys(writingWorkshops).map(key => writingWorkshops[key]),
     }
   },
   directives: {
-    tooltip
+    tooltip,
   },
   methods: {
-    getIconSvg (iconName) {
+    getIconSvg(iconName) {
       return Octicons[iconName].toSVG({
         class: 'main-menu--icon',
         height: 25,
-        width: 25
+        width: 25,
       })
     },
-    showWorkshops () {
+    showWorkshops() {
       swal({
         content: this.$refs.workshopsModal,
         title: 'Workshops',
         buttons: {
-          cancel: true
-        }
+          cancel: true,
+        },
       })
     },
-    startWorkshop (workshop) {
+    startWorkshop(workshop) {
       if (!this.isPremium || !workshop.available) {
         return
       }
 
       swal.close()
       this.$router.push(workshop.route)
-    }
-  }
+    },
+  },
 }
 </script>
 

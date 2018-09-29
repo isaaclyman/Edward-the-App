@@ -1,12 +1,22 @@
 <template>
   <div>
-    <div class="actions" v-show="showActions">
-      <div class="define-icon" v-html="defineIcon"></div>
+    <div 
+      class="actions" 
+      v-show="showActions">
+      <div 
+        class="define-icon" 
+        v-html="defineIcon"/>
       <div class="define-buttons">
-        <a class="define-link" :href="gDefineUrl" target="_blank">
+        <a 
+          class="define-link" 
+          :href="gDefineUrl" 
+          target="_blank">
           <button class="define-button">Define</button>
         </a>
-        <a class="define-link" :href="gSynonymUrl" target="_blank">
+        <a 
+          class="define-link" 
+          :href="gSynonymUrl" 
+          target="_blank">
           <button class="define-button">Synonyms</button>
         </a>
       </div>
@@ -20,38 +30,39 @@ import Octicons from 'octicons'
 export default {
   components: {},
   computed: {
-    gDefineUrl () {
+    gDefineUrl() {
       const urlWord = this.word.trim().replace(/\s+/g, '+')
       return `https://www.google.com/#q=define+${urlWord}`
     },
-    gSynonymUrl () {
+    gSynonymUrl() {
       const urlWord = encodeURI(this.word.trim())
       return `http://www.thesaurus.com/browse/${urlWord}`
     },
-    showActions () {
+    showActions() {
       return !!this.word.trim()
-    }
+    },
   },
-  data () {
+  data() {
     return {
       defineIcon: Octicons.book.toSVG({
         height: 30,
-        width: 30
+        width: 30,
       }),
       linkIcon: Octicons['link-external'].toSVG({
         height: 20,
-        width: 20
+        width: 20,
       }),
       xIcon: Octicons.x.toSVG({
         height: 20,
-        width: 20
-      })
+        width: 20,
+      }),
     }
   },
   methods: {},
   props: {
     word: {
-      required: true
+      required: true,
+      type: String
     }
   }
 }

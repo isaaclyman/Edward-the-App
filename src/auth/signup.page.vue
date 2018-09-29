@@ -5,35 +5,71 @@
     </p>
     <div class="signup-section username">
       <div class="signup-field">
-        <label class="signup-label" for="signup-email">Email address:</label>
-        <input class="signup-input" :class="{ 'invalid': warnEmail }" id="signup-email" type="text"
-              tabindex="1" v-model.trim="email" placeholder="greg@example.com">
+        <label 
+          class="signup-label" 
+          for="signup-email">Email address:</label>
+        <input 
+          class="signup-input" 
+          :class="{ 'invalid': warnEmail }" 
+          id="signup-email" 
+          type="text"
+          tabindex="1" 
+          v-model.trim="email" 
+          placeholder="greg@example.com">
       </div>
-      <button class="field-info" :class="{ 'invalid': warnEmail }" v-html="infoSvg" ref="emailInfo"
-              :title="emailInfo"></button>
+      <button 
+        class="field-info" 
+        :class="{ 'invalid': warnEmail }" 
+        v-html="infoSvg" 
+        ref="emailInfo"
+        :title="emailInfo"/>
     </div>
     <div class="signup-section password">
       <div class="signup-field">
-        <label class="signup-label" for="signup-password">Password:</label>
-        <input class="signup-input" :class="{ 'invalid': warnPassword }" id="signup-password" type="password"
-              tabindex="2" v-model="password">
+        <label 
+          class="signup-label" 
+          for="signup-password">Password:</label>
+        <input 
+          class="signup-input" 
+          :class="{ 'invalid': warnPassword }" 
+          id="signup-password" 
+          type="password"
+          tabindex="2" 
+          v-model="password">
       </div>
-      <button class="field-info" :class="{ 'invalid': warnPassword }" v-html="infoSvg" ref="passwordInfo"
-              :title="passwordInfo"></button>
+      <button 
+        class="field-info" 
+        :class="{ 'invalid': warnPassword }" 
+        v-html="infoSvg" 
+        ref="passwordInfo"
+        :title="passwordInfo"/>
     </div>
     <div class="captcha">
-      <Captcha :tabindex="4" @change="setCaptchaResponse" @expire="resetCaptchaResponse" ref="captcha"></Captcha>
+      <Captcha 
+        :tabindex="4" 
+        @change="setCaptchaResponse" 
+        @expire="resetCaptchaResponse" 
+        ref="captcha"/>
     </div>
     <div class="message">
       <p class="message-text">{{ message }}</p>
     </div>
     <div class="legal">
       Before creating an account, you must read and agree to our
-      <a tabindex="5" href="/privacy">Privacy Policy</a> and <a tabindex="6" href="/terms">Terms of Use.</a>
+      <a 
+        tabindex="5" 
+        href="/privacy">Privacy Policy</a> and <a 
+          tabindex="6" 
+          href="/terms">Terms of Use.</a>
     </div>
     <div class="actions">
-      <pulse-loader v-if="loading"></pulse-loader>
-      <button tabindex="7" class="button-green" v-if="!loading" @click="submit()" :disabled="!canSignUp">
+      <pulse-loader v-if="loading"/>
+      <button 
+        tabindex="7" 
+        class="button-green" 
+        v-if="!loading" 
+        @click="submit()" 
+        :disabled="!canSignUp">
         Create account
       </button>
     </div>
@@ -52,64 +88,64 @@ const infoIcon = '<svg version="1.1" width="14" height="14" viewBox="0 0 14 16" 
 export default {
   components: {
     Captcha,
-    PulseLoader
+    PulseLoader,
   },
   computed: {
-    canSignUp () {
+    canSignUp() {
       return (
         this.validEmail &&
         this.validPassword
       )
     },
-    isTest () {
+    isTest() {
       return this.email === 'trash@edwardtheapp.com'
     },
-    warnEmail () {
+    warnEmail() {
       return this.email && !this.validEmail
     },
-    warnPassword () {
+    warnPassword() {
       return this.password && !this.validPassword
     },
-    validEmail () {
+    validEmail() {
       return (
         !!this.email &&
         emailRegex.test(this.email) &&
         !this.email.includes(' ')
       )
     },
-    validPassword () {
+    validPassword() {
       return (
         !!this.password &&
         this.password.length >= 12
       )
-    }
+    },
   },
-  data () {
+  data() {
     return {
       captchaResponse: '',
       email: '',
-      emailInfo: `Please enter a valid email address so you can verify your account. We won't email you unless it's important.`,
+      emailInfo: 'Please enter a valid email address so you can verify your account. We won\'t email you unless it\'s important.',
       infoSvg: infoIcon,
       loading: false,
       message: '',
       password: '',
-      passwordInfo: `Please choose a long password (12 characters or more).`
+      passwordInfo: 'Please choose a long password (12 characters or more).',
     }
   },
   methods: {
-    setInfoTooltip (el) {
+    setInfoTooltip(el) {
       tippy(el, {
         arrow: true,
-        position: 'top'
+        position: 'top',
       })
     },
-    resetCaptchaResponse () {
+    resetCaptchaResponse() {
       this.captchaResponse = ''
     },
-    setCaptchaResponse (response) {
+    setCaptchaResponse(response) {
       this.captchaResponse = response
     },
-    submit () {
+    submit() {
       this.message = ''
 
       if (!this.captchaResponse && !this.isTest) {
@@ -123,8 +159,8 @@ export default {
         captchaResponse: this.captchaResponse,
         email: this.email,
         password: this.password,
-        integration: this.isTest
-      }).then(result => {
+        integration: this.isTest,
+      }).then(() => {
         this.loading = false
 
         if (typeof window.gtag_report_conversion === 'function') {
@@ -144,12 +180,12 @@ export default {
         this.$refs.captcha.reset()
         this.message = 'Signup failed. Please check your email/password and try again.'
       })
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.setInfoTooltip(this.$refs.emailInfo)
     this.setInfoTooltip(this.$refs.passwordInfo)
-  }
+  },
 }
 </script>
 

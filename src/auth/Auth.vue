@@ -1,20 +1,28 @@
 <template>
-  <div id="app" class="app">
-    <div class="error" v-if="incompatible">
+  <div 
+    id="app" 
+    class="app">
+    <div 
+      class="error" 
+      v-if="incompatible">
       <p>
         This web browser does not support all the features of Edward.
         For the best experience, the latest version of <a href="https://www.google.com/chrome/">Google Chrome</a> is recommended.
       </p>
     </div>
     <div class="page">
-      <div class="logo" @click="goToLogin()">
+      <div 
+        class="logo" 
+        @click="goToLogin()">
         <img src="../../static/logo.png">
       </div>
-      <router-view></router-view>
+      <router-view/>
     </div>
     <div class="footer">
       <p class="footer-text">
-        Edward the App © 2018 by <a class="footer-link" href="http://isaaclyman.com">Novelist LLC</a>.
+        Edward the App © 2018 by <a 
+          class="footer-link" 
+          href="http://isaaclyman.com">Novelist LLC</a>.
       </p>
     </div>
   </div>
@@ -22,21 +30,21 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       incompatible: (
         typeof ''.includes !== 'function' ||
         !('serviceWorker' in navigator) ||
         !('storage' in navigator) ||
         typeof window.Promise !== 'function'
-      )
+      ),
     }
   },
   methods: {
-    goToLogin () {
+    goToLogin() {
       this.$router.push('/')
-    }
-  }
+    },
+  },
 }
 </script>
 

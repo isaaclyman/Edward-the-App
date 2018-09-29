@@ -14,7 +14,7 @@
       </p>
     </div>
     <div v-if="!failed">
-      <pulse-loader></pulse-loader>
+      <pulse-loader/>
     </div>
   </div>
 </template>
@@ -24,7 +24,7 @@ import authApi from './authApi'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
 export default {
-  beforeCreate () {
+  beforeCreate() {
     const { email, key } = this.$route.params
     authApi.verify({ email, key }).then(() => {
       this.$router.push('/limited')
@@ -33,13 +33,13 @@ export default {
     })
   },
   components: {
-    PulseLoader
+    PulseLoader,
   },
-  data () {
+  data() {
     return {
-      failed: false
+      failed: false,
     }
-  }
+  },
 }
 </script>
 

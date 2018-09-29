@@ -1,24 +1,59 @@
 <template>
   <div class="chip-list-wrap">
     <div class="chip-list">
-      <draggable v-model="reactiveArray" :options="draggableOptions">
-        <div v-for="(chip, index) in reactiveArray" class="chip" :class="{ 'light': !isDeletable(chip) }" v-show="filterChips(chip)"
-            :key="index">
-          <div class="chip-content" v-show="!showChipInput(index)">
+      <draggable 
+        v-model="reactiveArray" 
+        :options="draggableOptions">
+        <div 
+          v-for="(chip, index) in reactiveArray" 
+          class="chip" 
+          :class="{ 'light': !isDeletable(chip) }" 
+          v-show="filterChips(chip)"
+          :key="index">
+          <div 
+            class="chip-content" 
+            v-show="!showChipInput(index)">
             <span class="chip-draggable">
               {{ chip[nameProp] }}
             </span>
-            <button v-show="isDeletable(chip)" class="button-icon chip-action-button action-rename" @click="renameChip(index, chip[nameProp])" v-html="editSvg"></button>
-            <button v-show="isDeletable(chip)" class="button-icon chip-action-button action-delete" @click="deleteChip(index)" v-html="deleteSvg"></button>
-            <button v-show="!isDeletable(chip)" class="button-icon chip-action-button action-restore" @click="restoreChip(index)" v-html="addSvg"></button>
+            <button 
+              v-show="isDeletable(chip)" 
+              class="button-icon chip-action-button action-rename" 
+              @click="renameChip(index, chip[nameProp])" 
+              v-html="editSvg"/>
+            <button 
+              v-show="isDeletable(chip)" 
+              class="button-icon chip-action-button action-delete" 
+              @click="deleteChip(index)" 
+              v-html="deleteSvg"/>
+            <button 
+              v-show="!isDeletable(chip)" 
+              class="button-icon chip-action-button action-restore" 
+              @click="restoreChip(index)" 
+              v-html="addSvg"/>
           </div>
-          <div class="chip-content" v-if="showChipInput(index)">
-            <input class="chip-input" v-model="chipValues[index]" @keyup.enter="saveChipValue(index)" :placeholder="chip[nameProp]">
-            <button class="button-green chip-add-button" @click="saveChipValue(index)" :disabled="!chipValues[index]">
-              <span class="u-center-all chip-add-svg" v-html="saveSvg"></span> Save
+          <div 
+            class="chip-content" 
+            v-if="showChipInput(index)">
+            <input 
+              class="chip-input" 
+              v-model="chipValues[index]" 
+              @keyup.enter="saveChipValue(index)" 
+              :placeholder="chip[nameProp]">
+            <button 
+              class="button-green chip-add-button" 
+              @click="saveChipValue(index)" 
+              :disabled="!chipValues[index]">
+              <span 
+                class="u-center-all chip-add-svg" 
+                v-html="saveSvg"/> Save
             </button>
-            <button class="button-red chip-add-button" @click="cancelRename(index)">
-              <span class="u-center-all chip-add-svg" v-html="cancelSvg"></span> Cancel
+            <button 
+              class="button-red chip-add-button" 
+              @click="cancelRename(index)">
+              <span 
+                class="u-center-all chip-add-svg" 
+                v-html="cancelSvg"/> Cancel
             </button>
           </div>
         </div>
@@ -26,9 +61,18 @@
     </div>
     <div class="chip">
       <div class="chip-content">
-        <input class="chip-input" v-model="newChip" @keyup.enter="addNewChip" :placeholder="placeholder">
-        <button class="button-green chip-add-button" @click="addNewChip" :disabled="!newChip">
-          <span class="u-center-all chip-add-svg" v-html="addSvg"></span> Add
+        <input 
+          class="chip-input" 
+          v-model="newChip" 
+          @keyup.enter="addNewChip" 
+          :placeholder="placeholder">
+        <button 
+          class="button-green chip-add-button" 
+          @click="addNewChip" 
+          :disabled="!newChip">
+          <span 
+            class="u-center-all chip-add-svg" 
+            v-html="addSvg"/> Add
         </button>
       </div>
     </div>
@@ -42,55 +86,55 @@ import swal from 'sweetalert'
 
 export default {
   components: {
-    draggable
+    draggable,
   },
   computed: {
-    placeholder () {
+    placeholder() {
       return `New ${this.name}...`
     },
     reactiveArray: {
-      get () {
+      get() {
         return this.dataArray
       },
-      set (value) {
+      set(value) {
         this.$emit('rearrange', value)
-      }
-    }
+      },
+    },
   },
-  data () {
+  data() {
     return {
       addSvg: Octicons.plus.toSVG({
         height: 14,
-        width: 14
+        width: 14,
       }),
       cancelSvg: Octicons['circle-slash'].toSVG({
         height: 14,
-        width: 14
+        width: 14,
       }),
       chipValues: [],
       deleteSvg: Octicons.x.toSVG({
         height: 14,
-        width: 14
+        width: 14,
       }),
       draggableOptions: {
         animation: 100,
         draggable: '.chip',
         group: this.name,
-        handle: '.chip-draggable'
+        handle: '.chip-draggable',
       },
       editSvg: Octicons.pencil.toSVG({
         height: 14,
-        width: 14
+        width: 14,
       }),
       newChip: '',
       saveSvg: Octicons.check.toSVG({
         height: 14,
-        width: 14
-      })
+        width: 14,
+      }),
     }
   },
   methods: {
-    addNewChip () {
+    addNewChip() {
       const isUnique = this.assertUnique(this.dataArray, this.nameProp, this.newChip)
 
       if (!isUnique) {
@@ -100,33 +144,33 @@ export default {
       this.$emit('add', this.newChip)
       this.newChip = ''
     },
-    assertUnique (arr, propName, value) {
+    assertUnique(arr, propName, value) {
       const existing = arr.find(el => el[propName] === value)
 
       if (existing) {
         swal({
           icon: 'error',
           text: `Sorry, ${this.name.toLowerCase()} ${propName}s must be unique. "${value}" is already in use.
-                 Please choose a different ${propName}.`
+                 Please choose a different ${propName}.`,
         })
         return false
       }
 
       return true
     },
-    cancelRename (index) {
+    cancelRename(index) {
       this.$set(this.chipValues, index, null)
     },
-    deleteChip (index) {
+    deleteChip(index) {
       this.$emit('delete', { index })
     },
-    renameChip (index, name) {
+    renameChip(index, name) {
       this.$set(this.chipValues, index, name)
     },
-    restoreChip (index) {
+    restoreChip(index) {
       this.$emit('restore', { index })
     },
-    saveChipValue (index) {
+    saveChipValue(index) {
       const otherChips = this.dataArray.slice()
       otherChips.splice(index, 1)
       const isUnique = this.assertUnique(otherChips, this.nameProp, this.chipValues[index])
@@ -138,32 +182,32 @@ export default {
       this.$emit('update', { index, value: this.chipValues[index] })
       this.$set(this.chipValues, index, null)
     },
-    showChipInput (index) {
+    showChipInput(index) {
       return typeof this.chipValues[index] === 'string'
-    }
+    },
   },
   props: {
     dataArray: {
       required: true,
-      type: Array
+      type: Array,
     },
     filterChips: {
       required: true,
-      type: Function
+      type: Function,
     },
     isDeletable: {
       required: true,
-      type: Function
+      type: Function,
     },
     name: {
       required: true,
-      type: String
+      type: String,
     },
     nameProp: {
       required: true,
-      type: String
-    }
-  }
+      type: String,
+    },
+  },
 }
 </script>
 

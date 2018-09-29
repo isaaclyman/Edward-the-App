@@ -2,7 +2,7 @@
   <div class="wrap">
     <div class="inner">
       <div v-if="authLoading">
-        <pulse-loader></pulse-loader>
+        <pulse-loader/>
       </div>
       <div v-if="!authFailed && !authLoading">
         <div class="message">
@@ -12,12 +12,17 @@
           </p>
         </div>
         <div class="input">
-          <input class="password-input" type="password" v-model="password">
+          <input 
+            class="password-input" 
+            type="password" 
+            v-model="password">
         </div>
         <div v-if="resetLoading">
-          <pulse-loader></pulse-loader>
+          <pulse-loader/>
         </div>
-        <div class="error" v-if="resetFailed">
+        <div 
+          class="error" 
+          v-if="resetFailed">
           <p>
             Password reset failed.
           </p>
@@ -25,12 +30,20 @@
             Please try again later or contact <a href="mailto:support@edwardtheapp.com">support@edwardtheapp.com</a>.
           </p>
         </div>
-        <div class="success" v-if="success">
+        <div 
+          class="success" 
+          v-if="success">
           Password changed!
         </div>
         <div class="actions">
-          <button v-if="!success" class="button-green submit-button" @click="submit()">Set password</button>
-          <button v-if="success" class="button-green finish-button" @click="finish()">Go to the app</button>
+          <button 
+            v-if="!success" 
+            class="button-green submit-button" 
+            @click="submit()">Set password</button>
+          <button 
+            v-if="success" 
+            class="button-green finish-button" 
+            @click="finish()">Go to the app</button>
         </div>
       </div>
       <div v-if="authFailed">
@@ -55,7 +68,7 @@ import { goToApp } from './shared'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
 export default {
-  beforeCreate () {
+  beforeCreate() {
     const { email, key } = this.$route.params
 
     this.authLoading = true
@@ -67,37 +80,37 @@ export default {
     })
   },
   components: {
-    PulseLoader
+    PulseLoader,
   },
-  data () {
+  data() {
     return {
       authFailed: false,
       authLoading: true,
       resetFailed: false,
       resetLoading: false,
       password: '',
-      success: false
+      success: false,
     }
   },
   methods: {
-    finish () {
+    finish() {
       goToApp()
     },
-    submit () {
+    submit() {
       this.resetFailed = false
 
       this.resetLoading = true
       authApi.updatePassword({ password: this.password }).then(() => {
         this.resetLoading = false
         this.success = true
-      }, err => {
+      }, (err) => {
         this.resetLoading = false
         this.success = false
         this.resetFailed = true
         console.error(err)
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=600">
+    <link rel="icon" type="image/svg" href="./static/favicon.png">
+    <title>Edward | Write Your First Novel</title>
+    <link href="https://fonts.googleapis.com/css?family=Asap+Condensed" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
+    <script src='https://www.google.com/recaptcha/api.js?render=explicit'></script>
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-109036711-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-109036711-1');
+      gtag('config', 'AW-805375021');
+    </script>
+    <!-- Event snippet for signup conversions -->
+    <script>
+      function gtag_report_conversion(callback) {
+        gtag('event', 'conversion', { 'send_to': 'AW-805375021/QyxcCIKFvoMBEK2YhIAD', 'event_callback': callback });
+        return false;
+      }
+    </script>
+
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+  <script>
+    // Detect environment, set globals
+    var isLocal = !!~['127.0.0.1', 'localhost'].indexOf(window.location.hostname) || !!~window.location.hostname.indexOf('ngrok.io')
+    var isDev = !!~window.location.hostname.indexOf('herokuapp.com')
+    
+    if (isLocal) {
+      // Test keys
+      window.recaptchaSiteKey = '6Lcg3DUUAAAAANAt-cV-ELiedVMT543DJ7-wOneQ'
+      window.stripePublicKey = 'pk_test_j5EoXIK1dh5meggrjMtioHjw'
+    }
+
+    if (isDev) {
+      // Live recaptcha key, test stripe key
+      window.recaptchaSiteKey = '6LfxrTQUAAAAAKZHrZj_kqcmaVoYBcExGAfEN8kf'
+      window.stripePublicKey = 'pk_test_j5EoXIK1dh5meggrjMtioHjw'
+    }
+
+    if (!isLocal && !isDev) {
+      // Live keys
+      window.recaptchaSiteKey = '6LfxrTQUAAAAAKZHrZj_kqcmaVoYBcExGAfEN8kf'
+      window.stripePublicKey = 'pk_live_b7aCr7fqukKinDMFNhe9HOH8'
+    }
+  </script>
+</html>

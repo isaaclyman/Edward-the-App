@@ -1,19 +1,31 @@
 <template>
   <div class="composer-wrap">
-    <div class="composer" v-if="hasChapters">
+    <div 
+      class="composer" 
+      v-if="hasChapters">
       <div class="map-wrap">
-        <text-map :editor-element="editorElement" :data-stream="activeChapter.content"
-                  @select="selectMap" :mark="mark"></text-map>
+        <text-map 
+          :editor-element="editorElement" 
+          :data-stream="activeChapter.content"
+          @select="selectMap" 
+          :mark="mark"/>
       </div>
       <div class="editor-wrap">
-        <tabs-list :active-index="activeChapterIndex" :data-array="allChapters" :filter-tabs="isViewing"
-                  item-name="Chapter"
-                  @add="addChapter"
-                  @hover="hoverChapter"
-                  @unhover="unhoverChapter"
-                  @update:activeIndex="selectChapter"></tabs-list>
-        <div class="below-tabs" ref="editorContainer">
-          <div class="stats" :class="{ 'active': showStats }">
+        <tabs-list 
+          :active-index="activeChapterIndex" 
+          :data-array="allChapters" 
+          :filter-tabs="isViewing"
+          item-name="Chapter"
+          @add="addChapter"
+          @hover="hoverChapter"
+          @unhover="unhoverChapter"
+          @update:activeIndex="selectChapter"/>
+        <div 
+          class="below-tabs" 
+          ref="editorContainer">
+          <div 
+            class="stats" 
+            :class="{ 'active': showStats }">
             <div class="stats-content">
               <p>
                 <b>{{ activeChapter.title }}</b>
@@ -32,45 +44,64 @@
             </div>
           </div>
           <div class="define">
-            <word-define :word="mark"></word-define>
+            <word-define :word="mark"/>
           </div>
-          <quill-editor ref="textEditor" :content="activeChapter.content" :content-id="activeChapter.guid"
-                      :scroll-to="scrollTo"
-                      :container="editorContainerNode"
-                      @update:content="updateContent"
-                      @update:selection="updateSelection"></quill-editor>
+          <quill-editor 
+            ref="textEditor" 
+            :content="activeChapter.content" 
+            :content-id="activeChapter.guid"
+            :scroll-to="scrollTo"
+            :container="editorContainerNode"
+            @update:content="updateContent"
+            @update:selection="updateSelection"/>
         </div>
       </div>
       <div class="sidebar-wrap">
         <!-- Plans/Outlines/Workshops switch -->
         <div class="sidebar-options">
           <div class="plan-switch">
-            <button class="switch-label" :class="{ 'active': sidebar === 'outline' }" @click="switchOutline()">
-              <div v-html="outlineSvg"></div>
+            <button 
+              class="switch-label" 
+              :class="{ 'active': sidebar === 'outline' }" 
+              @click="switchOutline()">
+              <div v-html="outlineSvg"/>
               <div class="switch-label-text">Outline</div>
             </button>
             <hr class="vert">
-            <button class="switch-label" :class="{ 'active': sidebar === 'plan' }" @click="switchPlans()">
-              <div v-html="planSvg"></div>
+            <button 
+              class="switch-label" 
+              :class="{ 'active': sidebar === 'plan' }" 
+              @click="switchPlans()">
+              <div v-html="planSvg"/>
               <div class="switch-label-text">Plans</div>
             </button>
             <template v-if="isPremium">
               <hr class="vert">
-              <button class="switch-label" :class="{ 'active': sidebar === 'workshop' }" @click="switchWorkshops()">
-                <div v-html="workshopSvg"></div>
+              <button 
+                class="switch-label" 
+                :class="{ 'active': sidebar === 'workshop' }" 
+                @click="switchWorkshops()">
+                <div v-html="workshopSvg"/>
                 <div class="switch-label-text">Workshops</div>
               </button>
             </template>
           </div>
           <div class="archived-filter">
-            <input id="showArchivedTopics" type="checkbox" v-model="filters.archived">
+            <input 
+              id="showArchivedTopics" 
+              type="checkbox" 
+              v-model="filters.archived">
             <label for="showArchivedTopics">Show Archived</label>
           </div>
         </div>
         <!-- Document Plans -->
-        <div class="sidebar-content" v-show="sidebar === 'plan'">
+        <div 
+          class="sidebar-content" 
+          v-show="sidebar === 'plan'">
           <template v-if="hasPlans">
-            <plans-list :filter-plans="showPlan" :filter-sections="showSection"></plans-list>
+            <plans-list 
+              :filter-plans="showPlan" 
+              :filter-sections="showSection"/>
           </template>
           <template v-else>
             <div>No plans yet.</div>
@@ -80,10 +111,15 @@
           </template>
         </div>
         <!-- Chapter Outlines -->
-        <div class="sidebar-content" v-show="sidebar === 'outline'">
+        <div 
+          class="sidebar-content" 
+          v-show="sidebar === 'outline'">
           <template v-if="hasTopics">
             <div class="topic-list-wrap">
-              <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
+              <topic-list 
+                :chapter="activeChapter" 
+                :filter-topics="showTopic" 
+                :topics="allTopics"/>
             </div>
           </template>
           <template v-else>
@@ -94,9 +130,13 @@
           </template>
         </div>
         <!-- Workshops -->
-        <div class="sidebar-content" v-show="sidebar === 'workshop'">
+        <div 
+          class="sidebar-content" 
+          v-show="sidebar === 'workshop'">
           <template v-if="hasWorkshops">
-            <workshop-list ref="workshopList" :filter-workshops="showWorkshop"></workshop-list>
+            <workshop-list 
+              ref="workshopList" 
+              :filter-workshops="showWorkshop"/>
           </template>
           <template v-else>
             <div>No workshops completed yet.</div>
@@ -144,47 +184,41 @@ export default {
     TopicList,
     VueSwitch,
     WordDefine,
-    WorkshopList
+    WorkshopList,
   },
   computed: {
-    activeChapter () {
-      // If no active chapter has been set, default to the first one
+    activeChapter() {
       if (this.activeChapterIndex === -1) {
-        this.activeChapterIndex = 0
+        return {}
       }
 
-      // If viewing an archived chapter but "show archived" is false
-      if (this.allChapters[this.activeChapterIndex].archived && !this.filters.archived) {
-        this.activeChapterIndex = this.allChapters.indexOf(this.viewingChapters[0])
-      }
-
-      return this.allChapters[this.activeChapterIndex]
+      return this.allChapters[this.activeChapterIndex] || {}
     },
-    allChapters () {
+    allChapters() {
       return this.$store.state.chapters.chapters
     },
-    allPlans () {
+    allPlans() {
       return this.$store.state.chapters.plans || []
     },
-    allTopics () {
+    allTopics() {
       return this.$store.state.chapters.topics
     },
-    allWorkshops () {
+    allWorkshops() {
       return this.$store.state.workshop.workshops
     },
-    chapterPageCount () {
+    chapterPageCount() {
       return this.getPageCount(this.textContent)
     },
-    chapterParagraphCount () {
+    chapterParagraphCount() {
       return this.getParagraphCount(this.textContent)
     },
-    chapterReadTimeMinutes () {
+    chapterReadTimeMinutes() {
       return this.getReadTimeMinutes(this.textContent)
     },
-    chapterWordCount () {
+    chapterWordCount() {
       return this.getWordCount(this.textContent)
     },
-    documentFullText () {
+    documentFullText() {
       return (
         this.$store.state.chapters.chapters
           .map(chapter => chapter.content)
@@ -192,81 +226,81 @@ export default {
           .join(' ')
       )
     },
-    documentPageCount () {
+    documentPageCount() {
       return this.getPageCount(this.documentFullText)
     },
-    documentReadTimeMinutes () {
+    documentReadTimeMinutes() {
       return this.getReadTimeMinutes(this.documentFullText)
     },
-    documentTitle () {
+    documentTitle() {
       return this.$store.state.document.currentDocument.name
     },
-    documentWordCount () {
+    documentWordCount() {
       return this.getWordCount(this.documentFullText)
     },
-    hasChapters () {
+    hasChapters() {
       return this.viewingChapters && this.viewingChapters.length
     },
-    hasPlans () {
+    hasPlans() {
       return this.allPlans && this.allPlans.length
     },
-    hasTopics () {
+    hasTopics() {
       return this.allTopics && this.allTopics.length
     },
-    hasWorkshops () {
+    hasWorkshops() {
       return this.allWorkshops && this.allWorkshops.length
     },
-    isPremium () {
+    isPremium() {
       return this.$store.state.user.user.isPremium
     },
-    mark () {
+    mark() {
       return this.selection.text
     },
-    selection () {
+    selection() {
       return this.$store.state.composer.selection
     },
-    textContent () {
+    textContent() {
       return GetContentString(this.activeChapter.content)
     },
-    viewingChapters () {
+    viewingChapters() {
       return this.allChapters.filter(chapter => !chapter.archived)
     },
-    viewingPlans () {
+    viewingPlans() {
       return (this.allPlans
         .filter(plan => !plan.archived || this.filters.archived))
-    }
+    },
   },
-  data () {
+  data() {
     return {
       activeChapterIndex: -1,
       editorContainerNode: null,
       editorElement: null,
       filters: {
-        archived: false
+        archived: false,
       },
       newChapter: '',
       outlineSvg: Octicons['list-unordered'].toSVG({
         height: 25,
-        width: 25
+        width: 25,
       }),
       planSvg: Octicons.telescope.toSVG({
         height: 25,
-        width: 25
+        width: 25,
       }),
       workshopSvg: Octicons.tools.toSVG({
         height: 25,
-        width: 25
+        width: 25,
       }),
       scrollTo: {
         paragraphIndex: -1,
-        searchTermIndex: -1
+        searchTermIndex: -1,
       },
       sidebar: 'outline',
-      showStats: false
+      showStats: false,
     }
   },
   methods: {
-    addChapter (title) {
+    addChapter(title) {
       if (!ValidateTitle('chapter', title)) {
         return
       }
@@ -276,70 +310,80 @@ export default {
         content: null,
         guid: guid(),
         title,
-        topics: {}
+        topics: {},
       }
 
       this.$store.commit(ADD_CHAPTER, { chapter })
     },
-    getMasterTopic (chapterTopic) {
+    getMasterTopic(chapterTopic) {
       return this.allTopics.find(topic => topic.guid === chapterTopic.guid)
     },
-    getReadTimeMinutes (str) {
+    getReadTimeMinutes(str) {
       return Math.ceil(this.getWordCount(str) / 275)
     },
-    getPageCount (str) {
+    getPageCount(str) {
       return Math.ceil(this.getWordCount(str) / 300)
     },
-    getParagraphCount (str) {
+    getParagraphCount(str) {
       return (str.match(/[\n]+/g) || []).length
     },
-    getWordCount (str) {
+    getWordCount(str) {
       return (str.match(/[^\s]+/g) || []).length
     },
-    hoverChapter (index) {
+    hoverChapter() {
       this.showStats = true
     },
-    isActive (index) {
+    isActive(index) {
       return index === this.activeChapterIndex
     },
-    isViewing (chapter) {
+    isViewing(chapter) {
       return !chapter.archived || this.filters.archived
     },
-    selectChapter (index) {
+    selectChapter(index) {
+      // If no active chapter has been set, default to the first one
+      if (index === -1) {
+        index = 0
+      }
+
+      // If viewing an archived chapter but "show archived" is false
+      if (this.allChapters[index].archived && !this.filters.archived) {
+        index = this.allChapters.indexOf(this.viewingChapters[0])
+      }
+
       this.activeChapterIndex = index
     },
-    selectMap (descriptor) {
+    selectMap(descriptor) {
       this.scrollTo = descriptor
     },
-    showPlan (plan) {
+    showPlan(plan) {
       return this.viewingPlans.includes(plan)
     },
-    showSection (section) {
+    showSection(section) {
       return !section.archived || this.filters.archived
     },
-    showTopic (chapterTopic) {
+    showTopic(chapterTopic) {
       const masterTopic = this.getMasterTopic(chapterTopic)
       return !masterTopic || !masterTopic.archived || this.filters.archived
     },
-    showWorkshop (workshop) {
+    showWorkshop(workshop) {
       return !workshop.archived || this.filters.archived
     },
-    switchOutline () {
+    switchOutline() {
       this.sidebar = 'outline'
       planSwitch.cacheSet('outline')
     },
-    switchPlans () {
+    switchPlans() {
       this.sidebar = 'plan'
       planSwitch.cacheSet('plan')
     },
-    switchWorkshops () {
+    switchWorkshops() {
       this.sidebar = 'workshop'
       planSwitch.cacheSet('workshop')
     },
-    unhoverChapter () {
+    unhoverChapter() {
       this.showStats = false
     },
-    updateContent ({ content: newContent, contentId: guid }) {
+    updateContent({ content: newContent, contentId: guid }) {
       const chapter = this.allChapters.find(chapter => chapter.guid === guid)
       if (!chapter) {
         return
@@ -347,14 +391,14 @@ export default {
 
       this.$store.commit(UPDATE_CHAPTER_CONTENT, {
         chapter,
-        newContent
+        newContent,
       })
     },
-    updateSelection (selection) {
+    updateSelection(selection) {
       this.$store.commit(UPDATE_SELECTION, selection)
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.editorContainerNode = this.$refs.editorContainer
     this.editorElement = this.$refs.textEditor
     this.sidebar = planSwitch.cacheGet() || 'outline'
@@ -366,7 +410,9 @@ export default {
         this.filters.archived = true
       }
 
-      this.activeChapterIndex = this.allChapters.indexOf(activeChapter) || -1
+      this.selectChapter(this.allChapters.indexOf(activeChapter) || -1)
+    } else {
+      this.selectChapter(-1)
     }
 
     const workshopGuid = this.$route.query.workshop
@@ -383,7 +429,7 @@ export default {
     }
 
     this.$router.replace('/write')
-  }
+  },
 }
 </script>
 

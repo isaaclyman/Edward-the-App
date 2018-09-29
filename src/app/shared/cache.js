@@ -3,7 +3,7 @@ const allCacheKeys = JSON.parse(window.localStorage.getItem(cacheKeysStorage)) |
 
 export const UNRESETTABLE = 'UNRESETTABLE'
 
-export function resetCache () {
+export function resetCache() {
   for (const key of allCacheKeys) {
     window.localStorage.removeItem(key)
   }
@@ -12,7 +12,7 @@ export function resetCache () {
 }
 
 class Cache {
-  constructor (key) {
+  constructor(key) {
     this.key = key
     if (!key.includes(UNRESETTABLE)) {
       allCacheKeys.push(key)
@@ -20,15 +20,15 @@ class Cache {
     window.localStorage.setItem(cacheKeysStorage, JSON.stringify(allCacheKeys))
   }
 
-  cacheDelete () {
+  cacheDelete() {
     window.localStorage.removeItem(this.key)
   }
 
-  cacheGet () {
+  cacheGet() {
     return JSON.parse(window.localStorage.getItem(this.key))
   }
 
-  cacheSet (val) {
+  cacheSet(val) {
     window.localStorage.setItem(this.key, JSON.stringify(val))
   }
 }

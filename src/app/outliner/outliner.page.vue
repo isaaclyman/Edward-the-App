@@ -3,7 +3,10 @@
     <div class="outliner">
       <!-- Filters -->
       <div class="filters">
-        <input id="showArchivedCheckbox" type="checkbox" v-model="filters.archived" />
+        <input 
+          id="showArchivedCheckbox" 
+          type="checkbox" 
+          v-model="filters.archived" >
         <label for="showArchivedCheckbox">Show Archived</label>
       </div>
       <hr>
@@ -11,58 +14,90 @@
       <div class="chips-wrap chapter-chips">
         <div class="section-title">
           <h3>Chapters</h3>
-          <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpChapterChipsNode, 'Chapter List')"></button>
+          <button 
+            class="help-icon" 
+            v-html="helpIconSvg" 
+            @click="helpClick(helpChapterChipsNode, 'Chapter List')"/>
         </div>
-        <chips-list name="Chapter" name-prop="title"
-                    :data-array="allChapters"
-                    :filter-chips="showChapter"
-                    :is-deletable="isDeletable"
-                    @add="addChapter"
-                    @delete="archiveChapter"
-                    @rearrange="rearrangeChapter"
-                    @restore="restoreChapter"
-                    @update="renameChapter"></chips-list>
+        <chips-list 
+          name="Chapter" 
+          name-prop="title"
+          :data-array="allChapters"
+          :filter-chips="showChapter"
+          :is-deletable="isDeletable"
+          @add="addChapter"
+          @delete="archiveChapter"
+          @rearrange="rearrangeChapter"
+          @restore="restoreChapter"
+          @update="renameChapter"/>
       </div>
       <!-- Topic Chips -->
       <div class="chips-wrap topic-chips">
         <div class="section-title">
           <h3>Topics</h3>
-          <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpTopicChipsNode, 'Topic List')"></button>
+          <button 
+            class="help-icon" 
+            v-html="helpIconSvg" 
+            @click="helpClick(helpTopicChipsNode, 'Topic List')"/>
         </div>
-        <chips-list name="Topic" name-prop="title"
-                    :data-array="allTopics"
-                    :filter-chips="showTopic"
-                    :is-deletable="isDeletable"
-                    @add="addTopic"
-                    @delete="archiveTopic"
-                    @rearrange="rearrangeTopic"
-                    @restore="restoreTopic"
-                    @update="renameTopic"></chips-list>
+        <chips-list 
+          name="Topic" 
+          name-prop="title"
+          :data-array="allTopics"
+          :filter-chips="showTopic"
+          :is-deletable="isDeletable"
+          @add="addTopic"
+          @delete="archiveTopic"
+          @rearrange="rearrangeTopic"
+          @restore="restoreTopic"
+          @update="renameTopic"/>
       </div>
       <hr>
-      <div class="chapters" v-if="viewingChapters.length > 0">
+      <div 
+        class="chapters" 
+        v-if="viewingChapters.length > 0">
         <div class="section-title">
           <h3>Outline</h3>
-          <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpChapterBlocksNode, 'Outline')"></button>
+          <button 
+            class="help-icon" 
+            v-html="helpIconSvg" 
+            @click="helpClick(helpChapterBlocksNode, 'Outline')"/>
         </div>
         <!-- Chapters > Topics -->
-        <tabs-list :active-index="activeChapterIndex" :data-array="allChapters" :filter-tabs="showChapter"
-                  item-name="Chapter"
-                  @add="addChapter"
-                  @update:activeIndex="selectChapter"></tabs-list>
+        <tabs-list 
+          :active-index="activeChapterIndex" 
+          :data-array="allChapters" 
+          :filter-tabs="showChapter"
+          item-name="Chapter"
+          @add="addChapter"
+          @update:activeIndex="selectChapter"/>
         <div class="chapter">
-          <div class="chapter-head" :class="{ 'light': activeChapter.archived }">
+          <div 
+            class="chapter-head" 
+            :class="{ 'light': activeChapter.archived }">
             <h4 class="chapter-title">
               {{ activeChapter.title }}
             </h4>
             <div class="chapter-actions">
-              <button class="chapter-action" v-show="!activeChapter.archived" @click="archiveChapter({ index: activeChapterIndex })">Archive</button>
-              <button class="chapter-action" v-show="activeChapter.archived" @click="restoreChapter({ index: activeChapterIndex })">Restore</button>
-              <button class="chapter-action button-red" v-show="activeChapter.archived" @click="deleteChapter({ index: activeChapterIndex })">Delete Forever</button>
+              <button 
+                class="chapter-action" 
+                v-show="!activeChapter.archived" 
+                @click="archiveChapter({ index: activeChapterIndex })">Archive</button>
+              <button 
+                class="chapter-action" 
+                v-show="activeChapter.archived" 
+                @click="restoreChapter({ index: activeChapterIndex })">Restore</button>
+              <button 
+                class="chapter-action button-red" 
+                v-show="activeChapter.archived" 
+                @click="deleteChapter({ index: activeChapterIndex })">Delete Forever</button>
             </div>
           </div>
           <div class="chapter-content">
-            <topic-list :chapter="activeChapter" :filter-topics="showTopic" :topics="allTopics"></topic-list>
+            <topic-list 
+              :chapter="activeChapter" 
+              :filter-topics="showTopic" 
+              :topics="allTopics"/>
           </div>
         </div>
       </div>
@@ -70,7 +105,9 @@
 
     <!-- Chapters: [?] Modal -->
     <div style="display: none">
-      <div class="help" ref="helpChapterChipsModal">
+      <div 
+        class="help" 
+        ref="helpChapterChipsModal">
         <p>This is the chapter list. It's the easiest place to add, archive, restore, rename, and rearrange chapters.</p>
         <p>To add a chapter, type its name into the "New Chapter" box and click "Add".</p>
         <p>
@@ -85,7 +122,9 @@
 
     <!-- Topics: [?] Modal -->
     <div style="display: none">
-      <div class="help" ref="helpTopicChipsModal">
+      <div 
+        class="help" 
+        ref="helpTopicChipsModal">
         <p>This is the topic list. It's the easiest place to add, archive, restore, rename, and rearrange topics.</p>
         <p>To add a topic, type its name into the "New Topic" box and click "Add". It will show up in every chapter in the "Outline" section.</p>
         <p>
@@ -100,7 +139,9 @@
 
     <!-- Chapter blocks: [?] Modal -->
     <div style="display: none">
-      <div class="help" ref="helpChapterBlocksModal">
+      <div 
+        class="help" 
+        ref="helpChapterBlocksModal">
         <p>This is where the real work happens. Each of your chapters has a block below, with a section for each topic.</p>
         <p>
           A "topic" can be a character arc, a list of subpoints, citations you've found in your research, or really anything
@@ -116,9 +157,11 @@
 </template>
 
 <script>
-import { ADD_CHAPTER, ADD_TOPIC, ARCHIVE_CHAPTER, ARCHIVE_TOPIC,
-         DELETE_CHAPTER, REARRANGE_CHAPTERS, REARRANGE_TOPICS,
-         RESTORE_CHAPTER, RESTORE_TOPIC, UPDATE_CHAPTER, UPDATE_TOPIC } from '../shared/chapters.store'
+import {
+  ADD_CHAPTER, ADD_TOPIC, ARCHIVE_CHAPTER, ARCHIVE_TOPIC,
+  DELETE_CHAPTER, REARRANGE_CHAPTERS, REARRANGE_TOPICS,
+  RESTORE_CHAPTER, RESTORE_TOPIC, UPDATE_CHAPTER, UPDATE_TOPIC,
+} from '../shared/chapters.store'
 import ChipsList from '../shared/chipsList.vue'
 import { GetContentString } from '../shared/deltaParser'
 import guid from '../shared/guid'
@@ -132,43 +175,33 @@ export default {
   components: {
     ChipsList,
     TabsList,
-    TopicList
+    TopicList,
   },
   computed: {
-    activeChapter () {
-      // If no active chapter has been set, default to the first one
+    activeChapter() {
       if (this.activeChapterIndex === -1) {
-        this.activeChapterIndex = 0
-      }
-
-      if (!this.allChapters[this.activeChapterIndex]) {
         return {}
-      }
-
-      // If viewing an archived chapter but "show archived" is false
-      if (this.allChapters[this.activeChapterIndex].archived && !this.filters.archived) {
-        this.activeChapterIndex = this.allChapters.indexOf(this.viewingChapters[0])
       }
 
       return this.allChapters[this.activeChapterIndex] || {}
     },
-    allChapters () {
+    allChapters() {
       return this.$store.state.chapters.chapters || []
     },
-    allTopics () {
+    allTopics() {
       return this.$store.state.chapters.topics || []
     },
-    viewingChapters () {
+    viewingChapters() {
       return (this.allChapters
         .filter(chapter => !chapter.archived || this.filters.archived))
         .filter(chapter => !this.filters.chapter ||
                 chapter.title.toLowerCase().includes(this.filters.chapter.toLowerCase()))
     },
-    viewingTopicsFilteredArchived () {
+    viewingTopicsFilteredArchived() {
       return (this.allTopics.filter(topic => !topic.archived || this.filters.archived))
     },
-    viewingTopicsFilteredTitle () {
-      return this.allTopics.filter(topic => {
+    viewingTopicsFilteredTitle() {
+      return this.allTopics.filter((topic) => {
         if (!this.filters.topic) {
           return true
         }
@@ -178,24 +211,24 @@ export default {
 
         return title.includes(filter)
       })
-    }
+    },
   },
-  data () {
+  data() {
     return {
       activeChapterIndex: -1,
       addSvg: Octicons.plus.toSVG({
         class: 'add-icon--svg',
         height: 14,
-        width: 14
+        width: 14,
       }),
       expandSvg: Octicons['chevron-down'].toSVG({
         height: 18,
-        width: 18
+        width: 18,
       }),
       filters: {
         archived: false,
         chapter: '',
-        topic: ''
+        topic: '',
       },
       filtersVisible: false,
       helpChapterBlocksNode: null,
@@ -203,13 +236,13 @@ export default {
       helpIconSvg: Octicons.question.toSVG({
         class: 'help-icon--svg',
         height: 16,
-        width: 16
+        width: 16,
       }),
-      helpTopicChipsNode: null
+      helpTopicChipsNode: null,
     }
   },
   methods: {
-    addChapter (title) {
+    addChapter(title) {
       if (!ValidateTitle('chapter', title)) {
         return
       }
@@ -219,12 +252,12 @@ export default {
         content: null,
         guid: guid(),
         title,
-        topics: {}
+        topics: {},
       }
 
       this.$store.commit(ADD_CHAPTER, { chapter })
     },
-    addTopic (title) {
+    addTopic(title) {
       if (!ValidateTitle('topic', title)) {
         return
       }
@@ -232,29 +265,29 @@ export default {
       const topic = {
         archived: false,
         guid: guid(),
-        title
+        title,
       }
 
       this.$store.commit(ADD_TOPIC, { topic })
     },
-    archiveChapter ({ index }) {
+    archiveChapter({ index }) {
       this.$store.commit(ARCHIVE_CHAPTER, { chapter: this.allChapters[index] })
 
       if (index === this.activeChapterIndex && !this.filters.archived) {
-        this.activeChapterIndex = -1
+        this.selectChapter(-1)
       }
     },
-    archiveTopic ({ index }) {
+    archiveTopic({ index }) {
       this.$store.commit(ARCHIVE_TOPIC, { topic: this.allTopics[index] })
     },
-    deleteChapter ({ index }) {
+    deleteChapter({ index }) {
       swal({
         buttons: true,
         dangerMode: true,
         icon: 'warning',
         text: `Are you sure you want to delete this chapter? Its outline and all of its written content (from the Write page)
                will be lost. This cannot be undone.`,
-        title: 'Delete Forever?'
+        title: 'Delete Forever?',
       }).then((willDelete) => {
         if (!willDelete) {
           return
@@ -263,39 +296,39 @@ export default {
         this.$store.commit(DELETE_CHAPTER, { chapter: this.allChapters[index] })
 
         if (index === this.activeChapterIndex) {
-          this.activeChapterIndex = -1
+          this.selectChapter(-1)
         }
       })
     },
-    getMasterTopic (chapterTopic) {
+    getMasterTopic(chapterTopic) {
       return this.allTopics.find(topic => topic.guid === chapterTopic.guid)
     },
-    helpClick (content, title) {
+    helpClick(content, title) {
       swal({
         content,
-        title
+        title,
       })
     },
-    isDeletable (chip) {
+    isDeletable(chip) {
       return !chip.archived
     },
-    rearrangeChapter (chapters) {
+    rearrangeChapter(chapters) {
       this.$store.commit(REARRANGE_CHAPTERS, { chapters })
     },
-    rearrangeTopic (topics) {
+    rearrangeTopic(topics) {
       this.$store.commit(REARRANGE_TOPICS, { topics })
     },
-    renameChapter ({ index, value: newTitle }) {
+    renameChapter({ index, value: newTitle }) {
       if (!ValidateTitle('chapter', newTitle)) {
         return
       }
 
       this.$store.commit(UPDATE_CHAPTER, {
         chapter: this.allChapters[index],
-        newTitle
+        newTitle,
       })
     },
-    renameTopic ({ index, value: newTitle }) {
+    renameTopic({ index, value: newTitle }) {
       if (!ValidateTitle('topic', newTitle)) {
         return
       }
@@ -304,22 +337,32 @@ export default {
 
       this.$store.commit(UPDATE_TOPIC, {
         topic,
-        newTitle
+        newTitle,
       })
     },
-    restoreChapter ({ index }) {
+    restoreChapter({ index }) {
       this.$store.commit(RESTORE_CHAPTER, { chapter: this.allChapters[index] })
     },
-    restoreTopic ({ index }) {
+    restoreTopic({ index }) {
       this.$store.commit(RESTORE_TOPIC, { topic: this.allTopics[index] })
     },
-    selectChapter (index) {
+    selectChapter(index) {
+      // If no active chapter has been set, default to the first one
+      if (index === -1) {
+        index = 0
+      }
+
+      // If viewing an archived chapter but "show archived" is false
+      if (this.allChapters[index].archived && !this.filters.archived) {
+        index = this.allChapters.indexOf(this.viewingChapters[0])
+      }
+
       this.activeChapterIndex = index
     },
-    showChapter (chapter) {
+    showChapter(chapter) {
       return this.viewingChapters.includes(chapter)
     },
-    showTopic (topic) {
+    showTopic(topic) {
       const masterTopic = this.getMasterTopic(topic)
       const textContent = GetContentString(topic.content)
 
@@ -327,11 +370,11 @@ export default {
         (this.viewingTopicsFilteredTitle.includes(masterTopic) ||
         textContent && textContent.includes(this.filters.topic)))
     },
-    toggleFilters () {
+    toggleFilters() {
       this.filtersVisible = !this.filtersVisible
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.helpChapterBlocksNode = this.$refs.helpChapterBlocksModal
     this.helpChapterChipsNode = this.$refs.helpChapterChipsModal
     this.helpTopicChipsNode = this.$refs.helpTopicChipsModal
@@ -343,11 +386,13 @@ export default {
         this.filters.archived = true
       }
 
-      this.activeChapterIndex = this.allChapters.indexOf(activeChapter)
+      this.selectChapter(this.allChapters.indexOf(activeChapter))
+    } else {
+      this.selectChapter(-1)
     }
 
     this.$router.replace('/outline')
-  }
+  },
 }
 </script>
 

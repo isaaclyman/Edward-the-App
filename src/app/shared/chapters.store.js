@@ -53,26 +53,26 @@ const store = {
     // chapterTopic { content Delta null, guid Guid }
     chapters: [],
     // topic [{ archived bool false, guid Guid, title string }]
-    topics: []
+    topics: [],
   },
   mutations: {
     // CONTENT
-    [NUKE_CONTENT] (state) {
+    [NUKE_CONTENT](state) {
       state.plans = []
       state.chapters = []
       state.topics = []
     },
-    [LOAD_CONTENT] (state, { plans, chapters, topics }) {
+    [LOAD_CONTENT](state, { plans, chapters, topics }) {
       state.plans = plans
       state.chapters = chapters
       state.topics = topics
     },
     // PLANS
-    [ADD_PLAN] (state, { plan }) {
+    [ADD_PLAN](state, { plan }) {
       VersionResolver.timestamp(plan)
       state.plans.push(plan)
     },
-    [ARCHIVE_PLAN] (state, { plan }) {
+    [ARCHIVE_PLAN](state, { plan }) {
       if (!state.plans.includes(plan)) {
         throw new Error(`ARCHIVE_PLAN: Cannot archive plan "${plan.title}": does not exist.`)
       }
@@ -80,7 +80,7 @@ const store = {
       VersionResolver.timestamp(plan)
       plan.archived = true
     },
-    [DELETE_PLAN] (state, { plan }) {
+    [DELETE_PLAN](state, { plan }) {
       if (!state.plans.includes(plan)) {
         throw new Error(`DELETE_PLAN: Cannot delete plan "${plan.title}": does not exist.`)
       }
@@ -88,15 +88,15 @@ const store = {
       VersionResolver.timestamp(plan)
       state.plans.splice(state.plans.indexOf(plan), 1)
     },
-    [REARRANGE_PLANS] (state, { plans }) {
+    [REARRANGE_PLANS](state, { plans }) {
       if (!containSameElements(state.plans, plans)) {
-        throw new Error(`REARRANGE_PLANS: Cannot rearrange plans: an invalid plan array was received.`)
+        throw new Error('REARRANGE_PLANS: Cannot rearrange plans: an invalid plan array was received.')
       }
 
       VersionResolver.timestampEach(plans)
       state.plans = plans
     },
-    [RESTORE_PLAN] (state, { plan }) {
+    [RESTORE_PLAN](state, { plan }) {
       if (!state.plans.includes(plan)) {
         throw new Error(`RESTORE_PLAN: Cannot restore plan "${plan.title}": does not exist.`)
       }
@@ -104,7 +104,7 @@ const store = {
       VersionResolver.timestamp(plan)
       plan.archived = false
     },
-    [UPDATE_PLAN] (state, { plan, newTitle }) {
+    [UPDATE_PLAN](state, { plan, newTitle }) {
       if (!state.plans.includes(plan)) {
         throw new Error(`UPDATE_PLAN: Cannot update plan "${plan.title}": does not exist.`)
       }
@@ -113,7 +113,7 @@ const store = {
       plan.title = newTitle
     },
     // SECTIONS
-    [ADD_SECTION] (state, { plan, section }) {
+    [ADD_SECTION](state, { plan, section }) {
       if (!state.plans.includes(plan)) {
         throw new Error(`ADD_SECTION: Cannot mutate plan "${plan.title}": does not exist.`)
       }
@@ -122,7 +122,7 @@ const store = {
       VersionResolver.timestamp(section)
       plan.sections.push(section)
     },
-    [ARCHIVE_SECTION] (state, { plan, section }) {
+    [ARCHIVE_SECTION](state, { plan, section }) {
       if (!state.plans.includes(plan)) {
         throw new Error(`ARCHIVE_SECTION: Cannot archive section of plan "${plan.title}": does not exist.`)
       }
@@ -135,7 +135,7 @@ const store = {
       VersionResolver.timestamp(section)
       section.archived = true
     },
-    [DELETE_SECTION] (state, { plan, section }) {
+    [DELETE_SECTION](state, { plan, section }) {
       if (!state.plans.includes(plan)) {
         throw new Error(`DELETE_SECTION: Cannot delete section of plan "${plan.title}": does not exist.`)
       }
@@ -148,20 +148,20 @@ const store = {
       VersionResolver.timestamp(section)
       plan.sections.splice(plan.sections.indexOf(section), 1)
     },
-    [REARRANGE_SECTIONS] (state, { plan, sections }) {
+    [REARRANGE_SECTIONS](state, { plan, sections }) {
       if (!state.plans.includes(plan)) {
         throw new Error(`REARRANGE_SECTIONS: Cannot rearrange sections of plan "${plan.title}": does not exist.`)
       }
 
       if (!containSameElements(plan.sections, sections)) {
-        throw new Error(`REARRANGE_SECTIONS: Cannot rearrange sections: an invalid section array was received.`)
+        throw new Error('REARRANGE_SECTIONS: Cannot rearrange sections: an invalid section array was received.')
       }
 
       VersionResolver.timestamp(plan)
       VersionResolver.timestampEach(sections)
       plan.sections = sections
     },
-    [RESTORE_SECTION] (state, { plan, section }) {
+    [RESTORE_SECTION](state, { plan, section }) {
       if (!state.plans.includes(plan)) {
         throw new Error(`RESTORE_SECTION: Cannot restore section of plan "${plan.title}": does not exist.`)
       }
@@ -174,7 +174,7 @@ const store = {
       VersionResolver.timestamp(section)
       section.archived = false
     },
-    [UPDATE_SECTION] (state, { plan, section, newTitle }) {
+    [UPDATE_SECTION](state, { plan, section, newTitle }) {
       if (!state.plans.includes(plan)) {
         throw new Error(`UPDATE_SECTION: Cannot update section of plan "${plan.title}": does not exist.`)
       }
@@ -187,7 +187,7 @@ const store = {
       VersionResolver.timestamp(section)
       section.title = newTitle
     },
-    [UPDATE_SECTION_CONTENT] (state, { plan, section, newContent }) {
+    [UPDATE_SECTION_CONTENT](state, { plan, section, newContent }) {
       if (!state.plans.includes(plan)) {
         throw new Error(`UPDATE_SECTION_CONTENT: Cannot update section of plan "${plan.title}": does not exist.`)
       }
@@ -200,7 +200,7 @@ const store = {
       VersionResolver.timestamp(section)
       section.content = newContent
     },
-    [UPDATE_SECTION_TAGS] (state, { plan, section, newTags }) {
+    [UPDATE_SECTION_TAGS](state, { plan, section, newTags }) {
       if (!state.plans.includes(plan)) {
         throw new Error(`UPDATE_SECTION_TAGS: Cannot update section of plan "${plan.title}": does not exist.`)
       }
@@ -214,11 +214,11 @@ const store = {
       section.tags = newTags
     },
     // CHAPTERS
-    [ADD_CHAPTER] (state, { chapter }) {
+    [ADD_CHAPTER](state, { chapter }) {
       VersionResolver.timestamp(chapter)
       state.chapters.push(chapter)
     },
-    [ADD_TOPIC_TO_CHAPTER] (state, { chapter, topic }) {
+    [ADD_TOPIC_TO_CHAPTER](state, { chapter, topic }) {
       if (!state.chapters.includes(chapter)) {
         throw new Error(`ADD_TOPIC_TO_CHAPTER: Cannot mutate chapter "${chapter.title}": does not exist.`)
       }
@@ -230,10 +230,10 @@ const store = {
       VersionResolver.timestamp(chapter)
       chapter.topics[topic.guid] = {
         content: null,
-        guid: topic.guid
+        guid: topic.guid,
       }
     },
-    [ARCHIVE_CHAPTER] (state, { chapter }) {
+    [ARCHIVE_CHAPTER](state, { chapter }) {
       if (!state.chapters.includes(chapter)) {
         throw new Error(`ARCHIVE_CHAPTER: Cannot archive chapter "${chapter.title}": does not exist.`)
       }
@@ -241,7 +241,7 @@ const store = {
       VersionResolver.timestamp(chapter)
       chapter.archived = true
     },
-    [DELETE_CHAPTER] (state, { chapter }) {
+    [DELETE_CHAPTER](state, { chapter }) {
       if (!state.chapters.includes(chapter)) {
         throw new Error(`DELETE_CHAPTER: Cannot delete chapter "${chapter.title}": does not exist.`)
       }
@@ -249,7 +249,7 @@ const store = {
       VersionResolver.timestamp(chapter)
       state.chapters.splice(state.chapters.indexOf(chapter), 1)
     },
-    [REARRANGE_CHAPTERS] (state, { chapters }) {
+    [REARRANGE_CHAPTERS](state, { chapters }) {
       if (!containSameElements(state.chapters, chapters)) {
         throw new Error('REARRANGE_CHAPTERS: Cannot rearrange chapters: an invalid chapter array was received.')
       }
@@ -257,7 +257,7 @@ const store = {
       VersionResolver.timestampEach(chapters)
       state.chapters = chapters
     },
-    [RESTORE_CHAPTER] (state, { chapter }) {
+    [RESTORE_CHAPTER](state, { chapter }) {
       if (!state.chapters.includes(chapter)) {
         throw new Error(`RESTORE_CHAPTER: Cannot restore chapter "${chapter.title}": does not exist.`)
       }
@@ -265,7 +265,7 @@ const store = {
       VersionResolver.timestamp(chapter)
       chapter.archived = false
     },
-    [UPDATE_CHAPTER] (state, { chapter, newTitle }) {
+    [UPDATE_CHAPTER](state, { chapter, newTitle }) {
       if (!state.chapters.includes(chapter)) {
         throw new Error(`UPDATE_CHAPTER: Cannot update chapter "${chapter.title}": does not exist.`)
       }
@@ -273,7 +273,7 @@ const store = {
       VersionResolver.timestamp(chapter)
       chapter.title = newTitle
     },
-    [UPDATE_CHAPTER_CONTENT] (state, { chapter, newContent }) {
+    [UPDATE_CHAPTER_CONTENT](state, { chapter, newContent }) {
       if (!state.chapters.includes(chapter)) {
         throw new Error(`UPDATE_CHAPTER_CONTENT: Cannot update content of chapter "${chapter.title}": does not exist.`)
       }
@@ -282,11 +282,11 @@ const store = {
       chapter.content = newContent
     },
     // TOPICS
-    [ADD_TOPIC] (state, { topic }) {
+    [ADD_TOPIC](state, { topic }) {
       VersionResolver.timestamp(topic)
       state.topics.push(topic)
     },
-    [ARCHIVE_TOPIC] (state, { topic }) {
+    [ARCHIVE_TOPIC](state, { topic }) {
       if (!state.topics.includes(topic)) {
         throw new Error(`ARCHIVE_TOPIC: Cannot archive topic "${topic.title}": does not exist.`)
       }
@@ -294,7 +294,7 @@ const store = {
       VersionResolver.timestamp(topic)
       topic.archived = true
     },
-    [DELETE_TOPIC] (state, { topic }) {
+    [DELETE_TOPIC](state, { topic }) {
       if (!state.topics.includes(topic)) {
         throw new Error(`DELETE_TOPIC: Cannot archive topic "${topic.title}": does not exist.`)
       }
@@ -302,7 +302,7 @@ const store = {
       VersionResolver.timestamp(topic)
       state.topics.splice(state.topics.indexOf(topic), 1)
 
-      state.chapters = state.chapters.map(chapter => {
+      state.chapters = state.chapters.map((chapter) => {
         if (chapter.topics[topic.guid]) {
           delete chapter.topics[topic.guid]
         }
@@ -310,7 +310,7 @@ const store = {
         return chapter
       })
     },
-    [REARRANGE_TOPICS] (state, { topics }) {
+    [REARRANGE_TOPICS](state, { topics }) {
       if (!containSameElements(state.topics, topics)) {
         throw new Error('REARRANGE_TOPICS: Cannot rearrange topics: an invalid topic array was received.')
       }
@@ -318,7 +318,7 @@ const store = {
       VersionResolver.timestampEach(topics)
       state.topics = topics
     },
-    [RESTORE_TOPIC] (state, { topic }) {
+    [RESTORE_TOPIC](state, { topic }) {
       if (!state.topics.includes(topic)) {
         throw new Error(`RESTORE_TOPIC: Cannot restore topic "${topic.title}": does not exist.`)
       }
@@ -326,7 +326,7 @@ const store = {
       VersionResolver.timestamp(topic)
       topic.archived = false
     },
-    [UPDATE_TOPIC] (state, { topic, newTitle }) {
+    [UPDATE_TOPIC](state, { topic, newTitle }) {
       if (!state.topics.includes(topic)) {
         throw new Error(`UPDATE_TOPIC: Cannot update topic "${topic.title}": does not exist.`)
       }
@@ -334,7 +334,7 @@ const store = {
       VersionResolver.timestamp(topic)
       topic.title = newTitle
     },
-    [UPDATE_TOPIC_CONTENT] (state, { chapter, topic, newContent }) {
+    [UPDATE_TOPIC_CONTENT](state, { chapter, topic, newContent }) {
       if (!state.chapters.includes(chapter)) {
         throw new Error(`UPDATE_TOPIC_CONTENT: Cannot update topic content for chapter "${chapter.title}": does not exist.`)
       }
@@ -345,11 +345,11 @@ const store = {
 
       VersionResolver.timestamp(topic)
       topic.content = newContent
-    }
-  }
+    },
+  },
 }
 
-function containSameElements (arr1, arr2) {
+function containSameElements(arr1, arr2) {
   if (!Array.isArray(arr1) || !Array.isArray(arr2)) {
     return false
   }

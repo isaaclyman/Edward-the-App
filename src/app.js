@@ -4,6 +4,15 @@ import Vue from 'vue'
 import Raven from 'raven-js'
 import RavenVue from 'raven-js/plugins/vue'
 
+import router from './app/router'
+import App from './app/App.vue'
+
+import './assets/yui-cssreset.css'
+import 'tippy.js/dist/tippy.css'
+
+import './main.css'
+import store from './store'
+
 if (window && window.isProd !== false) {
   Raven
     .config('https://1deaeecd96244297ad475854be0d5502@sentry.io/540818')
@@ -13,22 +22,13 @@ if (window && window.isProd !== false) {
   window.Raven = Raven
 }
 
-import router from './app/router'
-import App from './app/App.vue'
-
 Vue.config.productionTip = false
-
-import './assets/yui-cssreset.css'
-import 'tippy.js/dist/tippy.css'
-
-import './main.css'
-import store from './store'
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/serviceworker.js').then(registration => {
+    navigator.serviceWorker.register('/serviceworker.js').then((registration) => {
       console.log('SW registered: ', registration)
-    }).catch(registrationError => {
+    }).catch((registrationError) => {
       console.log('SW registration failed: ', registrationError)
     })
   })
@@ -40,7 +40,7 @@ export default new Vue({
   components: { App },
   router,
   store,
-  render (h) {
+  render(h) {
     return h('App')
-  }
+  },
 })

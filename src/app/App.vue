@@ -1,28 +1,46 @@
 <template>
   <idle-watcher>
-    <transition name="wrapper" mode="out-in">
-      <div id="app" class="app" v-if="loaded && currentDocument && currentDocument.guid" key="app">
-        <document-menu></document-menu>
+    <transition 
+      name="wrapper" 
+      mode="out-in">
+      <div 
+        id="app" 
+        class="app" 
+        v-if="loaded && currentDocument && currentDocument.guid" 
+        key="app">
+        <document-menu/>
         <div class="app-header">
           <div class="logo-wrap">
-            <img class="logo" src="../../static/logo.png">
+            <img 
+              class="logo" 
+              src="../../static/logo.png">
           </div>
           <div class="app-header--menu">
-            <main-menu></main-menu>
+            <main-menu/>
           </div>
         </div>
         <div class="page">
-          <transition name="wrapper" mode="out-in">
-            <router-view></router-view>
+          <transition 
+            name="wrapper" 
+            mode="out-in">
+            <router-view/>
           </transition>
         </div>
       </div>
-      <div v-else-if="!loaded" class="loading" key="loading">
-        <img class="logo" src="../../static/logo.png">
-        <pulse-loader></pulse-loader>
+      <div 
+        v-else-if="!loaded" 
+        class="loading" 
+        key="loading">
+        <img 
+          class="logo" 
+          src="../../static/logo.png">
+        <pulse-loader/>
       </div>
-      <div v-else class="page" key="wizard">
-        <wizard></wizard>
+      <div 
+        v-else 
+        class="page" 
+        key="wizard">
+        <wizard/>
       </div>
     </transition>
   </idle-watcher>
@@ -42,9 +60,9 @@ import Wizard from './wizard/wizard.vue'
 const userCache = new Cache('CURRENT_USER')
 
 export default {
-  beforeCreate () {
+  beforeCreate() {
     const userPromise = userApi.getUser()
-    const safeUserPromise = userPromise.then(user => {
+    const safeUserPromise = userPromise.then((user) => {
       if (!user.verified) {
         window.location.href = '/auth#/verification'
         return
@@ -66,10 +84,10 @@ export default {
 
     this.$store.commit(SET_USER_PROMISE, safeUserPromise)
   },
-  created () {
+  created() {
     this.$store.dispatch(INIT_DOCUMENTS).then(() => {
       this.loaded = true
-    }, err => {
+    }, (err) => {
       console.error(err)
       this.loaded = true
     })
@@ -84,7 +102,7 @@ export default {
       next()
     })
 
-    this.$router.afterEach((to, from) => {
+    this.$router.afterEach(() => {
       clearTimeout(routeTransitionTimeout)
       this.loaded = true
     })
@@ -99,18 +117,18 @@ export default {
     IdleWatcher,
     MainMenu,
     PulseLoader,
-    Wizard
+    Wizard,
   },
   computed: {
-    currentDocument () {
+    currentDocument() {
       return this.$store.state.document.currentDocument
+    },
+  },
+  data() {
+    return {
+      loaded: false,
     }
   },
-  data () {
-    return {
-      loaded: false
-    }
-  }
 }
 </script>
 

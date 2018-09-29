@@ -1,24 +1,34 @@
 <template>
-<div class="wrap">
-  <div class="document">
-    <div class="title">
-      <h3>
-        "{{ documentName }}"
-      </h3>
-    </div>
-    <div class="actions">
-      <label class="name-label" for="documentNameInput">Change document name:</label>
-      <div>
-        <input class="name-input" id="documentNameInput" type="text" v-model="newDocumentName">
-        <button class="button-green" @click="saveDocumentName()">Save</button>
+  <div class="wrap">
+    <div class="document">
+      <div class="title">
+        <h3>
+          "{{ documentName }}"
+        </h3>
+      </div>
+      <div class="actions">
+        <label 
+          class="name-label" 
+          for="documentNameInput">Change document name:</label>
+        <div>
+          <input 
+            class="name-input" 
+            id="documentNameInput" 
+            type="text" 
+            v-model="newDocumentName">
+          <button 
+            class="button-green" 
+            @click="saveDocumentName()">Save</button>
+        </div>
+      </div>
+      <hr>
+      <div class="actions">
+        <button 
+          class="button-red" 
+          @click="deleteDocument()">Delete Document</button>
       </div>
     </div>
-    <hr>
-    <div class="actions">
-      <button class="button-red" @click="deleteDocument()">Delete Document</button>
-    </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -28,26 +38,26 @@ import { DELETE_DOCUMENT, UPDATE_DOCUMENT_NAME } from '../shared/document.store'
 export default {
   components: {},
   computed: {
-    documentGuid () {
+    documentGuid() {
       return this.$store.state.document.currentDocument.guid
     },
-    documentName () {
+    documentName() {
       return this.$store.state.document.currentDocument.name
-    }
+    },
   },
-  data () {
+  data() {
     return {
-      newDocumentName: ''
+      newDocumentName: '',
     }
   },
   methods: {
-    deleteDocument () {
+    deleteDocument() {
       swal({
         buttons: true,
         dangerMode: true,
         icon: 'warning',
-        text: `Are you sure you want to delete this document? All plans, outlines, and chapters will be lost. This cannot be undone.`,
-        title: 'Delete Forever?'
+        text: 'Are you sure you want to delete this document? All plans, outlines, and chapters will be lost. This cannot be undone.',
+        title: 'Delete Forever?',
       }).then((willDelete) => {
         if (!willDelete) {
           return
@@ -56,13 +66,13 @@ export default {
         this.$store.dispatch(DELETE_DOCUMENT, { guid: this.documentGuid })
       })
     },
-    saveDocumentName () {
+    saveDocumentName() {
       this.$store.commit(UPDATE_DOCUMENT_NAME, { guid: this.documentGuid, name: this.newDocumentName })
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.newDocumentName = this.documentName
-  }
+  },
 }
 </script>
 

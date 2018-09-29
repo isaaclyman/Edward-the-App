@@ -5,25 +5,41 @@
         <h4 class="analysis-title">
           Select an analysis:
         </h4>
-        <button class="analysis-button" v-for="(analysis, index) in Analyses" :key="index"
-                :class="{ 'button-green': currentAnalysis === analysis }"
-                @click="selectAnalysis(analysis)" :title="analysis.description" v-tooltip>
+        <button 
+          class="analysis-button" 
+          v-for="(analysis, index) in Analyses" 
+          :key="index"
+          :class="{ 'button-green': currentAnalysis === analysis }"
+          @click="selectAnalysis(analysis)" 
+          :title="analysis.description" 
+          v-tooltip>
           {{ analysis.title }}
         </button>
       </div>
-      <div class="analysis-inputs" v-if="currentAnalysis">
+      <div 
+        class="analysis-inputs" 
+        v-if="currentAnalysis">
         <template v-if="showInputs">
           <h4 class="analysis-title">
             Enter desired inputs:
           </h4>
-          <div class="analysis-input" v-for="(input, index) in currentAnalysis.inputs" :key="index">
+          <div 
+            class="analysis-input" 
+            v-for="(input, index) in currentAnalysis.inputs" 
+            :key="index">
             <label :for="getInputId(input)">{{ input }}</label>
-            <input :id="getInputId(input)" v-model="currentAnalysis.args[input]">
+            <input 
+              :id="getInputId(input)" 
+              v-model="currentAnalysis.args[input]">
           </div>
         </template>
-        <button class="analysis-button button-green" @click="runAnalysis(currentAnalysis)">Run the analysis</button>
+        <button 
+          class="analysis-button button-green" 
+          @click="runAnalysis(currentAnalysis)">Run the analysis</button>
       </div>
-      <div class="results" ref="results"></div>
+      <div 
+        class="results" 
+        ref="results"/>
     </div>
   </div>
 </template>
@@ -34,35 +50,35 @@ import tooltip from '../shared/tooltip.directive'
 
 export default {
   computed: {
-    document () {
+    document() {
       return this.$store.state.chapters
     },
-    showInputs () {
+    showInputs() {
       return (this.currentAnalysis &&
              this.currentAnalysis.inputs &&
              this.currentAnalysis.inputs.length)
-    }
+    },
   },
-  data () {
+  data() {
     return {
       Analyses,
-      currentAnalysis: null
+      currentAnalysis: null,
     }
   },
   directives: {
-    tooltip
+    tooltip,
   },
   methods: {
-    getInputId (input) {
+    getInputId(input) {
       return `input-${input}`
     },
-    runAnalysis (analysis) {
+    runAnalysis(analysis) {
       analysis.run(this.$refs.results, this.document, analysis.args)
     },
-    selectAnalysis (analysis) {
+    selectAnalysis(analysis) {
       this.currentAnalysis = analysis
-    }
-  }
+    },
+  },
 }
 </script>
 

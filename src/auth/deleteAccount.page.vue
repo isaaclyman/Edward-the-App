@@ -8,11 +8,21 @@
       </p>
       <p>To continue, type your account password below and click "Delete my account".</p>
       <div class="actions">
-        <input class="password-input" type="password" v-model="password" autocomplete="off" :disabled="saving">
-        <button v-if="!saving" class="button-red" @click="deleteAccount">Delete my account</button>
-        <pulse-loader v-if="saving"></pulse-loader>
+        <input 
+          class="password-input" 
+          type="password" 
+          v-model="password" 
+          autocomplete="off" 
+          :disabled="saving">
+        <button 
+          v-if="!saving" 
+          class="button-red" 
+          @click="deleteAccount">Delete my account</button>
+        <pulse-loader v-if="saving"/>
       </div>
-      <div class="error" v-if="error">
+      <div 
+        class="error" 
+        v-if="error">
         That didn't work. Please check your password and try again.
         If the problem persists, contact <a href="mailto:support@edwardtheapp.com">support@edwardtheapp.com</a>.
       </div>
@@ -32,29 +42,29 @@ import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
 export default {
   components: {
-    PulseLoader
+    PulseLoader,
   },
-  data () {
+  data() {
     return {
       error: false,
       password: '',
-      saving: false
+      saving: false,
     }
   },
   methods: {
-    deleteAccount () {
+    deleteAccount() {
       this.saving = true
       this.error = false
       authApi.deleteAccount({ password: this.password }).then(() => {
         this.saving = false
         this.$router.push('/login')
-      }, err => {
+      }, (err) => {
         this.error = true
         this.saving = false
         console.error(err)
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

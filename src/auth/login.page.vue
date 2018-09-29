@@ -1,38 +1,65 @@
 <template>
-<div class="wrap">
-  <hr class="divider">
-  <div class="username">
-    <label for="login-username-input">Email address:</label>
-    <input tabindex="1" id="login-username-input" class="login-field" type="text" v-model="email">
+  <div class="wrap">
+    <hr class="divider">
+    <div class="username">
+      <label for="login-username-input">Email address:</label>
+      <input 
+        tabindex="1" 
+        id="login-username-input" 
+        class="login-field" 
+        type="text" 
+        v-model="email">
+    </div>
+    <div class="password">
+      <label for="login-password-input">Password:</label>
+      <input 
+        tabindex="2" 
+        id="login-password-input" 
+        class="login-field" 
+        type="password" 
+        v-model="password">
+      <router-link to="/forgot">
+        <button 
+          tabindex="3" 
+          class="button-link forgot-button">Forgot your password?</button>
+      </router-link>
+    </div>
+    <div class="captcha">
+      <Captcha 
+        :tabindex="4" 
+        @change="setCaptchaResponse" 
+        @expire="resetCaptchaResponse" 
+        ref="captcha"/>
+    </div>
+    <div class="messages">
+      <p>{{ loginMessage }}</p>
+    </div>
+    <div class="actions">
+      <pulse-loader v-if="loading"/>
+      <button 
+        tabindex="5" 
+        v-if="!loading" 
+        class="login-button button-green" 
+        :disabled="!canLogin" 
+        @click="logIn()">Log In</button>
+    </div>
+    <hr class="divider">
+    <div class="sign-up">
+      <div class="sign-up-text">Don't have an account?</div>
+      <button 
+        tabindex="6" 
+        class="sign-up-link button-link" 
+        @click="signUp()">Sign up for free.</button>
+    </div>
+    <hr class="divider">
+    <div class="sign-up">
+      <div class="sign-up-text">Just want to check it out?</div>
+      <button 
+        tabindex="7" 
+        class="sign-up-link button-link" 
+        @click="viewDemo()">Try the demo.</button>
+    </div>
   </div>
-  <div class="password">
-    <label for="login-password-input">Password:</label>
-    <input tabindex="2" id="login-password-input" class="login-field" type="password" v-model="password">
-    <router-link to="/forgot">
-      <button tabindex="3" class="button-link forgot-button">Forgot your password?</button>
-    </router-link>
-  </div>
-  <div class="captcha">
-    <Captcha :tabindex="4" @change="setCaptchaResponse" @expire="resetCaptchaResponse" ref="captcha"></Captcha>
-  </div>
-  <div class="messages">
-    <p>{{ loginMessage }}</p>
-  </div>
-  <div class="actions">
-    <pulse-loader v-if="loading"></pulse-loader>
-    <button tabindex="5" v-if="!loading" class="login-button button-green" :disabled="!canLogin" @click="logIn()">Log In</button>
-  </div>
-  <hr class="divider">
-  <div class="sign-up">
-    <div class="sign-up-text">Don't have an account?</div>
-    <button tabindex="6" class="sign-up-link button-link" @click="signUp()">Sign up for free.</button>
-  </div>
-  <hr class="divider">
-  <div class="sign-up">
-    <div class="sign-up-text">Just want to check it out?</div>
-    <button tabindex="7" class="sign-up-link button-link" @click="viewDemo()">Try the demo.</button>
-  </div>
-</div>
 </template>
 
 <script>
@@ -42,35 +69,35 @@ import { goToApp } from './shared'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
 export default {
-  beforeCreate () {
+  beforeCreate() {
     authApi.logOut()
   },
   components: {
     Captcha,
-    PulseLoader
+    PulseLoader,
   },
   computed: {
-    canLogin () {
+    canLogin() {
       return (
         !!this.email.trim() &&
         !!this.password.trim()
       )
     },
-    isTest () {
+    isTest() {
       return this.email === 'trash@edwardtheapp.com'
-    }
+    },
   },
-  data () {
+  data() {
     return {
       captchaResponse: '',
       email: '',
       loading: false,
       loginMessage: '',
-      password: ''
+      password: '',
     }
   },
   methods: {
-    logIn () {
+    logIn() {
       this.loginMessage = ''
 
       if (!this.captchaResponse && !this.isTest) {
@@ -84,8 +111,8 @@ export default {
         email: this.email,
         password: this.password,
         captchaResponse: this.captchaResponse,
-        integration: this.isTest
-      }).then(result => {
+        integration: this.isTest,
+      }).then((result) => {
         this.loading = false
 
         if (!result.verified) {
@@ -101,27 +128,27 @@ export default {
         this.loginMessage = 'Login failed. Please try again.'
       })
     },
-    resetCaptchaResponse () {
+    resetCaptchaResponse() {
       this.captchaResponse = ''
     },
-    setCaptchaResponse (response) {
+    setCaptchaResponse(response) {
       this.captchaResponse = response
     },
-    signUp () {
+    signUp() {
       this.$router.push('/signup')
     },
-    viewDemo () {
+    viewDemo() {
       this.loading = true
 
-      authApi.demoLogIn().then(result => {
+      authApi.demoLogIn().then(() => {
         this.loading = false
         goToApp()
       }, () => {
         this.loading = false
-        this.loginMessage = `The demo account isn't working right now. Please try again later.`
+        this.loginMessage = 'The demo account isn\'t working right now. Please try again later.'
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

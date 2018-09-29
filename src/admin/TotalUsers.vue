@@ -4,14 +4,17 @@
       <p>
         <strong>Users by type</strong>
       </p>
-      <p>Demo: {{userCount.demo}}</p>
-      <p>Limited: {{userCount.limited}}</p>
-      <p>Premium: {{userCount.premium}}</p>
-      <p>Gold: {{userCount.gold}}</p>
-      <p>Admin: {{userCount.admin}}</p>
-      <p>TOTAL: {{totalUsers}}</p>
+      <p>Demo: {{ userCount.demo }}</p>
+      <p>Limited: {{ userCount.limited }}</p>
+      <p>Premium: {{ userCount.premium }}</p>
+      <p>Gold: {{ userCount.gold }}</p>
+      <p>Admin: {{ userCount.admin }}</p>
+      <p>TOTAL: {{ totalUsers }}</p>
     </div>
-    <div class="error" v-if="error" v-text="error"></div>
+    <div 
+      class="error" 
+      v-if="error" 
+      v-text="error"/>
   </div>
 </template>
 
@@ -19,15 +22,15 @@
 import adminApi from './api'
 
 export default {
-  beforeCreate () {
-    adminApi.getTotalUsers().then(resp => {
+  beforeCreate() {
+    adminApi.getTotalUsers().then((resp) => {
       this.userCount = resp
-    }, err => {
+    }, (err) => {
       this.error = err
     })
   },
   computed: {
-    totalUsers () {
+    totalUsers() {
       if (!this.userCount) {
         return 0
       }
@@ -39,14 +42,14 @@ export default {
         Number(this.userCount.gold) +
         Number(this.userCount.admin)
       )
-    }
+    },
   },
-  data () {
+  data() {
     return {
       error: null,
-      userCount: null
+      userCount: null,
     }
-  }
+  },
 }
 </script>
 

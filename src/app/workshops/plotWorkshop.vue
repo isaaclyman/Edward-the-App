@@ -5,7 +5,10 @@
       <p>
         A prompt will appear below. Follow the prompt to help you build your plot and develop your characters.
       </p>
-      <button v-if="!begun" class="begin button-green" @click="begin()">Begin</button>
+      <button 
+        v-if="!begun" 
+        class="begin button-green" 
+        @click="begin()">Begin</button>
       <div v-if="begun && !finished">
         <div class="prompt">
           <p>
@@ -16,10 +19,15 @@
           </p>
         </div>
         <div class="write">
-          <quill-editor :content="content" @update:content="updateContent($event)" ref="quillEditor"></quill-editor>
+          <quill-editor 
+            :content="content" 
+            @update:content="updateContent($event)" 
+            ref="quillEditor"/>
         </div>
         <div class="actions">
-          <button class="done button-green" @click="finish()">Done</button>
+          <button 
+            class="done button-green" 
+            @click="finish()">Done</button>
         </div>
       </div>
       <div v-else-if="finished">
@@ -31,7 +39,9 @@
             <strong>Deleted!</strong> This exercise was empty.
           </template>
         </p>
-        <button class="button-green" @click="reset()">Start over</button>
+        <button 
+          class="button-green" 
+          @click="reset()">Start over</button>
       </div>
     </div>
   </div>
@@ -51,29 +61,29 @@ const promptCache = new Cache('PLOT_WORKSHOP_PROMPTS')
 
 export default {
   components: {
-    QuillEditor
+    QuillEditor,
   },
   computed: {
-    allWorkshops () {
+    allWorkshops() {
       return this.$store.state.workshop.workshops
     },
-    content () {
+    content() {
       return this.workshop ? this.workshop.content : null
     },
-    fullText () {
+    fullText() {
       return GetContentString(this.content)
-    }
+    },
   },
-  data () {
+  data() {
     return {
       begun: false,
       finished: false,
       prompt: '',
-      workshop: null
+      workshop: null,
     }
   },
   methods: {
-    begin (currentWorkshop, currentPrompt) {
+    begin(currentWorkshop, currentPrompt) {
       this.begun = true
 
       if (!currentWorkshop) {
@@ -86,7 +96,7 @@ export default {
         }
       }
     },
-    checkForDeletion () {
+    checkForDeletion() {
       if (!this.fullText.trim()) {
         exerciseCache.cacheDelete()
         promptCache.cacheDelete()
@@ -95,13 +105,13 @@ export default {
         }
       }
     },
-    finish () {
+    finish() {
       exerciseCache.cacheDelete()
       promptCache.cacheDelete()
       this.finished = true
       this.checkForDeletion()
     },
-    getCurrentPrompts () {
+    getCurrentPrompts() {
       const cachedPrompts = promptCache.cacheGet()
       if (!cachedPrompts) {
         return null
@@ -109,7 +119,7 @@ export default {
 
       return cachedPrompts
     },
-    getCurrentWorkshop () {
+    getCurrentWorkshop() {
       const cachedGuid = exerciseCache.cacheGet()
       if (!cachedGuid) {
         return null
@@ -118,14 +128,14 @@ export default {
       const workshop = this.allWorkshops.find(workshop => workshop.guid === cachedGuid)
       return workshop || null
     },
-    getDefineLink (word) {
+    getDefineLink(word) {
       const urlWord = word.trim().replace(/\s+/g, '+')
       return `https://www.google.com/#q=define+${urlWord}`
     },
-    getRandomPrompt () {
+    getRandomPrompt() {
       return PlotPrompts[this.randomInt(PlotPrompts.length)]
     },
-    newWorkshop () {
+    newWorkshop() {
       promptCache.cacheDelete()
       this.prompt = this.getRandomPrompt()
       promptCache.cacheSet(this.prompt)
@@ -138,38 +148,38 @@ export default {
         order: 0,
         workshopName: writingWorkshops.PLOT_WORKSHOP.name,
         content: null,
-        date: new Date().toLocaleDateString('en-US')
+        date: new Date().toLocaleDateString('en-US'),
       }
       this.$store.commit(ADD_WORKSHOP, { workshop: this.workshop })
       exerciseCache.cacheSet(this.workshop.guid)
     },
-    randomInt (max) {
+    randomInt(max) {
       return Math.floor(Math.random() * Math.floor(max + 1))
     },
-    reset () {
+    reset() {
       this.begun = false
       this.finished = false
       this.workshop = null
     },
-    updateContent ({ content }) {
+    updateContent({ content }) {
       this.$store.commit(UPDATE_WORKSHOPS_CONTENT, {
         workshopUpdates: [{
           workshop: this.workshop,
-          newContent: content
-        }]
+          newContent: content,
+        }],
       })
-    }
+    },
   },
-  created () {
+  created() {
     const workshop = this.getCurrentWorkshop()
     if (workshop) {
       const prompts = this.getCurrentPrompts()
       this.begin(workshop, prompts)
     }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     this.checkForDeletion()
-  }
+  },
 }
 </script>
 

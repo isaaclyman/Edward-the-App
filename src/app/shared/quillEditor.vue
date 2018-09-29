@@ -1,14 +1,19 @@
 <template>
   <div class="wrap">
-    <div class="editor" ref="container">
-      <div ref="editor" @keyup.ctrl.enter="emitDone"></div>
+    <div 
+      class="editor" 
+      ref="container">
+      <div 
+        ref="editor" 
+        @keyup.ctrl.enter="emitDone"/>
     </div>
     <div v-if="showFullScreen">
-      <quill-full-screen 
-        :content="content" :content-id="contentId"
+      <quill-full-screen
+        :content="content" 
+        :content-id="contentId"
         @close="hideFullScreen()"
         @update:content="emitFullscreenContent"
-        @update:selection="emitSelection"></quill-full-screen>
+        @update:selection="emitSelection"/>
     </div>
   </div>
 </template>
@@ -21,62 +26,62 @@ import isEqual from 'lodash/isEqual'
 import QuillFullScreen from './quillFullScreen.vue'
 
 export default {
-  beforeDestroy () {
+  beforeDestroy() {
     this.handlers.forEach(([name, fn]) => this.quill.off(name, fn))
   },
   components: {
-    QuillFullScreen
+    QuillFullScreen,
   },
-  data () {
+  data() {
     return {
       cachedContentId: null,
       handlers: [],
       quill: null,
-      showFullScreen: false
+      showFullScreen: false,
     }
   },
   methods: {
     // disable/enable are provided for the parent component to use
-    disable () {
+    disable() {
       this.quill.enable(false)
     },
-    enable () {
+    enable() {
       this.quill.enable()
     },
-    emitContent (content, contentId) {
+    emitContent(content, contentId) {
       this.$emit('update:content', { content, contentId })
     },
-    emitFullscreenContent ({ content, contentId }) {
+    emitFullscreenContent({ content, contentId }) {
       this.emitContent(content, contentId)
     },
-    emitDone () {
+    emitDone() {
       this.$emit('shortcut:done')
     },
-    emitSelection (selection) {
+    emitSelection(selection) {
       this.$emit('update:selection', selection)
     },
-    focus () {
+    focus() {
       this.$nextTick(() => this.quill.setSelection(this.quill.getLength(), 0, 'silent'))
     },
-    hideFullScreen () {
+    hideFullScreen() {
       this.showFullScreen = false
     },
-    listenQuill (quill) {
+    listenQuill(quill) {
       const selectionChanged = debounce((selection) => {
         this.emitSelection(selection)
       }, 500)
 
-      const onSelectionChange = range => {
+      const onSelectionChange = (range) => {
         let selection
         if (!range || !range.length) {
           selection = {
             range: null,
-            text: ''
+            text: '',
           }
         } else {
           selection = {
-            range: range,
-            text: quill.getText(range.index, range.length)
+            range,
+            text: quill.getText(range.index, range.length),
           }
         }
 
@@ -100,20 +105,20 @@ export default {
 
       this.handlers.push(['text-change', onTextChange], ['selection-change', onSelectionChange])
     },
-    updateQuill (quill, content, silent) {
+    updateQuill(quill, content, silent) {
       if (content) {
         quill.setContents(content, silent ? 'silent' : 'api')
       }
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.quill = createQuill(
       this.$refs.editor,
       'Write here.',
       this.container || this.$refs.container,
       () => {
         this.showFullScreen = true
-      }
+      },
     )
 
     this.updateQuill(this.quill, this.content, true)
@@ -121,21 +126,26 @@ export default {
   },
   props: {
     container: {
-      required: false
+      default: null,
+      required: false,
+      type: Object
     },
     content: {
-      required: true
+      required: true,
+      type: Object
     },
     contentId: {
       required: false,
-      default: null
+      default: null,
+      type: String
     },
     scrollTo: {
+      default: null,
       type: Object
-    }
+    },
   },
   watch: {
-    content (delta) {
+    content(delta) {
       if (delta === undefined || isEqual(delta, this.quill.getContents())) {
         return
       }
@@ -148,7 +158,7 @@ export default {
         this.updateQuill(this.quill, delta, true)
       }
     },
-    scrollTo (descriptor) {
+    scrollTo(descriptor) {
       if (!descriptor || !~descriptor.paragraphIndex) {
         return
       }
@@ -168,17 +178,17 @@ export default {
       const searchRanges = getAllOccurrences(search, contents)
       const selectedRange = searchRanges[descriptor.searchTermIndex]
       this.quill.setSelection(selectedRange, 'api')
-    }
-  }
+    },
+  },
 }
 
-function getAllOccurrences (regex, str) {
+function getAllOccurrences(regex, str) {
   const ranges = []
   let result
   while ((result = regex.exec(str))) {
     ranges.push({
       index: result.index,
-      length: result[0].length
+      length: result[0].length,
     })
   }
   return ranges
@@ -221,7 +231,7 @@ function getAllOccurrences (regex, str) {
 
 .ql-editor h1, .ql-editor h2, .ql-editor h3 {
   font-family: 'Asap Condensed', sans-serif;
-  margin-bottom: 10px;  
+  margin-bottom: 10px;
 }
 
 .ql-editor h1 {

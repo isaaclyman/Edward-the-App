@@ -30,20 +30,20 @@ export const storageApiPromise = function () {
 const cachedStorage = {
   Local: {
     cached: null,
-    get: username => new LocalStorageApi(username)
+    get: username => new LocalStorageApi(username),
   },
   Demo: {
     cached: null,
-    get: () => new DemoStorageApi()
+    get: () => new DemoStorageApi(),
   },
   Server: {
     cached: null,
-    get: () => new ServerStorageApi()
+    get: () => new ServerStorageApi(),
   },
   Offline: {
     cached: null,
-    get: username => new OfflineStorageApi(username)
-  }
+    get: username => new OfflineStorageApi(username),
+  },
 }
 
 let waitForInit = Promise.resolve()
@@ -60,8 +60,8 @@ const getCached = (storage, username = 'unknown') => {
   return waitForInit.then(() => storage.cached)
 }
 
-export function getStorageApi (user) {
-  return api.isOnline().then(() => true, () => false).then(isOnline => {
+export function getStorageApi(user) {
+  return api.isOnline().then(() => true, () => false).then((isOnline) => {
     if (!user || !user.accountType) {
       return getCached(cachedStorage.Local)
     }

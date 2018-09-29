@@ -4,15 +4,15 @@ import 'quill/dist/quill.snow.css'
 import tooltip from './tippyBuilder'
 
 const toolbarOptions = [[
-  { 'header': [1, 2, 3, false] }
+  { header: [1, 2, 3, false] },
 ], [
-  'bold', 'italic', 'underline', 'strike'
+  'bold', 'italic', 'underline', 'strike',
 ], [
-  { 'list': 'ordered' }, { 'list': 'bullet' }
+  { list: 'ordered' }, { list: 'bullet' },
 ], [
-  'blockquote'
+  'blockquote',
 ], [
-  'clean'
+  'clean',
 ]]
 
 const allowedFormats = [
@@ -23,7 +23,7 @@ const allowedFormats = [
   'underline',
   'strike',
   'list',
-  'blockquote'
+  'blockquote',
 ]
 
 const createQuill = (el, placeholder, container, onFullScreen) => {
@@ -40,16 +40,16 @@ const createQuill = (el, placeholder, container, onFullScreen) => {
     modules: {
       toolbar: {
         container: tempToolbar,
-        handlers: handlers
-      }
+        handlers,
+      },
     },
     placeholder,
-    theme: 'snow'
+    theme: 'snow',
   })
 
   if (onFullScreen) {
     const fullScreenSvg = Octicons['device-desktop'].toSVG({
-      height: 30
+      height: 30,
     })
     const fullScreenButton = container.querySelector('.ql-fullscreen')
     fullScreenButton.title = 'Full-screen writing mode'
@@ -59,7 +59,7 @@ const createQuill = (el, placeholder, container, onFullScreen) => {
       distance: 10,
       el: fullScreenButton,
       interactive: false,
-      position: 'top'
+      position: 'top',
     })
   }
 

@@ -7,29 +7,53 @@
         that match it.
       </p>
       <div class="search-box">
-        <input class="search-input" v-model="searchText" type="text" placeholder="Search text"
-          @keyup.enter="search()" ref="searchInput">
-        <button class="button-green" @click="search()">Search</button>
+        <input 
+          class="search-input" 
+          v-model="searchText" 
+          type="text" 
+          placeholder="Search text"
+          @keyup.enter="search()" 
+          ref="searchInput">
+        <button 
+          class="button-green" 
+          @click="search()">Search</button>
       </div>
-      <transition name="fade" mode="out-in">
-        <div class="results" v-if="!loading" key="results">
+      <transition 
+        name="fade" 
+        mode="out-in">
+        <div 
+          class="results" 
+          v-if="!loading" 
+          key="results">
           <template v-if="hasResults">
             <hr>
             <div class="filters">
               <div class="filter">
-                <input id="show-chapters" type="checkbox" v-model="filters.showChapters">
+                <input 
+                  id="show-chapters" 
+                  type="checkbox" 
+                  v-model="filters.showChapters">
                 <label for="show-chapters">Show Chapters</label>
               </div>
               <div class="filter">
-                <input id="show-outlines" type="checkbox" v-model="filters.showOutlines">
+                <input 
+                  id="show-outlines" 
+                  type="checkbox" 
+                  v-model="filters.showOutlines">
                 <label for="show-outlines">Show Outlines</label>
               </div>
               <div class="filter">
-                <input id="show-plans" type="checkbox" v-model="filters.showPlans">
+                <input 
+                  id="show-plans" 
+                  type="checkbox" 
+                  v-model="filters.showPlans">
                 <label for="show-plans">Show Plans</label>
               </div>
               <div class="filter">
-                <input id="show-workshops" type="checkbox" v-model="filters.showWorkshops">
+                <input 
+                  id="show-workshops" 
+                  type="checkbox" 
+                  v-model="filters.showWorkshops">
                 <label for="show-workshops">Show Workshops</label>
               </div>
             </div>
@@ -37,65 +61,104 @@
           <div v-if="searched && !hasResults">
             <strong>No results found.</strong>
           </div>
-          <div class="result-set chapter-results" v-if="matches.chapters.length && filters.showChapters">
+          <div 
+            class="result-set chapter-results" 
+            v-if="matches.chapters.length && filters.showChapters">
             <h3>Chapters</h3>
-            <div class="result" v-for="chapter in matches.chapters" :key="chapter.guid">
+            <div 
+              class="result" 
+              v-for="chapter in matches.chapters" 
+              :key="chapter.guid">
               <p class="result-title">
-                <strong v-text="chapter.title"></strong>
+                <strong v-text="chapter.title"/>
                 <router-link :to="'/write?chapter=' + chapter.guid">
-                  <button class="link-out" v-html="linkSvg"></button>
+                  <button 
+                    class="link-out" 
+                    v-html="linkSvg"/>
                 </router-link>
               </p>
-              <div v-for="match in chapter._matches" :key="match.index">
-                <match :match="match"></match>
+              <div 
+                v-for="match in chapter._matches" 
+                :key="match.index">
+                <match :match="match"/>
               </div>
             </div>
           </div>
-          <div class="result-set outline-results" v-if="matches.outlines.length && filters.showOutlines">
+          <div 
+            class="result-set outline-results" 
+            v-if="matches.outlines.length && filters.showOutlines">
             <h3>Outlines</h3>
-            <div class="result" v-for="topicMatch in matches.outlines" :key="topicMatch.chapterGuid + topicMatch.topicGuid">
+            <div 
+              class="result" 
+              v-for="topicMatch in matches.outlines" 
+              :key="topicMatch.chapterGuid + topicMatch.topicGuid">
               <p class="result-title">
                 <strong>{{ topicMatch.chapterTitle }} | {{ topicMatch.topicTitle }}</strong>
                 <router-link :to="'/outline?chapter=' + topicMatch.chapterGuid">
-                  <button class="link-out" v-html="linkSvg"></button>
+                  <button 
+                    class="link-out" 
+                    v-html="linkSvg"/>
                 </router-link>
               </p>
-              <div v-for="match in topicMatch._matches" :key="match.index">
-                <match :match="match"></match>
+              <div 
+                v-for="match in topicMatch._matches" 
+                :key="match.index">
+                <match :match="match"/>
               </div>
             </div>
           </div>
-          <div class="result-set plan-results" v-if="matches.plans.length && filters.showPlans">
+          <div 
+            class="result-set plan-results" 
+            v-if="matches.plans.length && filters.showPlans">
             <h3>Plans</h3>
-            <div class="result" v-for="sectionMatch in matches.plans" :key="sectionMatch.planGuid + sectionMatch.sectionGuid">
+            <div 
+              class="result" 
+              v-for="sectionMatch in matches.plans" 
+              :key="sectionMatch.planGuid + sectionMatch.sectionGuid">
               <p class="result-title">
                 <strong>{{ sectionMatch.planTitle }} | {{ sectionMatch.sectionTitle }}</strong>
                 <router-link :to="'/plan?plan=' + sectionMatch.planGuid">
-                  <button class="link-out" v-html="linkSvg"></button>
+                  <button 
+                    class="link-out" 
+                    v-html="linkSvg"/>
                 </router-link>
               </p>
-              <div v-for="match in sectionMatch._matches" :key="match.index">
-                <match :match="match"></match>
+              <div 
+                v-for="match in sectionMatch._matches" 
+                :key="match.index">
+                <match :match="match"/>
               </div>
             </div>
           </div>
-          <div class="result-set workshop-results" v-if="matches.workshops.length && filters.showWorkshops">
+          <div 
+            class="result-set workshop-results" 
+            v-if="matches.workshops.length && filters.showWorkshops">
             <h3>Workshops</h3>
-            <div class="result" v-for="workshopMatch in matches.workshops" :key="workshopMatch.guid">
+            <div 
+              class="result" 
+              v-for="workshopMatch in matches.workshops" 
+              :key="workshopMatch.guid">
               <p class="result-title">
                 <strong>{{ workshopMatch.title }}</strong>
                 <router-link :to="'/write?workshopName=' + workshopMatch.workshopName + '&workshop=' + workshopMatch.guid">
-                  <button class="link-out" v-html="linkSvg"></button>
+                  <button 
+                    class="link-out" 
+                    v-html="linkSvg"/>
                 </router-link>
               </p>
-              <div v-for="match in workshopMatch._matches" :key="match.index">
-                <match :match="match"></match>
+              <div 
+                v-for="match in workshopMatch._matches" 
+                :key="match.index">
+                <match :match="match"/>
               </div>
             </div>
           </div>
         </div>
-        <div class="loading" v-else key="loading">
-          <pulse-loader></pulse-loader>
+        <div 
+          class="loading" 
+          v-else 
+          key="loading">
+          <pulse-loader/>
         </div>
       </transition>
     </div>
@@ -113,70 +176,70 @@ const prePostChars = 40
 export default {
   components: {
     Match,
-    PulseLoader
+    PulseLoader,
   },
   computed: {
-    allChapters () {
+    allChapters() {
       return this.$store.state.chapters.chapters || []
     },
-    allPlans () {
+    allPlans() {
       return this.$store.state.chapters.plans || []
     },
-    allTopics () {
+    allTopics() {
       return this.$store.state.chapters.topics || []
     },
-    allWorkshops () {
+    allWorkshops() {
       return this.$store.state.workshop.workshops || []
     },
-    hasResults () {
+    hasResults() {
       return (
         this.matches.chapters.length ||
         this.matches.outlines.length ||
         this.matches.plans.length ||
         this.matches.workshops.length
       )
-    }
+    },
   },
-  data () {
+  data() {
     return {
       filters: {
         showChapters: true,
         showOutlines: true,
         showPlans: true,
-        showWorkshops: true
+        showWorkshops: true,
       },
       linkSvg: Octicons.link.toSVG({
         height: 14,
-        width: 14
+        width: 14,
       }),
       loading: false,
       matches: {
         chapters: [],
         outlines: [],
         plans: [],
-        workshops: []
+        workshops: [],
       },
       searched: false,
-      searchText: ''
+      searchText: '',
     }
   },
   methods: {
-    getMasterTopic (chapterTopic) {
+    getMasterTopic(chapterTopic) {
       return this.allTopics.find(topic => topic.guid === chapterTopic.guid)
     },
-    getMatchArray (fullText, indices, query) {
-      return indices.map(index => {
+    getMatchArray(fullText, indices, query) {
+      return indices.map((index) => {
         const pre = fullText.slice(
           Math.max(index - prePostChars, 0),
-          index
+          index,
         )
         const matched = fullText.slice(
           index,
-          index + query.length
+          index + query.length,
         )
         const post = fullText.slice(
           index + query.length,
-          index + query.length + prePostChars
+          index + query.length + prePostChars,
         )
 
         return {
@@ -185,21 +248,19 @@ export default {
           pre,
           post,
           index,
-          query: matched
+          query: matched,
         }
       })
     },
-    getMatchingChapters (query) {
-      return this.allChapters.map(chapter => {
+    getMatchingChapters(query) {
+      return this.allChapters.map((chapter) => {
         const fullText = GetContentString(chapter.content)
         const indices = GetIndicesOf(query, fullText)
         chapter._matches = this.getMatchArray(fullText, indices, query)
         return chapter
-      }).filter(chapter => {
-        return chapter._matches.length > 0 || chapter.title.toLowerCase().includes(query)
-      })
+      }).filter(chapter => chapter._matches.length > 0 || chapter.title.toLowerCase().includes(query))
     },
-    getMatchingOutlines (query) {
+    getMatchingOutlines(query) {
       return this.allChapters.reduce((arr, chapter) => {
         for (const key in chapter.topics) {
           if (!chapter.topics.hasOwnProperty(key)) {
@@ -216,39 +277,33 @@ export default {
             chapterGuid: chapter.guid,
             chapterTitle: chapter.title,
             topicGuid: chapterTopic.guid,
-            topicTitle: masterTopic.title
+            topicTitle: masterTopic.title,
           })
         }
         return arr
-      }, []).filter(topicMatch => {
-        return topicMatch._matches.length > 0 || topicMatch.topicTitle.toLowerCase().includes(query)
-      })
+      }, []).filter(topicMatch => topicMatch._matches.length > 0 || topicMatch.topicTitle.toLowerCase().includes(query))
     },
-    getMatchingPlans (query) {
-      return this.allPlans.reduce((arr, plan) => {
-        return arr.concat(plan.sections.map(section => {
-          const fullText = GetContentString(section.content)
-          const indices = GetIndicesOf(query, fullText)
+    getMatchingPlans(query) {
+      return this.allPlans.reduce((arr, plan) => arr.concat(plan.sections.map((section) => {
+        const fullText = GetContentString(section.content)
+        const indices = GetIndicesOf(query, fullText)
 
-          return {
-            _matches: this.getMatchArray(fullText, indices, query),
-            planGuid: plan.guid,
-            planTitle: plan.title,
-            sectionGuid: section.guid,
-            sectionTitle: section.title
-          }
-        }))
-      }, []).filter(sectionMatch => {
-        return sectionMatch._matches.length > 0 || sectionMatch.sectionTitle.toLowerCase().includes(query)
-      })
+        return {
+          _matches: this.getMatchArray(fullText, indices, query),
+          planGuid: plan.guid,
+          planTitle: plan.title,
+          sectionGuid: section.guid,
+          sectionTitle: section.title,
+        }
+      })), []).filter(sectionMatch => sectionMatch._matches.length > 0 || sectionMatch.sectionTitle.toLowerCase().includes(query))
     },
-    getMatchingWorkshops (query) {
+    getMatchingWorkshops(query) {
       const workshopsByGuid = this.allWorkshops.reduce((obj, workshop) => {
         obj[workshop.guid] = obj[workshop.guid] || {
           guid: workshop.guid,
           title: workshop.title,
           workshopName: workshop.workshopName,
-          _matches: []
+          _matches: [],
         }
         const workshopMatch = obj[workshop.guid]
 
@@ -259,11 +314,9 @@ export default {
         return obj
       }, {})
 
-      return Object.keys(workshopsByGuid).map(key => workshopsByGuid[key]).filter(workshopMatch => {
-        return workshopMatch._matches.length > 0 || workshopMatch.title.toLowerCase().includes(query)
-      })
+      return Object.keys(workshopsByGuid).map(key => workshopsByGuid[key]).filter(workshopMatch => workshopMatch._matches.length > 0 || workshopMatch.title.toLowerCase().includes(query))
     },
-    search () {
+    search() {
       this.loading = true
       this.searched = false
       this.matches.chapters = this.getMatchingChapters(this.searchText.toLowerCase())
@@ -272,11 +325,11 @@ export default {
       this.matches.workshops = this.getMatchingWorkshops(this.searchText.toLowerCase())
       this.searched = true
       this.loading = false
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.$refs.searchInput.focus()
-  }
+  },
 }
 </script>
 

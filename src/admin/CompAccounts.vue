@@ -2,22 +2,40 @@
   <div>
     <p>Accounts with a payment due date over 35 days from today:</p>
     <p v-if="!compUsers || !compUsers.length">(none)</p>
-    <div v-for="user in compUsers" :key="user.id">
+    <div 
+      v-for="user in compUsers" 
+      :key="user.id">
       <span>
-        {{user.email}} (due {{user.payment_period_end}})
+        {{ user.email }} (due {{ user.payment_period_end }})
       </span>
-      <button class="button-red" @click="uncomp(user.id)">Uncomp</button>
+      <button 
+        class="button-red" 
+        @click="uncomp(user.id)">Uncomp</button>
     </div>
-    <p class="error" v-if="error" v-text="error"></p>
+    <p 
+      class="error" 
+      v-if="error" 
+      v-text="error"/>
     <hr>
     <div class="comp-form">
       <p>Comp an account:</p>
       <div class="comp-form">
-        <input type="number" v-model="userId" placeholder="User ID">
-        <input type="number" v-model="months" placeholder="# of months to comp">
-        <button class="button-green" @click="comp()">Comp this user</button>
+        <input 
+          type="number" 
+          v-model="userId" 
+          placeholder="User ID">
+        <input 
+          type="number" 
+          v-model="months" 
+          placeholder="# of months to comp">
+        <button 
+          class="button-green" 
+          @click="comp()">Comp this user</button>
       </div>
-      <div class="error" v-if="compError" v-text="compError"></div>
+      <div 
+        class="error" 
+        v-if="compError" 
+        v-text="compError"/>
     </div>
   </div>
 </template>
@@ -27,44 +45,44 @@ import adminApi from './api'
 import swal from 'sweetalert'
 
 export default {
-  created () {
+  created() {
     this.getCompUsers()
   },
-  data () {
+  data() {
     return {
       compError: null,
       compUsers: null,
       error: null,
       months: null,
-      userId: null
+      userId: null,
     }
   },
   methods: {
-    comp () {
+    comp() {
       this.compError = false
       adminApi.compUser({ id: this.userId, months: this.months }).then(() => {
         this.months = null
         this.userId = null
         this.getCompUsers()
-      }, err => {
+      }, (err) => {
         this.compError = err
       })
     },
-    getCompUsers () {
-      adminApi.getCompUsers().then(users => {
+    getCompUsers() {
+      adminApi.getCompUsers().then((users) => {
         this.compUsers = users
-      }, err => {
+      }, (err) => {
         this.error = err
       })
     },
-    uncomp (id) {
+    uncomp(id) {
       swal({
         buttons: true,
         dangerMode: true,
         icon: 'warning',
-        text: `Are you sure? This user's next payment will be due in 1 month.`,
-        title: 'Uncomp user?'
-      }).then(willUncomp => {
+        text: 'Are you sure? This user\'s next payment will be due in 1 month.',
+        title: 'Uncomp user?',
+      }).then((willUncomp) => {
         if (!willUncomp) {
           return
         }
@@ -72,12 +90,12 @@ export default {
         this.error = null
         adminApi.uncompUser({ id }).then(() => {
           this.getCompUsers()
-        }, err => {
+        }, (err) => {
           this.error = err
         })
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

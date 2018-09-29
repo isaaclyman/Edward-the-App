@@ -1,13 +1,19 @@
 <template>
   <div class="wrap">
     <div class="account">
-      <h1 class="type">You have a {{accountType}}.</h1>
-      <h4 class="thanks" v-if="isPremium">Thanks for supporting Edward!</h4>
+      <h1 class="type">You have a {{ accountType }}.</h1>
+      <h4 
+        class="thanks" 
+        v-if="isPremium">Thanks for supporting Edward!</h4>
     </div>
     <hr v-if="isPremium">
-    <div class="payment" v-if="isPremium">
-      <p v-if="!isOverdue && paymentDueDate">Your next payment is due on {{paymentDueDate}}.</p>
-      <p class="error" v-if="isOverdue">
+    <div 
+      class="payment" 
+      v-if="isPremium">
+      <p v-if="!isOverdue && paymentDueDate">Your next payment is due on {{ paymentDueDate }}.</p>
+      <p 
+        class="error" 
+        v-if="isOverdue">
         Your account is overdue. You cannot access the app until you downgrade to a Limited account or make a successful payment.
       </p>
       <p>
@@ -35,7 +41,9 @@
           Upgrade to a Premium account to access your novels from anywhere.
         </p>
         <p class="price">($2.99 per month, up to 10,000 pages)</p>
-        <button class="button-green" @click="limitedToPremium()">
+        <button 
+          class="button-green" 
+          @click="limitedToPremium()">
           Go Premium
         </button>
       </div>
@@ -44,7 +52,9 @@
           Upgrade to a Gold account for extra Premium storage space.
         </p>
         <p class="price">($10 per month, up to 125,000 pages)</p>
-        <button class="button-gold" @click="toGold()">
+        <button 
+          class="button-gold" 
+          @click="toGold()">
           Go Gold
         </button>
       </div>
@@ -59,7 +69,9 @@
           Revert to Limited
         </button>
       </div>
-      <div class="error" v-if="error">
+      <div 
+        class="error" 
+        v-if="error">
         There has been a critical error. <strong>Your account change was not successful.</strong>
         Please try again or contact support at <a href="mailto:support@edwardtheapp.com">support@edwardtheapp.com</a>.
       </div>
@@ -72,8 +84,11 @@
     </div>
     <hr>
     <div class="cancel">
-      <pulse-loader v-if="saving"></pulse-loader>
-      <button class="button-link" @click="cancel()" :disabled="saving">
+      <pulse-loader v-if="saving"/>
+      <button 
+        class="button-link" 
+        @click="cancel()" 
+        :disabled="saving">
         Go back to the app
       </button>
     </div>
@@ -89,113 +104,105 @@ import { goToApp } from './shared'
 import LocalStorageApi from '../app/api/localStorage'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import swal from 'sweetalert'
+
 const storage = new LocalStorageApi()
 
 const accountPayments = {
   [accountTypes.LIMITED.name]: { display: 'Edward Limited monthly subscription', amount: 0 },
   [accountTypes.PREMIUM.name]: { display: 'Edward Premium monthly subscription', amount: 299 },
-  [accountTypes.GOLD.name]: { display: 'Edward Gold monthly subscription', amount: 1000 }
+  [accountTypes.GOLD.name]: { display: 'Edward Gold monthly subscription', amount: 1000 },
 }
 
 export default {
-  created () {
+  created() {
     if (!this.user || !this.user.accountType || this.user.accountType.name === accountTypes.DEMO.name) {
       this.$router.push('/login')
-      return
     }
   },
   components: {
-    PulseLoader
+    PulseLoader,
   },
   computed: {
-    accountType () {
+    accountType() {
       return this.user.accountType.displayName
     },
-    isGold () {
+    isGold() {
       return this.user.accountType.name === 'GOLD'
     },
-    isOverdue () {
+    isOverdue() {
       return this.user.isOverdue
     },
-    isPremium () {
+    isPremium() {
       return this.user.isPremium
     },
-    paymentDueDate () {
+    paymentDueDate() {
       return this.user.paymentDue ? new Date(this.user.paymentDue).toLocaleDateString() : null
     },
-    user () {
+    user() {
       const meta = this.$route.matched.find(record => record && record.meta.getCurrentUser).meta
       return meta.getCurrentUser()
-    }
+    },
   },
-  data () {
+  data() {
     return {
       error: false,
       payment: null,
-      saving: false
+      saving: false,
     }
   },
   methods: {
-    cancel () {
+    cancel() {
       goToApp()
     },
-    limitedToPremium () {
+    limitedToPremium() {
       this.payment.open({
         email: this.user.email,
         description: accountPayments.PREMIUM.display,
         amount: accountPayments.PREMIUM.amount,
-        token: token => {
+        token: (token) => {
           this.error = false
           this.saving = true
           authApi.upgrade({
             oldAccountType: accountTypes.LIMITED.name,
             newAccountType: accountTypes.PREMIUM.name,
-            token
-          }).then(() => {
-            return storage.getFullExport()
-          }).then(exported => {
-            return api.fullImport(exported)
-          }).then(() => {
+            token,
+          }).then(() => storage.getFullExport()).then(exported => api.fullImport(exported)).then(() => {
             this.error = false
             this.saving = false
             this.showSuccessPage()
-          }, err => {
+          }, (err) => {
             console.error(err)
             this.error = true
             this.saving = false
           })
-        }
+        },
       })
     },
-    limitedToGold () {
+    limitedToGold() {
       this.payment.open({
         email: this.user.email,
         description: accountPayments.GOLD.display,
         amount: accountPayments.GOLD.amount,
-        token: token => {
+        token: (token) => {
           this.error = false
           this.saving = true
           authApi.upgrade({
             oldAccountType: accountTypes.LIMITED.name,
             newAccountType: accountTypes.GOLD.name,
-            token
-          }).then(() => {
-            return storage.getFullExport()
-          }).then(exported => {
-            return api.fullImport(exported)
-          }).then(() => {
+            token,
+          }).then(() => storage.getFullExport()).then(exported => api.fullImport(exported)).then(() => {
             this.error = false
             this.saving = false
             this.showSuccessPage()
-          }, err => {
+          }, (err) => {
             console.error(err)
             this.error = true
             this.saving = false
           })
-        }
+        },
       })
     },
-    toGold () {
+    toGold() {
       // We could be going from limited OR premium to gold
       const userType = this.user.accountType.name
       if (userType === accountTypes.LIMITED.name) {
@@ -204,37 +211,37 @@ export default {
         return this.premiumToGold()
       }
     },
-    premiumToGold () {
+    premiumToGold() {
       this.payment.open({
         email: this.user.email,
         description: accountPayments.GOLD.display,
         amount: accountPayments.GOLD.amount,
-        token: token => {
+        token: (token) => {
           this.error = false
           this.saving = true
           authApi.upgrade({
             oldAccountType: accountTypes.PREMIUM.name,
             newAccountType: accountTypes.GOLD.name,
-            token
+            token,
           }).then(() => {
             this.error = false
             this.saving = false
             this.showSuccessPage()
-          }, err => {
+          }, (err) => {
             console.error(err)
             this.error = true
             this.saving = false
           })
-        }
+        },
       })
     },
-    paidToLimited () {
+    paidToLimited() {
       swal({
         buttons: true,
         dangerMode: true,
         icon: 'warning',
-        text: `Do you want to downgrade to a Limited account? You'll lose access to your documents on all other computers, and your data will be deleted if it exceeds the space your browser allows. Premium content (like workshops) will be lost.`,
-        title: 'Downgrade to Limited account?'
+        text: 'Do you want to downgrade to a Limited account? You\'ll lose access to your documents on all other computers, and your data will be deleted if it exceeds the space your browser allows. Premium content (like workshops) will be lost.',
+        title: 'Downgrade to Limited account?',
       }).then((willDowngrade) => {
         if (!willDowngrade) {
           return
@@ -243,60 +250,56 @@ export default {
         this.error = false
         this.saving = true
 
-        api.fullExport().then(exported => {
-          return storage.doFullImport(exported)
-        }).then(() => {
-          return authApi.upgrade({
-            oldAccountType: this.user.accountType.name,
-            newAccountType: accountTypes.LIMITED.name
-          })
-        }).then(() => {
+        api.fullExport().then(exported => storage.doFullImport(exported)).then(() => authApi.upgrade({
+          oldAccountType: this.user.accountType.name,
+          newAccountType: accountTypes.LIMITED.name,
+        })).then(() => {
           this.error = false
           this.saving = false
           this.showSuccessPage()
-        }, err => {
+        }, (err) => {
           console.error(err)
           this.error = true
           this.saving = false
         })
       })
     },
-    goldToPremium () {
+    goldToPremium() {
       this.payment.open({
         email: this.user.email,
         description: accountPayments.PREMIUM.display,
         amount: accountPayments.PREMIUM.amount,
-        token: token => {
+        token: (token) => {
           this.error = false
           this.saving = true
 
           authApi.upgrade({
             oldAccountType: accountTypes.GOLD.name,
             newAccountType: accountTypes.PREMIUM.name,
-            token
+            token,
           }).then(() => {
             this.error = false
             this.saving = false
             this.showSuccessPage()
-          }, err => {
+          }, (err) => {
             console.error(err)
             this.error = true
             this.saving = false
           })
-        }
+        },
       })
     },
-    showSuccessPage () {
+    showSuccessPage() {
       this.$router.push('/success')
     },
-    updatePayment () {
+    updatePayment() {
       const paymentData = accountPayments[this.user.accountType.name]
 
       this.payment.open({
         email: this.user.email,
         description: paymentData.display,
         amount: paymentData.amount,
-        token: token => {
+        token: (token) => {
           this.error = false
           this.saving = true
 
@@ -304,16 +307,16 @@ export default {
             this.error = false
             this.saving = false
             this.showSuccessPage()
-          }, err => {
+          }, (err) => {
             console.error(err)
             this.error = true
             this.saving = false
           })
-        }
+        },
       })
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.payment = window.StripeCheckout.configure({
       key: window.stripePublicKey,
       image: iconSmall,
@@ -321,12 +324,12 @@ export default {
       locale: 'auto',
       name: 'Novelist LLC',
       zipCode: true,
-      allowRememberMe: false
+      allowRememberMe: false,
     })
   },
-  destroyed () {
+  destroyed() {
     this.payment.close()
-  }
+  },
 }
 </script>
 

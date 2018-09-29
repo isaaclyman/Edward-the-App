@@ -1,27 +1,57 @@
 <template>
   <div>
-    <div v-show="!begun" class="limit">
+    <div 
+      v-show="!begun" 
+      class="limit">
       <div class="limit-option">
-        <input type="radio" id="wordLimit" name="limit" value="word" v-model="limitType">
+        <input 
+          type="radio" 
+          id="wordLimit" 
+          name="limit" 
+          value="word" 
+          v-model="limitType">
         <label for="wordLimit">Set a word limit</label>
       </div>
       <div class="limit-option">
-        <input type="radio" id="timeLimit" name="limit" value="time" v-model="limitType">
+        <input 
+          type="radio" 
+          id="timeLimit" 
+          name="limit" 
+          value="time" 
+          v-model="limitType">
         <label for="timeLimit">Set a time limit</label>
       </div>
       <div class="limit-option">
-        <input type="radio" id ="noLimit" name="limit" :value="null" v-model="limitType">
+        <input 
+          type="radio" 
+          id ="noLimit" 
+          name="limit" 
+          :value="null" 
+          v-model="limitType">
         <label for="noLimit">No limit</label>
       </div>
-      <div class="set-limit" v-if="limitType">
-        <input type="number" id="setLimit" v-model="limit">
-        <label class="set-limit-label" for="setLimit">{{setLimitLabel}}</label>
+      <div 
+        class="set-limit" 
+        v-if="limitType">
+        <input 
+          type="number" 
+          id="setLimit" 
+          v-model="limit">
+        <label 
+          class="set-limit-label" 
+          for="setLimit">{{ setLimitLabel }}</label>
       </div>
       <div class="begin">
-        <button class="button-green" @click="begin()" :disabled="!valid">Begin</button>
+        <button 
+          class="button-green" 
+          @click="begin()" 
+          :disabled="!valid">Begin</button>
       </div>
     </div>
-    <div v-show="begun" class="counter" :class="{ 'expired': limitReached }">
+    <div 
+      v-show="begun" 
+      class="counter" 
+      :class="{ 'expired': limitReached }">
       <div v-if="limitType === 'word'">
         {{ wordCount }} of {{ limit }} words written
       </div>
@@ -29,13 +59,19 @@
         {{ timeDisplay }}
       </div>
       <div v-if="!limitReached && limitType !== null">
-        <button class="button-link" @click="reset()">Cancel</button>
+        <button 
+          class="button-link" 
+          @click="reset()">Cancel</button>
       </div>
       <div v-if="limitReached">
-        <button class="button-link" @click="reset()">Set again</button>
+        <button 
+          class="button-link" 
+          @click="reset()">Set again</button>
       </div>
       <div v-if="limitType === null">
-        <button class="button-link" @click="reset()">Set a limit</button>
+        <button 
+          class="button-link" 
+          @click="reset()">Set a limit</button>
       </div>
     </div>
   </div>
@@ -44,12 +80,12 @@
 <script>
 const defaultLimit = {
   word: 500,
-  time: 10
+  time: 10,
 }
 
 export default {
   computed: {
-    secondsRemaining () {
+    secondsRemaining() {
       if (this.limitType !== 'time') {
         return 0
       }
@@ -57,7 +93,7 @@ export default {
       const limitSeconds = this.limit * 60
       return limitSeconds - this.elapsedSeconds
     },
-    setLimitLabel () {
+    setLimitLabel() {
       switch (this.limitType) {
         case 'word':
           return 'word limit'
@@ -65,40 +101,38 @@ export default {
           return 'minute limit'
       }
     },
-    timeDisplay () {
+    timeDisplay() {
       if (this.secondsRemaining > 30) {
         const minutesRemaining = Math.ceil(this.secondsRemaining / 60)
 
         if (minutesRemaining > 1) {
           return `${minutesRemaining} minutes left`
-        } else {
-          return `${minutesRemaining} minute left`
         }
+        return `${minutesRemaining} minute left`
       } else if (this.secondsRemaining > 0) {
         return `${this.secondsRemaining} seconds left`
-      } else {
-        return `Timer expired`
       }
+      return 'Timer expired'
     },
-    valid () {
+    valid() {
       return this.limitType === null || this.limit > 0
     },
-    wordCount () {
+    wordCount() {
       return (this.fullText.match(/[^\s]+/g) || []).length
-    }
+    },
   },
-  data () {
+  data() {
     return {
       begun: false,
       elapsedSeconds: 0,
       limit: 0,
       limitReached: false,
       limitType: null,
-      timerInterval: null
+      timerInterval: null,
     }
   },
   methods: {
-    begin () {
+    begin() {
       this.begun = true
       this.$emit('begin')
 
@@ -106,26 +140,26 @@ export default {
         this.startTimer()
       }
     },
-    clearTimer () {
+    clearTimer() {
       if (this.timerInterval) {
         clearInterval(this.timerInterval)
       }
     },
-    reset () {
+    reset() {
       this.clearTimer()
       this.begun = false
       this.limitReached = false
     },
-    startTimer () {
+    startTimer() {
       const startTime = new Date().getTime()
       this.timerInterval = setInterval(() => {
         const currentTime = new Date().getTime()
         this.elapsedSeconds = Math.round((currentTime - startTime) / 1000)
       }, 200)
-    }
+    },
   },
   watch: {
-    limitType (limitType, oldLimitType) {
+    limitType(limitType, oldLimitType) {
       if (Number(this.limit) > 0 && Number(this.limit) !== defaultLimit[oldLimitType]) {
         return
       }
@@ -136,10 +170,9 @@ export default {
           return
         case 'time':
           this.limit = 10
-          return
       }
     },
-    secondsRemaining (seconds) {
+    secondsRemaining(seconds) {
       if (this.limitType !== 'time') {
         return
       }
@@ -150,7 +183,7 @@ export default {
         this.$emit('limitReached')
       }
     },
-    wordCount (count) {
+    wordCount(count) {
       if (this.limitType !== 'word') {
         return
       }
@@ -161,17 +194,17 @@ export default {
       } else if (this.limitReached === true) {
         this.limitReached = false
       }
-    }
+    },
   },
   props: {
     fullText: {
       required: true,
-      type: String
-    }
+      type: String,
+    },
   },
-  beforeDestroy () {
+  beforeDestroy() {
     this.clearTimer()
-  }
+  },
 }
 </script>
 

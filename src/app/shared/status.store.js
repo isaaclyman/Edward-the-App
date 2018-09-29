@@ -7,29 +7,29 @@ export const Statuses = {
   SAVED: 'SAVED',
   SAVING: 'SAVING',
   ERROR: 'ERROR',
-  OFFLINE: 'OFFLINE'
+  OFFLINE: 'OFFLINE',
 }
 
 const store = {
   state: {
-    status: Statuses.SAVED
+    status: Statuses.SAVED,
   },
   mutations: {
-    [SET_STATUS_DONE] (state) {
+    [SET_STATUS_DONE](state) {
       state.status = Statuses.SAVED
     },
-    [SET_STATUS_ERROR] (state) {
+    [SET_STATUS_ERROR](state) {
       state.status = Statuses.ERROR
     },
-    [SET_STATUS_OFFLINE] (state) {
+    [SET_STATUS_OFFLINE](state) {
       state.status = Statuses.OFFLINE
     },
-    [SET_STATUS_SAVING] (state) {
+    [SET_STATUS_SAVING](state) {
       if (state.status !== Statuses.OFFLINE) {
         state.status = Statuses.SAVING
       }
-    }
-  }
+    },
+  },
 }
 
 export default store

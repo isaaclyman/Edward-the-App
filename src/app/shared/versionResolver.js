@@ -1,26 +1,26 @@
 import clone from 'lodash/clone'
 
 class VersionResolver {
-  constructor () {
+  constructor() {
     this.timestampField = 'updated_at'
   }
 
-  timestamp (obj) {
+  timestamp(obj) {
     obj[this.timestampField] = Date.now()
   }
 
-  timestampEach (arr) {
+  timestampEach(arr) {
     arr.forEach(obj => this.timestamp(obj))
   }
 
-  getTimestamp (obj) {
+  getTimestamp(obj) {
     if (!obj[this.timestampField]) {
       return null
     }
     return new Date(obj[this.timestampField]).getTime()
   }
 
-  getMostRecent (defaultObj, obj2) {
+  getMostRecent(defaultObj, obj2) {
     const defaultTimestamp = this.getTimestamp(defaultObj)
     const timestamp2 = this.getTimestamp(obj2)
 
@@ -31,10 +31,10 @@ class VersionResolver {
     return defaultObj
   }
 
-  getMostRecentEach (defaultArr, arr2, matchBy, markAsDeleted) {
+  getMostRecentEach(defaultArr, arr2, matchBy, markAsDeleted) {
     const returnList = []
 
-    for (let index in defaultArr) {
+    for (const index in defaultArr) {
       const obj = clone(defaultArr[index])
       if (!matchBy(obj)) {
         continue
@@ -48,7 +48,7 @@ class VersionResolver {
       }
     }
 
-    for (let index in arr2) {
+    for (const index in arr2) {
       const obj = clone(arr2[index])
       if (!matchBy(obj)) {
         continue

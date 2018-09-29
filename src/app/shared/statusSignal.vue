@@ -1,19 +1,32 @@
 <template>
-  <div class="status-wrap" v-if="!isDemo">
+  <div 
+    class="status-wrap" 
+    v-if="!isDemo">
     <div class="status">
-      <div class="status-saving" :class="{ 'show': isSaving }">
+      <div 
+        class="status-saving" 
+        :class="{ 'show': isSaving }">
         Saving...
       </div>
-      <div class="status-saved" :class="{ 'show': !isSaving && saved }">
-        Saved <span v-html="savedIcon"></span>
+      <div 
+        class="status-saved" 
+        :class="{ 'show': !isSaving && saved }">
+        Saved <span v-html="savedIcon"/>
       </div>
-      <div class="status-error" :class="{ 'show': !isSaving && saveError }"
-        :title="saveErrorText" v-tooltip="{ enabled: !isSaving && saveError }">
-        Error <span v-html="errorIcon"></span>
+      <div 
+        class="status-error" 
+        :class="{ 'show': !isSaving && saveError }"
+        :title="saveErrorText" 
+        v-tooltip="{ enabled: !isSaving && saveError }">
+        Error <span v-html="errorIcon"/>
       </div>
-      <div class="status-offline" :class="{ 'show': !isSaving && offline }"
-        :title="offlineText" v-tooltip="{ enabled: !isSaving && offline }" ref="offlineStatus">
-        Offline <span v-html="offlineIcon"></span>
+      <div 
+        class="status-offline" 
+        :class="{ 'show': !isSaving && offline }"
+        :title="offlineText" 
+        v-tooltip="{ enabled: !isSaving && offline }" 
+        ref="offlineStatus">
+        Offline <span v-html="offlineIcon"/>
       </div>
     </div>
   </div>
@@ -28,9 +41,9 @@ import tooltip from './tooltip.directive'
 let offlineInterval
 
 export default {
-  created () {
+  created() {
     offlineInterval = setInterval(() => {
-      api.isOnline().then(online => {
+      api.isOnline().then(() => {
         // TODO: If previously offline, then upsync to the server
         this.$store.commit(SET_STATUS_DONE)
       }, () => {
@@ -38,56 +51,56 @@ export default {
       })
     }, 15 * 1000)
   },
-  beforeDestroy () {
+  beforeDestroy() {
     clearInterval(offlineInterval)
   },
   computed: {
-    accountType () {
+    accountType() {
       return this.$store.state.user.user.accountType || {}
     },
-    isDemo () {
+    isDemo() {
       return this.accountType.name === 'DEMO'
     },
-    offline () {
+    offline() {
       return this.$store.state.status.status === Statuses.OFFLINE
     },
-    saved () {
+    saved() {
       return this.$store.state.status.status === Statuses.SAVED
     },
-    saving () {
+    saving() {
       return this.$store.state.status.status === Statuses.SAVING
     },
-    saveError () {
+    saveError() {
       return this.$store.state.status.status === Statuses.ERROR
-    }
+    },
   },
-  data () {
+  data() {
     return {
       errorIcon: Octicons.alert.toSVG({
         height: 15,
-        width: 15
+        width: 15,
       }),
       isSaving: false,
       offlineIcon: Octicons.plug.toSVG({
         height: 15,
-        width: 15
+        width: 15,
       }),
       offlineText:
-        `No internet connection is available. Your work is saved locally. ` +
-        `To avoid losing work, don't edit this document on any other device until the connection is restored.`,
-      saveErrorText: `An error has occurred. Your work may not be saved.`,
+        'No internet connection is available. Your work is saved locally. ' +
+        'To avoid losing work, don\'t edit this document on any other device until the connection is restored.',
+      saveErrorText: 'An error has occurred. Your work may not be saved.',
       savedIcon: Octicons.check.toSVG({
         height: 15,
-        width: 15
+        width: 15,
       }),
-      savingDebouncer: window.setTimeout(() => {})
+      savingDebouncer: window.setTimeout(() => {}),
     }
   },
   directives: {
-    tooltip
+    tooltip,
   },
   watch: {
-    offline (isOffline, wasOffline) {
+    offline(isOffline, wasOffline) {
       if (isOffline === wasOffline || !isOffline) {
         return
       }
@@ -104,7 +117,7 @@ export default {
     },
     // A bit of trickery to make the "Saving" indicator show for at least 500ms.
     // This comforts me.
-    saving (saving) {
+    saving(saving) {
       if (saving) {
         this.isSaving = true
       }
@@ -113,8 +126,8 @@ export default {
       this.savingDebouncer = window.setTimeout(() => {
         this.isSaving = this.saving
       }, 500)
-    }
-  }
+    },
+  },
 }
 </script>
 

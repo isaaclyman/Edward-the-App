@@ -5,23 +5,44 @@
       <p class="intro">
         Write whatever comes to mind. Don't worry about style, grammar, or making sense.
       </p>
-      <p class="intro" v-if="!begun">If you'd like, you can set a time or word limit:</p>
+      <p 
+        class="intro" 
+        v-if="!begun">If you'd like, you can set a time or word limit:</p>
       <transition name="shrink">
-        <div class="timer-wrap" v-if="!finished">
-          <timer @begin="begin()" :fullText="fullText"></timer>
+        <div 
+          class="timer-wrap" 
+          v-if="!finished">
+          <timer 
+            @begin="begin()" 
+            :full-text="fullText"/>
         </div>
       </transition>
-      <div class="content" v-show="begun">
-        <transition name="fade" mode="out-in">
-          <div v-if="begun && !finished" class="content-inner" key="editor">
+      <div 
+        class="content" 
+        v-show="begun">
+        <transition 
+          name="fade" 
+          mode="out-in">
+          <div 
+            v-if="begun && !finished" 
+            class="content-inner" 
+            key="editor">
             <div class="editor">
-              <quill-editor :content="content" @update:content="updateContent($event)" ref="quillEditor"></quill-editor>
+              <quill-editor 
+                :content="content" 
+                @update:content="updateContent($event)" 
+                ref="quillEditor"/>
             </div>
             <div class="done">
-              <button class="button-green" @click="finish()">Done</button>
+              <button 
+                class="button-green" 
+                @click="finish()">Done</button>
             </div>
           </div>
-          <div v-else-if="finished" class="content-inner" key="done">
+          <div 
+            v-else-if="finished" 
+            class="content-inner" 
+            key="done">
             <p class="finished">
               <template v-if="this.fullText.trim()">
                 <strong>Saved!</strong> You can view this free write in the Workshops column of the Write page.
@@ -30,7 +51,9 @@
                 <strong>Deleted!</strong> This free write was empty.
               </template>
             </p>
-            <button class="button-green" @click="reset()">Start over</button>
+            <button 
+              class="button-green" 
+              @click="reset()">Start over</button>
           </div>
         </transition>
       </div>
@@ -52,28 +75,28 @@ const exerciseCache = new Cache('FREE_WRITE_CURRENT_EXERCISE')
 export default {
   components: {
     QuillEditor,
-    Timer
+    Timer,
   },
   computed: {
-    allWorkshops () {
+    allWorkshops() {
       return this.$store.state.workshop.workshops
     },
-    content () {
+    content() {
       return this.workshop ? this.workshop.content : null
     },
-    fullText () {
+    fullText() {
       return GetContentString(this.content)
-    }
+    },
   },
-  data () {
+  data() {
     return {
       begun: false,
       finished: false,
-      workshop: null
+      workshop: null,
     }
   },
   methods: {
-    begin (currentWorkshop) {
+    begin(currentWorkshop) {
       this.begun = true
 
       if (!currentWorkshop) {
@@ -82,7 +105,7 @@ export default {
         this.workshop = currentWorkshop
       }
     },
-    checkForDeletion () {
+    checkForDeletion() {
       if (!this.fullText.trim()) {
         exerciseCache.cacheDelete()
         if (this.workshop && this.allWorkshops.includes(this.workshop)) {
@@ -90,13 +113,13 @@ export default {
         }
       }
     },
-    finish () {
+    finish() {
       this.$refs.quillEditor.disable()
       exerciseCache.cacheDelete()
       this.finished = true
       this.checkForDeletion()
     },
-    getCurrentWorkshop () {
+    getCurrentWorkshop() {
       const cachedGuid = exerciseCache.cacheGet()
       if (!cachedGuid) {
         return null
@@ -105,7 +128,7 @@ export default {
       const workshop = this.allWorkshops.find(workshop => workshop.guid === cachedGuid)
       return workshop || null
     },
-    newWorkshop () {
+    newWorkshop() {
       exerciseCache.cacheDelete()
       this.workshop = {
         archived: false,
@@ -114,35 +137,35 @@ export default {
         order: 0,
         workshopName: writingWorkshops.FREE_WRITE.name,
         content: null,
-        date: new Date().toLocaleDateString('en-US')
+        date: new Date().toLocaleDateString('en-US'),
       }
       this.$store.commit(ADD_WORKSHOP, { workshop: this.workshop })
       exerciseCache.cacheSet(this.workshop.guid)
     },
-    reset () {
+    reset() {
       this.begun = false
       this.finished = false
       this.workshop = null
     },
-    updateContent ({ content }) {
+    updateContent({ content }) {
       this.$store.commit(UPDATE_WORKSHOPS_CONTENT, {
         workshopUpdates: [{
           workshop: this.workshop,
           newContent: content,
-          newTitle: `${GetContentString(content).slice(0, 20)}...`
-        }]
+          newTitle: `${GetContentString(content).slice(0, 20)}...`,
+        }],
       })
-    }
+    },
   },
-  created () {
+  created() {
     const workshop = this.getCurrentWorkshop()
     if (workshop) {
       this.begin(workshop)
     }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     this.checkForDeletion()
-  }
+  },
 }
 </script>
 

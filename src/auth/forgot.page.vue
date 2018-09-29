@@ -9,24 +9,44 @@
         </p>
       </div>
       <div class="input">
-        <input tabindex="1" class="email-input" v-model="email" placeholder="edward@example.com">
+        <input 
+          tabindex="1" 
+          class="email-input" 
+          v-model="email" 
+          placeholder="edward@example.com">
       </div>
       <div class="captcha">
-        <Captcha :tabindex="2" @change="setCaptchaResponse" @expire="resetCaptchaResponse" ref="captcha"></Captcha>
+        <Captcha 
+          :tabindex="2" 
+          @change="setCaptchaResponse" 
+          @expire="resetCaptchaResponse" 
+          ref="captcha"/>
       </div>
-      <div class="actions" v-if="!emailSent">
-        <pulse-loader v-if="saving"></pulse-loader>
-        <button tabindex="3" v-if="!saving" class="button-green reset-button" @click="reset()">Reset my password</button>
-        <p class="error" v-if="error">
+      <div 
+        class="actions" 
+        v-if="!emailSent">
+        <pulse-loader v-if="saving"/>
+        <button 
+          tabindex="3" 
+          v-if="!saving" 
+          class="button-green reset-button" 
+          @click="reset()">Reset my password</button>
+        <p 
+          class="error" 
+          v-if="error">
           That didn't work. Please check your email address and try again.
         </p>
       </div>
-      <div class="success" v-if="emailSent">
+      <div 
+        class="success" 
+        v-if="emailSent">
         Email sent! Go check your inbox.
       </div>
       <div class="cancel">
         <router-link to="/login">
-          <button tabindex="4" class="button-link">Back to login</button>
+          <button 
+            tabindex="4" 
+            class="button-link">Back to login</button>
         </router-link>
       </div>
     </div>
@@ -41,47 +61,47 @@ import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 export default {
   components: {
     Captcha,
-    PulseLoader
+    PulseLoader,
   },
   computed: {
-    isTest () {
+    isTest() {
       return this.email === 'trash@edwardtheapp.com'
-    }
+    },
   },
-  data () {
+  data() {
     return {
       captchaResponse: '',
       email: '',
       error: false,
       saving: false,
-      emailSent: false
+      emailSent: false,
     }
   },
   methods: {
-    reset () {
+    reset() {
       this.error = false
       this.saving = true
       authApi.sendResetPasswordLink({
         email: this.email,
         captchaResponse: this.captchaResponse,
-        integration: this.isTest
+        integration: this.isTest,
       }).then(() => {
         this.saving = false
         this.emailSent = true
-      }, err => {
+      }, (err) => {
         this.saving = false
         this.error = true
         this.emailSent = false
         console.error(err)
       })
     },
-    resetCaptchaResponse () {
+    resetCaptchaResponse() {
       this.captchaResponse = ''
     },
-    setCaptchaResponse (response) {
+    setCaptchaResponse(response) {
       this.captchaResponse = response
-    }
-  }
+    },
+  },
 }
 </script>
 

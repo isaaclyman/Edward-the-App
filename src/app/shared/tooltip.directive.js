@@ -2,13 +2,15 @@ import tooltip from './tippyBuilder'
 
 const directive = {
   bind: (el, { value = {} }) => {
-    const { content, distance = 10, interactive = false, enabled = true } = value
+    const {
+      content, distance = 10, interactive = false, enabled = true,
+    } = value
 
     const tippy = tooltip({
       content,
       distance,
       el,
-      interactive
+      interactive,
     })
 
     if (!tippy) {
@@ -37,7 +39,7 @@ const directive = {
     } else {
       tippy.disable()
     }
-  }
+  },
 }
 
 export default directive

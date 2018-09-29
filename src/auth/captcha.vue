@@ -1,10 +1,10 @@
 <template>
-  <div ref="recaptcha"></div>
+  <div ref="recaptcha"/>
 </template>
 
 <script>
 export default {
-  created () {
+  created() {
     const iframeInterval = setInterval(() => {
       const iframe = this.$refs.recaptcha && this.$refs.recaptcha.querySelector('iframe')
       if (iframe) {
@@ -13,11 +13,11 @@ export default {
       }
     }, 100)
   },
-  data () {
+  data() {
     return {}
   },
   methods: {
-    mountCaptcha () {
+    mountCaptcha() {
       if (!window.grecaptcha || !window.grecaptcha.render) {
         return false
       }
@@ -33,17 +33,17 @@ export default {
         'expired-callback': () => {
           this.$emit('expire')
         },
-        sitekey: window.recaptchaSiteKey
+        sitekey: window.recaptchaSiteKey,
       })
       return true
     },
-    reset () {
+    reset() {
       if (window.grecaptcha) {
         window.grecaptcha.reset()
       }
-    }
+    },
   },
-  mounted () {
+  mounted() {
     const interval = window.setInterval(() => {
       const success = this.mountCaptcha()
       if (success) {
@@ -54,9 +54,9 @@ export default {
   props: {
     tabindex: {
       required: true,
-      type: Number
-    }
-  }
+      type: Number,
+    },
+  },
 }
 </script>
 

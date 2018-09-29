@@ -4,14 +4,14 @@ const store = {
   state: {
     selection: {
       range: null,
-      text: ''
-    }
+      text: '',
+    },
   },
   mutations: {
-    [UPDATE_SELECTION] (state, selection) {
+    [UPDATE_SELECTION](state, selection) {
       state.selection = selection
-    }
-  }
+    },
+  },
 }
 
 export default store

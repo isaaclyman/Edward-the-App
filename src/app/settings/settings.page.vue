@@ -1,65 +1,98 @@
 <template>
-<div class="wrap">
-  <div class="settings">
-    <div class="title">
-      <h3>Settings</h3>
-    </div>
-    <hr>
-    <h4>Email</h4>
-    <div class="change-email">
-      <input class="account-input" v-model="account.email" :disabled="!editingEmail">
-      <button class="button-link" v-if="notDemo && !editingEmail" @click="editEmail()">
-        Edit
-      </button>
-      <button class="button-link" v-if="editingEmail" @click="cancelEditEmail()">
-        Cancel
-      </button>
-      <button class="button-green" v-if="notDemo" @click="saveEmail()" :disabled="!editingEmail">
-        Save
-      </button>
-    </div>
-    <div class="error" v-if="error">
-      That didn't work. Please try again or contact support.
-    </div>
-    <hr>
-    <h4>Password</h4>
-    <div class="change-password">
-      <input class="account-input" type="password" v-model="account.password" :disabled="!editingPassword">
-      <button class="button-link" v-if="notDemo && !editingPassword" @click="editPassword()">
-        Edit
-      </button>
-      <button class="button-link" v-if="editingPassword" @click="cancelEditPassword()">
-        Cancel
-      </button>
-      <button class="button-green" v-if="notDemo" @click="savePassword()" :disabled="!editingPassword">
-        Save
-      </button>
-    </div>
-    <hr>
-    <h3>Account Status</h3>
-    <div class="account-type" v-if="notDemo">
-      <p>You have a {{accountType}}.</p>
-      <p v-if="!isPremium">For a better experience, upgrade to a Premium Account.</p>
-      <div class="upgrade-button">
-        <a href="/auth#/account">
-          <button class="button-green">
-            Manage account
-          </button>
-        </a>
+  <div class="wrap">
+    <div class="settings">
+      <div class="title">
+        <h3>Settings</h3>
+      </div>
+      <hr>
+      <h4>Email</h4>
+      <div class="change-email">
+        <input 
+          class="account-input" 
+          v-model="account.email" 
+          :disabled="!editingEmail">
+        <button 
+          class="button-link" 
+          v-if="notDemo && !editingEmail" 
+          @click="editEmail()">
+          Edit
+        </button>
+        <button 
+          class="button-link" 
+          v-if="editingEmail" 
+          @click="cancelEditEmail()">
+          Cancel
+        </button>
+        <button 
+          class="button-green" 
+          v-if="notDemo" 
+          @click="saveEmail()" 
+          :disabled="!editingEmail">
+          Save
+        </button>
+      </div>
+      <div 
+        class="error" 
+        v-if="error">
+        That didn't work. Please try again or contact support.
+      </div>
+      <hr>
+      <h4>Password</h4>
+      <div class="change-password">
+        <input 
+          class="account-input" 
+          type="password" 
+          v-model="account.password" 
+          :disabled="!editingPassword">
+        <button 
+          class="button-link" 
+          v-if="notDemo && !editingPassword" 
+          @click="editPassword()">
+          Edit
+        </button>
+        <button 
+          class="button-link" 
+          v-if="editingPassword" 
+          @click="cancelEditPassword()">
+          Cancel
+        </button>
+        <button 
+          class="button-green" 
+          v-if="notDemo" 
+          @click="savePassword()" 
+          :disabled="!editingPassword">
+          Save
+        </button>
+      </div>
+      <hr>
+      <h3>Account Status</h3>
+      <div 
+        class="account-type" 
+        v-if="notDemo">
+        <p>You have a {{ accountType }}.</p>
+        <p v-if="!isPremium">For a better experience, upgrade to a Premium Account.</p>
+        <div class="upgrade-button">
+          <a href="/auth#/account">
+            <button class="button-green">
+              Manage account
+            </button>
+          </a>
+        </div>
+      </div>
+      <hr>
+      <h3>About</h3>
+      <div class="about-app">
+        <p>Edward was created by <a href="http://isaaclyman.com">Isaac</a>. For updates on new features and Edward-flavored fun, follow the app on Twitter.</p>
+        <p>
+          <a href="https://twitter.com/edwardtheapp">
+            <span 
+              class="twitter-icon" 
+              v-html="twitterIcon"/>
+          </a>
+        </p>
       </div>
     </div>
-    <hr>
-    <h3>About</h3>
-    <div class="about-app">
-      <p>Edward was created by <a href="http://isaaclyman.com">Isaac</a>. For updates on new features and Edward-flavored fun, follow the app on Twitter.</p>
-      <p>
-        <a href="https://twitter.com/edwardtheapp">
-          <span class="twitter-icon" v-html="twitterIcon"></span>
-        </a>
-      </p>
-    </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -72,58 +105,58 @@ const twitterIcon = '<svg id="Logo_FIXED" data-name="Logo â€” FIXED" xmlns=
 export default {
   components: {},
   computed: {
-    accountType () {
+    accountType() {
       return this.user.accountType.displayName
     },
-    isPremium () {
+    isPremium() {
       return this.user.isPremium
     },
-    notDemo () {
+    notDemo() {
       return this.user.accountType.name !== 'DEMO'
     },
-    user () {
+    user() {
       return this.$store.state.user.user
     },
-    userPromise () {
+    userPromise() {
       return this.$store.state.user.userPromise
-    }
+    },
   },
-  data () {
+  data() {
     return {
       account: {
         email: '',
-        password: mockPassword
+        password: mockPassword,
       },
       editingEmail: false,
       editingPassword: false,
       error: false,
-      twitterIcon
+      twitterIcon,
     }
   },
   methods: {
-    cancelEditEmail () {
+    cancelEditEmail() {
       this.editingEmail = false
       this.account.email = this.user.email
     },
-    cancelEditPassword () {
+    cancelEditPassword() {
       this.editingPassword = false
       this.account.password = mockPassword
     },
-    editEmail () {
+    editEmail() {
       this.editingEmail = true
     },
-    editPassword () {
+    editPassword() {
       this.editingPassword = true
       this.account.password = ''
     },
-    saveEmail () {
+    saveEmail() {
       this.error = false
       swal({
         buttons: true,
         dangerMode: true,
         icon: 'warning',
-        text: `Are you sure you want to change your email address? You will have to verify the new address before you can access your account.`,
-        title: 'Change email and re-verify?'
+        text: 'Are you sure you want to change your email address? You will have to verify the new address before you can access your account.',
+        title: 'Change email and re-verify?',
       }).then((willChange) => {
         if (!willChange) {
           return
@@ -132,22 +165,22 @@ export default {
         this.$store.dispatch(UPDATE_EMAIL, { email: this.account.email }).then(() => {
           this.editingEmail = false
           window.location.href = '/auth#/verification'
-        }, err => {
+        }, (err) => {
           console.error(err)
           this.error = true
         })
       })
     },
-    savePassword () {
+    savePassword() {
       this.$store.commit(UPDATE_PASSWORD, { password: this.account.password })
       this.editingPassword = false
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.userPromise.then(() => {
       this.account.email = this.user.email
     })
-  }
+  },
 }
 </script>
 

@@ -1,17 +1,21 @@
 import debounce from 'lodash/debounce'
-import { ADD_CHAPTER, ADD_PLAN, ADD_SECTION, ADD_TOPIC, ADD_TOPIC_TO_CHAPTER,
+import {
+  ADD_CHAPTER, ADD_PLAN, ADD_SECTION, ADD_TOPIC, ADD_TOPIC_TO_CHAPTER,
   ARCHIVE_CHAPTER, ARCHIVE_PLAN, ARCHIVE_SECTION, ARCHIVE_TOPIC,
   DELETE_CHAPTER, DELETE_PLAN, DELETE_SECTION, DELETE_TOPIC,
   REARRANGE_CHAPTERS, REARRANGE_PLANS, REARRANGE_SECTIONS, REARRANGE_TOPICS,
   RESTORE_CHAPTER, RESTORE_PLAN, RESTORE_SECTION, RESTORE_TOPIC,
   UPDATE_CHAPTER, UPDATE_CHAPTER_CONTENT, UPDATE_PLAN,
   UPDATE_SECTION, UPDATE_SECTION_CONTENT, UPDATE_SECTION_TAGS,
-  UPDATE_TOPIC, UPDATE_TOPIC_CONTENT } from '../shared/chapters.store'
+  UPDATE_TOPIC, UPDATE_TOPIC_CONTENT,
+} from '../shared/chapters.store'
 
 import { ADD_DOCUMENT, REMOVE_OWNED_DOCUMENT, UPDATE_DOCUMENT_NAME } from '../shared/document.store'
 
-import { ADD_WORKSHOP, ARCHIVE_WORKSHOP, DELETE_WORKSHOP, RESTORE_WORKSHOP,
-  UPDATE_WORKSHOPS_CONTENT } from '../shared/workshops.store'
+import {
+  ADD_WORKSHOP, ARCHIVE_WORKSHOP, DELETE_WORKSHOP, RESTORE_WORKSHOP,
+  UPDATE_WORKSHOPS_CONTENT,
+} from '../shared/workshops.store'
 
 import { getStorageApi } from './storageSwitch'
 
@@ -37,7 +41,7 @@ const mutations = {
   updateTopic: [ADD_TOPIC, ARCHIVE_TOPIC,
     RESTORE_TOPIC, UPDATE_TOPIC],
   updateWorkshop: [ADD_WORKSHOP, ARCHIVE_WORKSHOP, RESTORE_WORKSHOP],
-  updateWorkshops: [UPDATE_WORKSHOPS_CONTENT]
+  updateWorkshops: [UPDATE_WORKSHOPS_CONTENT],
 }
 
 let debouncedUpdateChapter = null
@@ -46,18 +50,18 @@ let chapterStorage = null
 const getDebouncedUpdateChapter = () => {
   if (!debouncedUpdateChapter) {
     debouncedUpdateChapter = debounce((...args) => {
-      chapterStorage.updateChapter.apply(chapterStorage, args)
+      chapterStorage.updateChapter(...args)
     }, 50)
   }
 
   return debouncedUpdateChapter
 }
 
-export const chapterAutosaverPlugin = store => {
+export const chapterAutosaverPlugin = (store) => {
   store.subscribe((mutation, state) => {
     // Make sure we know the user type before handling mutations
-    state.user.userPromise.then(user => {
-      getStorageApi(user).then(storage => {
+    state.user.userPromise.then((user) => {
+      getStorageApi(user).then((storage) => {
         chapterStorage = storage
         handleMutation(mutation, state, storage, getDebouncedUpdateChapter())
       })
@@ -65,7 +69,7 @@ export const chapterAutosaverPlugin = store => {
   })
 }
 
-function handleMutation (mutation, state, storage, debouncedUpdateChapter) {
+function handleMutation(mutation, state, storage, debouncedUpdateChapter) {
   const { type, payload } = mutation
   const documentGuid = state.document.currentDocument && state.document.currentDocument.guid
 

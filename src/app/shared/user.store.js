@@ -11,14 +11,14 @@ const defaultUser = {
   accountType: {
     description: 'Either your internet or our servers are down right now. Any work you do may be lost.',
     displayName: 'Connectivity issues',
-    name: 'ERROR'
+    name: 'ERROR',
   },
   email: 'ERROR',
   isPremium: false,
-  verified: true
+  verified: true,
 }
 
-function setSentryUser (user) {
+function setSentryUser(user) {
   if (!window.Raven || typeof window.Raven.setUserContext !== 'function') {
     return
   }
@@ -41,38 +41,38 @@ const store = {
     // It cannot be rejected.
     userPromise: new Promise((resolve) => {
       userPromiseResolve = resolve
-    })
+    }),
   },
   actions: {
-    [UPDATE_EMAIL] ({ commit, state }, { email }) {
+    [UPDATE_EMAIL]({ commit }, { email }) {
       commit(COMMIT_NEW_EMAIL, { email })
       return userApi.updateEmail(email)
-    }
+    },
   },
   mutations: {
-    [COMMIT_NEW_EMAIL] (state, { email }) {
+    [COMMIT_NEW_EMAIL](state, { email }) {
       state.user.email = email
     },
-    [SET_DEFAULT_USER] (state) {
+    [SET_DEFAULT_USER](state) {
       state.user = defaultUser
       setSentryUser()
     },
-    [SET_USER] (state, user) {
+    [SET_USER](state, user) {
       state.user = user
       setSentryUser(user)
     },
-    [SET_USER_PROMISE] (state, promise) {
-      promise.then(data => {
+    [SET_USER_PROMISE](state, promise) {
+      promise.then((data) => {
         userPromiseResolve(data)
-      }, err => {
+      }, (err) => {
         console.error(err)
         userPromiseResolve(null, err)
       })
     },
-    [UPDATE_PASSWORD] (state, { password }) {
+    [UPDATE_PASSWORD](state, { password }) {
       userApi.updatePassword(password)
-    }
-  }
+    },
+  },
 }
 
 export default store

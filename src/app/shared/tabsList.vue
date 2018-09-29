@@ -1,21 +1,45 @@
 <template>
   <div class="tabs">
-    <button v-for="(item, index) in dataArray" :key="item.guid" v-show="filterTabs(item)"
-            class="button-tab" :class="{ 'active': isActive(index) }"
-            @click="selectItem(index)"
-            @mouseover="hoverItem(index)"
-            @mouseout="unhoverItem()">
+    <button 
+      v-for="(item, index) in dataArray" 
+      :key="item.guid" 
+      v-show="filterTabs(item)"
+      class="button-tab" 
+      :class="{ 'active': isActive(index) }"
+      @click="selectItem(index)"
+      @mouseover="hoverItem(index)"
+      @mouseout="unhoverItem()">
       {{ item.title }}
     </button>
-    <button v-if="canAdd" @click="showNewItem" class="button-tab add-button" v-show="!showAddItem" v-html="addSvg"></button>
-    <div class="button-tab add-tab" v-show="showAddItem" v-if="canAdd">
-      <input class="tab-input" v-model="newItem" :placeholder="`New ${itemName}...`" @keyup.enter="addItem">
-      <button class="button-green tab-internal-button" @click="addItem">
-        <span class="u-center-all icon" v-html="saveSvg"></span> Save
+    <button 
+      v-if="canAdd" 
+      @click="showNewItem" 
+      class="button-tab add-button" 
+      v-show="!showAddItem" 
+      v-html="addSvg"/>
+    <div 
+      class="button-tab add-tab" 
+      v-show="showAddItem" 
+      v-if="canAdd">
+      <input 
+        class="tab-input" 
+        v-model="newItem" 
+        :placeholder="`New ${itemName}...`" 
+        @keyup.enter="addItem">
+      <button 
+        class="button-green tab-internal-button" 
+        @click="addItem">
+        <span 
+          class="u-center-all icon" 
+          v-html="saveSvg"/> Save
       </button>
-      <button class="button-red tab-internal-button" @click="cancelAddItem">
-          <span class="u-center-all icon" v-html="cancelSvg"></span> Cancel
-        </button>
+      <button 
+        class="button-red tab-internal-button" 
+        @click="cancelAddItem">
+        <span 
+          class="u-center-all icon" 
+          v-html="cancelSvg"/> Cancel
+      </button>
     </div>
   </div>
 </template>
@@ -25,7 +49,7 @@ import Cache from './cache'
 import Octicons from 'octicons'
 
 export default {
-  created () {
+  created() {
     const cachedIndex = this.tabCache.cacheGet()
     if (cachedIndex && cachedIndex < this.dataArray.length) {
       this.selectItem(cachedIndex)
@@ -36,79 +60,79 @@ export default {
   },
   components: {},
   computed: {},
-  data () {
+  data() {
     return {
       addSvg: Octicons.plus.toSVG({
         height: 14,
-        width: 14
+        width: 14,
       }),
       cancelSvg: Octicons['circle-slash'].toSVG({
         height: 14,
-        width: 14
+        width: 14,
       }),
       newItem: '',
       saveSvg: Octicons.check.toSVG({
         height: 14,
-        width: 14
+        width: 14,
       }),
       showAddItem: false,
-      tabCache: new Cache(`CURRENT_${this.itemName}_TAB`)
+      tabCache: new Cache(`CURRENT_${this.itemName}_TAB`),
     }
   },
   methods: {
-    addItem () {
+    addItem() {
       this.$emit('add', this.newItem)
       this.newItem = ''
       this.showAddItem = false
     },
-    hoverItem (index) {
+    hoverItem(index) {
       this.$emit('hover', index)
     },
-    isActive (index) {
+    isActive(index) {
       return index === this.activeIndex
     },
-    selectItem (index) {
+    selectItem(index) {
       this.$emit('update:activeIndex', index)
     },
-    showNewItem () {
+    showNewItem() {
       this.showAddItem = true
     },
-    cancelAddItem () {
+    cancelAddItem() {
       this.showAddItem = false
       this.newItem = ''
     },
-    unhoverItem () {
+    unhoverItem() {
       this.$emit('unhover')
-    }
+    },
   },
   props: {
     activeIndex: {
       required: true,
-      type: Number
+      type: Number,
     },
     dataArray: {
       required: true,
-      type: Array
+      type: Array,
     },
     filterTabs: {
       required: true,
-      type: Function
+      type: Function,
     },
     itemName: {
       required: true,
-      type: String
+      type: String,
     },
     canAdd: {
       required: false,
       default: true,
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   watch: {
-    activeIndex (index) {
+    activeIndex(index) {
       this.tabCache.cacheSet(index)
-    }
-  }
+    },
+  },
 }
 </script>
 

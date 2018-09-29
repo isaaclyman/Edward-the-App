@@ -3,22 +3,37 @@
     <div class="exporter">
       <div class="export-option">
         <h3>Export to PDF</h3>
-        <pulse-loader v-if="loading"></pulse-loader>
+        <pulse-loader v-if="loading"/>
         <div class="export-checkbox">
-          <input id="pdfIncludeArchived" v-if="!loading" type="checkbox" v-model="pdfIncludeArchived">
-          <label for="pdfIncludeArchived" v-if="!loading">Include Archived</label>
+          <input 
+            id="pdfIncludeArchived" 
+            v-if="!loading" 
+            type="checkbox" 
+            v-model="pdfIncludeArchived">
+          <label 
+            for="pdfIncludeArchived" 
+            v-if="!loading">Include Archived</label>
         </div>
         <template v-if="!loading">
-          <button class="button-green export-button" @click="exportPdfChapters()">
+          <button 
+            class="button-green export-button" 
+            @click="exportPdfChapters()">
             Export all chapters
           </button>
-          <button class="button-green export-button" @click="exportPdfPlans()">
+          <button 
+            class="button-green export-button" 
+            @click="exportPdfPlans()">
             Export all plans
           </button>
-          <button class="button-green export-button" @click="exportPdfOutlines()">
+          <button 
+            class="button-green export-button" 
+            @click="exportPdfOutlines()">
             Export all outlines
           </button>
-          <button v-if="isPremium" class="button-green export-button" @click="exportPdfWorkshops()">
+          <button 
+            v-if="isPremium" 
+            class="button-green export-button" 
+            @click="exportPdfWorkshops()">
             Export all workshops
           </button>
         </template>
@@ -26,13 +41,21 @@
       <div class="export-option">
         <h3>Export to Microsoft Word document</h3>
         <div>(Premium users only)</div>
-        <pulse-loader v-if="loading"></pulse-loader>
+        <pulse-loader v-if="loading"/>
         <div class="export-checkbox">
-          <input id="wordIncludeArchived" v-if="!loading" type="checkbox" v-model="wordIncludeArchived">
-          <label for="wordIncludeArchived" v-if="!loading">Include Archived</label>
+          <input 
+            id="wordIncludeArchived" 
+            v-if="!loading" 
+            type="checkbox" 
+            v-model="wordIncludeArchived">
+          <label 
+            for="wordIncludeArchived" 
+            v-if="!loading">Include Archived</label>
         </div>
         <template v-if="!loading">
-          <button class="button-green export-button" @click="exportWordChapters()">
+          <button 
+            class="button-green export-button" 
+            @click="exportWordChapters()">
             Export all chapters
           </button>
         </template>
@@ -40,21 +63,33 @@
       <div class="export-option">
         <h3>Create a backup</h3>
         <div>(You can recover your document from this file later.)</div>
-        <pulse-loader v-if="loading"></pulse-loader>
-        <button v-if="!loading" class="button-green export-button" @click="exportJsonDocument()">
+        <pulse-loader v-if="loading"/>
+        <button 
+          v-if="!loading" 
+          class="button-green export-button" 
+          @click="exportJsonDocument()">
           Export entire document
         </button>
       </div>
-      <div class="export-option" v-if="isOnline">
+      <div 
+        class="export-option" 
+        v-if="isOnline">
         <h3>Import a backup</h3>
         <div>
           (Warning: This will overwrite the current document completely, including all chapters, plans, outlines and workshops.)
         </div>
         <div class="file-input-container">
-          <pulse-loader v-if="loading"></pulse-loader>
+          <pulse-loader v-if="loading"/>
           <template v-if="!loading">
-            <label for="import-file-picker" class="file-input-label"></label>
-            <input id="import-file-picker" class="file-input" type="file" accept=".json" @change="setFile">
+            <label 
+              for="import-file-picker" 
+              class="file-input-label"/>
+            <input 
+              id="import-file-picker" 
+              class="file-input" 
+              type="file" 
+              accept=".json" 
+              @change="setFile">
             <button class="button-green export-button file-dummy-button">
               Import entire document
             </button>
@@ -79,134 +114,126 @@ import writingWorkshops from '../../../models/writingWorkshop'
 
 export default {
   components: {
-    PulseLoader
+    PulseLoader,
   },
   computed: {
-    allChapters () {
+    allChapters() {
       return this.$store.state.chapters.chapters
     },
-    allPlans () {
+    allPlans() {
       return this.$store.state.chapters.plans
     },
-    allWorkshops () {
+    allWorkshops() {
       return this.$store.state.workshop.workshops
     },
-    documentGuid () {
+    documentGuid() {
       return this.$store.state.document.currentDocument.guid
     },
-    documentTitle () {
+    documentTitle() {
       return this.$store.state.document.currentDocument.name
     },
-    isOnline () {
+    isOnline() {
       return this.$store.state.status.status !== Statuses.OFFLINE
     },
-    isPremium () {
+    isPremium() {
       return this.$store.state.user.user.isPremium
     },
-    masterTopics () {
+    masterTopics() {
       return this.$store.state.chapters.topics
-    }
+    },
   },
-  data () {
+  data() {
     return {
       pdfIncludeArchived: false,
       loading: false,
-      wordIncludeArchived: false
+      wordIncludeArchived: false,
     }
   },
   methods: {
-    importBackup (file) {
+    importBackup(file) {
       this.loading = true
       let backup
-      jsonFileToBackup(file).then(_backup => {
+      jsonFileToBackup(file).then((_backup) => {
         backup = _backup
         backup.guid = this.documentGuid
         backup.name = this.documentTitle
 
-        return storageApiPromise().then(storage => {
-          return storage.docImport(backup)
-        })
-      }).then(backup => {
+        return storageApiPromise().then(storage => storage.docImport(backup))
+      }).then(() => {
         this.loading = false
         resetCache()
 
         swal({
           icon: 'success',
           text: 'The document has been imported.',
-          title: 'Success'
-        }).then(() => {
-          return this.$store.dispatch(CHANGE_DOCUMENT,
-            { guid: this.documentGuid, name: this.documentTitle }
-          )
-        })
-      }, err => {
+          title: 'Success',
+        }).then(() => this.$store.dispatch(
+          CHANGE_DOCUMENT,
+          { guid: this.documentGuid, name: this.documentTitle },
+        ))
+      }, (err) => {
         this.loading = false
         swal({
           icon: 'error',
           text: `Could not import the document. DETAILS: "${err}"`,
-          title: 'Failure'
+          title: 'Failure',
         })
         throw err
       })
     },
-    exportJsonDocument () {
+    exportJsonDocument() {
       this.loading = true
 
-      storageApiPromise().then(storage => {
-        return storage.docExport(this.documentGuid, this.documentTitle)
-      }).then(backup => {
+      storageApiPromise().then(storage => storage.docExport(this.documentGuid, this.documentTitle)).then((backup) => {
         backupToJsonFile(this.documentTitle, backup).then(() => {
           this.loading = false
-        }, err => {
+        }, (err) => {
           this.loading = false
           swal({
             icon: 'error',
-            text: `Could not export the document. DETAILS: "${err}"`
+            text: `Could not export the document. DETAILS: "${err}"`,
           })
           throw err
         })
-      }, err => {
+      }, (err) => {
         this.loading = false
         swal({
           icon: 'error',
-          text: `Could not export the document. DETAILS: "${err}"`
+          text: `Could not export the document. DETAILS: "${err}"`,
         })
         throw err
       })
     },
-    exportPdfChapters () {
+    exportPdfChapters() {
       this.loading = true
 
       const chaptersToExport = this.allChapters.filter(chapter =>
-        !chapter.archived || this.pdfIncludeArchived
-      )
+        !chapter.archived || this.pdfIncludeArchived)
 
       chaptersToPdf(this.documentTitle, chaptersToExport).then(() => {
         this.loading = false
-      }, err => {
+      }, (err) => {
         this.loading = false
         swal({
           icon: 'error',
-          text: `Could not export the document. DETAILS: "${err}"`
+          text: `Could not export the document. DETAILS: "${err}"`,
         })
         throw err
       })
     },
-    exportPdfOutlines () {
+    exportPdfOutlines() {
       this.loading = true
 
       const nestedTopics = this.allChapters.filter(chapter =>
-        !chapter.archived || this.pdfIncludeArchived
-      ).map(chapter => {
-        const chapterTopics = Object.keys(chapter.topics).map(guid => {
+        !chapter.archived || this.pdfIncludeArchived).map((chapter) => {
+        const chapterTopics = Object.keys(chapter.topics).map((guid) => {
           const topic = chapter.topics[guid]
           const masterTopic = this.getMasterTopic(topic)
           topic.archived = masterTopic.archived
           topic.title = `${chapter.title} - ${masterTopic.title}`
           return topic
         }).filter(topic =>
-          !topic.archived || this.pdfIncludeArchived
-        )
+          !topic.archived || this.pdfIncludeArchived)
 
         return chapterTopics
       })
@@ -215,111 +242,101 @@ export default {
 
       chaptersToPdf(`${this.documentTitle}: Outlines`, topicsArray).then(() => {
         this.loading = false
-      }, err => {
+      }, (err) => {
         this.loading = false
         swal({
           icon: 'error',
-          text: `Could not export outlines. DETAILS: "${err}"`
+          text: `Could not export outlines. DETAILS: "${err}"`,
         })
         throw err
       })
     },
-    exportPdfPlans () {
+    exportPdfPlans() {
       this.loading = true
       const nestedPlans = this.allPlans.filter(plan =>
-        !plan.archived || this.pdfIncludeArchived
-      ).map(plan => {
-        return plan.sections.filter(section =>
-          !section.archived || this.pdfIncludeArchived
-        ).map(section => {
-          const title = plan.title === section.title
-            ? plan.title
-            : `${plan.title} - ${section.title}`
+        !plan.archived || this.pdfIncludeArchived).map(plan => plan.sections.filter(section =>
+        !section.archived || this.pdfIncludeArchived).map((section) => {
+        const title = plan.title === section.title
+          ? plan.title
+          : `${plan.title} - ${section.title}`
 
-          return {
-            title,
-            content: section.content
-          }
-        })
-      })
+        return {
+          title,
+          content: section.content,
+        }
+      }))
 
       const planArray = [].concat(...nestedPlans)
 
       chaptersToPdf(`${this.documentTitle}: Plans`, planArray).then(() => {
         this.loading = false
-      }, err => {
+      }, (err) => {
         this.loading = false
         swal({
           icon: 'error',
-          text: `Could not export plans. DETAILS: "${err}"`
+          text: `Could not export plans. DETAILS: "${err}"`,
         })
         throw err
       })
     },
-    exportPdfWorkshops () {
+    exportPdfWorkshops() {
       this.loading = true
       const workshops = this.allWorkshops.filter(workshop =>
-        !workshop.archived || this.pdfIncludeArchived
-      ).map(workshop => {
-        return {
-          content: workshop.content,
-          date: workshop.date,
-          guid: workshop.guid,
-          order: workshop.order,
-          title: `${writingWorkshops[workshop.workshopName].displayName} (${workshop.date.toString()})`,
-          workshopName: workshop.workshopName
-        }
-      })
+        !workshop.archived || this.pdfIncludeArchived).map(workshop => ({
+        content: workshop.content,
+        date: workshop.date,
+        guid: workshop.guid,
+        order: workshop.order,
+        title: `${writingWorkshops[workshop.workshopName].displayName} (${workshop.date.toString()})`,
+        workshopName: workshop.workshopName,
+      }))
 
       const sortedWorkshops = sortBy(workshops, workshop =>
-        `${workshop.workshopName}-${workshop.date.toString()}-${workshop.guid}-${workshop.order}`
-      )
+        `${workshop.workshopName}-${workshop.date.toString()}-${workshop.guid}-${workshop.order}`)
 
       chaptersToPdf(`${this.documentTitle}: Workshops`, sortedWorkshops).then(() => {
         this.loading = false
-      }, err => {
+      }, (err) => {
         this.loading = false
         swal({
           icon: 'error',
-          text: `Could not export workshops. DETAILS: "${err}"`
+          text: `Could not export workshops. DETAILS: "${err}"`,
         })
         throw err
       })
     },
-    exportWordChapters () {
+    exportWordChapters() {
       if (!this.isPremium) {
         swal({
           button: 'OK',
           dangerMode: true,
           icon: 'error',
-          text: `Only Premium users can export to a Microsoft Word document. Please upgrade to a Premium subscription to continue.`,
-          title: 'Not allowed'
+          text: 'Only Premium users can export to a Microsoft Word document. Please upgrade to a Premium subscription to continue.',
+          title: 'Not allowed',
         })
         return
       }
 
       this.loading = true
-      storageApiPromise().then(storage => {
-        return storage.exportToWord({
-          guid: this.documentGuid,
-          title: this.documentTitle,
-          includeArchived: this.wordIncludeArchived
-        })
-      }).then(() => {
+      storageApiPromise().then(storage => storage.exportToWord({
+        guid: this.documentGuid,
+        title: this.documentTitle,
+        includeArchived: this.wordIncludeArchived,
+      })).then(() => {
         this.loading = false
-      }, err => {
+      }, (err) => {
         this.loading = false
         swal({
           icon: 'error',
-          text: `Could not export to Word. DETAILS: "${err}"`
+          text: `Could not export to Word. DETAILS: "${err}"`,
         })
         throw err
       })
     },
-    getMasterTopic (chapterTopic) {
+    getMasterTopic(chapterTopic) {
       return this.masterTopics.find(topic => topic.guid === chapterTopic.guid)
     },
-    setFile (event) {
+    setFile(event) {
       if (!this.isOnline) {
         return
       }
@@ -328,17 +345,17 @@ export default {
         buttons: true,
         dangerMode: true,
         icon: 'warning',
-        text: `Are you sure you want to import this file? It will overwrite everything in the current document.`,
-        title: 'Overwrite current document?'
-      }).then(willOverwrite => {
+        text: 'Are you sure you want to import this file? It will overwrite everything in the current document.',
+        title: 'Overwrite current document?',
+      }).then((willOverwrite) => {
         if (!willOverwrite) {
           return
         }
 
         this.importBackup(event.target.files[0])
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

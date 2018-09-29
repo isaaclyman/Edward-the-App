@@ -8,18 +8,27 @@
           By the end, you'll be ready to start plotting and outlining your novel.
         </p>
       </div>
-      <transition name="fade" mode="out-in">
-        <div v-if="!finished" class="content" key="content">
+      <transition 
+        name="fade" 
+        mode="out-in">
+        <div 
+          v-if="!finished" 
+          class="content" 
+          key="content">
           <!-- Title -->
           <p class="description">Write the title of your novel:</p>
           <div class="editor short title">
-            <quill-editor :content="content.title" @update:content="updateContent(0, $event)"></quill-editor>
+            <quill-editor 
+              :content="content.title" 
+              @update:content="updateContent(0, $event)"/>
           </div>
           <!-- Tagline -->
           <p class="description">Write a tagline: a short, catchy slogan that draws potential readers in.</p>
           <p class="example">e.g. "Can the best thing happen at the worst time?"</p>
           <div class="editor short tagline">
-            <quill-editor :content="content.tagline" @update:content="updateContent(1, $event)"></quill-editor>
+            <quill-editor 
+              :content="content.tagline" 
+              @update:content="updateContent(1, $event)"/>
           </div>
           <!-- Two-sentence summary (NYT bestseller snippet) -->
           <p class="description">
@@ -29,7 +38,9 @@
             e.g. "In the year 2149, a young family struggles to survive in an irradiated countryside."
           </p>
           <div class="editor short summary">
-            <quill-editor :content="content.summary" @update:content="updateContent(2, $event)"></quill-editor>
+            <quill-editor 
+              :content="content.summary" 
+              @update:content="updateContent(2, $event)"/>
           </div>
           <!-- Theme -->
           <p class="description">In a sentence or two, explain the theme of the novel and why it's important to you.</p>
@@ -38,25 +49,36 @@
             I want the reader to know that it's okay to believe in others, even if they've been hurt before."
           </p>
           <div class="editor short theme">
-            <quill-editor :content="content.theme" @update:content="updateContent(3, $event)"></quill-editor>
+            <quill-editor 
+              :content="content.theme" 
+              @update:content="updateContent(3, $event)"/>
           </div>
           <!-- Back jacket (a few paragraphs) -->
           <p class="description">
             Write the "back jacket" of the novel: a few paragraphs that introduce the plot and characters.
           </p>
           <div class="editor medium jacket">
-            <quill-editor :content="content.jacket" @update:content="updateContent(4, $event)"></quill-editor>
+            <quill-editor 
+              :content="content.jacket" 
+              @update:content="updateContent(4, $event)"/>
           </div>
           <!-- Book report (a page or two) -->
           <p class="description">
             Write a book report about your novel: several paragraphs that describe the most important parts.
           </p>
           <div class="editor long report">
-            <quill-editor :content="content.report" @update:content="updateContent(5, $event)"></quill-editor>
+            <quill-editor 
+              :content="content.report" 
+              @update:content="updateContent(5, $event)"/>
           </div>
-          <button class="button-green done" @click="finish()">Finish</button>
+          <button 
+            class="button-green done" 
+            @click="finish()">Finish</button>
         </div>
-        <div v-else class="finished" key="finished">
+        <div 
+          v-else 
+          class="finished" 
+          key="finished">
           <div v-if="this.fullText.trim()">
             <p>
               Saved! You can view what you've written in the Workshops column of the Write page.
@@ -72,9 +94,11 @@
               Deleted! This workshop was empty.
             </p>
           </div>
-          <button class="button-green" @click="reset()">Start over</button>
+          <button 
+            class="button-green" 
+            @click="reset()">Start over</button>
         </div>
-      </transition>      
+      </transition>
     </div>
   </div>
 </template>
@@ -93,13 +117,13 @@ const exerciseCache = new Cache('NOVEL_QUICKSTART_CURRENT_EXERCISE')
 export default {
   components: {
     QuillEditor,
-    Timer
+    Timer,
   },
   computed: {
-    allWorkshops () {
+    allWorkshops() {
       return this.$store.state.workshop.workshops
     },
-    content () {
+    content() {
       if (!this.workshops) {
         return {}
       }
@@ -110,32 +134,32 @@ export default {
         summary: this.workshops[2].content,
         theme: this.workshops[3].content,
         jacket: this.workshops[4].content,
-        report: this.workshops[5].content
+        report: this.workshops[5].content,
       }
     },
-    fullText () {
+    fullText() {
       if (!this.workshops || !this.workshops.length) {
         return ''
       }
 
       return this.workshops.reduce((acc, el) => acc + GetContentString(el.content), '')
-    }
+    },
   },
-  data () {
+  data() {
     return {
       finished: false,
-      workshops: null
+      workshops: null,
     }
   },
   methods: {
-    begin (currentWorkshops) {
+    begin(currentWorkshops) {
       if (!currentWorkshops) {
         this.newWorkshop()
       } else {
         this.workshops = currentWorkshops
       }
     },
-    checkForDeletion () {
+    checkForDeletion() {
       if (!this.fullText.trim()) {
         exerciseCache.cacheDelete()
         if (this.workshops && this.workshops.length && this.allWorkshops.includes(this.workshops[0])) {
@@ -143,12 +167,12 @@ export default {
         }
       }
     },
-    finish () {
+    finish() {
       exerciseCache.cacheDelete()
       this.finished = true
       this.checkForDeletion()
     },
-    getCurrentWorkshop () {
+    getCurrentWorkshop() {
       const cachedGuid = exerciseCache.cacheGet()
       if (!cachedGuid) {
         return null
@@ -157,7 +181,7 @@ export default {
       const workshops = this.allWorkshops.filter(workshop => workshop.guid === cachedGuid)
       return workshops && workshops.length ? workshops : null
     },
-    newWorkshop () {
+    newWorkshop() {
       exerciseCache.cacheDelete()
       const uuid = guid()
       const title = `Novel Quickstart ${new Date().toLocaleDateString()}`
@@ -168,33 +192,33 @@ export default {
         order,
         workshopName: writingWorkshops.NOVEL_QUICKSTART.name,
         content: null,
-        date: new Date().toLocaleDateString('en-US')
+        date: new Date().toLocaleDateString('en-US'),
       }))
 
       this.workshops.forEach(workshop => this.$store.commit(ADD_WORKSHOP, { workshop }))
       exerciseCache.cacheSet(uuid)
     },
-    reset () {
+    reset() {
       this.finished = false
       this.workshops = null
       this.begin()
     },
-    updateContent (index, { content }) {
+    updateContent(index, { content }) {
       this.$store.commit(UPDATE_WORKSHOPS_CONTENT, {
         workshopUpdates: [{
           workshop: this.workshops[index],
-          newContent: content
-        }]
+          newContent: content,
+        }],
       })
-    }
+    },
   },
-  created () {
+  created() {
     const workshops = this.getCurrentWorkshop()
     this.begin(workshops || null)
   },
-  beforeDestroy () {
+  beforeDestroy() {
     this.checkForDeletion()
-  }
+  },
 }
 </script>
 

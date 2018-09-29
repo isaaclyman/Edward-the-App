@@ -1,14 +1,32 @@
 <template>
   <div class="full-screen-wrap full-screen">
     <div class="actions">
-      <button v-show="!isWideView" class="action wide-view" v-html="wideSvg" @click="showWideView()"
-        title="Wide view" v-tooltip></button>
-      <button v-show="isWideView" class="action narrow-view" v-html="narrowSvg" @click="showNarrowView()"
-        title="Book-width view" v-tooltip></button>
-      <button class="action close" v-html="exitSvg" @click="close()"></button>
+      <button 
+        v-show="!isWideView" 
+        class="action wide-view" 
+        v-html="wideSvg" 
+        @click="showWideView()"
+        title="Wide view" 
+        v-tooltip/>
+      <button 
+        v-show="isWideView" 
+        class="action narrow-view" 
+        v-html="narrowSvg" 
+        @click="showNarrowView()"
+        title="Book-width view" 
+        v-tooltip/>
+      <button 
+        class="action close" 
+        v-html="exitSvg" 
+        @click="close()"/>
     </div>
-    <div class="container" :class="{ 'wide': isWideView }" ref="container">
-      <div class="editor" ref="editor"></div>
+    <div 
+      class="container" 
+      :class="{ 'wide': isWideView }" 
+      ref="container">
+      <div 
+        class="editor" 
+        ref="editor"/>
     </div>
   </div>
 </template>
@@ -23,42 +41,42 @@ import tooltip from './tooltip.directive'
 const width = new Cache('FULL_SCREEN_EDITOR_WIDTH')
 
 export default {
-  beforeDestroy () {
+  beforeDestroy() {
     this.handlers.forEach(([name, fn]) => this.quill.off(name, fn))
   },
-  data () {
+  data() {
     return {
       exitSvg: Octicons.x.toSVG({
         height: 30,
-        width: 30
+        width: 30,
       }),
       handlers: [],
       isWideView: false,
       narrowSvg: Octicons['screen-normal'].toSVG({
         height: 30,
-        width: 30
+        width: 30,
       }),
       quill: null,
       wideSvg: Octicons['screen-full'].toSVG({
         height: 30,
-        width: 30
-      })
+        width: 30,
+      }),
     }
   },
   directives: {
-    tooltip
+    tooltip,
   },
   methods: {
-    close () {
+    close() {
       this.$emit('close')
     },
-    emitContent (content, contentId) {
+    emitContent(content, contentId) {
       this.$emit('update:content', { content, contentId })
     },
-    emitSelection (selection) {
+    emitSelection(selection) {
       this.$emit('update:selection', selection)
     },
-    listenQuill (quill) {
+    listenQuill(quill) {
       const textChanged = debounce((content, contentId) => {
         this.emitContent(content, contentId)
       }, 750, { maxWait: 2000 })
@@ -78,12 +96,12 @@ export default {
         if (!range.length) {
           selection = {
             range: null,
-            text: ''
+            text: '',
           }
         } else {
           selection = {
-            range: range,
-            text: quill.getText(range.index, range.length)
+            range,
+            text: quill.getText(range.index, range.length),
           }
         }
 
@@ -95,27 +113,27 @@ export default {
 
       this.handlers.push(['text-change', onTextChange], ['selection-change', onSelectionChange])
     },
-    showNarrowView () {
+    showNarrowView() {
       this.isWideView = false
       width.cacheSet(false)
     },
-    showWideView () {
+    showWideView() {
       this.isWideView = true
       width.cacheSet(true)
     },
-    updateQuill (quill, content) {
+    updateQuill(quill, content) {
       if (content) {
         quill.setContents(content, 'api')
       }
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.isWideView = width.cacheGet() || false
 
     this.quill = createQuill(
       this.$refs.editor,
       'Write here.',
-      this.$refs.container
+      this.$refs.container,
     )
 
     this.updateQuill(this.quill, this.content)
@@ -123,12 +141,15 @@ export default {
   },
   props: {
     content: {
-      required: true
+      required: true,
+      type: Object
     },
     contentId: {
-      required: false
-    }
-  }
+      default: null,
+      required: false,
+      type: String
+    },
+  },
 }
 </script>
 

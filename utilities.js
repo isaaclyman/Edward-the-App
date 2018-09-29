@@ -1,7 +1,7 @@
 // Complete an array of promises in order, each one waiting for the previous one to resolve
-function orderPromises (promiseFns) {
+function orderPromises(promiseFns) {
   if (!Array.isArray(promiseFns) || (promiseFns.length && typeof promiseFns[0] !== 'function')) {
-    throw new TypeError('orderPromises expects an array of functions. Received: ' + JSON.stringify(promiseFns))
+    throw new TypeError(`orderPromises expects an array of functions. Received: ${JSON.stringify(promiseFns)}`)
   }
 
   if (!promiseFns.length) {
@@ -11,12 +11,10 @@ function orderPromises (promiseFns) {
   const promise = promiseFns[0]()
 
   if (!promise.then) {
-    throw new TypeError('A function in the array passed to orderPromises did not return a promise. Returned: ' + JSON.stringify(promise))
+    throw new TypeError(`A function in the array passed to orderPromises did not return a promise. Returned: ${JSON.stringify(promise)}`)
   }
 
-  return promise.then(function () {
-    return orderPromises(promiseFns.slice(1))
-  })
+  return promise.then(() => orderPromises(promiseFns.slice(1)))
 }
 
 // getNewLine, getNewSegment, getStyles, getStyledArrayFromChapters:
@@ -26,25 +24,25 @@ function orderPromises (promiseFns) {
 // Line style strings: h1|h2|h3|blockquote|ul|ol|chapterHeading
 // Segment style strings: bold|italic|underline|strike
 
-function getNewLine () {
+function getNewLine() {
   return {
     text: [],
-    style: []
+    style: [],
   }
 }
 
-function getNewSegment (text, style) {
+function getNewSegment(text, style) {
   return {
     text: text || '',
-    style: style || []
+    style: style || [],
   }
 }
 
 const listMap = {
-  'bullet': 'ul',
-  'ordered': 'ol'
+  bullet: 'ul',
+  ordered: 'ol',
 }
-function getStyles (attributes) {
+function getStyles(attributes) {
   const styles = []
   const lineStyles = []
 
@@ -77,14 +75,14 @@ function getStyles (attributes) {
   return { styles, lineStyles }
 }
 
-function getStyledArrayFromChapters (chapters) {
+function getStyledArrayFromChapters(chapters) {
   const splitContent = []
 
   for (const chapter of chapters) {
     splitContent.push({
       text: chapter.title,
       style: 'chapterHeading',
-      pageBreak: 'before'
+      pageBreak: 'before',
     })
 
     let currentLine = getNewLine()
@@ -138,6 +136,6 @@ function getStyledArrayFromChapters (chapters) {
 }
 
 module.exports = {
-  getStyledArrayFromChapters: getStyledArrayFromChapters,
-  orderPromises: orderPromises
+  getStyledArrayFromChapters,
+  orderPromises,
 }

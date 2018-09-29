@@ -1,9 +1,14 @@
 <template>
-  <div class="workshops-wrap" v-show="workshops.length > 0">
-    <tabs-list :active-index="activeWorkshopNameIndex" :data-array="workshopNameTabs" :filter-tabs="() => true"
-              item-name="Workshop"
-              :can-add="false"
-              @update:activeIndex="selectWorkshopNameIndex"></tabs-list>
+  <div 
+    class="workshops-wrap" 
+    v-show="workshops.length > 0">
+    <tabs-list 
+      :active-index="activeWorkshopNameIndex" 
+      :data-array="workshopNameTabs" 
+      :filter-tabs="() => true"
+      item-name="Workshop"
+      :can-add="false"
+      @update:activeIndex="selectWorkshopNameIndex"/>
     <div class="workshop-list">
       <div class="workshop-list-header">
         <div class="workshop-list-title">
@@ -15,26 +20,46 @@
           <div class="workshop-select-label">
             Select a workshop:
           </div>
-          <select class="workshop-select-dropdown" v-model="selectedWorkshopGuid">
-            <option v-for="workshop in selectableWorkshops" v-if="filterWorkshops(workshop)" :key="workshop.guid" :value="workshop.guid">
+          <select 
+            class="workshop-select-dropdown" 
+            v-model="selectedWorkshopGuid">
+            <option 
+              v-for="workshop in selectableWorkshops" 
+              v-if="filterWorkshops(workshop)" 
+              :key="workshop.guid" 
+              :value="workshop.guid">
               {{ workshop.title }}
             </option>
           </select>
         </div>
-        <div class="workshops" v-show="activeWorkshopsTitle">
+        <div 
+          class="workshops" 
+          v-show="activeWorkshopsTitle">
           <div class="workshop">
             <div class="workshop-header">
               <div class="workshop-title">
                 {{ activeWorkshopsTitle }} ({{ activeWorkshopsDate }})
               </div>
               <div class="workshop-actions">
-                <button class="workshop-action" v-show="!firstActiveWorkshop.archived" @click="archiveActiveWorkshops()">Archive</button>
-                <button class="workshop-action" v-show="firstActiveWorkshop.archived" @click="restoreActiveWorkshops()">Restore</button>
-                <button class="workshop-action button-red" v-show="firstActiveWorkshop.archived" @click="deleteActiveWorkshops()">Delete Forever</button>
+                <button 
+                  class="workshop-action" 
+                  v-show="!firstActiveWorkshop.archived" 
+                  @click="archiveActiveWorkshops()">Archive</button>
+                <button 
+                  class="workshop-action" 
+                  v-show="firstActiveWorkshop.archived" 
+                  @click="restoreActiveWorkshops()">Restore</button>
+                <button 
+                  class="workshop-action button-red" 
+                  v-show="firstActiveWorkshop.archived" 
+                  @click="deleteActiveWorkshops()">Delete Forever</button>
               </div>
             </div>
-            <div class="workshop-content" v-for="workshop in activeWorkshops" :key="`${workshop.guid}|${workshop.order}`">
-              <div v-html="getHtml(workshop)"></div>            
+            <div 
+              class="workshop-content" 
+              v-for="workshop in activeWorkshops" 
+              :key="`${workshop.guid}|${workshop.order}`">
+              <div v-html="getHtml(workshop)"/>
             </div>
           </div>
         </div>
@@ -53,69 +78,66 @@ import writingWorkshops from '../../../models/writingWorkshop'
 
 export default {
   components: {
-    TabsList
+    TabsList,
   },
   computed: {
-    currentWorkshopDisplayName () {
+    currentWorkshopDisplayName() {
       return writingWorkshops[this.currentWorkshopName].displayName
     },
-    currentWorkshopName () {
-      if (this.activeWorkshopNameIndex < 0) {
-        this.activeWorkshopNameIndex = 0
-        this.selectDefaultWorkshop()
+    currentWorkshopName() {
+      if (this.activeWorkshopNameIndex === -1) {
+        return {}
       }
 
       return this.workshopNames[this.activeWorkshopNameIndex] || {}
     },
-    activeWorkshops () {
+    activeWorkshops() {
       return this.viewingWorkshops.filter(workshop => workshop.guid === this.selectedWorkshopGuid)
     },
-    activeWorkshopsDate () {
+    activeWorkshopsDate() {
       return this.activeWorkshops && this.activeWorkshops.length && new Date(this.activeWorkshops[0].date).toLocaleDateString()
     },
-    activeWorkshopsTitle () {
+    activeWorkshopsTitle() {
       return this.firstActiveWorkshop.title
     },
-    firstActiveWorkshop () {
+    firstActiveWorkshop() {
       return (this.activeWorkshops && this.activeWorkshops.length && this.activeWorkshops[0]) || {}
     },
-    selectableWorkshops () {
-      return this.viewingWorkshops.filter(workshop => workshop.order === 0).slice(0).sort((a, b) => {
-        return new Date(a.date).getTime() - new Date(b.date).getTime()
-      })
+    selectableWorkshops() {
+      return this.viewingWorkshops.filter(workshop => workshop.order === 0).slice(0).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
     },
-    viewingWorkshops () {
+    viewingWorkshops() {
       return this.workshops.filter(workshop => workshop.workshopName === this.currentWorkshopName)
     },
-    workshopNames () {
+    workshopNames() {
       return uniq(this.workshops.map(workshop => workshop.workshopName))
     },
-    workshopNameTabs () {
+    workshopNameTabs() {
       return this.workshopNames.map(name => ({ title: writingWorkshops[name].displayName }))
     },
-    workshops () {
+    workshops() {
       return this.$store.state.workshop.workshops
-    }
+    },
   },
-  data () {
+  data() {
     return {
       activeWorkshopNameIndex: -1,
-      selectedWorkshopGuid: null
+      selectedWorkshopGuid: null,
     }
   },
   methods: {
-    archiveActiveWorkshops () {
+    archiveActiveWorkshops() {
       for (const workshop of this.activeWorkshops) {
         this.$store.commit(ARCHIVE_WORKSHOP, { workshop })
       }
     },
-    deleteActiveWorkshops () {
+    deleteActiveWorkshops() {
       swal({
         buttons: true,
         dangerMode: true,
         icon: 'warning',
-        text: `Are you sure you want to delete this workshop? All of its content will be lost. This cannot be undone.`,
-        title: 'Delete Forever?'
+        text: 'Are you sure you want to delete this workshop? All of its content will be lost. This cannot be undone.',
+        title: 'Delete Forever?',
       }).then((willDelete) => {
         if (!willDelete) {
           return
@@ -125,48 +147,53 @@ export default {
         }
 
         if (!(this.selectableWorkshops && this.selectableWorkshops.length)) {
-          this.activeWorkshopNameIndex = -1
+          this.selectWorkshopNameIndex(-1)
           return
         }
 
         this.selectedWorkshopGuid = this.selectableWorkshops[0].guid
       })
     },
-    getHtml (workshop) {
+    getHtml(workshop) {
       return GetHtml(workshop.content)
     },
-    restoreActiveWorkshops () {
+    restoreActiveWorkshops() {
       for (const workshop of this.activeWorkshops) {
         this.$store.commit(RESTORE_WORKSHOP, { workshop })
       }
     },
     // The following two methods are available for use by parent components
-    selectWorkshopGuid (guid) {
+    selectWorkshopGuid(guid) {
       this.selectedWorkshopGuid = guid
     },
-    selectWorkshopName (name) {
+    selectWorkshopName(name) {
       this.activeWorkshopNameIndex = this.workshopNames.indexOf(name)
     },
-    selectWorkshopNameIndex (index) {
+    selectWorkshopNameIndex(index) {
+      if (index === -1) {
+        index = 0
+        this.selectDefaultWorkshop()
+      }
+
       this.activeWorkshopNameIndex = index
     },
-    selectDefaultWorkshop () {
+    selectDefaultWorkshop() {
       if (!this.viewingWorkshops || !this.viewingWorkshops.length) {
         return
       }
 
       this.selectedWorkshopGuid = this.viewingWorkshops[0].guid
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.selectDefaultWorkshop()
   },
   props: {
     filterWorkshops: {
       required: true,
-      type: Function
-    }
-  }
+      type: Function,
+    },
+  },
 }
 </script>
 
@@ -213,7 +240,7 @@ export default {
 
 .workshop {
   border: 1px solid rgba(1, 171, 109, 1);
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
 }
 
 .workshop-header {

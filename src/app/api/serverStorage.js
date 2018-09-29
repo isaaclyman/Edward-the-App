@@ -8,7 +8,7 @@ import { LOAD_CONTENT } from '../shared/chapters.store'
 import { LOAD_WORKSHOPS } from '../shared/workshops.store'
 
 class ServerStorageApi {
-  constructor () {
+  constructor() {
     let savingCounter = 0
     const store = VueInstance.$store
 
@@ -39,53 +39,50 @@ class ServerStorageApi {
       }
 
       store.commit(SET_STATUS_ERROR)
-      return
     }
 
-    this.wrapStatus = promise => {
+    this.wrapStatus = (promise) => {
       saving()
       promise.then(
         () => done(false),
         () => {
           api.isOnline().then(() => done(true, false), () => done(true, true))
-        }
+        },
       )
       return promise
     }
 
-    this.waitUntilDone = () => {
-      return new Promise((resolve, reject) => {
-        let counter = 0
+    this.waitUntilDone = () => new Promise((resolve, reject) => {
+      let counter = 0
 
-        const intervalId = window.setInterval(() => {
-          // Reject after waiting 10 seconds
-          if ((counter / 10) > 10) {
-            reject()
-            return
-          }
+      const intervalId = window.setInterval(() => {
+        // Reject after waiting 10 seconds
+        if ((counter / 10) > 10) {
+          reject()
+          return
+        }
 
-          if (store.state.status.saving) {
-            counter++
-            return
-          }
+        if (store.state.status.saving) {
+          counter++
+          return
+        }
 
-          window.clearInterval(intervalId)
-          resolve()
-        }, 100)
-      })
-    }
+        window.clearInterval(intervalId)
+        resolve()
+      }, 100)
+    })
 
-    this.loadDocument = document => {
+    this.loadDocument = (document) => {
       store.commit(LOAD_CONTENT, {
         chapters: document.chapters || [],
         plans: document.plans || [],
-        topics: document.topics || []
+        topics: document.topics || [],
       })
       store.commit(LOAD_WORKSHOPS, { workshops: document.workshops || [] })
     }
   }
 
-  init () {
+  init() {
     if (!this.offlineStorage.requiresSyncCache.cacheGet()) {
       return
     }
@@ -93,16 +90,16 @@ class ServerStorageApi {
     return this.syncCache()
   }
 
-  syncCache () {
-    return this.offlineStorage.getLatestStoredDocument().then(offlineDoc => {
+  syncCache() {
+    return this.offlineStorage.getLatestStoredDocument().then((offlineDoc) => {
       if (!offlineDoc || !offlineDoc.guid) {
         return
       }
 
       let resolvedDoc
-      return api.docExport(offlineDoc.guid).then(onlineDoc => {
+      return api.docExport(offlineDoc.guid).then((onlineDoc) => {
         const matchBy = obj => obj && obj.guid
-        const markDeleted = obj => {
+        const markDeleted = (obj) => {
           if (!obj) return
           obj.title = `${obj.title} [RESTORED]`
         }
@@ -110,15 +107,17 @@ class ServerStorageApi {
         const resolvedChapters = VersionResolver.getMostRecentEach(onlineDoc.chapters, offlineDoc.chapters, matchBy, markDeleted)
         const resolvedTopics = VersionResolver.getMostRecentEach(onlineDoc.topics, offlineDoc.topics, matchBy, markDeleted)
         const resolvedPlans = VersionResolver.getMostRecentEach(onlineDoc.plans, offlineDoc.plans, matchBy, markDeleted)
-        const resolvedWorkshops = VersionResolver.getMostRecentEach(onlineDoc.workshops, offlineDoc.workshops,
-          workshop => workshop && workshop.guid ? `${workshop.guid}|${workshop.order}` : null, markDeleted)
+        const resolvedWorkshops = VersionResolver.getMostRecentEach(
+          onlineDoc.workshops, offlineDoc.workshops,
+          workshop => (workshop && workshop.guid ? `${workshop.guid}|${workshop.order}` : null), markDeleted,
+        )
 
         const newDoc = {
           name: offlineDoc.name,
           chapters: resolvedChapters,
           topics: resolvedTopics,
           plans: resolvedPlans,
-          workshops: resolvedWorkshops
+          workshops: resolvedWorkshops,
         }
 
         if (
@@ -136,152 +135,150 @@ class ServerStorageApi {
       }, () => {
         resolvedDoc = offlineDoc
         return this.docImport(offlineDoc)
-      }).then(
-        () => this.offlineStorage.clearOldStorage()
-      ).then(() => {
+      }).then(() => this.offlineStorage.clearOldStorage()).then(() => {
         this.loadDocument(resolvedDoc)
       })
-    }).then(() => {
-      return (
-        this.offlineStorage.clearOldStorage()
+    }).then(() => (
+      this.offlineStorage.clearOldStorage()
         .then(() => this.offlineStorage.updateStorage())
         .then(() => this.offlineStorage.requiresSyncCache.cacheSet(false))
-      )
-    })
+    ))
   }
 
   // INFO
 
-  isPremium () {
+  isPremium() {
     return true
   }
 
   // DOCUMENTS
 
-  addDocument ({ guid, name }) {
-    return this.wrapStatus(api.addDocument({ guid, name }).catch(err => {
+  addDocument({ guid, name }) {
+    return this.wrapStatus(api.addDocument({ guid, name }).catch((err) => {
       throw err
     }))
   }
 
-  getAllDocuments () {
+  getAllDocuments() {
     return api.getDocuments()
   }
 
-  deleteDocument (guid) {
+  deleteDocument(guid) {
     return this.wrapStatus(api.deleteDocument({ guid }))
   }
 
-  updateDocument ({ guid, name }) {
+  updateDocument({ guid, name }) {
     return this.wrapStatus(api.updateDocument({ guid, name }))
   }
 
   // ARRANGE
 
-  arrangeChapters (documentGuid, chapterGuids) {
+  arrangeChapters(documentGuid, chapterGuids) {
     return this.wrapStatus(api.arrangeChapters({ documentGuid, chapterGuids }))
   }
 
-  arrangePlans (documentGuid, planGuids) {
+  arrangePlans(documentGuid, planGuids) {
     return this.wrapStatus(api.arrangePlans({ documentGuid, planGuids }))
   }
 
-  arrangeSections (documentGuid, planGuid, sectionGuids) {
+  arrangeSections(documentGuid, planGuid, sectionGuids) {
     return this.wrapStatus(api.arrangeSections({ documentGuid, planGuid, sectionGuids }))
   }
 
-  arrangeTopics (documentGuid, topicGuids) {
+  arrangeTopics(documentGuid, topicGuids) {
     return this.wrapStatus(api.arrangeTopics({ documentGuid, topicGuids }))
   }
 
   // DELETE
 
-  deleteChapter (documentGuid, chapterGuid) {
+  deleteChapter(documentGuid, chapterGuid) {
     return this.wrapStatus(api.deleteChapter({ documentGuid, chapterGuid }))
   }
 
-  deletePlan (documentGuid, planGuid) {
+  deletePlan(documentGuid, planGuid) {
     return this.wrapStatus(api.deletePlan({ documentGuid, planGuid }))
   }
 
-  deleteSection (documentGuid, planGuid, sectionGuid) {
+  deleteSection(documentGuid, planGuid, sectionGuid) {
     return this.wrapStatus(api.deleteSection({ documentGuid, planGuid, sectionGuid }))
   }
 
-  deleteTopic (documentGuid, topicGuid) {
+  deleteTopic(documentGuid, topicGuid) {
     return this.wrapStatus(api.deleteTopic({ documentGuid, topicGuid }))
   }
 
-  deleteWorkshop (documentGuid, workshopGuid) {
+  deleteWorkshop(documentGuid, workshopGuid) {
     return this.wrapStatus(api.deleteWorkshopContent({ documentGuid, guid: workshopGuid }))
   }
 
   // GET
 
-  getAllChapters (documentGuid) {
+  getAllChapters(documentGuid) {
     return api.getChapters(documentGuid)
   }
 
-  getAllPlans (documentGuid) {
+  getAllPlans(documentGuid) {
     return api.getPlans(documentGuid)
   }
 
-  getAllTopics (documentGuid) {
+  getAllTopics(documentGuid) {
     return api.getTopics(documentGuid)
   }
 
-  getWorkshops (documentGuid) {
+  getWorkshops(documentGuid) {
     return api.getWorkshops(documentGuid)
   }
 
   // UPDATE
 
-  updateChapter (documentGuid, chapterGuid, chapter) {
+  updateChapter(documentGuid, chapterGuid, chapter) {
     return this.wrapStatus(api.updateChapter({ documentGuid, chapterGuid, chapter }))
   }
 
-  updatePlan (documentGuid, planGuid, plan) {
+  updatePlan(documentGuid, planGuid, plan) {
     return this.wrapStatus(api.updatePlan({ documentGuid, planGuid, plan }))
   }
 
-  updateSection (documentGuid, planGuid, sectionGuid, section) {
-    return this.wrapStatus(api.updateSection({ documentGuid, planGuid, sectionGuid, section }))
+  updateSection(documentGuid, planGuid, sectionGuid, section) {
+    return this.wrapStatus(api.updateSection({
+      documentGuid, planGuid, sectionGuid, section,
+    }))
   }
 
-  updateTopic (documentGuid, topicGuid, topic) {
+  updateTopic(documentGuid, topicGuid, topic) {
     return this.wrapStatus(api.updateTopic({ documentGuid, topicGuid, topic }))
   }
 
-  updateWorkshops (documentGuid, workshops) {
+  updateWorkshops(documentGuid, workshops) {
     return this.wrapStatus(api.updateWorkshopContents({ documentGuid, workshops }))
   }
 
-  saveAllContent (documentGuid, { chapters, plans, topics }) {
-    return this.waitUntilDone().then(() => {
-      return this.wrapStatus(api.saveAllContent({ documentGuid, chapters, plans, topics }))
-    })
+  saveAllContent(documentGuid, { chapters, plans, topics }) {
+    return this.waitUntilDone().then(() => this.wrapStatus(api.saveAllContent({
+      documentGuid, chapters, plans, topics,
+    })))
   }
 
   // EXPORT/IMPORT
 
-  docExport (documentGuid) {
+  docExport(documentGuid) {
     return api.docExport(documentGuid)
   }
 
-  docImport (doc) {
+  docImport(doc) {
     return api.docImport(doc)
   }
 
-  fullExport () {
+  fullExport() {
     return api.fullExport().then(data => JSON.stringify(data))
   }
 
-  fullImport (json) {
+  fullImport(json) {
     const data = JSON.parse(json)
     return api.fullImport(data)
   }
 
-  exportToWord ({ guid, title, includeArchived }) {
+  exportToWord({ guid, title, includeArchived }) {
     return api.exportToWord({ guid, title, includeArchived })
   }
 }

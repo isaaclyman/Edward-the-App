@@ -10,14 +10,16 @@ const WordOverTime = ({ g: svg, maxWidth, maxHeight }, chapters, { Word: wordArg
     const frequency = words.filter(word => word.toLowerCase() === wordArg.toLowerCase()).length
     chapterResults.push({
       frequency,
-      title: chapter.title
+      title: chapter.title,
     })
   }
 
   const frequencies = chapterResults.map(result => result.frequency)
 
   const domain = [0, Math.max(...frequencies)]
-  const margin = { bottom: 40, left: 30, top: 20, right: 50 }
+  const margin = {
+    bottom: 40, left: 30, top: 20, right: 50,
+  }
 
   // Create svg and g and position with a margin
   const g = svg.attr('transform', `translate(${margin.left}, ${margin.top})`)
@@ -32,16 +34,14 @@ const WordOverTime = ({ g: svg, maxWidth, maxHeight }, chapters, { Word: wordArg
 
   g.append('g')
     .attr('transform', `translate(0, ${maxHeight - margin.bottom - margin.top})`)
-    .call(
-      d3.axisBottom(x)
-        .tickFormat(i => truncate(chapterResults[i - 1].title, 20))
-        .tickValues(range(1, chapterResults.length + 1))
-    )
+    .call(d3.axisBottom(x)
+      .tickFormat(i => truncate(chapterResults[i - 1].title, 20))
+      .tickValues(range(1, chapterResults.length + 1)))
     .selectAll('text')
     .attr('transform', 'rotate(-8)')
 
   g.append('g')
-    .attr('transform', `translate(0, 0)`)
+    .attr('transform', 'translate(0, 0)')
     .call(d3.axisLeft(y))
 
   const line = d3.line()
@@ -70,7 +70,7 @@ const WordOverTime = ({ g: svg, maxWidth, maxHeight }, chapters, { Word: wordArg
     .text('Occurrences')
 }
 
-function truncate (str, length) {
+function truncate(str, length) {
   if (str.length < length) {
     return str
   }

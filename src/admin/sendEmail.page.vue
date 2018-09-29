@@ -1,13 +1,13 @@
 <template>
   <div class="wrap">
     <div v-if="!error && !success">
-      <pulse-loader></pulse-loader>
+      <pulse-loader/>
     </div>
     <div v-if="error">
       <h4>
         Email failed to send.
       </h4>
-      <p v-text="error"></p>
+      <p v-text="error"/>
     </div>
     <div v-if="success">
       <h4>
@@ -25,23 +25,23 @@ import adminApi from './api'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
 export default {
-  beforeCreate () {
+  beforeCreate() {
     const { id } = this.$route.params
     adminApi.sendEmail({ id }).then(() => {
       this.success = true
-    }, err => {
+    }, (err) => {
       this.error = err
     })
   },
   components: {
-    PulseLoader
+    PulseLoader,
   },
-  data () {
+  data() {
     return {
       error: null,
-      success: false
+      success: false,
     }
-  }
+  },
 }
 </script>
 

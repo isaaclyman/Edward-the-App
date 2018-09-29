@@ -1,18 +1,18 @@
 <template>
   <div>
-    <total-users></total-users>
+    <total-users/>
     <hr>
-    <space-overages></space-overages>
+    <space-overages/>
     <hr>
-    <premium-users></premium-users>
+    <premium-users/>
     <hr>
-    <unverified-users></unverified-users>
+    <unverified-users/>
     <hr>
-    <user-id></user-id>
+    <user-id/>
     <hr>
-    <backup-recover></backup-recover>
+    <backup-recover/>
     <hr>
-    <user-emails></user-emails>
+    <user-emails/>
     <hr>
     <!-- Comping accounts doesn't really work yet (can't migrate content from the user's computer without an explicit flow).
     For now I can do it manually. -->
@@ -39,11 +39,11 @@ export default {
     TotalUsers,
     UnverifiedUsers,
     UserEmails,
-    UserId
+    UserId,
   },
-  data () {
+  data() {
     return {}
-  }
+  },
 }
 </script>
 

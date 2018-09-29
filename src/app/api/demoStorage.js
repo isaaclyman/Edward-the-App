@@ -4,7 +4,7 @@ import { orderPromises } from '../../../utilities'
 import uniq from 'lodash/uniq'
 
 class DemoStorageApi {
-  constructor () {
+  constructor() {
     localForage.setDriver(localForage.LOCALSTORAGE)
     this.storage = localForage
     window._storage = this.storage
@@ -35,223 +35,188 @@ class DemoStorageApi {
   }
 
   // INFO
-  isPremium () {
+  isPremium() {
     return false
   }
 
-  addDocument ({ guid, name }) {
-    return this._getAllDocumentGuids().then(documentGuids => {
+  addDocument({ guid, name }) {
+    return this._getAllDocumentGuids().then((documentGuids) => {
       if (!documentGuids.includes(guid)) {
         documentGuids.push(guid)
         return this.storage.setItem(this.documentGuidsKey, documentGuids)
       }
-    }).then(
-      () => this.storage.setItem(this.documentsKey(guid), { guid, name })
-    )
+    }).then(() => this.storage.setItem(this.documentsKey(guid), { guid, name }))
   }
 
-  arrangeChapters (documentGuid, chapterGuids) {
+  arrangeChapters(documentGuid, chapterGuids) {
     return this.storage.setItem(this.chapterOrderKey(documentGuid), chapterGuids)
   }
 
-  arrangePlans (documentGuid, planGuids) {
+  arrangePlans(documentGuid, planGuids) {
     return this.storage.setItem(this.planOrderKey(documentGuid), planGuids)
   }
 
-  arrangeSections (documentGuid, planGuid, sectionGuids) {
+  arrangeSections(documentGuid, planGuid, sectionGuids) {
     return this.storage.setItem(this.sectionOrderKey(documentGuid, planGuid), sectionGuids)
   }
 
-  arrangeTopics (documentGuid, topicGuids) {
+  arrangeTopics(documentGuid, topicGuids) {
     return this.storage.setItem(this.topicOrderKey(documentGuid), topicGuids)
   }
 
-  deleteChapter (documentGuid, chapterGuid) {
+  deleteChapter(documentGuid, chapterGuid) {
     const key = this.getChapterKey(documentGuid, chapterGuid)
     return this.storage.removeItem(key)
   }
 
-  deleteDocument (guid) {
+  deleteDocument(guid) {
     // Remove document from document list
-    return this._getAllDocumentGuids().then(documentGuids => {
+    return this._getAllDocumentGuids().then((documentGuids) => {
       if (documentGuids.includes(guid)) {
         documentGuids.splice(documentGuids.indexOf(guid), 1)
       }
 
       return this.storage.setItem(this.documentGuidsKey, documentGuids)
-    }).then(() => {
+    }).then(() =>
       // Remove all content (chapters, plans, sections, topics)
-      return Promise.all([
+      Promise.all([
         this._getAllChapters(guid).then(chapters =>
-          Promise.all(chapters.map(chapter => this.deleteChapter(guid, chapter.guid)))
-        ),
-        this._getAllPlans(guid).then(plans => {
-          return Promise.all(plans.map(plan => {
-            return this._getAllSections(guid, plan.guid).then(sections =>
-              Promise.all(sections.map(section => this.deleteSection(guid, plan.guid, section.guid)))
-            ).then(() => this.deletePlan(guid, plan.guid))
-          }))
-        }),
+          Promise.all(chapters.map(chapter => this.deleteChapter(guid, chapter.guid)))),
+        this._getAllPlans(guid).then(plans => Promise.all(plans.map(plan => this._getAllSections(guid, plan.guid).then(sections =>
+          Promise.all(sections.map(section => this.deleteSection(guid, plan.guid, section.guid)))).then(() => this.deletePlan(guid, plan.guid))))),
         this._getAllTopics(guid).then(topics =>
-          Promise.all(topics.map(topic => this.deleteTopic(guid, topic.guid)))
-        )
-      ]).then(() => this.storage.removeItem(this.documentsKey(guid)))
-    })
+          Promise.all(topics.map(topic => this.deleteTopic(guid, topic.guid)))),
+      ]).then(() => this.storage.removeItem(this.documentsKey(guid))))
   }
 
-  deletePlan (documentGuid, planGuid) {
+  deletePlan(documentGuid, planGuid) {
     const key = this.getPlanKey(documentGuid, planGuid)
     return this.storage.removeItem(key)
   }
 
-  deleteSection (documentGuid, planGuid, sectionGuid) {
+  deleteSection(documentGuid, planGuid, sectionGuid) {
     const key = this.getSectionKey(documentGuid, planGuid, sectionGuid)
     return this.storage.removeItem(key)
   }
 
-  deleteTopic (documentGuid, topicGuid) {
+  deleteTopic(documentGuid, topicGuid) {
     const key = this.getTopicKey(documentGuid, topicGuid)
     return this.storage.removeItem(key)
   }
 
-  deleteWorkshop (documentGuid, workshopGuid) {
+  deleteWorkshop() {
     // Not implemented here. Premium-only feature.
   }
 
-  _getAllChapters (documentGuid) {
+  _getAllChapters(documentGuid) {
     const prefix = this.chapterKeyPrefix(documentGuid)
 
     return Promise.all([
       this._getChaptersSortOrder(documentGuid),
-      this.getStorageKeys().then(keys => keys.filter(key => key.startsWith(prefix)))
-    ]).then(([sortOrder, keys]) => {
-      return Promise.all(keys.map(key => this.storage.getItem(key))).then(chapters => {
-        chapters.sort((chap1, chap2) => {
-          return sortOrder.indexOf(chap1.guid) - sortOrder.indexOf(chap2.guid)
-        })
+      this.getStorageKeys().then(keys => keys.filter(key => key.startsWith(prefix))),
+    ]).then(([sortOrder, keys]) => Promise.all(keys.map(key => this.storage.getItem(key))).then((chapters) => {
+      chapters.sort((chap1, chap2) => sortOrder.indexOf(chap1.guid) - sortOrder.indexOf(chap2.guid))
 
-        return chapters
-      })
-    })
+      return chapters
+    }))
   }
 
-  getAllChapters (documentGuid) {
+  getAllChapters(documentGuid) {
     return this._getAllChapters(documentGuid)
   }
 
-  _getAllDocumentGuids () {
+  _getAllDocumentGuids() {
     return this.storage.getItem(this.documentGuidsKey).then(guids => uniq(guids) || [])
   }
 
-  _getAllDocuments () {
-    return this._getAllDocumentGuids().then(guids => Promise.all(guids.map(guid => {
+  _getAllDocuments() {
+    return this._getAllDocumentGuids().then(guids => Promise.all(guids.map((guid) => {
       const key = this.documentsKey(guid)
       return this.storage.getItem(key)
     })))
   }
 
-  getAllDocuments () {
+  getAllDocuments() {
     return this._getAllDocuments()
   }
 
-  _getAllPlans (documentGuid) {
+  _getAllPlans(documentGuid) {
     const prefix = this.planKeyPrefix(documentGuid)
 
     return Promise.all([
       this._getPlansSortOrder(documentGuid),
-      this.getStorageKeys().then(keys => keys.filter(key => key.startsWith(prefix)))
-    ]).then(([sortOrder, keys]) => {
-      return Promise.all(keys.map(key => this.storage.getItem(key))).then(plans => {
-        return Promise.all(plans.map(plan => {
-          return this._getAllSections(documentGuid, plan.guid).then(sections => {
-            plan.sections = sections
-          })
-        })).then(() => {
-          plans.sort((plan1, plan2) => {
-            return sortOrder.indexOf(plan1.guid) - sortOrder.indexOf(plan2.guid)
-          })
-          return plans
-        })
-      })
-    })
+      this.getStorageKeys().then(keys => keys.filter(key => key.startsWith(prefix))),
+    ]).then(([sortOrder, keys]) => Promise.all(keys.map(key => this.storage.getItem(key))).then(plans => Promise.all(plans.map(plan => this._getAllSections(documentGuid, plan.guid).then((sections) => {
+      plan.sections = sections
+    }))).then(() => {
+      plans.sort((plan1, plan2) => sortOrder.indexOf(plan1.guid) - sortOrder.indexOf(plan2.guid))
+      return plans
+    })))
   }
 
-  getAllPlans (documentGuid) {
+  getAllPlans(documentGuid) {
     return this._getAllPlans(documentGuid)
   }
 
-  _getAllSections (documentGuid, planGuid) {
+  _getAllSections(documentGuid, planGuid) {
     const prefix = this.sectionKeyPrefix(documentGuid, planGuid)
 
     return Promise.all([
       this._getSectionSortOrder(documentGuid, planGuid),
-      this.getStorageKeys().then(keys => keys.filter(key => key.startsWith(prefix)))
-    ]).then(([sortOrder, keys]) => {
-      return Promise.all(keys.map(key => this.storage.getItem(key))).then(sections => {
-        sections.sort((section1, section2) => {
-          return sortOrder.indexOf(section1.guid) - sortOrder.indexOf(section2.guid)
-        })
-        return sections
-      })
-    })
+      this.getStorageKeys().then(keys => keys.filter(key => key.startsWith(prefix))),
+    ]).then(([sortOrder, keys]) => Promise.all(keys.map(key => this.storage.getItem(key))).then((sections) => {
+      sections.sort((section1, section2) => sortOrder.indexOf(section1.guid) - sortOrder.indexOf(section2.guid))
+      return sections
+    }))
   }
 
-  _getAllTopics (documentGuid) {
+  _getAllTopics(documentGuid) {
     const prefix = this.topicKeyPrefix(documentGuid)
 
     return Promise.all([
       this._getTopicsSortOrder(documentGuid),
-      this.getStorageKeys().then(keys => keys.filter(key => key.startsWith(prefix)))
-    ]).then(([sortOrder, keys]) => {
-      return Promise.all(keys.map(key => this.storage.getItem(key))).then(topics => {
-        topics.sort((topic1, topic2) => {
-          return sortOrder.indexOf(topic1.guid) - sortOrder.indexOf(topic2.guid)
-        })
-        return topics
-      })
-    })
+      this.getStorageKeys().then(keys => keys.filter(key => key.startsWith(prefix))),
+    ]).then(([sortOrder, keys]) => Promise.all(keys.map(key => this.storage.getItem(key))).then((topics) => {
+      topics.sort((topic1, topic2) => sortOrder.indexOf(topic1.guid) - sortOrder.indexOf(topic2.guid))
+      return topics
+    }))
   }
 
-  getAllTopics (documentGuid) {
+  getAllTopics(documentGuid) {
     return this._getAllTopics(documentGuid)
   }
 
-  _getChaptersSortOrder (documentGuid) {
+  _getChaptersSortOrder(documentGuid) {
     return this.storage.getItem(this.chapterOrderKey(documentGuid)).then(sortOrder => sortOrder || [])
   }
 
-  _getPlansSortOrder (documentGuid) {
+  _getPlansSortOrder(documentGuid) {
     return this.storage.getItem(this.planOrderKey(documentGuid)).then(sortOrder => sortOrder || [])
   }
 
-  _getSectionSortOrder (documentGuid, planGuid) {
+  _getSectionSortOrder(documentGuid, planGuid) {
     return this.storage.getItem(this.sectionOrderKey(documentGuid, planGuid)).then(sortOrder => sortOrder || [])
   }
 
-  _getTopicsSortOrder (documentGuid) {
+  _getTopicsSortOrder(documentGuid) {
     return this.storage.getItem(this.topicOrderKey(documentGuid)).then(sortOrder => sortOrder || [])
   }
 
-  getAllWorkshops () {
+  getAllWorkshops() {
     // Not implemented here. Premium-only feature.
     return []
   }
 
-  saveAllContent (documentGuid, { chapters, plans, topics }) {
+  saveAllContent(documentGuid, { chapters, plans, topics }) {
     return Promise.all([
       Promise.all(chapters.map(chapter => this.updateChapter(documentGuid, chapter.guid, chapter))),
-      Promise.all(plans.map(plan => {
-        return this.updatePlan(documentGuid, plan.guid, plan).then(() => {
-          return Promise.all(plan.sections.map(section =>
-            this.updateSection(documentGuid, plan.guid, section.guid, section)
-          ))
-        })
-      })),
-      Promise.all(topics.map(topic => this.updateTopic(documentGuid, topic.guid, topic)))
+      Promise.all(plans.map(plan => this.updatePlan(documentGuid, plan.guid, plan).then(() => Promise.all(plan.sections.map(section =>
+        this.updateSection(documentGuid, plan.guid, section.guid, section)))))),
+      Promise.all(topics.map(topic => this.updateTopic(documentGuid, topic.guid, topic))),
     ])
   }
 
-  updateChapter (documentGuid, chapterGuid, chapter) {
+  updateChapter(documentGuid, chapterGuid, chapter) {
     if (!documentGuid) {
       return
     }
@@ -264,15 +229,15 @@ class DemoStorageApi {
           sortOrder.push(chapterGuid)
           return this.arrangeChapters(documentGuid, sortOrder)
         }
-      })
+      }),
     ])
   }
 
-  updateDocument ({ guid, name }) {
+  updateDocument({ guid, name }) {
     return this.storage.setItem(this.documentsKey(guid), { guid, name })
   }
 
-  updatePlan (documentGuid, planGuid, plan) {
+  updatePlan(documentGuid, planGuid, plan) {
     if (!documentGuid) {
       return
     }
@@ -289,11 +254,11 @@ class DemoStorageApi {
           sortOrder.push(planGuid)
           return this.arrangePlans(documentGuid, sortOrder)
         }
-      })
+      }),
     ])
   }
 
-  updateSection (documentGuid, planGuid, sectionGuid, section) {
+  updateSection(documentGuid, planGuid, sectionGuid, section) {
     if (!documentGuid) {
       return
     }
@@ -307,11 +272,11 @@ class DemoStorageApi {
           sortOrder.push(sectionGuid)
           return this.arrangeSections(documentGuid, sortOrder)
         }
-      })
+      }),
     ])
   }
 
-  updateTopic (documentGuid, topicGuid, topic) {
+  updateTopic(documentGuid, topicGuid, topic) {
     if (!documentGuid) {
       return
     }
@@ -325,11 +290,11 @@ class DemoStorageApi {
           sortOrder.push(topicGuid)
           return this.arrangeTopics(documentGuid, sortOrder)
         }
-      })
+      }),
     ])
   }
 
-  updateWorkshops (documentGuid, workshops) {
+  updateWorkshops() {
     // Not implemented here. Premium-only feature.
   }
 
@@ -337,100 +302,87 @@ class DemoStorageApi {
     FULL EXPORT / IMPORT
   */
 
-  docExport (guid, name) {
+  docExport(guid, name) {
     return Promise.all([
       this._getAllChapters(guid),
       this._getAllTopics(guid),
-      this._getAllPlans(guid).then(plans => {
-        return Promise.all(plans.map(plan => {
-          this._getAllSections(guid, plan.guid).then(sections => {
-            plan.sections = sections
-            return plan
-          })
-        }))
-      })
+      this._getAllPlans(guid).then(plans => Promise.all(plans.map((plan) => {
+        this._getAllSections(guid, plan.guid).then((sections) => {
+          plan.sections = sections
+          return plan
+        })
+      }))),
     ]).then(([chapters, topics, plans]) => {
       const doc = {
         guid,
         name,
         chapters,
         topics,
-        plans
+        plans,
       }
       return doc
     })
   }
 
-  docImport (doc) {
+  docImport(doc) {
     let backup
-    return this.docExport(doc.guid).then(_backup => {
+    return this.docExport(doc.guid).then((_backup) => {
       backup = _backup
-    }).then(() => {
-      return this.deleteDocument(doc.guid)
-    }).then(() => {
+    }).then(() => this.deleteDocument(doc.guid)).then(() => {
       if (!doc) {
         throw new Error('Attempted to import an empty backup')
       }
 
       return this.addDocument(doc).then(() => this.saveAllContent(doc.guid, doc))
-    }).then(undefined, err => {
-      console.error(err)
-      return this.addDocument(backup).then(() => this.saveAllContent(backup.guid, backup))
     })
+      .then(undefined, (err) => {
+        console.error(err)
+        return this.addDocument(backup).then(() => this.saveAllContent(backup.guid, backup))
+      })
   }
 
-  getFullExport () {
-    return this._getAllDocuments().then(documents => {
-      return Promise.all(documents.map(doc => {
-        return Promise.all([
-          this._getAllChapters(doc.guid),
-          this._getAllTopics(doc.guid),
-          this._getAllPlans(doc.guid).then(plans => {
-            return Promise.all(plans.map(plan =>
-              this._getAllSections(doc.guid, plan.guid).then(sections => {
-                plan.sections = sections
-                return plan
-              })
-            ))
-          })
-        ]).then(([chapters, topics, plans]) => {
-          doc.chapters = chapters
-          doc.topics = topics
-          doc.plans = plans
-          return doc
-        })
-      }))
-    })
+  getFullExport() {
+    return this._getAllDocuments().then(documents => Promise.all(documents.map(doc => Promise.all([
+      this._getAllChapters(doc.guid),
+      this._getAllTopics(doc.guid),
+      this._getAllPlans(doc.guid).then(plans => Promise.all(plans.map(plan =>
+        this._getAllSections(doc.guid, plan.guid).then((sections) => {
+          plan.sections = sections
+          return plan
+        })))),
+    ]).then(([chapters, topics, plans]) => {
+      doc.chapters = chapters
+      doc.topics = topics
+      doc.plans = plans
+      return doc
+    }))))
   }
 
-  revertImport (backup) {
+  revertImport(backup) {
     return (
       Promise.all(Object.keys(backup).map(key => this.storage.setItem(key, backup[key])))
-        .then(undefined, importErr => {
+        .then(undefined, (importErr) => {
           console.error(importErr)
           throw importErr
         })
     )
   }
 
-  doFullImport (documents) {
+  doFullImport(documents) {
     const backup = {}
 
     return this.storage.iterate((value, key) => {
       backup[key] = value
-    }).then(() => {
-      return this.storage.clear().then(() => {
-        if (!documents || !Array.isArray(documents) || !documents.length) {
-          throw new Error('Attempted to import an empty backup')
-        }
+    }).then(() => this.storage.clear().then(() => {
+      if (!documents || !Array.isArray(documents) || !documents.length) {
+        throw new Error('Attempted to import an empty backup')
+      }
 
-        const addDocumentPromises = documents.map(doc =>
-          () => this.addDocument(doc).then(() => this.saveAllContent(doc.guid, doc))
-        )
+      const addDocumentPromises = documents.map(doc =>
+        () => this.addDocument(doc).then(() => this.saveAllContent(doc.guid, doc)))
 
-        return orderPromises(addDocumentPromises)
-      })
-    }).then(undefined, err => {
+      return orderPromises(addDocumentPromises)
+    })).then(undefined, (err) => {
       console.error(err)
       return this.revertImport(backup)
     })

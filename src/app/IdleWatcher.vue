@@ -1,12 +1,17 @@
 <template>
-  <div class="page-wrap" :class="{ 'fade': fadeOn, 'hidden': needsReload }" v-if="!needsReload"
+  <div 
+    class="page-wrap" 
+    :class="{ 'fade': fadeOn, 'hidden': needsReload }" 
+    v-if="!needsReload"
     @click.passive="resetIdleTime()"
     @mousemove.passive="resetIdleTime()"
     @scroll.passive="resetIdleTime()"
     @keypress.passive="resetIdleTime()">
-    <slot></slot>
+    <slot/>
   </div>
-  <div class="page-wrap" v-else>
+  <div 
+    class="page-wrap" 
+    v-else>
     <div class="idle-page">
       <div class="idle-message">
         <h4>
@@ -17,8 +22,12 @@
           Otherwise, you may lose your changes.
         </div>
         <div class="actions">
-          <button class="button-green reload-button" @click="reload()">Reload</button>
-          <button class="button-red cancel-button" @click="backToApp()">Back to the app</button>
+          <button 
+            class="button-green reload-button" 
+            @click="reload()">Reload</button>
+          <button 
+            class="button-red cancel-button" 
+            @click="backToApp()">Back to the app</button>
         </div>
       </div>
     </div>
@@ -28,28 +37,28 @@
 <script>
 export default {
   computed: {
-    isPremium () {
+    isPremium() {
       return this.user.isPremium
     },
-    user () {
+    user() {
       return this.$store.state.user.user
-    }
+    },
   },
-  data () {
+  data() {
     return {
       fadeOn: false,
       fadeTimeout: null,
       idleTimeout: null,
-      needsReload: false
+      needsReload: false,
     }
   },
   methods: {
-    backToApp () {
+    backToApp() {
       this.needsReload = false
       this.fadeOn = false
       this.resetIdleTime()
     },
-    goIdle () {
+    goIdle() {
       if (!this.isPremium) {
         return
       }
@@ -58,10 +67,10 @@ export default {
       this.fadeTimeout = window.setTimeout(this.showIdlePage, 3 * 1000)
       this.fadeOn = true
     },
-    reload () {
+    reload() {
       window.location.reload()
     },
-    resetIdleTime () {
+    resetIdleTime() {
       if (!this.isPremium) {
         return
       }
@@ -80,13 +89,13 @@ export default {
       const wait = 30 * 60 * 1000
       this.idleTimeout = window.setTimeout(this.goIdle, wait)
     },
-    showIdlePage () {
+    showIdlePage() {
       this.needsReload = true
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.resetIdleTime()
-  }
+  },
 }
 </script>
 

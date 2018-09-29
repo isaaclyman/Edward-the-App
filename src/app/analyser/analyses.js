@@ -28,7 +28,9 @@ const makeSvg = (el) => {
     .attr('width', maxWidth)
     .append('g')
 
-  return { g, el, maxHeight, maxWidth }
+  return {
+    g, el, maxHeight, maxWidth,
+  }
 }
 
 const safelyRunAnalysis = (analysisFn, args, onError) => {
@@ -37,7 +39,7 @@ const safelyRunAnalysis = (analysisFn, args, onError) => {
   } catch (e) {
     swal({
       icon: 'error',
-      text: e
+      text: e,
     })
     onError()
   }
@@ -48,7 +50,7 @@ const validateArgs = (inputs, args) => {
     if (!args[input]) {
       swal({
         icon: 'error',
-        text: `Please fill in all required inputs.`
+        text: 'Please fill in all required inputs.',
       })
       return false
     }
@@ -58,9 +60,9 @@ const validateArgs = (inputs, args) => {
 
 const wordFrequency = {
   description:
-    `Find your top 10 most frequently used words (ignoring common English words like "the")`,
+    'Find your top 10 most frequently used words (ignoring common English words like "the")',
   inputs: null,
-  run (resultsWindow, { chapters }) {
+  run(resultsWindow, { chapters }) {
     clearPrevious(resultsWindow)
 
     const unarchivedChapters = chapters.filter(chapter => !chapter.archived && !!chapter.content)
@@ -68,16 +70,16 @@ const wordFrequency = {
     safelyRunAnalysis(
       CommonWords,
       [makeSvg(resultsWindow), unarchivedChapters],
-      () => clearPrevious(resultsWindow)
+      () => clearPrevious(resultsWindow),
     )
   },
-  title: 'Most common words'
+  title: 'Most common words',
 }
 
 const wordOverTime = {
   description: 'Track your usage of a specific word in each chapter',
   inputs: ['Word'],
-  run (resultsWindow, { chapters }, args) {
+  run(resultsWindow, { chapters }, args) {
     if (!validateArgs(this.inputs, args)) {
       return
     }
@@ -88,16 +90,16 @@ const wordOverTime = {
     safelyRunAnalysis(
       WordOverTime,
       [makeSvg(resultsWindow), unarchivedChapters, args],
-      () => clearPrevious(resultsWindow)
+      () => clearPrevious(resultsWindow),
     )
   },
-  title: 'Word over time'
+  title: 'Word over time',
 }
 
 const aiGhostwriter = {
   description: 'See a computer-generated sentence based on your work',
   inputs: null,
-  run (resultsWindow, { chapters }) {
+  run(resultsWindow, { chapters }) {
     clearPrevious(resultsWindow)
 
     const chaptersWithContent = chapters.filter(chapter => !!chapter.content)
@@ -105,17 +107,17 @@ const aiGhostwriter = {
     safelyRunAnalysis(
       AiGhostwriter,
       [makeSvg(resultsWindow), chaptersWithContent],
-      () => clearPrevious(resultsWindow)
+      () => clearPrevious(resultsWindow),
     )
   },
-  title: 'A.I. ghostwriter'
+  title: 'A.I. ghostwriter',
 }
 
 const all = [
   wordFrequency,
   wordOverTime,
-  aiGhostwriter
-].map(analysis => {
+  aiGhostwriter,
+].map((analysis) => {
   analysis.args = {}
   return analysis
 })

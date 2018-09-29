@@ -1,9 +1,9 @@
 <template>
   <p class="match">
     <span v-if="!match.atHead">...</span>
-    <span v-text="formattedPre"></span>
-    <em v-text="formattedQuery"></em>
-    <span v-text="formattedPost"></span>
+    <span v-text="formattedPre"/>
+    <em v-text="formattedQuery"/>
+    <span v-text="formattedPost"/>
     <span v-if="!match.atTail">...</span>
   </p>
 </template>
@@ -14,22 +14,22 @@ import trimStart from 'lodash/trimStart'
 
 export default {
   computed: {
-    formattedPre () {
+    formattedPre() {
       return trimStart(this.match.pre).replace(/\n/g, ' ¶ ')
     },
-    formattedQuery () {
+    formattedQuery() {
       return this.match.query.replace(/\n/g, ' ¶ ')
     },
-    formattedPost () {
+    formattedPost() {
       return trimEnd(this.match.post).replace(/\n/g, ' ¶ ')
-    }
+    },
   },
   props: {
     match: {
       required: true,
-      type: Object
-    }
-  }
+      type: Object,
+    },
+  },
 }
 </script>
 

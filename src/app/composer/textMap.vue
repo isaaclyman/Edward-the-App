@@ -1,14 +1,29 @@
 <template>
   <div class="wrap">
-    <div class="map" @click="mapClick" ref="mapWrap">
-      <div class="map-inner" v-html="mapHtml" ref="map"></div>
+    <div 
+      class="map" 
+      @click="mapClick" 
+      ref="mapWrap">
+      <div 
+        class="map-inner" 
+        v-html="mapHtml" 
+        ref="map"/>
     </div>
-    <button class="help-icon" v-html="helpIconSvg" @click="helpClick"></button>
-    <text-magnifier :html="mapHtml" :magnify-el="mapNode" :mark="mark" :wrap-el="mapWrapNode"></text-magnifier>
+    <button 
+      class="help-icon" 
+      v-html="helpIconSvg" 
+      @click="helpClick"/>
+    <text-magnifier 
+      :html="mapHtml" 
+      :magnify-el="mapNode" 
+      :mark="mark" 
+      :wrap-el="mapWrapNode"/>
 
     <!-- [?] Modal -->
     <div style="display: none">
-      <div class="help" ref="helpModal">
+      <div 
+        class="help" 
+        ref="helpModal">
         <p>This is the mini-map. It's the 10,000 foot view of your document. As you write, you'll see it fill up.</p>
         <p>It has a couple of helpful features:</p>
         <ul>
@@ -33,14 +48,14 @@ import TextMagnifier from './textMagnifier.vue'
 
 export default {
   components: {
-    TextMagnifier
+    TextMagnifier,
   },
-  data () {
+  data() {
     return {
       helpIconSvg: Octicons.question.toSVG({
         class: 'help-icon--svg',
         height: 20,
-        width: 20
+        width: 20,
       }),
       helpNode: null,
       mapHtml: '',
@@ -49,18 +64,18 @@ export default {
       markInstance: null,
       mouse: {
         x: null,
-        y: null
-      }
+        y: null,
+      },
     }
   },
   methods: {
-    helpClick () {
+    helpClick() {
       swal({
         content: this.helpNode,
-        title: 'Tip'
+        title: 'Tip',
       })
     },
-    mapClick ({ target }) {
+    mapClick({ target }) {
       if (target.tagName.toLowerCase() === 'mark') {
         this.markClick({ target })
         return
@@ -80,10 +95,10 @@ export default {
       const index = [...target.parentNode.childNodes].indexOf(target)
       this.$emit('select', {
         paragraphIndex: index,
-        searchTermIndex: -1
+        searchTermIndex: -1,
       })
     },
-    markClick ({ target }) {
+    markClick({ target }) {
       const map = this.$refs.map
       const marks = [...map.querySelectorAll('mark')]
       const searchTermIndex = marks.indexOf(target)
@@ -93,19 +108,19 @@ export default {
 
       this.$emit('select', {
         paragraphIndex,
-        searchTermIndex
+        searchTermIndex,
       })
     },
-    updateMap () {
+    updateMap() {
       if (!this.editorElement) {
         return
       }
 
       const textElement = this.editorElement.$el.querySelector('.ql-editor')
       this.mapHtml = textElement.innerHTML
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.$nextTick(this.updateMap)
     this.helpNode = this.$refs.helpModal
     this.markInstance = new Mark(this.$refs.map)
@@ -114,20 +129,23 @@ export default {
   },
   props: {
     dataStream: {
-      required: true
+      required: true,
+      type: Object
     },
     editorElement: {
-      required: true
+      required: true,
+      type: Object
     },
     mark: {
+      default: null,
       type: String
-    }
+    },
   },
   watch: {
     dataStream: debounce(function () {
       this.updateMap()
     }, 250),
-    mark (text) {
+    mark(text) {
       this.markInstance.unmark()
 
       if (text.length < 3 || getNumberOfWords(text) > 3) {
@@ -135,13 +153,13 @@ export default {
       }
 
       this.markInstance.mark(text, {
-        separateWordSearch: false
+        separateWordSearch: false,
       })
-    }
-  }
+    },
+  },
 }
 
-function getNumberOfWords (str) {
+function getNumberOfWords(str) {
   return str.trim().split(/\s/).length
 }
 </script>

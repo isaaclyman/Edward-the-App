@@ -6,7 +6,9 @@
           <strong>Welcome to Edward.</strong>
         </p>
         <p>
-          New here? <a target="_blank" href="https://www.youtube.com/watch?v=OvERL5CPPXM">Watch the introductory video.</a>
+          New here? <a 
+            target="_blank" 
+            href="https://www.youtube.com/watch?v=OvERL5CPPXM">Watch the introductory video.</a>
         </p>
       </div>
       <div class="content border-bottom">
@@ -16,7 +18,7 @@
         <div v-if="hasDocuments">
           <p>Choose a saved document:</p>
           <div class="document-picker-wrap">
-            <document-picker></document-picker>
+            <document-picker/>
           </div>
         </div>
       </div>
@@ -25,24 +27,36 @@
           <p>Create a new document:</p>
         </div>
         <div class="types">
-          <button class="type" :class="{ 'selected': type === selectedType }"
-                  v-for="type in documentTypes" :key="type.name"
-                  @click="selectDocument(type)">
-            <div v-html="type.svg"></div>
+          <button 
+            class="type" 
+            :class="{ 'selected': type === selectedType }"
+            v-for="type in documentTypes" 
+            :key="type.name"
+            @click="selectDocument(type)">
+            <div v-html="type.svg"/>
             <div>{{ type.name }}</div>
           </button>
         </div>
         <template v-if="selectedType">
           <div class="title">
-            <label for="new-document-title">{{selectedType.name}} title:</label>
-            <input id="new-document-title" v-model="title" @keyup.enter="createDocument()">
+            <label for="new-document-title">{{ selectedType.name }} title:</label>
+            <input 
+              id="new-document-title" 
+              v-model="title" 
+              @keyup.enter="createDocument()">
           </div>
           <div class="actions">
-            <pulse-loader v-if="saving"></pulse-loader>
-            <button v-if="!saving" class="button-green" @click="createDocument()" :disabled="!title">
+            <pulse-loader v-if="saving"/>
+            <button 
+              v-if="!saving" 
+              class="button-green" 
+              @click="createDocument()" 
+              :disabled="!title">
               Create
             </button>
-            <p class="error" v-if="error">
+            <p 
+              class="error" 
+              v-if="error">
               That didn't work. Please try again.
             </p>
           </div>
@@ -62,27 +76,27 @@ import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 export default {
   components: {
     DocumentPicker,
-    PulseLoader
+    PulseLoader,
   },
   computed: {
-    hasDocuments () {
+    hasDocuments() {
       return this.$store.state.document.ownedDocuments.length > 0
     },
-    isPremium () {
+    isPremium() {
       return this.$store.state.user.user.isPremium
-    }
+    },
   },
-  data () {
+  data() {
     return {
       documentTypes,
       error: false,
       saving: false,
       selectedType: null,
-      title: ''
+      title: '',
     }
   },
   methods: {
-    createDocument () {
+    createDocument() {
       const type = this.selectedType
       const name = this.title
 
@@ -92,7 +106,7 @@ export default {
 
       const newDocument = {
         guid: guid(),
-        name
+        name,
       }
 
       this.saving = true
@@ -108,10 +122,10 @@ export default {
         this.saving = false
       })
     },
-    selectDocument (type) {
+    selectDocument(type) {
       this.selectedType = type
-    }
-  }
+    },
+  },
 }
 </script>
 

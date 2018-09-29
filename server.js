@@ -1,7 +1,7 @@
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const express = require('express')
-const expressStaticGzip = require("express-static-gzip")
+const expressStaticGzip = require('express-static-gzip')
 const passport = require('passport')
 const path = require('path')
 const timeout = require('connect-timeout')
@@ -9,7 +9,7 @@ const session = require('express-session')
 const KnexSessionStore = require('connect-session-knex')(session)
 
 if (!process.env.DATABASE_URL) {
-  var env = require('node-env-file')
+  const env = require('node-env-file')
   env(path.join(__dirname, '.env'))
 }
 
@@ -22,11 +22,11 @@ app.use('/', expressStaticGzip(path.join(__dirname, 'dist'), { indexFromEmptyFil
 app.use(bodyParser.json({
   // For Stripe webhooks, we compute the raw body so its signature can be verified
   verify: (req, res, buf) => {
-    var url = req.originalUrl;
+    const url = req.originalUrl
     if (url.startsWith('/webhooks')) {
       req.rawBody = buf.toString()
     }
-  }
+  },
 }))
 app.use(bodyParser.json())
 app.use(cookieParser(process.env.SESSION_COOKIE_SECRET))
@@ -61,7 +61,7 @@ const serverReady = dbReady.then(() => {
 
   // Auth sessions
   const sessionStore = new KnexSessionStore({
-    knex: knex
+    knex,
   })
 
   app.set('trust proxy', 1)
@@ -73,8 +73,8 @@ const serverReady = dbReady.then(() => {
     cookie: {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       // Set "null" for a temporary cookie (expires when browser session ends)
-      secure: process.env.INSECURE_COOKIES !== 'true'
-    }
+      secure: process.env.INSECURE_COOKIES !== 'true',
+    },
   }))
 
   app.use(passport.initialize())
@@ -95,7 +95,7 @@ const serverReady = dbReady.then(() => {
   // Listen
   const port = process.env.PORT || 3000
   app.listen(port, () => {
-    console.log('Express listening on port ' + port)
+    console.log(`Express listening on port ${port}`)
   })
 })
 

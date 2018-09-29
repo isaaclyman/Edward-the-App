@@ -2,15 +2,15 @@
   <div class="wrap">
     <h4>This is a restricted Admin page.</h4>
     <hr>
-    <router-view></router-view>
+    <router-view/>
   </div>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {}
-  }
+  },
 }
 </script>
 

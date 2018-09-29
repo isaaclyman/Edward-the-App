@@ -3,7 +3,11 @@
     <div class="planner">
       <!-- 'Show Archived' checkbox -->
       <div class="filters">
-        <input class="show-archived" id="showArchivedCheckbox" type="checkbox" v-model="filters.archived" />
+        <input 
+          class="show-archived" 
+          id="showArchivedCheckbox" 
+          type="checkbox" 
+          v-model="filters.archived" >
         <label for="showArchivedCheckbox">Show Archived</label>
       </div>
       <hr>
@@ -11,25 +15,35 @@
       <div class="chips-wrap plan-chips">
         <div class="section-title">
           <h3>Plans</h3>
-          <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpPlanChipsModal, 'Plan List')"></button>
+          <button 
+            class="help-icon" 
+            v-html="helpIconSvg" 
+            @click="helpClick(helpPlanChipsModal, 'Plan List')"/>
         </div>
-        <chips-list name="Plan" name-prop="title"
-                    :data-array="allPlans"
-                    :filter-chips="showPlan"
-                    :is-deletable="isDeletable"
-                    @add="addPlan"
-                    @delete="archivePlan"
-                    @rearrange="rearrangePlan"
-                    @restore="restorePlan"
-                    @update="renamePlan"></chips-list>
+        <chips-list 
+          name="Plan" 
+          name-prop="title"
+          :data-array="allPlans"
+          :filter-chips="showPlan"
+          :is-deletable="isDeletable"
+          @add="addPlan"
+          @delete="archivePlan"
+          @rearrange="rearrangePlan"
+          @restore="restorePlan"
+          @update="renamePlan"/>
       </div>
       <hr>
-      <plans-list ref="plansList" :filter-plans="showPlan" :filter-sections="showSection"></plans-list>
+      <plans-list 
+        ref="plansList" 
+        :filter-plans="showPlan" 
+        :filter-sections="showSection"/>
     </div>
 
     <!-- Plans: [?] Modal -->
     <div style="display: none">
-      <div class="help" ref="helpPlanChipsModal">
+      <div 
+        class="help" 
+        ref="helpPlanChipsModal">
         <p>This is the plan list. It's the easiest place to add, archive, restore, rename, and rearrange plans.</p>
         <p>To add a plan, type its name into the "New Plan" box and click "Add".</p>
         <p>
@@ -45,8 +59,10 @@
 </template>
 
 <script>
-import { ADD_PLAN, ARCHIVE_PLAN, REARRANGE_PLANS,
-  RESTORE_PLAN, UPDATE_PLAN } from '../shared/chapters.store'
+import {
+  ADD_PLAN, ARCHIVE_PLAN, REARRANGE_PLANS,
+  RESTORE_PLAN, UPDATE_PLAN,
+} from '../shared/chapters.store'
 import ChipsList from '../shared/chipsList.vue'
 import guid from '../shared/guid'
 import Octicons from 'octicons'
@@ -57,31 +73,31 @@ import { ValidateTitle } from '../shared/validate'
 export default {
   components: {
     ChipsList,
-    PlansList
+    PlansList,
   },
   computed: {
-    allPlans () {
+    allPlans() {
       return this.$store.state.chapters.plans || []
     },
-    viewingPlans () {
+    viewingPlans() {
       return (this.allPlans
         .filter(plan => !plan.archived || this.filters.archived))
-    }
+    },
   },
-  data () {
+  data() {
     return {
       filters: {
-        archived: false
+        archived: false,
       },
       helpIconSvg: Octicons.question.toSVG({
         class: 'help-icon--svg',
         height: 16,
-        width: 16
-      })
+        width: 16,
+      }),
     }
   },
   methods: {
-    addPlan (title) {
+    addPlan(title) {
       if (!ValidateTitle('plan', title)) {
         return
       }
@@ -90,51 +106,51 @@ export default {
         archived: false,
         guid: guid(),
         title,
-        sections: []
+        sections: [],
       }
 
       this.$store.commit(ADD_PLAN, { plan })
     },
-    archivePlan ({ index }) {
+    archivePlan({ index }) {
       this.$store.commit(ARCHIVE_PLAN, { plan: this.allPlans[index] })
 
       if (index === this.activePlanIndex) {
         this.activePlanIndex = -1
       }
     },
-    helpClick (content, title) {
+    helpClick(content, title) {
       swal({
         content,
-        title
+        title,
       })
     },
-    isDeletable (chip) {
+    isDeletable(chip) {
       return !chip.archived
     },
-    rearrangePlan (plans) {
+    rearrangePlan(plans) {
       this.$store.commit(REARRANGE_PLANS, { plans })
     },
-    renamePlan ({ index, value: newTitle }) {
+    renamePlan({ index, value: newTitle }) {
       if (!ValidateTitle('plan', newTitle)) {
         return
       }
 
       this.$store.commit(UPDATE_PLAN, {
         plan: this.allPlans[index],
-        newTitle
+        newTitle,
       })
     },
-    restorePlan ({ index }) {
+    restorePlan({ index }) {
       this.$store.commit(RESTORE_PLAN, { plan: this.allPlans[index] })
     },
-    showPlan (plan) {
+    showPlan(plan) {
       return this.viewingPlans.includes(plan)
     },
-    showSection (section) {
+    showSection(section) {
       return !section.archived || this.filters.archived
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.helpPlanChipsModal = this.$refs.helpPlanChipsModal
 
     const planGuid = this.$route.query.plan
@@ -148,7 +164,7 @@ export default {
     }
 
     this.$router.replace('/plan')
-  }
+  },
 }
 </script>
 

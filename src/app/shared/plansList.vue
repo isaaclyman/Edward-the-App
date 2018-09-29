@@ -1,19 +1,33 @@
 <template>
-  <div class="plans-wrap" v-show="viewingPlans.length > 0">
+  <div 
+    class="plans-wrap" 
+    v-show="viewingPlans.length > 0">
     <!-- Plan Tabs -->
-    <tabs-list :active-index="activePlanIndex" :data-array="allPlans" :filter-tabs="filterPlans"
-              item-name="Plan"
-              @add="addPlan"
-              @update:activeIndex="selectPlan"></tabs-list>
+    <tabs-list 
+      :active-index="activePlanIndex" 
+      :data-array="allPlans" 
+      :filter-tabs="filterPlans"
+      item-name="Plan"
+      @add="addPlan"
+      @update:activeIndex="selectPlan"/>
     <div class="plan">
       <div class="plan-header">
         <h4 class="plan-title">
           {{ activePlan.title }}
         </h4>
         <div class="plan-actions">
-          <button class="plan-action" v-show="!activePlan.archived" @click="archivePlan({ index: activePlanIndex })">Archive</button>
-          <button class="plan-action" v-show="activePlan.archived" @click="restorePlan({ index: activePlanIndex })">Restore</button>
-          <button class="plan-action button-red" v-show="activePlan.archived" @click="deletePlan({ index: activePlanIndex })">Delete Forever</button>
+          <button 
+            class="plan-action" 
+            v-show="!activePlan.archived" 
+            @click="archivePlan({ index: activePlanIndex })">Archive</button>
+          <button 
+            class="plan-action" 
+            v-show="activePlan.archived" 
+            @click="restorePlan({ index: activePlanIndex })">Restore</button>
+          <button 
+            class="plan-action button-red" 
+            v-show="activePlan.archived" 
+            @click="deletePlan({ index: activePlanIndex })">Delete Forever</button>
         </div>
       </div>
       <div class="plan-body">
@@ -21,48 +35,89 @@
         <div class="chips-wrap section-chips">
           <div class="section-title">
             <h3>Sections</h3>
-            <button class="help-icon" v-html="helpIconSvg" @click="helpClick(helpSectionChipsModal, 'Section List')"></button>
+            <button 
+              class="help-icon" 
+              v-html="helpIconSvg" 
+              @click="helpClick(helpSectionChipsModal, 'Section List')"/>
           </div>
-          <chips-list name="Section" name-prop="title"
-                      :data-array="activePlanSections"
-                      :filter-chips="filterSections"
-                      :is-deletable="isDeletable"
-                      @add="addSection"
-                      @delete="archiveSection"
-                      @rearrange="rearrangeSection"
-                      @restore="restoreSection"
-                      @update="renameSection"></chips-list>
+          <chips-list 
+            name="Section" 
+            name-prop="title"
+            :data-array="activePlanSections"
+            :filter-chips="filterSections"
+            :is-deletable="isDeletable"
+            @add="addSection"
+            @delete="archiveSection"
+            @rearrange="rearrangeSection"
+            @restore="restoreSection"
+            @update="renameSection"/>
         </div>
         <div class="sections">
-          <div class="section" v-for="(section, index) in activePlan.sections" :key="section.guid" v-show="filterSections(section)">
+          <div 
+            class="section" 
+            v-for="(section, index) in activePlan.sections" 
+            :key="section.guid" 
+            v-show="filterSections(section)">
             <div class="section-header">
               <h5 class="section-title">
                 {{ section.title }}
               </h5>
               <div class="section-actions">
-                <button class="section-action" v-show="!section.archived" @click="archiveSection({ index })">Archive</button>
-                <button class="section-action" v-show="section.archived" @click="restoreSection({ index })">Restore</button>
-                <button class="section-action button-red" v-show="section.archived" @click="deleteSection({ index })">Delete Forever</button>
+                <button 
+                  class="section-action" 
+                  v-show="!section.archived" 
+                  @click="archiveSection({ index })">Archive</button>
+                <button 
+                  class="section-action" 
+                  v-show="section.archived" 
+                  @click="restoreSection({ index })">Restore</button>
+                <button 
+                  class="section-action button-red" 
+                  v-show="section.archived" 
+                  @click="deleteSection({ index })">Delete Forever</button>
               </div>
             </div>
             <div class="section-content">
-              <div class="content-actions" v-if="!section.archived">
-                <button class="button-link" v-if="!isEditing(index)" @click="editSection(index)">
-                  <span class="button-link-icon" v-html="editSvg"></span>Edit
+              <div 
+                class="content-actions" 
+                v-if="!section.archived">
+                <button 
+                  class="button-link" 
+                  v-if="!isEditing(index)" 
+                  @click="editSection(index)">
+                  <span 
+                    class="button-link-icon" 
+                    v-html="editSvg"/>Edit
                 </button>
-                <button class="button-link" v-if="isEditing(index)" @click="endEditSection(index)">
-                  <span class="button-link-icon" v-html="doneSvg"></span>Done Editing
+                <button 
+                  class="button-link" 
+                  v-if="isEditing(index)" 
+                  @click="endEditSection()">
+                  <span 
+                    class="button-link-icon" 
+                    v-html="doneSvg"/>Done Editing
                 </button>
               </div>
-              <div class="content-static" :class="{ 'space-above': section.archived }" v-if="!isEditing(index)">
-                <div v-html="getHtml(section)"></div>
-                <span class="content-placeholder" v-if="!section.archived && !getTextContent(section.content)">
+              <div 
+                class="content-static" 
+                :class="{ 'space-above': section.archived }" 
+                v-if="!isEditing(index)">
+                <div v-html="getHtml(section)"/>
+                <span 
+                  class="content-placeholder" 
+                  v-if="!section.archived && !getTextContent(section.content)">
                   No content yet. Click "Edit" to add some.
                 </span>
               </div>
-              <div class="content-editable" v-show="isEditing(index)">
-                <quill-editor :content="section.content" :content-id="activePlan.guid" ref="quillEditor" @update:content="updateContent(section, $event)"
-                  @shortcut:done="endEditSection(index)"></quill-editor>
+              <div 
+                class="content-editable" 
+                v-show="isEditing(index)">
+                <quill-editor 
+                  :content="section.content" 
+                  :content-id="activePlan.guid" 
+                  ref="quillEditor" 
+                  @update:content="updateContent(section, $event)"
+                  @shortcut:done="endEditSection()"/>
               </div>
             </div>
           </div>
@@ -72,7 +127,9 @@
 
     <!-- Sections: [?] Modal -->
     <div style="display: none">
-      <div class="help" ref="helpSectionChipsModal">
+      <div 
+        class="help" 
+        ref="helpSectionChipsModal">
         <p>This is the section list. It's the easiest place to add, archive, restore, rename, and rearrange sections.</p>
         <p>To add a section, type its name into the "New Section" box and click "Add".</p>
         <p>
@@ -88,10 +145,12 @@
 </template>
 
 <script>
-import { ADD_PLAN, ADD_SECTION, ARCHIVE_PLAN, ARCHIVE_SECTION,
+import {
+  ADD_PLAN, ADD_SECTION, ARCHIVE_PLAN, ARCHIVE_SECTION,
   DELETE_PLAN, DELETE_SECTION, REARRANGE_SECTIONS,
   RESTORE_PLAN, RESTORE_SECTION, UPDATE_SECTION,
-  UPDATE_SECTION_CONTENT, UPDATE_SECTION_TAGS } from '../shared/chapters.store'
+  UPDATE_SECTION_CONTENT, UPDATE_SECTION_TAGS,
+} from '../shared/chapters.store'
 import ChipsList from '../shared/chipsList.vue'
 import { GetContentString, GetHtml } from '../shared/deltaParser'
 import guid from '../shared/guid'
@@ -105,47 +164,43 @@ export default {
   components: {
     ChipsList,
     QuillEditor,
-    TabsList
+    TabsList,
   },
   computed: {
-    activePlan () {
-      if (this.activePlanIndex < 0) {
-        this.activePlanIndex = this.allPlans.indexOf(this.viewingPlans[0])
-      }
-
+    activePlan() {
       return this.allPlans[this.activePlanIndex] || {}
     },
-    activePlanSections () {
+    activePlanSections() {
       return this.activePlan.sections || []
     },
-    allPlans () {
+    allPlans() {
       return this.$store.state.chapters.plans || []
     },
-    viewingPlans () {
+    viewingPlans() {
       return this.allPlans.filter(plan => this.filterPlans(plan))
-    }
+    },
   },
-  data () {
+  data() {
     return {
       activePlanIndex: -1,
       doneSvg: Octicons.check.toSVG({
         height: 14,
-        width: 14
+        width: 14,
       }),
       editingSectionIndex: -1,
       editSvg: Octicons.pencil.toSVG({
         height: 14,
-        width: 14
+        width: 14,
       }),
       helpIconSvg: Octicons.question.toSVG({
         class: 'help-icon--svg',
         height: 16,
-        width: 16
-      })
+        width: 16,
+      }),
     }
   },
   methods: {
-    addPlan (title) {
+    addPlan(title) {
       if (!ValidateTitle('plan', title)) {
         return
       }
@@ -154,12 +209,12 @@ export default {
         archived: false,
         guid: guid(),
         title,
-        sections: []
+        sections: [],
       }
 
       this.$store.commit(ADD_PLAN, { plan })
     },
-    addSection (title) {
+    addSection(title) {
       if (!ValidateTitle('section', title)) {
         return
       }
@@ -169,31 +224,31 @@ export default {
         content: null,
         guid: guid(),
         tags: [],
-        title
+        title,
       }
 
       this.$store.commit(ADD_SECTION, { plan: this.activePlan, section })
     },
-    archivePlan ({ index }) {
+    archivePlan({ index }) {
       this.$store.commit(ARCHIVE_PLAN, { plan: this.allPlans[index] })
 
       if (index === this.activePlanIndex && !this.filterPlans(this.allPlans[index])) {
-        this.activePlanIndex = -1
+        this.selectPlan(-1)
       }
     },
-    archiveSection ({ index }) {
+    archiveSection({ index }) {
       this.$store.commit(ARCHIVE_SECTION, {
         plan: this.activePlan,
-        section: this.activePlan.sections[index]
+        section: this.activePlan.sections[index],
       })
     },
-    deletePlan ({ index }) {
+    deletePlan({ index }) {
       swal({
         buttons: true,
         dangerMode: true,
         icon: 'warning',
-        text: `Are you sure you want to delete this plan? Its sections and all of their content will be lost. This cannot be undone.`,
-        title: 'Delete Forever?'
+        text: 'Are you sure you want to delete this plan? Its sections and all of their content will be lost. This cannot be undone.',
+        title: 'Delete Forever?',
       }).then((willDelete) => {
         if (!willDelete) {
           return
@@ -202,17 +257,17 @@ export default {
         this.$store.commit(DELETE_PLAN, { plan: this.allPlans[index] })
 
         if (index === this.activePlanIndex) {
-          this.activePlanIndex = -1
+          this.selectPlan(-1)
         }
       })
     },
-    deleteSection ({ index }) {
+    deleteSection({ index }) {
       swal({
         buttons: true,
         dangerMode: true,
         icon: 'warning',
-        text: `Are you sure you want to delete this section? Its content will be lost. This cannot be undone.`,
-        title: 'Delete Forever?'
+        text: 'Are you sure you want to delete this section? Its content will be lost. This cannot be undone.',
+        title: 'Delete Forever?',
       }).then((willDelete) => {
         if (!willDelete) {
           return
@@ -220,39 +275,39 @@ export default {
 
         this.$store.commit(DELETE_SECTION, {
           plan: this.activePlan,
-          section: this.activePlan.sections[index]
+          section: this.activePlan.sections[index],
         })
       })
     },
-    editSection (index) {
+    editSection(index) {
       this.editingSectionIndex = index
       this.$refs.quillEditor[index].focus()
     },
-    endEditSection (index) {
+    endEditSection() {
       this.editingSectionIndex = -1
     },
-    getHtml (section) {
+    getHtml(section) {
       return GetHtml(section.content)
     },
-    getTextContent (content) {
+    getTextContent(content) {
       return GetContentString(content)
     },
-    helpClick (content, title) {
+    helpClick(content, title) {
       swal({
         content,
-        title
+        title,
       })
     },
-    isDeletable (chip) {
+    isDeletable(chip) {
       return !chip.archived
     },
-    isEditing (index) {
+    isEditing(index) {
       return this.editingSectionIndex === index
     },
-    rearrangeSection (sections) {
+    rearrangeSection(sections) {
       this.$store.commit(REARRANGE_SECTIONS, { plan: this.activePlan, sections })
     },
-    renameSection ({ index, value: newTitle }) {
+    renameSection({ index, value: newTitle }) {
       if (!ValidateTitle('section', newTitle)) {
         return
       }
@@ -260,47 +315,55 @@ export default {
       this.$store.commit(UPDATE_SECTION, {
         plan: this.activePlan,
         section: this.activePlan.sections[index],
-        newTitle
+        newTitle,
       })
     },
-    restorePlan ({ index }) {
+    restorePlan({ index }) {
       this.$store.commit(RESTORE_PLAN, { plan: this.allPlans[index] })
     },
-    restoreSection ({ index }) {
+    restoreSection({ index }) {
       this.$store.commit(RESTORE_SECTION, { plan: this.activePlan, section: this.activePlan.sections[index] })
     },
-    selectPlan (index) {
+    selectPlan(index) {
+      if (index === -1) {
+        index = 0
+      }
+
+      if (this.allPlans[index].archived) {
+        index = this.allPlans.indexOf(this.viewingPlans[0])
+      }
+      
       this.activePlanIndex = index
     },
-    updateContent (section, { content: newContent, contentId: planGuid }) {
+    updateContent(section, { content: newContent, contentId: planGuid }) {
       const plan = this.allPlans.find(plan => plan.guid === planGuid)
       this.$store.commit(UPDATE_SECTION_CONTENT, {
         plan,
         newContent,
-        section
+        section,
       })
     },
-    updateTags (section, newTags) {
+    updateTags(section, newTags) {
       this.$store.commit(UPDATE_SECTION_TAGS, {
         plan: this.activePlan,
         newTags,
-        section
+        section,
       })
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.helpSectionChipsModal = this.$refs.helpSectionChipsModal
   },
   props: {
     filterPlans: {
       required: true,
-      type: Function
+      type: Function,
     },
     filterSections: {
       required: true,
-      type: Function
-    }
-  }
+      type: Function,
+    },
+  },
 }
 </script>
 
@@ -360,7 +423,7 @@ export default {
 
 .section {
   border: 1px solid rgba(13, 91, 166, 1);
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
 }
 
 .section-header {

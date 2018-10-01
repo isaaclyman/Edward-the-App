@@ -14,7 +14,7 @@
       <div 
         class="logo" 
         @click="goToLogin()">
-        <img src="../../static/logo.png">
+        <img src="../../public/img/logo.png">
       </div>
       <router-view/>
     </div>

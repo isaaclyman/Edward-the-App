@@ -13,7 +13,7 @@
           <div class="logo-wrap">
             <img 
               class="logo" 
-              src="../../static/logo.png">
+              src="../../public/img/logo.png">
           </div>
           <div class="app-header--menu">
             <main-menu/>
@@ -33,7 +33,7 @@
         key="loading">
         <img 
           class="logo" 
-          src="../../static/logo.png">
+          src="../../public/img/logo.png">
         <pulse-loader/>
       </div>
       <div 

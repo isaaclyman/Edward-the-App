@@ -1,3 +1,6 @@
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
+const productionGzipExtensions = ['js', 'css']
+
 module.exports = {
   assetsDir: 'static',
   pages: {
@@ -5,19 +8,46 @@ module.exports = {
       entry: 'src/app.js',
       template: 'public/app.html',
       filename: 'app.html',
-      chunks: [],
     },
     auth: {
       entry: 'src/auth.js',
       template: 'public/auth.html',
       filename: 'auth.html',
-      chunks: [],
     },
     admin: {
       entry: 'src/admin.js',
       template: 'public/admin.html',
       filename: 'admin.html',
-      chunks: [],
     },
   },
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true
+      },
+      '/login': {
+        target: 'http://locahost:3000',
+        changeOrigin: true
+      }
+    },
+    before: function (app) {
+      app.get('/app', function (req, res) { res.redirect('/app.html') })
+      app.get('/auth', function (req, res) { res.redirect('/auth.html') })
+      app.get('/login', function (req, res) { res.redirect('/auth.html') })
+      app.get('/admin', function (req, res) { res.redirect('/admin.html') })
+      app.get('/press', function (req, res) { res.redirect('/press/press.html') })
+    }
+  },
+  configureWebpack: {
+    plugins: [
+      new CompressionWebpackPlugin({
+        filename: '[path].gz[query]',
+        algorithm: 'gzip',
+        test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
+        threshold: 10240,
+        minRatio: 0.8
+      })
+    ]
+  }
 }

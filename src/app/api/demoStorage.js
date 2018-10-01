@@ -1,7 +1,8 @@
 import clone from 'lodash/clone'
 import localForage from 'localforage'
-import { orderPromises } from '../../../utilities'
 import uniq from 'lodash/uniq'
+
+const { orderPromises } = require('../../../utilities')
 
 class DemoStorageApi {
   constructor() {

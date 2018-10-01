@@ -128,11 +128,11 @@ export default {
     container: {
       default: null,
       required: false,
-      type: Object
+      type: null
     },
     content: {
       required: true,
-      type: Object
+      type: null
     },
     contentId: {
       required: false,

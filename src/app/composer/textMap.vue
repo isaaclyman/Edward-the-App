@@ -130,11 +130,11 @@ export default {
   props: {
     dataStream: {
       required: true,
-      type: Object
+      type: null
     },
     editorElement: {
       required: true,
-      type: Object
+      type: null
     },
     mark: {
       default: null,

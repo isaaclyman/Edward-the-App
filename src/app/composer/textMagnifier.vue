@@ -80,7 +80,7 @@ export default {
     },
     magnifyEl: {
       required: true,
-      type: Object
+      type: null
     },
     mark: {
       required: true,
@@ -88,7 +88,7 @@ export default {
     },
     wrapEl: {
       required: true,
-      type: Object
+      type: null
     },
   },
   watch: {

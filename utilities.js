@@ -136,16 +136,16 @@ function getStyledArrayFromChapters(chapters) {
 }
 
 (function (root, factory) {
-  if (typeof define === 'function' && define.amd) {
-      define([], factory);
+  if (typeof define === 'function' && define.amd) { // eslint-disable-line
+      define([], factory) // eslint-disable-line
   } else if (typeof module === 'object' && module.exports) {
-      module.exports = factory();
+      module.exports = factory()
   } else {
-      root.returnExports = factory();
+      root.returnExports = factory()
 }
 }(typeof self !== 'undefined' ? self : this, function () {
   return {
     getStyledArrayFromChapters,
     orderPromises,
-  };
-}));
+  }
+}))

@@ -16,7 +16,7 @@ if (!process.env.DATABASE_URL) {
 const app = express()
 
 // Serve static files
-app.use('/static', express.static(path.join(__dirname, 'static')))
+app.use('/static', express.static(path.join(__dirname, 'dist/static')))
 app.use('/', expressStaticGzip(path.join(__dirname, 'dist'), { indexFromEmptyFile: false }))
 // app.use(express.static(path.join(__dirname, 'dist')))
 app.use(bodyParser.json({
@@ -34,7 +34,7 @@ app.use(timeout(15000))
 
 // Serve public landing page
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'))
+  res.sendFile(path.join(__dirname, 'dist', 'landing.html'))
 })
 
 // Serve legal documents

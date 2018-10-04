@@ -25,10 +25,6 @@ module.exports = {
       '/api': {
         target: 'http://localhost:3000',
         changeOrigin: true
-      },
-      '/login': {
-        target: 'http://locahost:3000',
-        changeOrigin: true
       }
     },
     before: function (app) {
@@ -49,5 +45,23 @@ module.exports = {
         minRatio: 0.8
       })
     ]
+  },
+  chainWebpack: config => {
+    config.plugin('copy')
+      .tap(args => {
+        args[0][0].ignore = [
+          '.DS_Store',
+          'public/app.html',
+          'public/auth.html',
+          'public/admin.html'
+        ]
+        return args
+      })
+  },
+  pwa: {
+    workboxPluginMode: 'GenerateSW',
+    name: 'Edward the App',
+    themeColor: '#BFEADA',
+    assetsVersion: '20181003'
   }
 }

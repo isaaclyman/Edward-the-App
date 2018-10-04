@@ -34,7 +34,7 @@ app.use(timeout(15000))
 
 // Serve public landing page
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'landing.html'))
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
 })
 
 // Serve legal documents

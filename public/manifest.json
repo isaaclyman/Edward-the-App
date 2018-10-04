@@ -1,20 +1,22 @@
 {
-  "name": "edward-the-app-build-2",
-  "short_name": "edward-the-app-build-2",
+  "short_name": "Edward",
+  "name": "Edward the App",
+  "description": "Write your first novel",
   "icons": [
     {
-      "src": "/img/icons/android-chrome-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
+      "src": "/img/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
     },
     {
-      "src": "/img/icons/android-chrome-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "/img/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
-  "start_url": "/index.html",
+  "start_url": "/app",
+  "background_color": "#BFEADA",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#4DBA87"
+  "scope": "/",
+  "theme_color": "#BFEADA"
 }

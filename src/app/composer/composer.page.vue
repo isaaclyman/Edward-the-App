@@ -189,7 +189,7 @@ export default {
   computed: {
     activeChapter() {
       if (this.activeChapterIndex === -1) {
-        return {}
+        return this.viewingChapters[0]
       }
 
       return this.allChapters[this.activeChapterIndex] || {}

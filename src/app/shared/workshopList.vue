@@ -86,7 +86,7 @@ export default {
     },
     currentWorkshopName() {
       if (this.activeWorkshopNameIndex === -1) {
-        return {}
+        return this.workshopNames[0]
       }
 
       return this.workshopNames[this.activeWorkshopNameIndex] || {}

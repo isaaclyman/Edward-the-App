@@ -2,7 +2,6 @@ import {
   alternateUser,
   createAlternateTestUser,
   createTestDocument,
-  createTestChapter,
   createTestUser,
   deleteTestUser,
   getDocuments,
@@ -13,7 +12,6 @@ import {
   serverReady,
   stubRecaptcha,
   test,
-  user,
   wrapTest
 } from '../_imports'
 

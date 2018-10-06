@@ -45,6 +45,7 @@
     "quill": "1.3.6",
     "quill-delta-to-html": "0.5.1",
     "raven-js": "3.24.0",
+    "register-service-worker": "1.0.0",
     "request": "2.87.0",
     "request-promise-native": "1.0.5",
     "rimraf": "2.6.0",
@@ -55,23 +56,25 @@
     "sweetalert": "2.0.3",
     "tippy.js": "2.5.4",
     "uuid": "3.1.0",
+    "vue": "2.5.17",
+    "vue-router": "3.0.1",
     "vue-spinner": "1.0.3",
     "vue-switches": "2.0.1",
     "vuedraggable": "2.14.1",
-    "vuex-persistedstate": "2.0.0",
-    "register-service-worker": "1.0.0",
-    "vue": "2.5.17",
-    "vue-router": "3.0.1",
-    "vuex": "3.0.1"
+    "vuex": "3.0.1",
+    "vuex-persistedstate": "2.0.0"
   },
   "devDependencies": {
+    "@ava/babel-preset-stage-4": "^2.0.0",
+    "@babel/core": "^7.1.2",
+    "@babel/register": "^7.0.0",
     "@types/knex": "^0.0.67",
     "@vue/cli-plugin-babel": "^3.0.4",
     "@vue/cli-plugin-eslint": "^3.0.4",
     "@vue/cli-plugin-pwa": "^3.0.4",
     "@vue/cli-service": "^3.0.4",
     "@vue/eslint-config-airbnb": "^3.0.4",
-    "ava": "^0.25.0",
+    "ava": "^1.0.0-beta.8",
     "compression-webpack-plugin": "^2.0.0",
     "cypress": "^3.1.0",
     "fake-indexeddb": "^2.0.4",
@@ -99,19 +102,21 @@
     "npm": "^6.4.0"
   },
   "ava": {
+    "babel": {
+      "testOptions": {
+        "babelrc": false,
+        "presets": ["@ava/babel-preset-stage-4"]
+      }
+    },
     "files": [
       "test/**/*.js",
       "!test/**/_*.js"
     ],
-    "source": [
+    "sources": [
       "**/*.js",
       "!dist/**/*",
       "!node_modules/**/*"
     ],
-    "require": [
-      "babel-register"
-    ],
-    "babel": "inherit",
     "failWithoutAssertions": false
   }
 }

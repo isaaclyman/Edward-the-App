@@ -22,7 +22,7 @@ test('connects to database', t => {
 
 test('serves static file', t => {
   return wrapTest(t,
-    app.get('/static/index.css')
+    app.get('/public/index.css')
     .expect(200)
     .expect(/font-family/)
   )

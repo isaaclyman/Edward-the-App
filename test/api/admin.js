@@ -31,12 +31,7 @@ beforeEach(async () => {
   await makeTestUserAdmin()
 })
 
-afterAll(() => {
-  server.server.close()
-  process.exit()
-})
-
-test.only('get users exceeding usage limits', async () => {
+test('get users exceeding usage limits', async () => {
   await (
     app.get(route(`admin/space-overages`))
     .expect(200)

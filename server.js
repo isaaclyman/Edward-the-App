@@ -61,7 +61,7 @@ const serverReady = dbReady.then(() => {
 
   // Auth sessions
   const sessionStore = new KnexSessionStore({
-    knex,
+    knex
   })
 
   app.set('trust proxy', 1)
@@ -76,7 +76,6 @@ const serverReady = dbReady.then(() => {
       secure: process.env.INSECURE_COOKIES !== 'true',
     },
   }))
-
   app.use(passport.initialize())
   app.use(passport.session())
 
@@ -97,6 +96,7 @@ const serverReady = dbReady.then(() => {
   app.server = app.listen(port, () => {
     console.log(`Express listening on port ${port}`)
   })
+  return sessionStore.ready
 })
 
 module.exports = { app, knex, serverReady }

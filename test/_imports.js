@@ -51,6 +51,12 @@ const boundSetTestUserResetKey = () => setTestUserResetKey(knex)
 const boundSetTestUserStripeId = () => setTestUserStripeId(knex)
 const boundSetTestUserVerifyKey = () => setTestUserVerifyKey(knex)
 
+afterAll(async () => {
+  await serverReady
+  await server.server.close()
+  await knex.destroy()
+})
+
 export {
   accountTypes,
   alternateUser,

@@ -6,7 +6,6 @@ import {
   route,
   serverReady,
   stubRecaptcha,
-  test,
   wrapTest
 } from '../_imports'
 import { addDocument, checkDocuments } from './_document.helper'
@@ -19,7 +18,7 @@ stubRecaptcha(test)
 */
 
 let app
-test.beforeEach('set up a premium user', async t => {
+beforeEach('set up a premium user', async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -28,25 +27,25 @@ test.beforeEach('set up a premium user', async t => {
   await makeTestUserPremium()
 })
 
-test('get documents', async t => {
-  return checkDocuments(t, app, docs => t.is(docs.length, 0))
+test('get documents', async () => {
+  return checkDocuments(t, app, docs => expect(docs.length).toBe(0));
 })
 
-test('add documents', async t => {
+test('add documents', async () => {
   const doc1 = await addDocument(app, 'Test1')
   const doc2 = await addDocument(app, 'Test2')
   return checkDocuments(t, app, docs => {
-    t.is(docs.length, 2)
+    expect(docs.length).toBe(2)
 
-    t.is(docs[0].guid, doc1.guid)
-    t.is(docs[0].name, doc1.name)
+    expect(docs[0].guid).toBe(doc1.guid)
+    expect(docs[0].name).toBe(doc1.name)
 
-    t.is(docs[1].guid, doc2.guid)
-    t.is(docs[1].name, doc2.name)
-  })
+    expect(docs[1].guid).toBe(doc2.guid)
+    expect(docs[1].name).toBe(doc2.name)
+  });
 })
 
-test('delete a document', async t => {
+test('delete a document', async () => {
   const doc1 = await addDocument(app, 'Test1')
   const doc2 = await addDocument(app, 'Test2')
   await (
@@ -55,13 +54,13 @@ test('delete a document', async t => {
     .expect(200)
   )
   return checkDocuments(t, app, docs => {
-    t.is(docs.length, 1)
-    t.is(docs[0].guid, doc2.guid)
-    t.is(docs[0].name, doc2.name)
-  })
+    expect(docs.length).toBe(1)
+    expect(docs[0].guid).toBe(doc2.guid)
+    expect(docs[0].name).toBe(doc2.name)
+  });
 })
 
-test('delete a document that has content', async t => {
+test('delete a document that has content', async () => {
   const doc = await addDocument(app, 'Test')
   const chap = await addChapter(app, doc.guid, 'Test Chapter')
   await (
@@ -70,11 +69,11 @@ test('delete a document that has content', async t => {
     .expect(200)
   )
   return checkDocuments(t, app, docs => {
-    t.is(docs.length, 0)
-  })
+    expect(docs.length).toBe(0)
+  });
 })
 
-test('update a document (rename)', async t => {
+test('update a document (rename)', async () => {
   const doc1 = await addDocument(app, 'Test1')
   const doc2 = await addDocument(app, 'Test2')
   const updatedName = 'Test2-updated'
@@ -84,12 +83,12 @@ test('update a document (rename)', async t => {
     .expect(200)
   )
   return checkDocuments(t, app, docs => {
-    t.is(docs.length, 2)
+    expect(docs.length).toBe(2)
 
-    t.is(docs[0].guid, doc1.guid)
-    t.is(docs[0].name, doc1.name)
+    expect(docs[0].guid).toBe(doc1.guid)
+    expect(docs[0].name).toBe(doc1.name)
 
-    t.is(docs[1].guid, doc2.guid)
-    t.is(docs[1].name, updatedName)
-  })
+    expect(docs[1].guid).toBe(doc2.guid)
+    expect(docs[1].name).toBe(updatedName)
+  });
 })

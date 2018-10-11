@@ -1,7 +1,6 @@
 import accountTypes from '../models/accountType'
 import { app as server, knex, serverReady } from '../server'
 import request from 'supertest'
-import test from 'ava'
 import {
   alternateUser,
   createTestChapter,
@@ -76,7 +75,6 @@ export {
   knex,
   serverReady,
   stubRecaptcha,
-  test,
   user,
   uuid,
   wrapTest

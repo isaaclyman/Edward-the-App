@@ -1,8 +1,8 @@
-import { app, createTestUser, deleteTestUser, getPersistentAgent, serverReady, stubRecaptcha, test, wrapTest } from './_imports'
+import { app, createTestUser, deleteTestUser, getPersistentAgent, serverReady, stubRecaptcha, wrapTest } from './_imports'
 
 stubRecaptcha(test)
 
-test('redirects from http to https on auth page', async t => {
+test('redirects from http to https on auth page', async () => {
   await serverReady
   return wrapTest(t,
     app.get('/auth')
@@ -12,7 +12,7 @@ test('redirects from http to https on auth page', async t => {
   )
 })
 
-test('gets auth page', async t => {
+test('gets auth page', async () => {
   return wrapTest(t,
     app.get('/')
     .expect(200)
@@ -21,7 +21,7 @@ test('gets auth page', async t => {
   )
 })
 
-test('gets app page', async t => {
+test('gets app page', async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()

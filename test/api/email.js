@@ -1,7 +1,7 @@
-import { serverReady, test } from '../_imports'
+import { serverReady } from '../_imports'
 import Email from '../../api/email.helper'
 
-test('An email can be sent', async t => {
+test('An email can be sent', async done => {
   await serverReady
   const email = new Email(
     ['trash@edwardtheapp.com'],
@@ -11,8 +11,8 @@ test('An email can be sent', async t => {
   )
   
   return email.send().then(info => {
-    t.truthy(info.messageId)
+    expect(info.messageId).toBeTruthy()
   }, err => {
-    t.fail(`Email failed to send: ${err}`)
-  })
+    done.fail(`Email failed to send: ${err}`)
+  });
 })

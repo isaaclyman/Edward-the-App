@@ -1,4 +1,4 @@
-import { test, uuid } from '../_imports'
+import { uuid } from '../_imports'
 
 import localStorage from 'mock-local-storage'
 
@@ -9,30 +9,30 @@ import LocalStorageApi from '../../src/app/api/localStorage'
 const lsa = new LocalStorageApi()
 
 let doc
-test.beforeEach(async () => {
+beforeEach(async () => {
   await lsa.storage.clear()
   doc = { guid: uuid(), name: 'Test Document' }
   await lsa.addDocument(doc)
 })
 
-test('get chapters', async t => {
+test('get chapters', async () => {
   const chapters = await lsa.getAllChapters(doc.guid)
-  t.is(chapters.length, 0)
+  expect(chapters.length).toBe(0)
 })
 
-test('add chapters', async t => {
+test('add chapters', async () => {
   const chap1 = { guid: uuid(), archived: false, content: null, title: 'Test Chapter 1', topics: {} }
   const chap2 = { guid: uuid(), archived: false, content: null, title: 'Test Chapter 2', topics: {} }
   await lsa.updateChapter(doc.guid, chap1.guid, chap1)
   await lsa.updateChapter(doc.guid, chap2.guid, chap2)
 
   const chapters = await lsa.getAllChapters(doc.guid)
-  t.is(chapters.length, 2)
-  t.deepEqual(chapters[0], chap1)
-  t.deepEqual(chapters[1], chap2)
+  expect(chapters.length).toBe(2)
+  expect(chapters[0]).toEqual(chap1)
+  expect(chapters[1]).toEqual(chap2)
 })
 
-test('arrange chapters', async t => {
+test('arrange chapters', async () => {
   const chap1 = { guid: uuid(), archived: false, content: null, title: 'Test Chapter 1', topics: {} }
   const chap2 = { guid: uuid(), archived: false, content: null, title: 'Test Chapter 2', topics: {} }
   await lsa.updateChapter(doc.guid, chap1.guid, chap1)
@@ -40,12 +40,12 @@ test('arrange chapters', async t => {
 
   await lsa.arrangeChapters(doc.guid, [chap2.guid, chap1.guid])
   const chapters = await lsa.getAllChapters(doc.guid)
-  t.is(chapters.length, 2)
-  t.deepEqual(chapters[0], chap2)
-  t.deepEqual(chapters[1], chap1)
+  expect(chapters.length).toBe(2)
+  expect(chapters[0]).toEqual(chap2)
+  expect(chapters[1]).toEqual(chap1)
 })
 
-test('delete chapter', async t => {
+test('delete chapter', async () => {
   const chap1 = { guid: uuid(), archived: false, content: null, title: 'Test Chapter 1', topics: {} }
   const chap2 = { guid: uuid(), archived: false, content: null, title: 'Test Chapter 2', topics: {} }
   await lsa.updateChapter(doc.guid, chap1.guid, chap1)
@@ -53,11 +53,11 @@ test('delete chapter', async t => {
 
   await lsa.deleteChapter(doc.guid, chap1.guid)
   const chapters = await lsa.getAllChapters(doc.guid)
-  t.is(chapters.length, 1)
-  t.deepEqual(chapters[0], chap2)
+  expect(chapters.length).toBe(1)
+  expect(chapters[0]).toEqual(chap2)
 })
 
-test('update chapter', async t => {
+test('update chapter', async () => {
   const chap1 = { guid: uuid(), archived: false, content: null, title: 'Test Chapter 1', topics: {} }
   const chap2 = { guid: uuid(), archived: false, content: null, title: 'Test Chapter 2', topics: {} }
   await lsa.updateChapter(doc.guid, chap1.guid, chap1)
@@ -68,12 +68,12 @@ test('update chapter', async t => {
   await lsa.updateChapter(doc.guid, chap1.guid, newChapter)
 
   const chapters = await lsa.getAllChapters(doc.guid)
-  t.is(chapters.length, 2)
-  t.deepEqual(chapters[0], newChapter)
-  t.deepEqual(chapters[1], chap2)
+  expect(chapters.length).toBe(2)
+  expect(chapters[0]).toEqual(newChapter)
+  expect(chapters[1]).toEqual(chap2)
 })
 
-test('update chapter with same content', async t => {
+test('update chapter with same content', async () => {
   const chap1 = { guid: uuid(), archived: false, content: null, title: 'Test Chapter 1', topics: {} }
   const chap2 = { guid: uuid(), archived: false, content: null, title: 'Test Chapter 2', topics: {} }
   await lsa.updateChapter(doc.guid, chap1.guid, chap1)
@@ -83,12 +83,12 @@ test('update chapter with same content', async t => {
   await lsa.updateChapter(doc.guid, chap2.guid, chap2)
 
   const chapters = await lsa.getAllChapters(doc.guid)
-  t.is(chapters.length, 2)
-  t.deepEqual(chapters[0], chap1)
-  t.deepEqual(chapters[1], chap2)
+  expect(chapters.length).toBe(2)
+  expect(chapters[0]).toEqual(chap1)
+  expect(chapters[1]).toEqual(chap2)
 })
 
-test('add chapters, then a topic', async t => {
+test('add chapters, then a topic', async () => {
   const chap1 = { guid: uuid(), archived: false, content: null, title: 'Test Chapter 1', topics: {} }
   const chap2 = { guid: uuid(), archived: false, content: null, title: 'Test Chapter 2', topics: {} }
   await lsa.updateChapter(doc.guid, chap1.guid, chap1)
@@ -103,12 +103,12 @@ test('add chapters, then a topic', async t => {
   await lsa.updateChapter(doc.guid, chap2.guid, chap2)
 
   const chapters = await lsa.getAllChapters(doc.guid)
-  t.is(chapters.length, 2)
-  t.deepEqual(chapters[0], chap1)
-  t.deepEqual(chapters[1], chap2)
+  expect(chapters.length).toBe(2)
+  expect(chapters[0]).toEqual(chap1)
+  expect(chapters[1]).toEqual(chap2)
 })
 
-test('add a topic, then add chapters', async t => {
+test('add a topic, then add chapters', async () => {
   const topic = { guid: uuid(), archived: false, title: 'Test Topic' }
   await lsa.updateTopic(doc.guid, topic.guid, topic)
 
@@ -123,12 +123,12 @@ test('add a topic, then add chapters', async t => {
   await lsa.updateChapter(doc.guid, chap2.guid, chap2)
 
   const chapters = await lsa.getAllChapters(doc.guid)
-  t.is(chapters.length, 2)
-  t.deepEqual(chapters[0], chap1)
-  t.deepEqual(chapters[1], chap2)
+  expect(chapters.length).toBe(2)
+  expect(chapters[0]).toEqual(chap1)
+  expect(chapters[1]).toEqual(chap2)
 })
 
-test('update chapter topic content', async t => {
+test('update chapter topic content', async () => {
   const chap1 = { guid: uuid(), archived: false, content: null, title: 'Test Chapter 1', topics: {} }
   const chap2 = { guid: uuid(), archived: false, content: null, title: 'Test Chapter 2', topics: {} }
   await lsa.updateChapter(doc.guid, chap1.guid, chap1)
@@ -163,7 +163,7 @@ test('update chapter topic content', async t => {
 
   await lsa.updateChapter(doc.guid, chap1.guid, newChapter)
   const chapters = await lsa.getAllChapters(doc.guid)
-  t.is(chapters.length, 2)
-  t.deepEqual(chapters[0], newChapter)
-  t.deepEqual(chapters[1], chap2)
+  expect(chapters.length).toBe(2)
+  expect(chapters[0]).toEqual(newChapter)
+  expect(chapters[1]).toEqual(chap2)
 })

@@ -5,9 +5,9 @@ import {
   makeTestUserPremium,
   route,
   serverReady,
-  stubRecaptcha,
-  test
+  stubRecaptcha
 } from '../_imports'
+
 import { addDocument } from './_document.helper'
 import { addPlan, checkPlans, comparePlans, updatePlan } from './_plan.helper'
 
@@ -18,7 +18,7 @@ stubRecaptcha(test)
 */
 
 let app, doc
-test.beforeEach('set up a premium user and document', async t => {
+beforeEach('set up a premium user and document', async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -28,23 +28,23 @@ test.beforeEach('set up a premium user and document', async t => {
   doc = await addDocument(app, 'Test1')
 })
 
-test('get plans', async t => {
+test('get plans', async () => {
   return checkPlans(t, app, doc.guid, plans => {
-    t.is(plans.length, 0)
-  })
+    expect(plans.length).toBe(0)
+  });
 })
 
-test('add plans', async t => {
+test('add plans', async () => {
   const plan1 = await addPlan(app, doc.guid, 'Test1')
   const plan2 = await addPlan(app, doc.guid, 'Test2')
   return checkPlans(t, app, doc.guid, plans => {
-    t.is(plans.length, 2)
+    expect(plans.length).toBe(2)
     comparePlans(t, doc.guid, plans[0], plan1)
     comparePlans(t, doc.guid, plans[1], plan2)
-  })
+  });
 })
 
-test('arrange plans', async t => {
+test('arrange plans', async () => {
   const plan1 = await addPlan(app, doc.guid, 'Test1')
   const plan2 = await addPlan(app, doc.guid, 'Test2')
   await (
@@ -57,13 +57,13 @@ test('arrange plans', async t => {
   )
 
   return checkPlans(t, app, doc.guid, plans => {
-    t.is(plans.length, 2)
+    expect(plans.length).toBe(2)
     comparePlans(t, doc.guid, plans[0], plan2)
     comparePlans(t, doc.guid, plans[1], plan1)
-  })
+  });
 })
 
-test('delete plan', async t => {
+test('delete plan', async () => {
   const plan1 = await addPlan(app, doc.guid, 'Test1')
   const plan2 = await addPlan(app, doc.guid, 'Test2')
   await (
@@ -73,12 +73,12 @@ test('delete plan', async t => {
   )
 
   return checkPlans(t, app, doc.guid, plans => {
-    t.is(plans.length, 1)
+    expect(plans.length).toBe(1)
     comparePlans(t, doc.guid, plans[0], plan2)
-  })
+  });
 })
 
-test('update plan', async t => {
+test('update plan', async () => {
   const plan1 = await addPlan(app, doc.guid, 'Test1')
   const plan2 = await addPlan(app, doc.guid, 'Test2')
   const newPlan = {
@@ -95,8 +95,8 @@ test('update plan', async t => {
   await updatePlan(app, newPlan)
 
   return checkPlans(t, app, doc.guid, plans => {
-    t.is(plans.length, 2)
+    expect(plans.length).toBe(2)
     comparePlans(t, doc.guid, plans[0], newPlan)
     comparePlans(t, doc.guid, plans[1], plan2)
-  })
+  });
 })

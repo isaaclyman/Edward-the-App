@@ -4,7 +4,6 @@ import {
   getPersistentAgent,
   serverReady,
   stubRecaptcha,
-  test,
   uuid
 } from '../_imports'
 
@@ -23,7 +22,7 @@ stubRecaptcha(test)
 */
 
 let app, doc
-test.beforeEach('set up a limited user and document', async t => {
+beforeEach('set up a limited user and document', async () => {
   await storage.storage.clear()
   app = getPersistentAgent()
 
@@ -37,8 +36,8 @@ test.beforeEach('set up a limited user and document', async t => {
 async function expectOneItemArray(t, promise, callback) {
   await (
     promise.then(arr => {
-      t.true(Array.isArray(arr))
-      t.is(arr.length, 1)
+      expect(Array.isArray(arr)).toBe(true)
+      expect(arr.length).toBe(1)
       
       if (callback) {
         callback(arr)
@@ -80,11 +79,11 @@ async function addContent() {
   })
 }
 
-test('do a full local storage export with no content', async t => {
+test('do a full local storage export with no content', async () => {
   await expectOneItemArray(t, storage.getFullExport())
 })
 
-test('import a hand-made export to local storage', async t => {
+test('import a hand-made export to local storage', async () => {
   const importable = [{
     guid: uuid(),
     name: 'Doc 1',
@@ -103,32 +102,32 @@ test('import a hand-made export to local storage', async t => {
   await storage.doFullImport(importable)
 
   storage.getFullExport().then(docs => {
-    t.true(Array.isArray(docs))
-    t.is(docs.length, 2)
-    t.deepEqual(docs, importable)
+    expect(Array.isArray(docs)).toBe(true)
+    expect(docs.length).toBe(2)
+    expect(docs).toEqual(importable)
   })
 })
 
-test('immediately import an export with no content to local storage', async t => {
+test('immediately import an export with no content to local storage', async () => {
   const exported = await storage.getFullExport()
   await storage.storage.clear()
   await storage.doFullImport(exported)
   await expectOneItemArray(t, storage.getFullExport())
 })
 
-test('do a full export with content from local storage', async t => {
+test('do a full export with content from local storage', async () => {
   await addContent()
 
   await expectOneItemArray(t, storage.getFullExport(), docs => {
     const doc = docs[0]
-    t.is(doc.chapters.length, 1)
-    t.is(doc.topics.length, 1)
-    t.is(doc.plans.length, 1)
-    t.is(doc.plans[0].sections.length, 1)
+    expect(doc.chapters.length).toBe(1)
+    expect(doc.topics.length).toBe(1)
+    expect(doc.plans.length).toBe(1)
+    expect(doc.plans[0].sections.length).toBe(1)
   })
 })
 
-test('immediately import an export with content to local storage', async t => {
+test('immediately import an export with content to local storage', async () => {
   await addContent()
   
   const exported = await storage.getFullExport()
@@ -137,22 +136,22 @@ test('immediately import an export with content to local storage', async t => {
   await expectOneItemArray(t, storage.getAllDocuments())
   await expectOneItemArray(t, storage.getAllPlans(doc.guid), plans => {
     const sections = plans[0].sections
-    t.true(Array.isArray(sections))
-    t.is(sections.length, 1)
+    expect(Array.isArray(sections)).toBe(true)
+    expect(sections.length).toBe(1)
   })
   await expectOneItemArray(t, storage.getAllChapters(doc.guid))
   await expectOneItemArray(t, storage.getAllTopics(doc.guid))
 
   await expectOneItemArray(t, storage.getFullExport(), docs => {
     const doc = docs[0]
-    t.is(doc.chapters.length, 1)
-    t.is(doc.topics.length, 1)
-    t.is(doc.plans.length, 1)
-    t.is(doc.plans[0].sections.length, 1)
+    expect(doc.chapters.length).toBe(1)
+    expect(doc.topics.length).toBe(1)
+    expect(doc.plans.length).toBe(1)
+    expect(doc.plans[0].sections.length).toBe(1)
   })
 })
 
-test('when the import to local storage breaks, it is reverted', async t => {
+test('when the import to local storage breaks, it is reverted', async () => {
   const console_err = console.error
   console.error = function () {}
 
@@ -163,8 +162,8 @@ test('when the import to local storage breaks, it is reverted', async t => {
   await expectOneItemArray(t, storage.getAllDocuments())
   await expectOneItemArray(t, storage.getFullExport(), docs => {
     const exported = docs[0]
-    t.is(exported.name, doc.name)
-    t.is(exported.guid, doc.guid)
+    expect(exported.name).toBe(doc.name)
+    expect(exported.guid).toBe(doc.guid)
   })
 
   console.error = console_err

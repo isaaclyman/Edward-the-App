@@ -6,7 +6,6 @@ import {
   route,
   serverReady,
   stubRecaptcha,
-  test,
   wrapTest
 } from '../_imports'
 import { addDocument } from './_document.helper'
@@ -20,7 +19,7 @@ stubRecaptcha(test)
 */
 
 let app, doc
-test.beforeEach('set up a premium user and document', async t => {
+beforeEach('set up a premium user and document', async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -30,19 +29,19 @@ test.beforeEach('set up a premium user and document', async t => {
   doc = await addDocument(app, 'Test1')
 })
 
-test('get workshops (empty)', async t => {
+test('get workshops (empty)', async () => {
   return wrapTest(t,
     app.get(route(`workshop-content/${doc.guid}`))
     .expect(200)
     .expect(response => {
       const list = response.body
-      t.truthy(Array.isArray(list))
-      t.is(list.length, 0)
+      expect(Array.isArray(list)).toBeTruthy()
+      expect(list.length).toBe(0)
     })
-  )
+  );
 })
 
-test('add workshop content', async t => {
+test('add workshop content', async () => {
   await addWorkshops(app, doc.guid)
   let contentList
   await (
@@ -50,10 +49,12 @@ test('add workshop content', async t => {
     .expect(200)
     .expect(response => {
       const list = response.body
-      t.truthy(Array.isArray(list))
-      t.is(list.length, 2)
-      t.true(list.every(item => item.workshopName === writingWorkshops.PLOT_WORKSHOP.name))
-      t.true(list.every(item => item.date !== null))
+      expect(Array.isArray(list)).toBeTruthy()
+      expect(list.length).toBe(2)
+      expect(
+        list.every(item => item.workshopName === writingWorkshops.PLOT_WORKSHOP.name)
+      ).toBe(true)
+      expect(list.every(item => item.date !== null)).toBe(true)
       const comparableList = list.map(item => {
         item.date = new Date(item.date).toLocaleDateString()
         item.createdDate = undefined
@@ -64,13 +65,13 @@ test('add workshop content', async t => {
         item.createdDate = undefined
         return item
       })
-      t.deepEqual(comparableList[0], comparableWorkshops[0])
-      t.deepEqual(comparableList[1], comparableWorkshops[1])
+      expect(comparableList[0]).toEqual(comparableWorkshops[0])
+      expect(comparableList[1]).toEqual(comparableWorkshops[1])
     })
   )
 })
 
-test('update content', async t => {
+test('update content', async () => {
   await addWorkshops(app, doc.guid)
   
   // Another time, to update the same ones
@@ -82,10 +83,12 @@ test('update content', async t => {
     .expect(200)
     .expect(response => {
       const list = response.body
-      t.truthy(Array.isArray(list))
-      t.is(list.length, 2)
-      t.true(list.every(item => item.workshopName === writingWorkshops.PLOT_WORKSHOP.name))
-      t.true(list.every(item => item.date !== null))
+      expect(Array.isArray(list)).toBeTruthy()
+      expect(list.length).toBe(2)
+      expect(
+        list.every(item => item.workshopName === writingWorkshops.PLOT_WORKSHOP.name)
+      ).toBe(true)
+      expect(list.every(item => item.date !== null)).toBe(true)
       const comparableList = list.map(item => {
         item.date = new Date(item.date).toLocaleDateString()
         item.createdDate = undefined
@@ -96,13 +99,13 @@ test('update content', async t => {
         item.createdDate = undefined
         return item
       })
-      t.deepEqual(comparableList[0], comparableWorkshops[0])
-      t.deepEqual(comparableList[1], comparableWorkshops[1])
+      expect(comparableList[0]).toEqual(comparableWorkshops[0])
+      expect(comparableList[1]).toEqual(comparableWorkshops[1])
     })
   )
 })
 
-test('delete content', async t => {
+test('delete content', async () => {
   await addWorkshops(app, doc.guid)
   await (
     app.post(route(`workshop-content/delete`))
@@ -119,12 +122,12 @@ test('delete content', async t => {
     .expect(200)
     .expect(response => {
       const list = response.body
-      t.truthy(Array.isArray(list))
-      t.is(list.length, 1)
+      expect(Array.isArray(list)).toBeTruthy()
+      expect(list.length).toBe(1)
 
       item = list[0]
-      t.true(item.workshopName === writingWorkshops.PLOT_WORKSHOP.name)
-      t.true(item.date !== null)
+      expect(item.workshopName === writingWorkshops.PLOT_WORKSHOP.name).toBe(true)
+      expect(item.date !== null).toBe(true)
 
       const comparableList = list.map(item => {
         item.date = new Date(item.date).toLocaleDateString()
@@ -136,7 +139,7 @@ test('delete content', async t => {
         item.createdDate = undefined
         return item
       })
-      t.deepEqual(comparableList[0], comparableWorkshops[1])
+      expect(comparableList[0]).toEqual(comparableWorkshops[1])
     })
   )
 })

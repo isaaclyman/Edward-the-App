@@ -206,19 +206,16 @@ function setTestUserResetKey(knex) {
 */
 
 const request = require('request-promise-native')
-const sinon = require('sinon')
 
-function stubRecaptcha(test) {
-  const sandbox = sinon.sandbox.create()
-
-  test.before('stub recaptcha request', t => {
-    sandbox.stub(request, 'post')
-    .withArgs(sinon.match({ uri: 'https://www.google.com/recaptcha/api/siteverify' }))
-    .resolves({ success: true })
-  })
-
-  test.after('unstub recaptcha request', t => {
-    sandbox.restore()
+function stubRecaptcha() {
+  beforeAll(() => {
+    const oldPost = request.post
+    jest.spyOn(request, 'post').mockImplementation(body => {
+      if (body.uri === 'https://www.google.com/recaptcha/api/siteverify') {
+        return Promise.resolve({ success: true })
+      }
+      return oldPost.apply([...arguments])
+    })
   })
 }
 
@@ -226,16 +223,8 @@ function stubRecaptcha(test) {
   SUPERTEST WRAPPING
 */
 
-function wrapTest(t, supertest) {
-  return new Promise((resolve, reject) => {
-    supertest.end((err, res) => {
-      if (err) {
-        t.fail(err)
-        return reject()
-      }
-      return resolve()
-    })
-  })
+function wrapTest(supertest) {
+  return supertest
 }
 
 /*

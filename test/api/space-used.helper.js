@@ -5,14 +5,13 @@ import {
   deleteTestUser,
   getPersistentAgent,
   makeTestUserPremium,
-  stubRecaptcha,
-  test
+  stubRecaptcha
 } from '../_imports'
 import { getUsersOverLimit } from '../../api/space-used.helper'
 
 stubRecaptcha(test)
 
-test('get users who are using any space', async t => {
+test('get users who are using any space', async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -22,6 +21,6 @@ test('get users who are using any space', async t => {
   await createTestChapter()
 
   return getUsersOverLimit('PREMIUM', 1).then(users => {
-    t.true(users.length > 0)
-  })
+    expect(users.length > 0).toBe(true)
+  });
 })

@@ -6,7 +6,6 @@ import {
   route,
   serverReady,
   stubRecaptcha,
-  test,
   uuid
 } from '../_imports'
 import { removeUnmatchedProperties } from '../_util'
@@ -20,7 +19,7 @@ import writingWorkshops from '../../models/writingWorkshop'
 
 stubRecaptcha(test)
 
-test('save all content', async t => {
+test('save all content', async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -82,7 +81,7 @@ test('save all content', async t => {
   )
 
   await checkChapters(t, app, doc.guid, apiChapters => {
-    t.is(apiChapters.length, 2)
+    expect(apiChapters.length).toBe(2)
     compareChapters(t, doc.guid, apiChapters[0], {
       chapterGuid: chapters[0].guid,
       documentGuid: doc.guid,
@@ -96,7 +95,7 @@ test('save all content', async t => {
   })
 
   await checkTopics(t, app, doc.guid, apiTopics => {
-    t.is(apiTopics.length, 2)
+    expect(apiTopics.length).toBe(2)
     compareTopics(t, doc.guid, apiTopics[0], {
       topicGuid: topics[0].guid,
       documentGuid: doc.guid,
@@ -110,7 +109,7 @@ test('save all content', async t => {
   })
 
   await checkPlans(t, app, doc.guid, apiPlans => {
-    t.is(apiPlans.length, 2)
+    expect(apiPlans.length).toBe(2)
 
     apiPlans.forEach((apiPlan, planIndex) => {
       comparePlans(t, doc.guid, apiPlan, {
@@ -131,13 +130,13 @@ test('save all content', async t => {
   })
 
   await checkWorkshops(t, app, doc.guid, apiWorkshops => {
-    t.is(apiWorkshops.length, 2)
+    expect(apiWorkshops.length).toBe(2)
 
 
     workshops.forEach((workshop, index) => {
       removeUnmatchedProperties(workshop, apiWorkshops[index])
     })
 
-    t.deepEqual(apiWorkshops, workshops)
+    expect(apiWorkshops).toEqual(workshops)
   })
 })

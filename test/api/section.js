@@ -5,9 +5,9 @@ import {
   makeTestUserPremium,
   route,
   serverReady,
-  stubRecaptcha,
-  test
+  stubRecaptcha
 } from '../_imports'
+
 import { addDocument } from './_document.helper'
 import { addPlan, checkPlans } from './_plan.helper'
 import { addSection, compareSections } from './_section.helper'
@@ -19,7 +19,7 @@ stubRecaptcha(test)
 */
 
 let app, doc, plan
-test.beforeEach('set up a premium user and document', async t => {
+beforeEach('set up a premium user and document', async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -30,7 +30,7 @@ test.beforeEach('set up a premium user and document', async t => {
   plan = await addPlan(app, doc.guid, 'Test1')
 })
 
-test('add sections', async t => {
+test('add sections', async () => {
   const section1 = await addSection(app, doc.guid, plan.planGuid, 'Test1')
   const section2 = await addSection(app, doc.guid, plan.planGuid, 'Test2')
 
@@ -38,13 +38,13 @@ test('add sections', async t => {
 
   return checkPlans(t, app, doc.guid, ([apiPlan]) => {
     const sections = apiPlan.sections
-    t.is(sections.length, 2)
+    expect(sections.length).toBe(2)
     compareSections(t, doc.guid, plan.planGuid, sections[0], section1)
     compareSections(t, doc.guid, plan.planGuid, sections[1], section2)
-  })
+  });
 })
 
-test('arrange sections', async t => {
+test('arrange sections', async () => {
   const section1 = await addSection(app, doc.guid, plan.planGuid, 'Test1')
   const section2 = await addSection(app, doc.guid, plan.planGuid, 'Test2')
 
@@ -60,13 +60,13 @@ test('arrange sections', async t => {
 
   return checkPlans(t, app, doc.guid, ([apiPlan]) => {
     const sections = apiPlan.sections
-    t.is(sections.length, 2)
+    expect(sections.length).toBe(2)
     compareSections(t, doc.guid, plan.planGuid, sections[0], section2)
     compareSections(t, doc.guid, plan.planGuid, sections[1], section1)
-  })
+  });
 })
 
-test('update section', async t => {
+test('update section', async () => {
   const section1 = await addSection(app, doc.guid, plan.planGuid, 'Test1')
   const section2 = await addSection(app, doc.guid, plan.planGuid, 'Test2')
 
@@ -97,8 +97,8 @@ test('update section', async t => {
 
   return checkPlans(t, app, doc.guid, ([apiPlan]) => {
     const sections = apiPlan.sections
-    t.is(sections.length, 2)
+    expect(sections.length).toBe(2)
     compareSections(t, doc.guid, plan.planGuid, sections[0], newSection)
     compareSections(t, doc.guid, plan.planGuid, sections[1], section2)
-  })
+  });
 })

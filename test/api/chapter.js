@@ -5,8 +5,7 @@ import {
   makeTestUserPremium,
   route,
   serverReady,
-  stubRecaptcha,
-  test
+  stubRecaptcha
 } from '../_imports'
 import { addChapter, checkChapters, compareChapters, updateChapter } from './_chapter.helper'
 import { addDocument } from './_document.helper'
@@ -19,7 +18,7 @@ stubRecaptcha(test)
 */
 
 let app, doc
-test.beforeEach('set up a premium user and document', async t => {
+beforeEach('set up a premium user and document', async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -29,23 +28,23 @@ test.beforeEach('set up a premium user and document', async t => {
   doc = await addDocument(app, 'Test1')
 })
 
-test('get chapters', async t => {
+test('get chapters', async () => {
   return checkChapters(t, app, doc.guid, chapters => {
-    t.is(chapters.length, 0)
-  })
+    expect(chapters.length).toBe(0)
+  });
 })
 
-test('add chapters', async t => {
+test('add chapters', async () => {
   const chap1 = await addChapter(app, doc.guid, 'Test1')
   const chap2 = await addChapter(app, doc.guid, 'Test2')
   return checkChapters(t, app, doc.guid, chapters => {
-    t.is(chapters.length, 2)
+    expect(chapters.length).toBe(2)
     compareChapters(t, doc.guid, chapters[0], chap1)
     compareChapters(t, doc.guid, chapters[1], chap2)
-  })
+  });
 })
 
-test('arrange chapters', async t => {
+test('arrange chapters', async () => {
   const chap1 = await addChapter(app, doc.guid, 'Test1')
   const chap2 = await addChapter(app, doc.guid, 'Test2')
   await (
@@ -58,13 +57,13 @@ test('arrange chapters', async t => {
   )
 
   return checkChapters(t, app, doc.guid, chapters => {
-    t.is(chapters.length, 2)
+    expect(chapters.length).toBe(2)
     compareChapters(t, doc.guid, chapters[0], chap2)
     compareChapters(t, doc.guid, chapters[1], chap1)
-  })
+  });
 })
 
-test('delete chapter', async t => {
+test('delete chapter', async () => {
   const chap1 = await addChapter(app, doc.guid, 'Test1')
   const chap2 = await addChapter(app, doc.guid, 'Test2')
   await (
@@ -74,12 +73,12 @@ test('delete chapter', async t => {
   )
 
   return checkChapters(t, app, doc.guid, chapters => {
-    t.is(chapters.length, 1)
+    expect(chapters.length).toBe(1)
     compareChapters(t, doc.guid, chapters[0], chap2)
-  })
+  });
 })
 
-test('update chapter', async t => {
+test('update chapter', async () => {
   const chap1 = await addChapter(app, doc.guid, 'Test1')
   const chap2 = await addChapter(app, doc.guid, 'Test2')
   const newChapter = {
@@ -101,26 +100,26 @@ test('update chapter', async t => {
   await updateChapter(app, newChapter)
 
   return checkChapters(t, app, doc.guid, chapters => {
-    t.is(chapters.length, 2)
+    expect(chapters.length).toBe(2)
     compareChapters(t, doc.guid, chapters[0], newChapter)
     compareChapters(t, doc.guid, chapters[1], chap2)
-  })
+  });
 })
 
-test('update chapter with same content', async t => {
+test('update chapter with same content', async () => {
   const chap1 = await addChapter(app, doc.guid, 'Test1')
   const chap2 = await addChapter(app, doc.guid, 'Test2')
   chap2.chapter.archived = true
   await updateChapter(app, chap2)
 
   return checkChapters(t, app, doc.guid, chapters => {
-    t.is(chapters.length, 2)
+    expect(chapters.length).toBe(2)
     compareChapters(t, doc.guid, chapters[0], chap1)
     compareChapters(t, doc.guid, chapters[1], chap2)
-  })
+  });
 })
 
-test('add chapters, then a topic', async t => {
+test('add chapters, then a topic', async () => {
   const chap1 = await addChapter(app, doc.guid, 'Test1')
   const chap2 = await addChapter(app, doc.guid, 'Test2')
   const topic = await addTopic(app, doc.guid, 'Topic')
@@ -143,13 +142,13 @@ test('add chapters, then a topic', async t => {
   await updateChapter(app, chap2)
 
   return checkChapters(t, app, doc.guid, chapters => {
-    t.is(chapters.length, 2)
+    expect(chapters.length).toBe(2)
     compareChapters(t, doc.guid, chapters[0], chap1)
     compareChapters(t, doc.guid, chapters[1], chap2)
-  })
+  });
 })
 
-test('add a topic, then add chapters', async t => {
+test('add a topic, then add chapters', async () => {
   const topic = await addTopic(app, doc.guid, 'Topic')
   const chap1 = await addChapter(app, doc.guid, 'Test1')
   const chap2 = await addChapter(app, doc.guid, 'Test2')
@@ -172,13 +171,13 @@ test('add a topic, then add chapters', async t => {
   await updateChapter(app, chap2)
 
   return checkChapters(t, app, doc.guid, chapters => {
-    t.is(chapters.length, 2)
+    expect(chapters.length).toBe(2)
     compareChapters(t, doc.guid, chapters[0], chap1)
     compareChapters(t, doc.guid, chapters[1], chap2)
-  })
+  });
 })
 
-test('update chapter topic content', async t => {
+test('update chapter topic content', async () => {
   const chap1 = await addChapter(app, doc.guid, 'Test1')
   const chap2 = await addChapter(app, doc.guid, 'Test2')
   const topic1 = await addTopic(app, doc.guid, 'Topic1')
@@ -220,8 +219,8 @@ test('update chapter topic content', async t => {
   )
 
   return checkChapters(t, app, doc.guid, chapters => {
-    t.is(chapters.length, 2)
+    expect(chapters.length).toBe(2)
     compareChapters(t, doc.guid, chapters[0], newChapter)
     compareChapters(t, doc.guid, chapters[1], chap2)
-  })
+  });
 })

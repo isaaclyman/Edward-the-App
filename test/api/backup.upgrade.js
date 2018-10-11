@@ -6,7 +6,6 @@ import {
   route,
   serverReady,
   stubRecaptcha,
-  test,
   uuid,
   wrapTest
 } from '../_imports'
@@ -33,7 +32,7 @@ stubRecaptcha(test)
 */
 
 let app
-test.beforeEach('set up a premium user', async t => {
+beforeEach('set up a premium user', async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -45,8 +44,8 @@ test.beforeEach('set up a premium user', async t => {
 async function expectOneItemArray(t, promise, callback) {
   await (
     promise.then(arr => {
-      t.true(Array.isArray(arr))
-      t.is(arr.length, 1)
+      expect(Array.isArray(arr)).toBe(true)
+      expect(arr.length).toBe(1)
       
       if (callback) {
         callback(arr)
@@ -55,11 +54,11 @@ async function expectOneItemArray(t, promise, callback) {
   )
 }
 
-test.afterEach('clear storage', async t => {
+afterEach('clear storage', async () => {
   await storage.storage.clear()
 })
 
-test('transfer an empty document from API to local storage', async t => {
+test('transfer an empty document from API to local storage', async () => {
   const doc = await addDocument(app, 'Test Document')
   const exported = await app.get(route('backup/export')).expect(200).then(response => response.body)
   await storage.doFullImport(exported)
@@ -67,7 +66,7 @@ test('transfer an empty document from API to local storage', async t => {
   await expectOneItemArray(t, storage.getFullExport())
 })
 
-test('transfer an empty document from local storage to API', async t => {
+test('transfer an empty document from local storage to API', async () => {
   const doc = { guid: uuid(), name: 'Test Doc' }
   await storage.addDocument(doc)
   const exported = await storage.getFullExport()
@@ -76,7 +75,7 @@ test('transfer an empty document from local storage to API', async t => {
   await expectOneItemArray(t, app.get(route('backup/export')).expect(200).then(response => response.body))
 })
 
-test('transfer document with content from API to local storage', async t => {
+test('transfer document with content from API to local storage', async done => {
   const doc = await addDocument(app, 'Test Document')
   const topic = await addTopic(app, doc.guid, 'Test Topic')
   const chapter = await addChapter(app, doc.guid, 'Test Chapter')
@@ -105,36 +104,36 @@ test('transfer document with content from API to local storage', async t => {
   await storage.doFullImport(exported)
   await expectOneItemArray(t, storage.getAllDocuments())
   await expectOneItemArray(t, storage.getAllChapters(doc.guid), chapters => {
-    t.deepEqual(chapters[0].content, newChapter.chapter.content)
-    t.deepEqual(chapters[0].topics[topic.topicGuid].content, newChapter.chapter.topics[topic.topicGuid].content)
+    expect(chapters[0].content).toEqual(newChapter.chapter.content)
+    expect(chapters[0].topics[topic.topicGuid].content).toEqual(newChapter.chapter.topics[topic.topicGuid].content)
   })
   await expectOneItemArray(t, storage.getAllTopics(doc.guid))
   await expectOneItemArray(t, storage.getAllPlans(doc.guid), plans => {
     const sections = plans[0].sections
-    t.true(Array.isArray(sections))
-    t.is(sections.length, 1)
-    t.deepEqual(sections[0].content, section.section.content)
+    expect(Array.isArray(sections)).toBe(true)
+    expect(sections.length).toBe(1)
+    expect(sections[0].content).toEqual(section.section.content)
   })
 
   try {
     storage.getAllWorkshops()
-    t.fail()
+    done.fail()
   } catch (err) {
     // Method should fail because workshops are premium-only
   }
 
   await expectOneItemArray(t, storage.getFullExport(), docs => {
-    t.is(docs.length, 1)
+    expect(docs.length).toBe(1)
     const doc = docs[0]
-    t.is(doc.chapters.length, 1)
-    t.is(doc.topics.length, 1)
-    t.is(doc.plans.length, 1)
-    t.is(doc.plans[0].sections.length, 1)
-    t.falsy(doc.workshops)
+    expect(doc.chapters.length).toBe(1)
+    expect(doc.topics.length).toBe(1)
+    expect(doc.plans.length).toBe(1)
+    expect(doc.plans[0].sections.length).toBe(1)
+    expect(doc.workshops).toBeFalsy()
   })
 })
 
-test('transfer document with content from local storage to API', async t => {
+test('transfer document with content from local storage to API', async () => {
   const doc = { guid: uuid(), name: 'Test Doc' }
   await storage.addDocument(doc)
   const topicGuid = uuid()
@@ -176,21 +175,21 @@ test('transfer document with content from local storage to API', async t => {
   await expectOneItemArray(t, app.get(route('documents')).then(response => response.body))
   await expectOneItemArray(t, app.get(route(`plans/${doc.guid}`)).then(response => response.body), plans => {
     const sections = plans[0].sections
-    t.true(Array.isArray(sections))
-    t.is(sections.length, 1)
-    t.deepEqual(sections[0].content, section.content)
+    expect(Array.isArray(sections)).toBe(true)
+    expect(sections.length).toBe(1)
+    expect(sections[0].content).toEqual(section.content)
   })
   await expectOneItemArray(t, app.get(route(`chapters/${doc.guid}`)).then(response => response.body), chapters => {
-    t.deepEqual(chapters[0].content, chapter.content)
-    t.deepEqual(chapters[0].topics[topicGuid].content, chapter.topics[topicGuid].content)
+    expect(chapters[0].content).toEqual(chapter.content)
+    expect(chapters[0].topics[topicGuid].content).toEqual(chapter.topics[topicGuid].content)
   })
   await expectOneItemArray(t, app.get(route(`topics/${doc.guid}`)).then(response => response.body))
   await expectOneItemArray(t, app.get(route('backup/export')).then(response => response.body), docs => {
     const doc = docs[0]
-    t.is(doc.chapters.length, 1)
-    t.is(doc.topics.length, 1)
-    t.is(doc.plans.length, 1)
-    t.is(doc.plans[0].sections.length, 1)
-    t.is(doc.workshops.length, 0)
+    expect(doc.chapters.length).toBe(1)
+    expect(doc.topics.length).toBe(1)
+    expect(doc.plans.length).toBe(1)
+    expect(doc.plans[0].sections.length).toBe(1)
+    expect(doc.workshops.length).toBe(0)
   })
 })

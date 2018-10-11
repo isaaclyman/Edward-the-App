@@ -5,8 +5,7 @@ import {
   makeTestUserPremium,
   route,
   serverReady,
-  stubRecaptcha,
-  test
+  stubRecaptcha
 } from '../_imports'
 import { addDocument } from './_document.helper'
 import { addTopic, checkTopics, compareTopics } from './_topic.helper'
@@ -18,7 +17,7 @@ stubRecaptcha(test)
 */
 
 let app, doc
-test.beforeEach('set up a premium user and document', async t => {
+beforeEach('set up a premium user and document', async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -28,23 +27,23 @@ test.beforeEach('set up a premium user and document', async t => {
   doc = await addDocument(app, 'Test1')
 })
 
-test('get topics', async t => {
+test('get topics', async () => {
   return checkTopics(t, app, doc.guid, topics => {
-    t.is(topics.length, 0)
-  })
+    expect(topics.length).toBe(0)
+  });
 })
 
-test('add topics', async t => {
+test('add topics', async () => {
   const topic1 = await addTopic(app, doc.guid, 'Test1')
   const topic2 = await addTopic(app, doc.guid, 'Test2')
   return checkTopics(t, app, doc.guid, topics => {
-    t.is(topics.length, 2)
+    expect(topics.length).toBe(2)
     compareTopics(t, doc.guid, topics[0], topic1)
     compareTopics(t, doc.guid, topics[1], topic2)
-  })
+  });
 })
 
-test('arrange topics', async t => {
+test('arrange topics', async () => {
   const topic1 = await addTopic(app, doc.guid, 'Test1')
   const topic2 = await addTopic(app, doc.guid, 'Test2')
 
@@ -58,13 +57,13 @@ test('arrange topics', async t => {
   )
 
   return checkTopics(t, app, doc.guid, topics => {
-    t.is(topics.length, 2)
+    expect(topics.length).toBe(2)
     compareTopics(t, doc.guid, topics[0], topic2)
     compareTopics(t, doc.guid, topics[1], topic1)
-  })
+  });
 })
 
-test('delete topic', async t => {
+test('delete topic', async () => {
   const topic1 = await addTopic(app, doc.guid, 'Test1')
   const topic2 = await addTopic(app, doc.guid, 'Test2')
 
@@ -78,12 +77,12 @@ test('delete topic', async t => {
   )
 
   return checkTopics(t, app, doc.guid, topics => {
-    t.is(topics.length, 1)
+    expect(topics.length).toBe(1)
     compareTopics(t, doc.guid, topics[0], topic2)
-  })
+  });
 })
 
-test('update topic', async t => {
+test('update topic', async () => {
   const topic1 = await addTopic(app, doc.guid, 'Test1')
   const topic2 = await addTopic(app, doc.guid, 'Test2')
 
@@ -104,8 +103,8 @@ test('update topic', async t => {
   )
 
   return checkTopics(t, app, doc.guid, topics => {
-    t.is(topics.length, 2)
+    expect(topics.length).toBe(2)
     compareTopics(t, doc.guid, topics[0], newTopic)
     compareTopics(t, doc.guid, topics[1], topic2)
-  })
+  });
 })

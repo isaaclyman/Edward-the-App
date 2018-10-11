@@ -5,8 +5,7 @@ import {
   makeTestUserPremium,
   route,
   serverReady,
-  stubRecaptcha,
-  test
+  stubRecaptcha
 } from '../_imports'
 import { addDocument } from '../api/_document.helper'
 import { addChapter } from '../api/_chapter.helper'
@@ -16,7 +15,7 @@ stubRecaptcha(test)
 const wait = async () => await new Promise(resolve => setTimeout(resolve, 50))
 
 let app, doc
-test.beforeEach('set up a premium user and document', async t => {
+beforeEach('set up a premium user and document', async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -26,7 +25,7 @@ test.beforeEach('set up a premium user and document', async t => {
   doc = await addDocument(app, 'Test1')
 })
 
-test('updated timestamp is added correctly', async t => {
+test('updated timestamp is added correctly', async () => {
   let date1, date2, date3
   await addChapter(app, doc.guid, 'Test 1')
   await wait()
@@ -41,7 +40,7 @@ test('updated timestamp is added correctly', async t => {
     date1 = new Date(chapters[0].updated_at).getTime()
     date3 = new Date(chapters[1].updated_at).getTime()
 
-    t.true(date1 < date2)
-    t.true(date2 < date3)
-  })
+    expect(date1 < date2).toBe(true)
+    expect(date2 < date3).toBe(true)
+  });
 })

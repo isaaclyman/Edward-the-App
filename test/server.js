@@ -1,10 +1,10 @@
-import { app, server, knex, test, wrapTest } from './_imports'
+import { app, server, knex, wrapTest } from './_imports'
 
-test('express app was created', t => {
-  t.truthy(server)
+test('express app was created', () => {
+  expect(server).toBeTruthy()
 })
 
-test('serves landing page', t => {
+test('serves landing page', () => {
   return wrapTest(t,
     app.get('/')
     .expect(200)
@@ -13,14 +13,14 @@ test('serves landing page', t => {
   )
 })
 
-test('connects to database', t => {
+test('connects to database', done => {
   return knex.raw('SELECT 1 AS test').then(
-    () => t.pass(),
-    err => t.fail(err)
-  )
+    () => {},
+    err => done.fail(err)
+  );
 })
 
-test('serves static file', t => {
+test('serves static file', () => {
   return wrapTest(t,
     app.get('/public/index.css')
     .expect(200)

@@ -18,12 +18,12 @@ export const addDocument = async (app, name) => {
   return document
 }
 
-export const checkDocuments = (t, app, expectFn) => {
-  return wrapTest(t,
+export const checkDocuments = (app, expectFn) => {
+  return wrapTest(
     app.get(route('documents'))
     .expect(200)
     .expect(response => {
-      t.truthy(Array.isArray(response.body))
+      expect(Array.isArray(response.body)).toBeTruthy()
       expectFn(response.body)
     })
   )

@@ -15,7 +15,6 @@ import {
   setTestUserStripeId,
   setTestUserVerifyKey,
   stubRecaptcha,
-  test,
   user,
   wrapTest
 } from '../_imports'
@@ -23,7 +22,7 @@ import { paymentSucceeded } from '../../api/payments.events'
 
 stubRecaptcha(test)
 
-test('sign up and log in', async t => {
+test('sign up and log in', async () => {
   await deleteTestUser()
   await serverReady
 
@@ -42,7 +41,7 @@ test('sign up and log in', async t => {
   )
 })
 
-test('get demo token', async t => {
+test('get demo token', async () => {
   await serverReady
   return wrapTest(t,
     app.post(route('user/demo-login'))
@@ -51,7 +50,7 @@ test('get demo token', async t => {
   )
 })
 
-test('get current user', async t => {
+test('get current user', async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -63,14 +62,14 @@ test('get current user', async t => {
     .expect(200)
     .expect(res => {
       const userRes = res.body
-      t.is(userRes.email, user.email)
-      t.is(userRes.isPremium, false)
-      t.is(userRes.accountType.name, 'LIMITED')
+      expect(userRes.email).toBe(user.email)
+      expect(userRes.isPremium).toBe(false)
+      expect(userRes.accountType.name).toBe('LIMITED')
     })
-  )
+  );
 })
 
-test(`can't log in with wrong password`, async t => {
+test(`can't log in with wrong password`, async () => {
   await deleteTestUser()
   await serverReady
   const user = await createTestUser()
@@ -82,7 +81,7 @@ test(`can't log in with wrong password`, async t => {
   )
 })
 
-test('log out', async t => {
+test('log out', async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -105,7 +104,7 @@ test('log out', async t => {
   )
 })
 
-test('change user email', async t => {
+test('change user email', async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -126,7 +125,7 @@ test('change user email', async t => {
     .expect(200)
     .expect(res => {
       const userRes = res.body
-      t.is(userRes.email, newEmail)
+      expect(userRes.email).toBe(newEmail)
     })
   )
 
@@ -142,7 +141,7 @@ test('change user email', async t => {
   )
 })
 
-test('change user password', async t => {
+test('change user password', async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -173,7 +172,7 @@ test('change user password', async t => {
   )
 })
 
-test('change user email and password', async t => {
+test('change user email and password', async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -201,7 +200,7 @@ test('change user email and password', async t => {
     .expect(200)
     .expect(res => {
       const userRes = res.body
-      t.is(userRes.email, newEmail)
+      expect(userRes.email).toBe(newEmail)
     })
   )
 
@@ -217,7 +216,7 @@ test('change user email and password', async t => {
   )
 })
 
-test('verify account', async t => {
+test('verify account', async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -256,14 +255,14 @@ test('verify account', async t => {
     .expect(200)
     .expect(res => {
       const userRes = res.body
-      t.is(userRes.email, user.email)
-      t.is(userRes.isPremium, false)
-      t.is(userRes.accountType.name, 'LIMITED')
+      expect(userRes.email).toBe(user.email)
+      expect(userRes.isPremium).toBe(false)
+      expect(userRes.accountType.name).toBe('LIMITED')
     })
-  )
+  );
 })
 
-test('cannot verify account with null or incorrect key', async t => {
+test('cannot verify account with null or incorrect key', async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -312,7 +311,7 @@ test('cannot verify account with null or incorrect key', async t => {
   )
 })
 
-test('reset password', async t => {
+test('reset password', async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -369,7 +368,7 @@ test('reset password', async t => {
   )
 })
 
-test('cannot reset password with null or incorrect key', async t => {
+test('cannot reset password with null or incorrect key', async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -439,7 +438,7 @@ function token (id = 'tok_visa') {
   return { id, object: 'token' }
 }
 
-test(`update payment method`, async t => {
+test(`update payment method`, async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -454,7 +453,7 @@ test(`update payment method`, async t => {
   )
 })
 
-test(`upgrade account`, async t => {
+test(`upgrade account`, async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -472,7 +471,7 @@ test(`upgrade account`, async t => {
   )
 })
 
-test(`can't falsify your current account type`, async t => {
+test(`can't falsify your current account type`, async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -489,7 +488,7 @@ test(`can't falsify your current account type`, async t => {
   )
 })
 
-test(`downgrade account with no token`, async t => {
+test(`downgrade account with no token`, async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -507,7 +506,7 @@ test(`downgrade account with no token`, async t => {
   )
 })
 
-test(`can't upgrade to a paid account without a payment token`, async t => {
+test(`can't upgrade to a paid account without a payment token`, async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -524,7 +523,7 @@ test(`can't upgrade to a paid account without a payment token`, async t => {
   )
 })
 
-test(`can't upgrade to a paid account if there is a processing error`, async t => {
+test(`can't upgrade to a paid account if there is a processing error`, async () => {
   const console_err = console.error
   console.error = function () {}
   const app = getPersistentAgent()
@@ -546,7 +545,7 @@ test(`can't upgrade to a paid account if there is a processing error`, async t =
   console.error = console_err
 })
 
-test(`can't upgrade to an admin account`, async t => {
+test(`can't upgrade to an admin account`, async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -564,7 +563,7 @@ test(`can't upgrade to an admin account`, async t => {
   )
 })
 
-test(`can access app when account is due`, async t => {
+test(`can access app when account is due`, async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -577,7 +576,7 @@ test(`can access app when account is due`, async t => {
     app.get(route('user/current'))
     .expect(200)
     .expect(res => {
-      t.is(res.body.isOverdue, false)
+      expect(res.body.isOverdue).toBe(false)
     })
   )
 
@@ -587,7 +586,7 @@ test(`can access app when account is due`, async t => {
   )
 })
 
-test(`can access app when account is 1 day overdue`, async t => {
+test(`can access app when account is 1 day overdue`, async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -600,7 +599,7 @@ test(`can access app when account is 1 day overdue`, async t => {
     app.get(route('user/current'))
     .expect(200)
     .expect(res => {
-      t.is(res.body.isOverdue, false)
+      expect(res.body.isOverdue).toBe(false)
     })
   )
 
@@ -611,7 +610,7 @@ test(`can access app when account is 1 day overdue`, async t => {
 })
 
 
-test(`cannot access app when account is 1 week overdue`, async t => {
+test(`cannot access app when account is 1 week overdue`, async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -624,7 +623,7 @@ test(`cannot access app when account is 1 week overdue`, async t => {
     app.get(route('user/current'))
     .expect(200)
     .expect(res => {
-      t.is(res.body.isOverdue, true)
+      expect(res.body.isOverdue).toBe(true)
     })
   )
 
@@ -634,7 +633,7 @@ test(`cannot access app when account is 1 week overdue`, async t => {
   )
 })
 
-test(`can access app after successfully updating payment information when overdue`, async t => {
+test(`can access app after successfully updating payment information when overdue`, async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -649,7 +648,7 @@ test(`can access app after successfully updating payment information when overdu
     app.get(route('user/current'))
     .expect(200)
     .expect(res => {
-      t.is(res.body.isOverdue, false)
+      expect(res.body.isOverdue).toBe(false)
     })
   )
 
@@ -659,7 +658,7 @@ test(`can access app after successfully updating payment information when overdu
   )
 })
 
-test(`can delete account with correct password`, async t => {
+test(`can delete account with correct password`, async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -684,7 +683,7 @@ test(`can delete account with correct password`, async t => {
   )
 })
 
-test(`can delete account that has content`, async t => {
+test(`can delete account that has content`, async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -711,7 +710,7 @@ test(`can delete account that has content`, async t => {
   )
 })
 
-test(`cannot delete account with incorrect password`, async t => {
+test(`cannot delete account with incorrect password`, async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()

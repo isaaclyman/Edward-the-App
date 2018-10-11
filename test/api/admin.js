@@ -9,10 +9,9 @@ import {
   getTestUserId,
   makeTestUserAdmin,
   route,
+  server,
   serverReady,
-  stubRecaptcha,
-  test,
-  wrapTest
+  stubRecaptcha
 } from '../_imports'
 
 stubRecaptcha(test)
@@ -23,7 +22,7 @@ import { checkDocuments } from './_document.helper'
 */
 
 let app
-test.beforeEach('set up an admin user', async t => {
+beforeEach(async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -32,19 +31,24 @@ test.beforeEach('set up an admin user', async t => {
   await makeTestUserAdmin()
 })
 
-test('get users exceeding usage limits', async t => {
-  return wrapTest(t,
+afterAll(() => {
+  server.server.close()
+  process.exit()
+})
+
+test.only('get users exceeding usage limits', async () => {
+  await (
     app.get(route(`admin/space-overages`))
     .expect(200)
     .expect(response => {
       const { premiums, golds } = response.body
-      t.truthy(Array.isArray(premiums))
-      t.truthy(Array.isArray(golds))
+      expect(Array.isArray(premiums)).toBeTruthy()
+      expect(Array.isArray(golds)).toBeTruthy()
     })
   )
 })
 
-test('export, then import a full backup', async t => {
+test('export, then import a full backup', async () => {
   await createTestDocument()
   let userId = await getTestUserId()
   let documents
@@ -61,12 +65,12 @@ test('export, then import a full backup', async t => {
     .send({ userId, documents })
     .expect(200)
   )
-  await checkDocuments(t, app, documents => {
-    t.is(documents.length, 2)
+  await checkDocuments(app, documents => {
+    expect(documents.length).toBe(2)
   })
 })
 
-test(`import a full backup without overwriting anyone else's stuff`, async t => {
+test(`import a full backup without overwriting anyone else's stuff`, async () => {
   await deleteTestUser(alternateUser.email)
   const userDocGuids = await createTestDocument()
   const alternate = await createAlternateTestUser()
@@ -83,14 +87,14 @@ test(`import a full backup without overwriting anyone else's stuff`, async t => 
     app.post(route(`admin/backup/restore`))
     .send({ userId: alternate.id, documents })
   )
-  await checkDocuments(t, app, documents => {
-    t.is(documents.length, 2)
-    t.is(documents[0].guid, userDocGuids[0])
-    t.is(documents[1].guid, userDocGuids[1])
+  await checkDocuments(app, documents => {
+    expect(documents.length).toBe(2)
+    expect(documents[0].guid).toBe(userDocGuids[0])
+    expect(documents[1].guid).toBe(userDocGuids[1])
   })
   await getDocuments(alternate.email).then(documents => {
-    t.is(documents.length, 2)
-    t.is(documents[0].guid, alternateDocGuids[0])
-    t.is(documents[1].guid, alternateDocGuids[1])
+    expect(documents.length).toBe(2)
+    expect(documents[0].guid).toBe(alternateDocGuids[0])
+    expect(documents[1].guid).toBe(alternateDocGuids[1])
   })
 })

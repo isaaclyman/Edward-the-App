@@ -1,4 +1,4 @@
-import { test, uuid } from '../_imports'
+import { uuid } from '../_imports'
 
 import localStorage from 'mock-local-storage'
 
@@ -8,16 +8,16 @@ window.localStorage = global.localStorage
 import LocalStorageApi from '../../src/app/api/localStorage'
 const lsa = new LocalStorageApi()
 
-test.beforeEach(async () => {
+beforeEach(async () => {
   await lsa.storage.clear()
 })
 
-test(`stores and retrieves a document`, async t => {
+test(`stores and retrieves a document`, async () => {
   const doc = { guid: uuid(), name: 'Test Document' }
   await lsa.addDocument(doc)
   const documents = await lsa.getAllDocuments()
-  t.is(documents.length, 1)
+  expect(documents.length).toBe(1)
   const returned = documents[0]
-  t.is(returned.guid, doc.guid)
-  t.is(returned.name, doc.name)
+  expect(returned.guid).toBe(doc.guid)
+  expect(returned.name).toBe(doc.name)
 })

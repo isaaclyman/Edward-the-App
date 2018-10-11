@@ -6,7 +6,6 @@ import {
   route,
   serverReady,
   stubRecaptcha,
-  test,
   uuid,
   wrapTest
 } from '../_imports'
@@ -27,7 +26,7 @@ stubRecaptcha(test)
 */
 
 let app, doc
-test.beforeEach('set up a premium user and document', async t => {
+beforeEach('set up a premium user and document', async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -42,8 +41,8 @@ async function expectOneItemArray(t, supertest, callback) {
     supertest
     .expect(200)
     .expect(response => {
-      t.true(Array.isArray(response.body))
-      t.is(response.body.length, 1)
+      expect(Array.isArray(response.body)).toBe(true)
+      expect(response.body.length).toBe(1)
       
       if (callback) {
         callback(response)
@@ -54,11 +53,11 @@ async function expectOneItemArray(t, supertest, callback) {
 
 // FULL EXPORT/IMPORT
 
-test('do a full export with no content', async t => {
+test('do a full export with no content', async () => {
   await expectOneItemArray(t, app.get(route('backup/export')))
 })
 
-test('import a hand-made export', async t => {
+test('import a hand-made export', async () => {
   const importable = [{
     guid: uuid(),
     name: 'Doc 1',
@@ -86,14 +85,14 @@ test('import a hand-made export', async t => {
     .expect(200)
     .expect(response => {
       const docs = response.body
-      t.true(Array.isArray(docs))
-      t.is(docs.length, 2)
-      t.deepEqual(docs, importable)
+      expect(Array.isArray(docs)).toBe(true)
+      expect(docs.length).toBe(2)
+      expect(docs).toEqual(importable)
     })
   )
 })
 
-test('immediately import an export with no content', async t => {
+test('immediately import an export with no content', async () => {
   const exported = await app.get(route('backup/export')).then(response => response.body)
   await (
     app.post(route('backup/import'))
@@ -105,7 +104,7 @@ test('immediately import an export with no content', async t => {
   await expectOneItemArray(t, app.get(route('backup/export')))
 })
 
-test('do a full export with content', async t => {
+test('do a full export with content', async () => {
   await addTopic(app, doc.guid, 'Test Topic')
   await addChapter(app, doc.guid, 'Test Chapter')
   const plan = await addPlan(app, doc.guid, 'Test Plan')
@@ -114,15 +113,15 @@ test('do a full export with content', async t => {
 
   await expectOneItemArray(t, app.get(route('backup/export')), response => {
     const doc = response.body[0]
-    t.is(doc.chapters.length, 1)
-    t.is(doc.topics.length, 1)
-    t.is(doc.plans.length, 1)
-    t.is(doc.plans[0].sections.length, 1)
-    t.is(doc.workshops.length, 2)
+    expect(doc.chapters.length).toBe(1)
+    expect(doc.topics.length).toBe(1)
+    expect(doc.plans.length).toBe(1)
+    expect(doc.plans[0].sections.length).toBe(1)
+    expect(doc.workshops.length).toBe(2)
   })
 })
 
-test('immediately import an export with content', async t => {
+test('immediately import an export with content', async () => {
   await addTopic(app, doc.guid, 'Test Topic')
   await addChapter(app, doc.guid, 'Test Chapter')
   const plan = await addPlan(app, doc.guid, 'Test Plan')
@@ -139,8 +138,8 @@ test('immediately import an export with content', async t => {
   await expectOneItemArray(t, app.get(route('documents')))
   await expectOneItemArray(t, app.get(route(`plans/${doc.guid}`)), response => {
     const sections = response.body[0].sections
-    t.true(Array.isArray(sections))
-    t.is(sections.length, 1)
+    expect(Array.isArray(sections)).toBe(true)
+    expect(sections.length).toBe(1)
   })
   await expectOneItemArray(t, app.get(route(`chapters/${doc.guid}`)))
   await expectOneItemArray(t, app.get(route(`topics/${doc.guid}`)))
@@ -148,20 +147,20 @@ test('immediately import an export with content', async t => {
     app.get(route(`workshop-content/${doc.guid}`))
     .expect(200)
     .expect(({ body: workshops }) => {
-      t.is(workshops.length, 2)
+      expect(workshops.length).toBe(2)
     })
   )
   await expectOneItemArray(t, app.get(route('backup/export')), response => {
     const doc = response.body[0]
-    t.is(doc.chapters.length, 1)
-    t.is(doc.topics.length, 1)
-    t.is(doc.plans.length, 1)
-    t.is(doc.plans[0].sections.length, 1)
-    t.is(doc.workshops.length, 2)
+    expect(doc.chapters.length).toBe(1)
+    expect(doc.topics.length).toBe(1)
+    expect(doc.plans.length).toBe(1)
+    expect(doc.plans[0].sections.length).toBe(1)
+    expect(doc.workshops.length).toBe(2)
   })
 })
 
-test('when the import breaks, it is reverted', async t => {
+test('when the import breaks, it is reverted', async () => {
   const console_err = console.error
   console.error = function () {}
 
@@ -186,8 +185,8 @@ test('when the import breaks, it is reverted', async t => {
     .send(importable)
     .expect(500)
     .expect(response => {
-      t.true(response.text.includes('REVERTED'))
-      t.false(response.text.includes('FAIL'))
+      expect(response.text.includes('REVERTED')).toBe(true)
+      expect(response.text.includes('FAIL')).toBe(false)
     })
   )
 
@@ -195,8 +194,8 @@ test('when the import breaks, it is reverted', async t => {
 
   await expectOneItemArray(t, app.get(route('backup/export')), response => {
     const exported = response.body[0]
-    t.is(exported.name, doc.name)
-    t.is(exported.guid, doc.guid)
+    expect(exported.name).toBe(doc.name)
+    expect(exported.guid).toBe(doc.guid)
   })
 
   console.error = console_err
@@ -204,7 +203,7 @@ test('when the import breaks, it is reverted', async t => {
 
 // SINGLE DOCUMENT
 
-test('import a single empty document (overwrite)', async t => {
+test('import a single empty document (overwrite)', async () => {
   await expectOneItemArray(t, app.get(route('documents')))
 
   const importable = {}
@@ -224,23 +223,23 @@ test('import a single empty document (overwrite)', async t => {
   await expectOneItemArray(t, app.get(route('documents')))
 })
 
-test('export a single empty document', async t => {
+test('export a single empty document', async () => {
   await (
     app.get(route(`backup/export/document/${doc.guid}`))
     .expect(200)
     .expect(({ body: document }) => {
-      t.truthy(document)
-      t.is(document.guid, doc.guid)
-      t.is(document.name, doc.name)
-      t.deepEqual(document.chapters, [])
-      t.deepEqual(document.plans, [])
-      t.deepEqual(document.topics, [])
-      t.deepEqual(document.workshops, [])
+      expect(document).toBeTruthy()
+      expect(document.guid).toBe(doc.guid)
+      expect(document.name).toBe(doc.name)
+      expect(document.chapters).toEqual([])
+      expect(document.plans).toEqual([])
+      expect(document.topics).toEqual([])
+      expect(document.workshops).toEqual([])
     })
   )
 })
 
-test('import and export a single document (overwrite)', async t => {
+test('import and export a single document (overwrite)', async () => {
   await (
     app.post(route('backup/import/document'))
     .send(doc)
@@ -251,18 +250,18 @@ test('import and export a single document (overwrite)', async t => {
     app.get(route(`backup/export/document/${doc.guid}`))
     .expect(200)
     .expect(({ body: document }) => {
-      t.truthy(document)
-      t.is(document.guid, doc.guid)
-      t.is(document.name, doc.name)
-      t.deepEqual(document.chapters, [])
-      t.deepEqual(document.plans, [])
-      t.deepEqual(document.topics, [])
-      t.deepEqual(document.workshops, [])
+      expect(document).toBeTruthy()
+      expect(document.guid).toBe(doc.guid)
+      expect(document.name).toBe(doc.name)
+      expect(document.chapters).toEqual([])
+      expect(document.plans).toEqual([])
+      expect(document.topics).toEqual([])
+      expect(document.workshops).toEqual([])
     })
   )
 })
 
-test('import a single empty document (add)', async t => {
+test('import a single empty document (add)', async () => {
   const doc2 = {
     guid: uuid(),
     name: 'Doc 2',
@@ -282,15 +281,15 @@ test('import a single empty document (add)', async t => {
     app.get(route('documents'))
     .expect(200)
     .expect(({ body: docs }) => {
-      t.true(Array.isArray(docs))
-      t.is(docs.length, 2)
-      t.is(docs[1].guid, doc2.guid)
-      t.is(docs[1].name, doc2.name)
+      expect(Array.isArray(docs)).toBe(true)
+      expect(docs.length).toBe(2)
+      expect(docs[1].guid).toBe(doc2.guid)
+      expect(docs[1].name).toBe(doc2.name)
     })
   )
 })
 
-test('import and export a document with content', async t => {
+test('import and export a document with content', async () => {
   const importable = {}
   const topicGuid = uuid()
   Object.assign(importable, doc, {
@@ -344,14 +343,14 @@ test('import and export a document with content', async t => {
     app.get(route(`backup/export/document/${doc.guid}`))
     .expect(200)
     .expect(({ body: document }) => {
-      t.truthy(document)
+      expect(document).toBeTruthy()
       removeUnmatchedProperties(importable, document)
-      t.deepEqual(document, importable)
+      expect(document).toEqual(importable)
     })
   )
 })
 
-test('when overwrite import fails, it is reverted', async t => {
+test('when overwrite import fails, it is reverted', async () => {
   const console_err = console.error
   console.error = function () {}
 
@@ -370,14 +369,14 @@ test('when overwrite import fails, it is reverted', async t => {
     .send(importable)
     .expect(500)
     .expect(response => {
-      t.true(response.text.includes('REVERTED'))
-      t.false(response.text.includes('FAIL'))
+      expect(response.text.includes('REVERTED')).toBe(true)
+      expect(response.text.includes('FAIL')).toBe(false)
     })
   )
 
   await expectOneItemArray(t, app.get(route('documents')).expect(({ body: documents }) => {
-    t.is(documents[0].guid, doc.guid)
-    t.is(documents[0].name, doc.name)
+    expect(documents[0].guid).toBe(doc.guid)
+    expect(documents[0].name).toBe(doc.name)
   }))
 
   console.error = console_err

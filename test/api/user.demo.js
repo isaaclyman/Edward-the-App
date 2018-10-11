@@ -6,15 +6,13 @@ import {
   route,
   serverReady,
   stubRecaptcha,
-  test,
-  user,
-  wrapTest
+  user
 } from '../_imports'
 
 stubRecaptcha(test)
 
 let app
-test.beforeEach('set up demo user', async t => {
+beforeEach('set up demo user', async () => {
   app = getPersistentAgent()
   await deleteTestUser()
   await createTestUser(app)
@@ -22,7 +20,7 @@ test.beforeEach('set up demo user', async t => {
   await serverReady
 })
 
-test(`can't modify demo account using APIs`, async t => {
+test(`can't modify demo account using APIs`, async () => {
   await app.post(route('user/send-verify-link')).expect(500)
   await app.post(route('user/verify')).expect(500)
   await app.post(route('user/email')).expect(500)

@@ -3,25 +3,22 @@ import {
   deleteTestUser,
   getPersistentAgent,
   makeTestUserPremium,
-  route,
   serverReady,
   stubRecaptcha,
-  test,
-  user,
   wrapTest
 } from '../_imports'
 
 stubRecaptcha(test)
 
 let app
-test.beforeEach(async () => {
+beforeEach(async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
   await serverReady
 })
 
-test('when there is no login cookie, /login goes to the login page', async t => {
+test('when there is no login cookie, /login goes to the login page', async () => {
   return wrapTest(t,
     app.get('/login')
     .expect(302)
@@ -29,7 +26,7 @@ test('when there is no login cookie, /login goes to the login page', async t => 
   )
 })
 
-test('when there is a login cookie for a premium user, /login goes to the app', async t => {
+test('when there is a login cookie for a premium user, /login goes to the app', async () => {
   await createTestUser(app)
   await makeTestUserPremium()
   return wrapTest(t,
@@ -39,7 +36,7 @@ test('when there is a login cookie for a premium user, /login goes to the app', 
   )
 })
 
-test('when there is a login cookie for a limited user, /login goes to the /limited warning page', async t => {
+test('when there is a login cookie for a limited user, /login goes to the /limited warning page', async () => {
   await createTestUser(app)
   return wrapTest(t,
     app.get('/login')

@@ -6,13 +6,12 @@ import {
   route,
   serverReady,
   stubRecaptcha,
-  test,
   wrapTest
 } from '../_imports'
 
 stubRecaptcha(test)
 
-test('log in as premium user', async t => {
+test('log in as premium user', async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -25,14 +24,14 @@ test('log in as premium user', async t => {
     .expect(200)
     .expect(res => {
       const userRes = res.body
-      t.is(userRes.email, user.email)
-      t.is(userRes.isPremium, true)
-      t.is(userRes.accountType.name, 'PREMIUM')
+      expect(userRes.email).toBe(user.email)
+      expect(userRes.isPremium).toBe(true)
+      expect(userRes.accountType.name).toBe('PREMIUM')
     })
-  )
+  );
 })
 
-test('access a premium API', async t => {
+test('access a premium API', async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()
@@ -46,7 +45,7 @@ test('access a premium API', async t => {
   )
 })
 
-test(`can't access a premium API as a limited user`, async t => {
+test(`can't access a premium API as a limited user`, async () => {
   const app = getPersistentAgent()
 
   await deleteTestUser()

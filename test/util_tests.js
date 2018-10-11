@@ -2,7 +2,6 @@ import {
   accountTypes,
   knex,
   stubRecaptcha,
-  test,
   user
 } from './_imports'
 import {
@@ -13,54 +12,49 @@ import {
 
 stubRecaptcha(test)
 
-test('delete test user', async t => {
+test('delete test user', async done => {
   await deleteTestUser(knex)
   await knex('users').where('email', user.email).first().then(user => {
     if (user) {
-      t.fail()
+      done.fail()
       return
     }
-
-    t.pass()
   })
 })
 
-test('create test user', async t => {
+test('create test user', async done => {
   await deleteTestUser(knex)
   await createTestUser(knex)
   await knex('users').where('email', user.email).first().then(user => {
     if (user) {
-      t.pass()
       return
     }
 
-    t.fail()
+    done.fail()
   })
 })
 
-test('get test user by id', async t => {
+test('get test user by id', async done => {
   await deleteTestUser(knex)
   const user = await createTestUser(knex)
   await knex('users').where('id', user.id).first().then(user => {
     if (user) {
-      t.pass()
       return
     }
 
-    t.fail()
+    done.fail()
   })
 })
 
-test('make test user premium', async t => {
+test('make test user premium', async done => {
   await deleteTestUser(knex)
   await createTestUser(knex)
   await makeTestUserPremium(knex)
   await knex('users').where('email', user.email).first().then(user => {
     if (user['account_type'] === accountTypes.PREMIUM.name) {
-      t.pass()
       return
     }
 
-    t.fail()
+    done.fail()
   })
 })

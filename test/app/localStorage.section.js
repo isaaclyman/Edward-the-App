@@ -1,4 +1,4 @@
-import { test, uuid } from '../_imports'
+import { uuid } from '../_imports'
 
 import localStorage from 'mock-local-storage'
 
@@ -9,7 +9,7 @@ import LocalStorageApi from '../../src/app/api/localStorage'
 const lsa = new LocalStorageApi()
 
 let doc, plan
-test.beforeEach(async () => {
+beforeEach(async () => {
   await lsa.storage.clear()
   doc = { guid: uuid(), name: 'Test Document' }
   await lsa.addDocument(doc)
@@ -17,7 +17,7 @@ test.beforeEach(async () => {
   await lsa.updatePlan(doc.guid, plan.guid, plan)
 })
 
-test('add sections', async t => {
+test('add sections', async () => {
   const section1 = { archived: false, content: { ops: [] }, guid: uuid(), tags: [], title: 'Test section 1' }
   const section2 = { archived: false, content: { ops: [] }, guid: uuid(), tags: [], title: 'Test section 2' }
   plan.sections = [section1, section2]
@@ -25,12 +25,12 @@ test('add sections', async t => {
   await lsa.updateSection(doc.guid, plan.guid, section2.guid, section2)
 
   const sections = await lsa._getAllSections(doc.guid, plan.guid)
-  t.is(sections.length, 2)
-  t.deepEqual(sections[0], section1)
-  t.deepEqual(sections[1], section2)
+  expect(sections.length).toBe(2)
+  expect(sections[0]).toEqual(section1)
+  expect(sections[1]).toEqual(section2)
 })
 
-test('arrange sections', async t => {
+test('arrange sections', async () => {
   const section1 = { archived: false, content: { ops: [] }, guid: uuid(), tags: [], title: 'Test section 1' }
   const section2 = { archived: false, content: { ops: [] }, guid: uuid(), tags: [], title: 'Test section 2' }
   plan.sections = [section1, section2]
@@ -40,12 +40,12 @@ test('arrange sections', async t => {
   await lsa.arrangeSections(doc.guid, plan.guid, [section2.guid, section1.guid])
 
   const sections = await lsa._getAllSections(doc.guid, plan.guid)
-  t.is(sections.length, 2)
-  t.deepEqual(sections[0], section2)
-  t.deepEqual(sections[1], section1)
+  expect(sections.length).toBe(2)
+  expect(sections[0]).toEqual(section2)
+  expect(sections[1]).toEqual(section1)
 })
 
-test('update section', async t => {
+test('update section', async () => {
   const section1 = { archived: false, content: { ops: [] }, guid: uuid(), tags: [], title: 'Test section 1' }
   const section2 = { archived: false, content: { ops: [] }, guid: uuid(), tags: [], title: 'Test section 2' }
   plan.sections = [section1, section2]
@@ -57,7 +57,7 @@ test('update section', async t => {
   await lsa.updateSection(doc.guid, plan.guid, section1.guid, newSection)
 
   const sections = await lsa._getAllSections(doc.guid, plan.guid)
-  t.is(sections.length, 2)
-  t.deepEqual(sections[0], newSection)
-  t.deepEqual(sections[1], section2)
+  expect(sections.length).toBe(2)
+  expect(sections[0]).toEqual(newSection)
+  expect(sections[1]).toEqual(section2)
 })

@@ -54,12 +54,11 @@ test('add workshop content', async () => {
       ).toBe(true)
       expect(list.every(item => item.date !== null)).toBe(true)
       const comparableList = list.map(item => {
-        item.date = new Date(item.date).toLocaleDateString()
+        item.date = new Date(item.date).toDateString()
         item.createdDate = undefined
         return item
       })
       const comparableWorkshops = workshops.map(item => {
-        item.date = new Date(item.date).toLocaleDateString()
         item.createdDate = undefined
         return item
       })
@@ -75,7 +74,6 @@ test('update content', async () => {
   // Another time, to update the same ones
   await addWorkshops(app, doc.guid)
 
-  let contentList
   await (
     app.get(route(`workshop-content/${doc.guid}`))
     .expect(200)
@@ -88,12 +86,11 @@ test('update content', async () => {
       ).toBe(true)
       expect(list.every(item => item.date !== null)).toBe(true)
       const comparableList = list.map(item => {
-        item.date = new Date(item.date).toLocaleDateString()
+        item.date = new Date(item.date).toDateString()
         item.createdDate = undefined
         return item
       })
       const comparableWorkshops = workshops.map(item => {
-        item.date = new Date(item.date).toLocaleDateString()
         item.createdDate = undefined
         return item
       })

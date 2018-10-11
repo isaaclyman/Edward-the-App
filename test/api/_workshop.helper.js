@@ -12,7 +12,7 @@ export const workshops = [{
   title: 'Workshop 1',
   order: 0,
   archived: false,
-  date: new Date().toLocaleDateString()
+  date: new Date().toDateString()
 }, {
   guid: guids[1],
   workshopName: writingWorkshops.PLOT_WORKSHOP.name,
@@ -20,7 +20,7 @@ export const workshops = [{
   title: 'Workshop 2',
   order: 1,
   archived: false,
-  date: new Date().toLocaleDateString()
+  date: new Date().toDateString()
 }]
 
 export async function addWorkshops(app, docGuid) {
@@ -33,7 +33,7 @@ export async function addWorkshops(app, docGuid) {
   return workshops
 }
 
-export const checkWorkshops = (docGuid, expectFn) => {
+export const checkWorkshops = (app, docGuid, expectFn) => {
   return (
     app.get(route(`workshop-content/${docGuid}`))
     .expect(200)

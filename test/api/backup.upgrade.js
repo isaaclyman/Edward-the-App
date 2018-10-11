@@ -53,7 +53,7 @@ async function expectOneItemArray(promise, callback) {
   )
 }
 
-afterEach('clear storage', async () => {
+afterEach(async () => {
   await storage.storage.clear()
 })
 
@@ -130,6 +130,7 @@ test('transfer document with content from API to local storage', async done => {
     expect(doc.plans[0].sections.length).toBe(1)
     expect(doc.workshops).toBeFalsy()
   })
+  done()
 })
 
 test('transfer document with content from local storage to API', async () => {

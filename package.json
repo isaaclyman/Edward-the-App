@@ -65,19 +65,16 @@
     "vuex-persistedstate": "2.0.0"
   },
   "devDependencies": {
-    "@ava/babel-preset-stage-4": "^2.0.0",
-    "@babel/core": "^7.1.2",
-    "@babel/register": "^7.0.0",
     "@types/knex": "^0.0.67",
     "@vue/cli-plugin-babel": "^3.0.4",
     "@vue/cli-plugin-eslint": "^3.0.4",
     "@vue/cli-plugin-pwa": "^3.0.4",
     "@vue/cli-service": "^3.0.4",
     "@vue/eslint-config-airbnb": "^3.0.4",
-    "ava": "^1.0.0-beta.8",
     "compression-webpack-plugin": "^2.0.0",
     "cypress": "^3.1.0",
     "fake-indexeddb": "^2.0.4",
+    "jest": "^23.6.0",
     "mock-local-storage": "^1.0.5",
     "node-sass": "^4.9.0",
     "nodemon": "^1.18.1",
@@ -95,28 +92,10 @@
     "server": "node server.js",
     "start": "npm run server",
     "server-dev": "nodemon server.js",
-    "test": "ava --serial"
+    "test": "jest"
   },
   "engines": {
     "node": "^8.11.0",
     "npm": "^6.4.0"
-  },
-  "ava": {
-    "babel": {
-      "testOptions": {
-        "babelrc": false,
-        "presets": ["@ava/babel-preset-stage-4"]
-      }
-    },
-    "files": [
-      "test/**/*.js",
-      "!test/**/_*.js"
-    ],
-    "sources": [
-      "**/*.js",
-      "!dist/**/*",
-      "!node_modules/**/*"
-    ],
-    "failWithoutAssertions": false
   }
 }

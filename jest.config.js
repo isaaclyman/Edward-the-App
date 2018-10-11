@@ -58,9 +58,10 @@ module.exports = {
   // globals: {},
 
   // An array of directory names to be searched recursively up from the requiring module's location
-  // moduleDirectories: [
-  //   "node_modules"
-  // ],
+  moduleDirectories: [
+    "node_modules",
+    "src"
+  ],
 
   // An array of file extensions your modules use
   // moduleFileExtensions: [
@@ -134,13 +135,15 @@ module.exports = {
 
   // The glob patterns Jest uses to detect test files
   testMatch: [
-    "<rootDir>/test/**/*.js"
-  ]
+    "<rootDir>/test/**/*.js",
+    "!<rootDir>/test/**/_*.js"
+  ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  // testPathIgnorePatterns: [
-  //   "\\\\node_modules\\\\"
-  // ],
+  testPathIgnorePatterns: [
+    "\\\\node_modules\\\\",
+    "\\_.*\.js$"
+  ],
 
   // The regexp pattern Jest uses to detect test files
   // testRegex: "",

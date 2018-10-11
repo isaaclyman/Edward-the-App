@@ -15,8 +15,7 @@ import {
   setTestUserStripeId,
   setTestUserVerifyKey,
   stubRecaptcha,
-  user,
-  wrapTest
+  user
 } from '../_imports'
 import { paymentSucceeded } from '../../api/payments.events'
 
@@ -33,7 +32,7 @@ test('sign up and log in', async () => {
     .expect('set-cookie', /connect\.sid/)
   )
 
-  return wrapTest(t,
+  return (
     app.post(route('user/login'))
     .send(user)
     .expect(200)
@@ -43,7 +42,7 @@ test('sign up and log in', async () => {
 
 test('get demo token', async () => {
   await serverReady
-  return wrapTest(t,
+  return (
     app.post(route('user/demo-login'))
     .expect(200)
     .expect('set-cookie', /connect\.sid/)
@@ -57,7 +56,7 @@ test('get current user', async () => {
   await serverReady
   const user = await createTestUser(app)
 
-  return wrapTest(t,
+  return (
     app.get(route('user/current'))
     .expect(200)
     .expect(res => {
@@ -74,7 +73,7 @@ test(`can't log in with wrong password`, async () => {
   await serverReady
   const user = await createTestUser()
 
-  return wrapTest(t,
+  return (
     app.post(route('user/login'))
     .send({ email: user.email, password: 'notthecorrectpassword!', captchaResponse: 'token' })
     .expect(401)
@@ -98,7 +97,7 @@ test('log out', async () => {
     .expect(200)
   )
 
-  return wrapTest(t,
+  return (
     app.get(route('user/current'))
     .expect(302)
   )
@@ -134,7 +133,7 @@ test('change user email', async () => {
     .expect(200)
   )
 
-  return wrapTest(t,
+  return (
     app.post(route('user/login'))
     .send({ email: newEmail, password: user.password, captchaResponse: 'token' })
     .expect(200)
@@ -165,7 +164,7 @@ test('change user password', async () => {
     .expect(200)
   )
 
-  return wrapTest(t,
+  return (
     app.post(route('user/login'))
     .send({ email: user.email, password: newPassword, captchaResponse: 'token' })
     .expect(200)
@@ -209,7 +208,7 @@ test('change user email and password', async () => {
     .expect(200)
   )
 
-  return wrapTest(t,
+  return (
     app.post(route('user/login'))
     .send({ email: newEmail, password: newPassword, captchaResponse: 'token' })
     .expect(200)
@@ -250,7 +249,7 @@ test('verify account', async () => {
     .expect(200)
   )
 
-  return wrapTest(t,
+  return (
     app.get(route('user/current'))
     .expect(200)
     .expect(res => {
@@ -360,7 +359,7 @@ test('reset password', async () => {
 
   const newUser = {}
   Object.assign(newUser, user, { password: newPassword })
-  return wrapTest(t,
+  return (
     app.post(route('user/login'))
     .send(newUser)
     .expect(200)

@@ -17,7 +17,7 @@ stubRecaptcha(test)
 */
 
 let app, doc
-beforeEach('set up a premium user and document', async () => {
+beforeEach(async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -28,7 +28,7 @@ beforeEach('set up a premium user and document', async () => {
 })
 
 test('get topics', async () => {
-  return checkTopics(t, app, doc.guid, topics => {
+  return checkTopics(app, doc.guid, topics => {
     expect(topics.length).toBe(0)
   });
 })
@@ -36,10 +36,10 @@ test('get topics', async () => {
 test('add topics', async () => {
   const topic1 = await addTopic(app, doc.guid, 'Test1')
   const topic2 = await addTopic(app, doc.guid, 'Test2')
-  return checkTopics(t, app, doc.guid, topics => {
+  return checkTopics(app, doc.guid, topics => {
     expect(topics.length).toBe(2)
-    compareTopics(t, doc.guid, topics[0], topic1)
-    compareTopics(t, doc.guid, topics[1], topic2)
+    compareTopics(doc.guid, topics[0], topic1)
+    compareTopics(doc.guid, topics[1], topic2)
   });
 })
 
@@ -56,10 +56,10 @@ test('arrange topics', async () => {
     .expect(200)
   )
 
-  return checkTopics(t, app, doc.guid, topics => {
+  return checkTopics(app, doc.guid, topics => {
     expect(topics.length).toBe(2)
-    compareTopics(t, doc.guid, topics[0], topic2)
-    compareTopics(t, doc.guid, topics[1], topic1)
+    compareTopics(doc.guid, topics[0], topic2)
+    compareTopics(doc.guid, topics[1], topic1)
   });
 })
 
@@ -76,9 +76,9 @@ test('delete topic', async () => {
     .expect(200)
   )
 
-  return checkTopics(t, app, doc.guid, topics => {
+  return checkTopics(app, doc.guid, topics => {
     expect(topics.length).toBe(1)
-    compareTopics(t, doc.guid, topics[0], topic2)
+    compareTopics(doc.guid, topics[0], topic2)
   });
 })
 
@@ -102,9 +102,9 @@ test('update topic', async () => {
     .expect(200)
   )
 
-  return checkTopics(t, app, doc.guid, topics => {
+  return checkTopics(app, doc.guid, topics => {
     expect(topics.length).toBe(2)
-    compareTopics(t, doc.guid, topics[0], newTopic)
-    compareTopics(t, doc.guid, topics[1], topic2)
+    compareTopics(doc.guid, topics[0], newTopic)
+    compareTopics(doc.guid, topics[1], topic2)
   });
 })

@@ -96,7 +96,7 @@
     "server": "node server.js",
     "start": "npm run server",
     "server-dev": "nodemon server.js",
-    "test": "jest"
+    "test": "jest -i"
   },
   "engines": {
     "node": "^8.11.0",

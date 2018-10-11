@@ -18,7 +18,7 @@ stubRecaptcha(test)
 */
 
 let app, doc
-beforeEach('set up a premium user and document', async () => {
+beforeEach(async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -29,7 +29,7 @@ beforeEach('set up a premium user and document', async () => {
 })
 
 test('get plans', async () => {
-  return checkPlans(t, app, doc.guid, plans => {
+  return checkPlans(app, doc.guid, plans => {
     expect(plans.length).toBe(0)
   });
 })
@@ -37,10 +37,10 @@ test('get plans', async () => {
 test('add plans', async () => {
   const plan1 = await addPlan(app, doc.guid, 'Test1')
   const plan2 = await addPlan(app, doc.guid, 'Test2')
-  return checkPlans(t, app, doc.guid, plans => {
+  return checkPlans(app, doc.guid, plans => {
     expect(plans.length).toBe(2)
-    comparePlans(t, doc.guid, plans[0], plan1)
-    comparePlans(t, doc.guid, plans[1], plan2)
+    comparePlans(doc.guid, plans[0], plan1)
+    comparePlans(doc.guid, plans[1], plan2)
   });
 })
 
@@ -56,10 +56,10 @@ test('arrange plans', async () => {
     .expect(200)
   )
 
-  return checkPlans(t, app, doc.guid, plans => {
+  return checkPlans(app, doc.guid, plans => {
     expect(plans.length).toBe(2)
-    comparePlans(t, doc.guid, plans[0], plan2)
-    comparePlans(t, doc.guid, plans[1], plan1)
+    comparePlans(doc.guid, plans[0], plan2)
+    comparePlans(doc.guid, plans[1], plan1)
   });
 })
 
@@ -72,9 +72,9 @@ test('delete plan', async () => {
     .expect(200)
   )
 
-  return checkPlans(t, app, doc.guid, plans => {
+  return checkPlans(app, doc.guid, plans => {
     expect(plans.length).toBe(1)
-    comparePlans(t, doc.guid, plans[0], plan2)
+    comparePlans(doc.guid, plans[0], plan2)
   });
 })
 
@@ -94,9 +94,9 @@ test('update plan', async () => {
 
   await updatePlan(app, newPlan)
 
-  return checkPlans(t, app, doc.guid, plans => {
+  return checkPlans(app, doc.guid, plans => {
     expect(plans.length).toBe(2)
-    comparePlans(t, doc.guid, plans[0], newPlan)
-    comparePlans(t, doc.guid, plans[1], plan2)
+    comparePlans(doc.guid, plans[0], newPlan)
+    comparePlans(doc.guid, plans[1], plan2)
   });
 })

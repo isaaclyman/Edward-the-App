@@ -19,7 +19,7 @@ stubRecaptcha(test)
 */
 
 let app, doc, plan
-beforeEach('set up a premium user and document', async () => {
+beforeEach(async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -36,11 +36,11 @@ test('add sections', async () => {
 
   plan.sections = [section1, section2]
 
-  return checkPlans(t, app, doc.guid, ([apiPlan]) => {
+  return checkPlans(app, doc.guid, ([apiPlan]) => {
     const sections = apiPlan.sections
     expect(sections.length).toBe(2)
-    compareSections(t, doc.guid, plan.planGuid, sections[0], section1)
-    compareSections(t, doc.guid, plan.planGuid, sections[1], section2)
+    compareSections(doc.guid, plan.planGuid, sections[0], section1)
+    compareSections(doc.guid, plan.planGuid, sections[1], section2)
   });
 })
 
@@ -58,11 +58,11 @@ test('arrange sections', async () => {
     .expect(200)
   )
 
-  return checkPlans(t, app, doc.guid, ([apiPlan]) => {
+  return checkPlans(app, doc.guid, ([apiPlan]) => {
     const sections = apiPlan.sections
     expect(sections.length).toBe(2)
-    compareSections(t, doc.guid, plan.planGuid, sections[0], section2)
-    compareSections(t, doc.guid, plan.planGuid, sections[1], section1)
+    compareSections(doc.guid, plan.planGuid, sections[0], section2)
+    compareSections(doc.guid, plan.planGuid, sections[1], section1)
   });
 })
 
@@ -95,10 +95,10 @@ test('update section', async () => {
     .expect(200)
   )
 
-  return checkPlans(t, app, doc.guid, ([apiPlan]) => {
+  return checkPlans(app, doc.guid, ([apiPlan]) => {
     const sections = apiPlan.sections
     expect(sections.length).toBe(2)
-    compareSections(t, doc.guid, plan.planGuid, sections[0], newSection)
-    compareSections(t, doc.guid, plan.planGuid, sections[1], section2)
+    compareSections(doc.guid, plan.planGuid, sections[0], newSection)
+    compareSections(doc.guid, plan.planGuid, sections[1], section2)
   });
 })

@@ -1,7 +1,6 @@
 import {
   route,
-  uuid,
-  wrapTest
+  uuid
 } from '../_imports'
 
 export const addDocument = async (app, name) => {
@@ -19,7 +18,7 @@ export const addDocument = async (app, name) => {
 }
 
 export const checkDocuments = (app, expectFn) => {
-  return wrapTest(
+  return (
     app.get(route('documents'))
     .expect(200)
     .expect(response => {

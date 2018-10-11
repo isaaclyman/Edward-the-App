@@ -1,7 +1,6 @@
 import {
   route,
-  uuid,
-  wrapTest
+  uuid
 } from '../_imports'
 
 export const addPlan = async (app, docGuid, title) => {
@@ -27,19 +26,19 @@ export const addPlan = async (app, docGuid, title) => {
   return plan
 }
 
-export const checkPlans = (t, app, docGuid, expectFn) => {
-  return wrapTest(t,
+export const checkPlans = (app, docGuid, expectFn) => {
+  return (
     app.get(route(`plans/${docGuid}`))
     .expect(200)
     .expect(response => {
-      t.truthy(Array.isArray(response.body))
+      expect(Array.isArray(response.body)).toBeTruthy()
       expectFn(response.body)
     })
   )
 }
 
-export const comparePlans = (t, docGuid, apiPlan, plan) => {
-  t.deepEqual({
+export const comparePlans = (docGuid, apiPlan, plan) => {
+  expect({
     documentGuid: docGuid,
     planGuid: apiPlan.guid,
     plan: {
@@ -54,7 +53,7 @@ export const comparePlans = (t, docGuid, apiPlan, plan) => {
         title: section.title
       }))
     }
-  }, plan)
+  }).toEqual(plan)
 }
 
 export const updatePlan = async (app, newPlan) => {

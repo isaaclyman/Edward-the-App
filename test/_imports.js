@@ -19,8 +19,7 @@ import {
   setTestUserStripeId,
   setTestUserVerifyKey,
   stubRecaptcha,
-  user,
-  wrapTest
+  user
 } from './_util'
 import uuid from 'uuid/v1'
 
@@ -82,6 +81,5 @@ export {
   serverReady,
   stubRecaptcha,
   user,
-  uuid,
-  wrapTest
+  uuid
 }

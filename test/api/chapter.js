@@ -18,7 +18,7 @@ stubRecaptcha(test)
 */
 
 let app, doc
-beforeEach('set up a premium user and document', async () => {
+beforeEach(async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -29,7 +29,7 @@ beforeEach('set up a premium user and document', async () => {
 })
 
 test('get chapters', async () => {
-  return checkChapters(t, app, doc.guid, chapters => {
+  return checkChapters(app, doc.guid, chapters => {
     expect(chapters.length).toBe(0)
   });
 })
@@ -37,10 +37,10 @@ test('get chapters', async () => {
 test('add chapters', async () => {
   const chap1 = await addChapter(app, doc.guid, 'Test1')
   const chap2 = await addChapter(app, doc.guid, 'Test2')
-  return checkChapters(t, app, doc.guid, chapters => {
+  return checkChapters(app, doc.guid, chapters => {
     expect(chapters.length).toBe(2)
-    compareChapters(t, doc.guid, chapters[0], chap1)
-    compareChapters(t, doc.guid, chapters[1], chap2)
+    compareChapters(doc.guid, chapters[0], chap1)
+    compareChapters(doc.guid, chapters[1], chap2)
   });
 })
 
@@ -56,10 +56,10 @@ test('arrange chapters', async () => {
     .expect(200)
   )
 
-  return checkChapters(t, app, doc.guid, chapters => {
+  return checkChapters(app, doc.guid, chapters => {
     expect(chapters.length).toBe(2)
-    compareChapters(t, doc.guid, chapters[0], chap2)
-    compareChapters(t, doc.guid, chapters[1], chap1)
+    compareChapters(doc.guid, chapters[0], chap2)
+    compareChapters(doc.guid, chapters[1], chap1)
   });
 })
 
@@ -72,9 +72,9 @@ test('delete chapter', async () => {
     .expect(200)
   )
 
-  return checkChapters(t, app, doc.guid, chapters => {
+  return checkChapters(app, doc.guid, chapters => {
     expect(chapters.length).toBe(1)
-    compareChapters(t, doc.guid, chapters[0], chap2)
+    compareChapters(doc.guid, chapters[0], chap2)
   });
 })
 
@@ -99,10 +99,10 @@ test('update chapter', async () => {
 
   await updateChapter(app, newChapter)
 
-  return checkChapters(t, app, doc.guid, chapters => {
+  return checkChapters(app, doc.guid, chapters => {
     expect(chapters.length).toBe(2)
-    compareChapters(t, doc.guid, chapters[0], newChapter)
-    compareChapters(t, doc.guid, chapters[1], chap2)
+    compareChapters(doc.guid, chapters[0], newChapter)
+    compareChapters(doc.guid, chapters[1], chap2)
   });
 })
 
@@ -112,10 +112,10 @@ test('update chapter with same content', async () => {
   chap2.chapter.archived = true
   await updateChapter(app, chap2)
 
-  return checkChapters(t, app, doc.guid, chapters => {
+  return checkChapters(app, doc.guid, chapters => {
     expect(chapters.length).toBe(2)
-    compareChapters(t, doc.guid, chapters[0], chap1)
-    compareChapters(t, doc.guid, chapters[1], chap2)
+    compareChapters(doc.guid, chapters[0], chap1)
+    compareChapters(doc.guid, chapters[1], chap2)
   });
 })
 
@@ -141,10 +141,10 @@ test('add chapters, then a topic', async () => {
   await updateChapter(app, chap1)
   await updateChapter(app, chap2)
 
-  return checkChapters(t, app, doc.guid, chapters => {
+  return checkChapters(app, doc.guid, chapters => {
     expect(chapters.length).toBe(2)
-    compareChapters(t, doc.guid, chapters[0], chap1)
-    compareChapters(t, doc.guid, chapters[1], chap2)
+    compareChapters(doc.guid, chapters[0], chap1)
+    compareChapters(doc.guid, chapters[1], chap2)
   });
 })
 
@@ -170,10 +170,10 @@ test('add a topic, then add chapters', async () => {
   await updateChapter(app, chap1)
   await updateChapter(app, chap2)
 
-  return checkChapters(t, app, doc.guid, chapters => {
+  return checkChapters(app, doc.guid, chapters => {
     expect(chapters.length).toBe(2)
-    compareChapters(t, doc.guid, chapters[0], chap1)
-    compareChapters(t, doc.guid, chapters[1], chap2)
+    compareChapters(doc.guid, chapters[0], chap1)
+    compareChapters(doc.guid, chapters[1], chap2)
   });
 })
 
@@ -218,9 +218,9 @@ test('update chapter topic content', async () => {
     .expect(200)
   )
 
-  return checkChapters(t, app, doc.guid, chapters => {
+  return checkChapters(app, doc.guid, chapters => {
     expect(chapters.length).toBe(2)
-    compareChapters(t, doc.guid, chapters[0], newChapter)
-    compareChapters(t, doc.guid, chapters[1], chap2)
+    compareChapters(doc.guid, chapters[0], newChapter)
+    compareChapters(doc.guid, chapters[1], chap2)
   });
 })

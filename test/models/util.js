@@ -15,7 +15,7 @@ stubRecaptcha(test)
 const wait = async () => await new Promise(resolve => setTimeout(resolve, 50))
 
 let app, doc
-beforeEach('set up a premium user and document', async () => {
+beforeEach(async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()

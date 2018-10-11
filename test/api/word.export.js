@@ -5,8 +5,7 @@ import {
   makeTestUserPremium,
   route,
   serverReady,
-  stubRecaptcha,
-  wrapTest
+  stubRecaptcha
 } from '../_imports'
 import { addDocument } from './_document.helper'
 import { addChapter } from './_chapter.helper'
@@ -18,7 +17,7 @@ stubRecaptcha(test)
 */
 
 let app, doc
-beforeEach('set up a premium user and document', async () => {
+beforeEach(async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -30,7 +29,7 @@ beforeEach('set up a premium user and document', async () => {
 })
 
 test('Export chapters as a word document', async () => {
-  wrapTest(t,
+  (
     app.post(route('word/export-chapters'))
     .send({ guid: doc.guid, title: doc.name })
     .expect(200)

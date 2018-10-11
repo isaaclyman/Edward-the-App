@@ -5,8 +5,7 @@ import {
   makeTestUserPremium,
   route,
   serverReady,
-  stubRecaptcha,
-  wrapTest
+  stubRecaptcha
 } from '../_imports'
 import { addDocument, checkDocuments } from './_document.helper'
 import { addChapter } from './_chapter.helper'
@@ -18,7 +17,7 @@ stubRecaptcha(test)
 */
 
 let app
-beforeEach('set up a premium user', async () => {
+beforeEach(async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -28,13 +27,13 @@ beforeEach('set up a premium user', async () => {
 })
 
 test('get documents', async () => {
-  return checkDocuments(t, app, docs => expect(docs.length).toBe(0));
+  return checkDocuments(app, docs => expect(docs.length).toBe(0));
 })
 
 test('add documents', async () => {
   const doc1 = await addDocument(app, 'Test1')
   const doc2 = await addDocument(app, 'Test2')
-  return checkDocuments(t, app, docs => {
+  return checkDocuments(app, docs => {
     expect(docs.length).toBe(2)
 
     expect(docs[0].guid).toBe(doc1.guid)
@@ -53,7 +52,7 @@ test('delete a document', async () => {
     .send({ guid: doc1.guid })
     .expect(200)
   )
-  return checkDocuments(t, app, docs => {
+  return checkDocuments(app, docs => {
     expect(docs.length).toBe(1)
     expect(docs[0].guid).toBe(doc2.guid)
     expect(docs[0].name).toBe(doc2.name)
@@ -68,7 +67,7 @@ test('delete a document that has content', async () => {
     .send({ guid: doc.guid })
     .expect(200)
   )
-  return checkDocuments(t, app, docs => {
+  return checkDocuments(app, docs => {
     expect(docs.length).toBe(0)
   });
 })
@@ -77,12 +76,12 @@ test('update a document (rename)', async () => {
   const doc1 = await addDocument(app, 'Test1')
   const doc2 = await addDocument(app, 'Test2')
   const updatedName = 'Test2-updated'
-  await wrapTest(t,
+  await (
     app.post(route('document/update'))
     .send({ guid: doc2.guid, name: updatedName })
     .expect(200)
   )
-  return checkDocuments(t, app, docs => {
+  return checkDocuments(app, docs => {
     expect(docs.length).toBe(2)
 
     expect(docs[0].guid).toBe(doc1.guid)

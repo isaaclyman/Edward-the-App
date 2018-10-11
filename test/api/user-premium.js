@@ -5,8 +5,7 @@ import {
   makeTestUserPremium,
   route,
   serverReady,
-  stubRecaptcha,
-  wrapTest
+  stubRecaptcha
 } from '../_imports'
 
 stubRecaptcha(test)
@@ -19,7 +18,7 @@ test('log in as premium user', async () => {
   const user = await createTestUser(app)
   await makeTestUserPremium()
 
-  return wrapTest(t,
+  return (
     app.get(route('user/current'))
     .expect(200)
     .expect(res => {
@@ -39,7 +38,7 @@ test('access a premium API', async () => {
   await createTestUser(app)
   await makeTestUserPremium()
 
-  return wrapTest(t,
+  return (
     app.get(route('documents'))
     .expect(200)
   )
@@ -52,7 +51,7 @@ test(`can't access a premium API as a limited user`, async () => {
   await serverReady
   await createTestUser(app)
 
-  return wrapTest(t,
+  return (
     app.get(route('documents'))
     .expect(401)
   )

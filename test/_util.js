@@ -220,14 +220,6 @@ function stubRecaptcha() {
 }
 
 /*
-  SUPERTEST WRAPPING
-*/
-
-function wrapTest(supertest) {
-  return supertest
-}
-
-/*
   GENERAL UTILITIES
 */
 
@@ -281,6 +273,5 @@ module.exports = {
   setTestUserStripeId,
   setTestUserVerifyKey,
   stubRecaptcha,
-  workshopGuids,
-  wrapTest
+  workshopGuids
 }

@@ -80,46 +80,46 @@ test('save all content', async () => {
     .expect(200)
   )
 
-  await checkChapters(t, app, doc.guid, apiChapters => {
+  await checkChapters(app, doc.guid, apiChapters => {
     expect(apiChapters.length).toBe(2)
-    compareChapters(t, doc.guid, apiChapters[0], {
+    compareChapters(doc.guid, apiChapters[0], {
       chapterGuid: chapters[0].guid,
       documentGuid: doc.guid,
       chapter: chapters[0]
     })
-    compareChapters(t, doc.guid, apiChapters[1], {
+    compareChapters(doc.guid, apiChapters[1], {
       chapterGuid: chapters[1].guid,
       documentGuid: doc.guid,
       chapter: chapters[1]
     })
   })
 
-  await checkTopics(t, app, doc.guid, apiTopics => {
+  await checkTopics(app, doc.guid, apiTopics => {
     expect(apiTopics.length).toBe(2)
-    compareTopics(t, doc.guid, apiTopics[0], {
+    compareTopics(doc.guid, apiTopics[0], {
       topicGuid: topics[0].guid,
       documentGuid: doc.guid,
       topic: topics[0]
     })
-    compareTopics(t, doc.guid, apiTopics[1], {
+    compareTopics(doc.guid, apiTopics[1], {
       topicGuid: topics[1].guid,
       documentGuid: doc.guid,
       topic: topics[1]
     })
   })
 
-  await checkPlans(t, app, doc.guid, apiPlans => {
+  await checkPlans(app, doc.guid, apiPlans => {
     expect(apiPlans.length).toBe(2)
 
     apiPlans.forEach((apiPlan, planIndex) => {
-      comparePlans(t, doc.guid, apiPlan, {
+      comparePlans(doc.guid, apiPlan, {
         planGuid: plans[planIndex].guid,
         documentGuid: doc.guid,
         plan: plans[planIndex]
       })
       apiPlan.sections.forEach((apiSection, sectionIndex) => {
         const section = plans[planIndex].sections[sectionIndex]
-        compareSections(t, doc.guid, apiPlan.guid, apiSection, {
+        compareSections(doc.guid, apiPlan.guid, apiSection, {
           sectionGuid: section.guid,
           planGuid: plans[planIndex].guid,
           documentGuid: doc.guid,
@@ -129,7 +129,7 @@ test('save all content', async () => {
     })
   })
 
-  await checkWorkshops(t, app, doc.guid, apiWorkshops => {
+  await checkWorkshops(app, doc.guid, apiWorkshops => {
     expect(apiWorkshops.length).toBe(2)
 
 

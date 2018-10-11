@@ -28,8 +28,8 @@ export const addSection = async (app, docGuid, planGuid, title) => {
   return section
 }
 
-export const compareSections = async (t, docGuid, planGuid, apiSection, section) => {
-  t.deepEqual({
+export const compareSections = async (docGuid, planGuid, apiSection, section) => {
+  expect({
     documentGuid: docGuid,
     planGuid,
     sectionGuid: apiSection.guid,
@@ -40,5 +40,5 @@ export const compareSections = async (t, docGuid, planGuid, apiSection, section)
       tags: apiSection.tags,
       title: apiSection.title
     }
-  }, section)
+  }).toMatchObject(section)
 }

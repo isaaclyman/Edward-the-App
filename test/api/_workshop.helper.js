@@ -1,6 +1,5 @@
 import {
-  route,
-  wrapTest
+  route
 } from '../_imports'
 import writingWorkshops from '../../models/writingWorkshop'
 
@@ -34,12 +33,12 @@ export async function addWorkshops(app, docGuid) {
   return workshops
 }
 
-export const checkWorkshops = (t, app, docGuid, expectFn) => {
-  return wrapTest(t,
+export const checkWorkshops = (docGuid, expectFn) => {
+  return (
     app.get(route(`workshop-content/${docGuid}`))
     .expect(200)
     .expect(response => {
-      t.truthy(Array.isArray(response.body))
+      expect(Array.isArray(response.body)).toBeTruthy()
       expectFn(response.body)
     })
   )

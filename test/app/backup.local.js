@@ -22,7 +22,7 @@ stubRecaptcha(test)
 */
 
 let app, doc
-beforeEach('set up a limited user and document', async () => {
+beforeEach(async () => {
   await storage.storage.clear()
   app = getPersistentAgent()
 
@@ -33,7 +33,7 @@ beforeEach('set up a limited user and document', async () => {
   await storage.addDocument(doc)
 })
 
-async function expectOneItemArray(t, promise, callback) {
+async function expectOneItemArray(promise, callback) {
   await (
     promise.then(arr => {
       expect(Array.isArray(arr)).toBe(true)
@@ -80,7 +80,7 @@ async function addContent() {
 }
 
 test('do a full local storage export with no content', async () => {
-  await expectOneItemArray(t, storage.getFullExport())
+  await expectOneItemArray(storage.getFullExport())
 })
 
 test('import a hand-made export to local storage', async () => {
@@ -112,13 +112,13 @@ test('immediately import an export with no content to local storage', async () =
   const exported = await storage.getFullExport()
   await storage.storage.clear()
   await storage.doFullImport(exported)
-  await expectOneItemArray(t, storage.getFullExport())
+  await expectOneItemArray(storage.getFullExport())
 })
 
 test('do a full export with content from local storage', async () => {
   await addContent()
 
-  await expectOneItemArray(t, storage.getFullExport(), docs => {
+  await expectOneItemArray(storage.getFullExport(), docs => {
     const doc = docs[0]
     expect(doc.chapters.length).toBe(1)
     expect(doc.topics.length).toBe(1)
@@ -133,16 +133,16 @@ test('immediately import an export with content to local storage', async () => {
   const exported = await storage.getFullExport()
   await storage.doFullImport(exported)
 
-  await expectOneItemArray(t, storage.getAllDocuments())
-  await expectOneItemArray(t, storage.getAllPlans(doc.guid), plans => {
+  await expectOneItemArray(storage.getAllDocuments())
+  await expectOneItemArray(storage.getAllPlans(doc.guid), plans => {
     const sections = plans[0].sections
     expect(Array.isArray(sections)).toBe(true)
     expect(sections.length).toBe(1)
   })
-  await expectOneItemArray(t, storage.getAllChapters(doc.guid))
-  await expectOneItemArray(t, storage.getAllTopics(doc.guid))
+  await expectOneItemArray(storage.getAllChapters(doc.guid))
+  await expectOneItemArray(storage.getAllTopics(doc.guid))
 
-  await expectOneItemArray(t, storage.getFullExport(), docs => {
+  await expectOneItemArray(storage.getFullExport(), docs => {
     const doc = docs[0]
     expect(doc.chapters.length).toBe(1)
     expect(doc.topics.length).toBe(1)
@@ -159,8 +159,8 @@ test('when the import to local storage breaks, it is reverted', async () => {
 
   await storage.doFullImport(importable)
 
-  await expectOneItemArray(t, storage.getAllDocuments())
-  await expectOneItemArray(t, storage.getFullExport(), docs => {
+  await expectOneItemArray(storage.getAllDocuments())
+  await expectOneItemArray(storage.getFullExport(), docs => {
     const exported = docs[0]
     expect(exported.name).toBe(doc.name)
     expect(exported.guid).toBe(doc.guid)

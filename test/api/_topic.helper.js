@@ -1,7 +1,6 @@
 import {
   route,
-  uuid,
-  wrapTest
+  uuid
 } from '../_imports'
 
 export const addTopic = async (app, docGuid, title) => {
@@ -26,19 +25,19 @@ export const addTopic = async (app, docGuid, title) => {
   return topic
 }
 
-export const checkTopics = (t, app, docGuid, expectFn) => {
-  return wrapTest(t,
+export const checkTopics = (app, docGuid, expectFn) => {
+  return (
     app.get(route(`topics/${docGuid}`))
     .expect(200)
     .expect(response => {
-      t.truthy(Array.isArray(response.body))
+      expect(Array.isArray(response.body)).toBeTruthy()
       expectFn(response.body)
     })
   )
 }
 
-export const compareTopics = (t, docGuid, apiTopic, topic) => {
-  t.deepEqual({
+export const compareTopics = (docGuid, apiTopic, topic) => {
+  expect({
     documentGuid: docGuid,
     topicGuid: apiTopic.guid,
     topic: {
@@ -46,5 +45,5 @@ export const compareTopics = (t, docGuid, apiTopic, topic) => {
       guid: apiTopic.guid,
       title: apiTopic.title
     }
-  }, topic)
+  }).toMatchObject(topic)
 }

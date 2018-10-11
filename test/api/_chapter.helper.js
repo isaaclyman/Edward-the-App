@@ -1,7 +1,6 @@
 import {
   route,
-  uuid,
-  wrapTest
+  uuid
 } from '../_imports'
 
 export const addChapter = async (app, docGuid, title) => {
@@ -28,19 +27,19 @@ export const addChapter = async (app, docGuid, title) => {
   return chapter
 }
 
-export const checkChapters = (t, app, docGuid, expectFn) => {
-  return wrapTest(t,
+export const checkChapters = (app, docGuid, expectFn) => {
+  return (
     app.get(route(`chapters/${docGuid}`))
     .expect(200)
     .expect(response => {
-      t.truthy(Array.isArray(response.body))
+      expect(Array.isArray(response.body)).toBeTruthy()
       expectFn(response.body)
     })
   )
 }
 
-export const compareChapters = (t, docGuid, apiChapter, chapter) => {
-  t.deepEqual({
+export const compareChapters = (docGuid, apiChapter, chapter) => {
+  expect({
     documentGuid: docGuid,
     chapterGuid: apiChapter.guid,
     chapter: {
@@ -58,7 +57,7 @@ export const compareChapters = (t, docGuid, apiChapter, chapter) => {
         return topics
       }, {})
     }
-  }, chapter)
+  }).toMatchObject(chapter)
 }
 
 export const updateChapter = async (app, newChapter) => {

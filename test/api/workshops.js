@@ -5,8 +5,7 @@ import {
   makeTestUserPremium,
   route,
   serverReady,
-  stubRecaptcha,
-  wrapTest
+  stubRecaptcha
 } from '../_imports'
 import { addDocument } from './_document.helper'
 import writingWorkshops from '../../models/writingWorkshop'
@@ -19,7 +18,7 @@ stubRecaptcha(test)
 */
 
 let app, doc
-beforeEach('set up a premium user and document', async () => {
+beforeEach(async () => {
   app = getPersistentAgent()
 
   await deleteTestUser()
@@ -30,7 +29,7 @@ beforeEach('set up a premium user and document', async () => {
 })
 
 test('get workshops (empty)', async () => {
-  return wrapTest(t,
+  return (
     app.get(route(`workshop-content/${doc.guid}`))
     .expect(200)
     .expect(response => {
@@ -43,7 +42,6 @@ test('get workshops (empty)', async () => {
 
 test('add workshop content', async () => {
   await addWorkshops(app, doc.guid)
-  let contentList
   await (
     app.get(route(`workshop-content/${doc.guid}`))
     .expect(200)

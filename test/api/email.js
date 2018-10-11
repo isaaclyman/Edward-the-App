@@ -12,6 +12,7 @@ test('An email can be sent', async done => {
   
   return email.send().then(info => {
     expect(info.messageId).toBeTruthy()
+    done()
   }, err => {
     done.fail(`Email failed to send: ${err}`)
   });

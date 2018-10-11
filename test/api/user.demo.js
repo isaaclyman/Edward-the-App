@@ -12,7 +12,7 @@ import {
 stubRecaptcha(test)
 
 let app
-beforeEach('set up demo user', async () => {
+beforeEach(async () => {
   app = getPersistentAgent()
   await deleteTestUser()
   await createTestUser(app)

@@ -1,11 +1,11 @@
-import { app, server, knex, wrapTest } from './_imports'
+import { app, server, knex } from './_imports'
 
 test('express app was created', () => {
   expect(server).toBeTruthy()
 })
 
 test('serves landing page', () => {
-  return wrapTest(t,
+  return (
     app.get('/')
     .expect(200)
     .expect(/<title>Edward/)
@@ -21,7 +21,7 @@ test('connects to database', done => {
 })
 
 test('serves static file', () => {
-  return wrapTest(t,
+  return (
     app.get('/public/index.css')
     .expect(200)
     .expect(/font-family/)

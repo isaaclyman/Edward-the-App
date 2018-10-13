@@ -84,7 +84,6 @@
     "nodemon": "^1.18.1",
     "regenerator-runtime": "^0.12.1",
     "sass-loader": "^7.0.1",
-    "sinon": "^4.5.0",
     "supertest": "^3.0.0",
     "vue-template-compiler": "^2.5.17"
   },

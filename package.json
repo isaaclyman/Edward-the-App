@@ -1,9 +1,21 @@
 {
   "name": "edward-the-app",
-  "description": "A better way to outline and write novels",
   "version": "1.0.0",
-  "author": "Isaac Lyman <packagejson@isaaclyman.com>",
   "private": true,
+  "description": "A better way to outline and write novels",
+  "author": "Isaac Lyman <packagejson@isaaclyman.com>",
+  "scripts": {
+    "build": "vue-cli-service build",
+    "test": "jest -i",
+    "lint": "vue-cli-service lint",
+    "cypress": "cypress open",
+    "dev": "vue-cli-service serve",
+    "integration": "cypress run",
+    "server": "node server.js",
+    "server-dev": "nodemon server.js",
+    "start": "npm run server",
+    "test:e2e": "vue-cli-service test:e2e"
+  },
   "dependencies": {
     "autoprefixer": "7.1.2",
     "axios": "0.16.2",
@@ -65,8 +77,10 @@
     "vuex-persistedstate": "2.0.0"
   },
   "devDependencies": {
+    "@cypress/webpack-preprocessor": "^3.0.0",
     "@types/knex": "^0.0.67",
     "@vue/cli-plugin-babel": "^3.0.4",
+    "@vue/cli-plugin-e2e-cypress": "^3.0.5",
     "@vue/cli-plugin-eslint": "^3.0.4",
     "@vue/cli-plugin-pwa": "^3.0.4",
     "@vue/cli-service": "^3.0.4",
@@ -86,17 +100,6 @@
     "sass-loader": "^7.0.1",
     "supertest": "^3.0.0",
     "vue-template-compiler": "^2.5.17"
-  },
-  "scripts": {
-    "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "cypress": "cypress open",
-    "integration": "cypress run",
-    "server": "node server.js",
-    "start": "npm run server",
-    "server-dev": "nodemon server.js",
-    "test": "jest -i"
   },
   "engines": {
     "node": "^8.11.0",

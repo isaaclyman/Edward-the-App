@@ -16,7 +16,7 @@ if (!process.env.DATABASE_URL) {
 const app = express()
 
 // Serve static files
-app.use('/static', express.static(path.join(__dirname, 'dist/static')))
+app.use('/static', express.static(path.join(__dirname, 'dist/')))
 app.use('/', expressStaticGzip(path.join(__dirname, 'dist'), { indexFromEmptyFile: false }))
 // app.use(express.static(path.join(__dirname, 'dist')))
 app.use(bodyParser.json({

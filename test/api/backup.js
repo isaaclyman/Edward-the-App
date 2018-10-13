@@ -8,7 +8,6 @@ import {
   stubRecaptcha,
   uuid
 } from '../_imports'
-import { removeUnmatchedProperties } from '../_util'
 import { addDocument } from './_document.helper'
 import { addChapter } from './_chapter.helper'
 import { addTopic } from './_topic.helper'
@@ -342,8 +341,7 @@ test('import and export a document with content', async () => {
     .expect(200)
     .expect(({ body: document }) => {
       expect(document).toBeTruthy()
-      removeUnmatchedProperties(importable, document)
-      expect(document).toEqual(importable)
+      expect(document).toMatchObject(importable)
     })
   )
 })

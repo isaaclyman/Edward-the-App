@@ -19,6 +19,7 @@ test('delete test user', async done => {
       done.fail()
       return
     }
+    done()
   })
 })
 
@@ -27,6 +28,7 @@ test('create test user', async done => {
   await createTestUser(knex)
   await knex('users').where('email', user.email).first().then(user => {
     if (user) {
+      done()
       return
     }
 
@@ -39,6 +41,7 @@ test('get test user by id', async done => {
   const user = await createTestUser(knex)
   await knex('users').where('id', user.id).first().then(user => {
     if (user) {
+      done()
       return
     }
 
@@ -52,6 +55,7 @@ test('make test user premium', async done => {
   await makeTestUserPremium(knex)
   await knex('users').where('email', user.email).first().then(user => {
     if (user['account_type'] === accountTypes.PREMIUM.name) {
+      done()
       return
     }
 

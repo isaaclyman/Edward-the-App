@@ -8,7 +8,6 @@ import {
   stubRecaptcha,
   uuid
 } from '../_imports'
-import { removeUnmatchedProperties } from '../_util'
 import { addDocument } from './_document.helper'
 import { checkChapters, compareChapters } from './_chapter.helper'
 import { checkTopics, compareTopics } from './_topic.helper'
@@ -65,7 +64,7 @@ test('save all content', async () => {
     title: title,
     order: index,
     archived: false,
-    date: new Date()
+    date: new Date().toDateString()
   }))
 
   await (
@@ -132,11 +131,10 @@ test('save all content', async () => {
   await checkWorkshops(app, doc.guid, apiWorkshops => {
     expect(apiWorkshops.length).toBe(2)
 
-
-    workshops.forEach((workshop, index) => {
-      removeUnmatchedProperties(workshop, apiWorkshops[index])
+    apiWorkshops.forEach((workshop) => {
+      workshop.date = new Date(workshop.date).toDateString()
     })
 
-    expect(apiWorkshops).toEqual(workshops)
+    expect(apiWorkshops).toMatchObject(workshops)
   })
 })

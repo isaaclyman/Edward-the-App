@@ -8,7 +8,7 @@ import {
   createTestUser,
   deleteTestUser,
   makeTestUserPremium
-} from './_util'
+} from '../test_util'
 
 stubRecaptcha(test)
 

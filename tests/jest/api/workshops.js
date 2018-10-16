@@ -8,7 +8,7 @@ import {
   stubRecaptcha
 } from '../_imports'
 import { addDocument } from './_document.helper'
-import writingWorkshops from '../../models/writingWorkshop'
+import writingWorkshops from '../../../models/writingWorkshop'
 import { workshops, addWorkshops } from './_workshop.helper'
 
 stubRecaptcha(test)

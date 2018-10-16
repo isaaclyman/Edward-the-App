@@ -1,5 +1,5 @@
-import accountTypes from '../models/accountType'
-import { app as server, knex, serverReady } from '../server'
+import accountTypes from '../../models/accountType'
+import { app as server, knex, serverReady } from '../../server'
 import request from 'supertest'
 import {
   alternateUser,
@@ -20,7 +20,7 @@ import {
   setTestUserVerifyKey,
   stubRecaptcha,
   user
-} from './_util'
+} from '../test_util'
 import uuid from 'uuid/v1'
 
 const app = request(server)

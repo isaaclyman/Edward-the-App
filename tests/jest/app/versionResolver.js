@@ -1,5 +1,5 @@
 import clone from 'lodash/clone'
-import VersionResolver from '../../src/app/shared/versionResolver'
+import VersionResolver from '../../../src/app/shared/versionResolver'
 
 const wait = async () => await new Promise(resolve => setTimeout(resolve, 50))
 

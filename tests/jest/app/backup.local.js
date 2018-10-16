@@ -12,7 +12,7 @@ import localStorage from 'mock-local-storage'
 global.window = {}
 window.localStorage = global.localStorage
 
-import Storage from '../../src/app/api/localStorage'
+import Storage from '../../../src/app/api/localStorage'
 const storage = new Storage()
 
 stubRecaptcha(test)

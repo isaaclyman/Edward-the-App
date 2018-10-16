@@ -225,7 +225,7 @@ function stubRecaptcha() {
 
 const workshopGuids = ['7f796320-3f2d-11e8-9fe0-af1b5e8b1c51', '7f796321-3f2d-11e8-9fe0-af1b5e8b1c51']
 
-module.exports = {
+export {
   user,
   alternateUser,
   createTestUser,

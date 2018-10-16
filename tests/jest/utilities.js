@@ -1,4 +1,4 @@
-import { orderPromises } from '../utilities'
+import { orderPromises } from '../../utilities'
 import { setTimeout } from 'timers';
 
 const getPromiseFn = (callback, timeout) =>

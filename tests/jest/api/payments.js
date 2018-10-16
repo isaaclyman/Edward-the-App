@@ -1,5 +1,5 @@
 import { knex, serverReady, user } from '../_imports'
-import payments from '../../api/payments.helper'
+import payments from '../../../api/payments.helper'
 
 function token (id = 'tok_visa') {
   return { id, object: 'token' }

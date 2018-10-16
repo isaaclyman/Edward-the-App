@@ -13,8 +13,8 @@ import { checkChapters, compareChapters } from './_chapter.helper'
 import { checkTopics, compareTopics } from './_topic.helper'
 import { checkPlans, comparePlans } from './_plan.helper'
 import { compareSections } from './_section.helper'
-import { checkWorkshops, workshops } from './_workshop.helper'
-import writingWorkshops from '../../models/writingWorkshop'
+import { checkWorkshops } from './_workshop.helper'
+import writingWorkshops from '../../../models/writingWorkshop'
 
 stubRecaptcha(test)
 

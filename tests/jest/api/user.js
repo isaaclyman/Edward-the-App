@@ -17,7 +17,7 @@ import {
   stubRecaptcha,
   user
 } from '../_imports'
-import { paymentSucceeded } from '../../api/payments.events'
+import { paymentSucceeded } from '../../../api/payments.events'
 
 stubRecaptcha(test)
 

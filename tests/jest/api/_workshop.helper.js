@@ -1,7 +1,7 @@
 import {
   route
 } from '../_imports'
-import writingWorkshops from '../../models/writingWorkshop'
+import writingWorkshops from '../../../models/writingWorkshop'
 
 const guids = ['8104b1fb-c177-4ca1-b995-a75dcbe6911c', '2ae71a48-7873-4316-bf18-d9ee0e461799']
 

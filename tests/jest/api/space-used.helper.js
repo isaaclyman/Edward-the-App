@@ -7,7 +7,7 @@ import {
   makeTestUserPremium,
   stubRecaptcha
 } from '../_imports'
-import { getUsersOverLimit } from '../../api/space-used.helper'
+import { getUsersOverLimit } from '../../../api/space-used.helper'
 
 stubRecaptcha(test)
 

@@ -1,5 +1,5 @@
 import { serverReady } from '../_imports'
-import Email from '../../api/email.helper'
+import Email from '../../../api/email.helper'
 
 test('An email can be sent', async done => {
   await serverReady

@@ -14,7 +14,7 @@ import { addTopic } from './_topic.helper'
 import { addPlan } from './_plan.helper'
 import { addSection } from './_section.helper'
 import { addWorkshops } from './_workshop.helper'
-import writingWorkshops from '../../models/writingWorkshop'
+import writingWorkshops from '../../../models/writingWorkshop'
 
 stubRecaptcha(test)
 

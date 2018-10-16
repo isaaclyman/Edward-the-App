@@ -135,17 +135,7 @@ function getStyledArrayFromChapters(chapters) {
   return splitContent
 }
 
-(function (root, factory) {
-  if (typeof define === 'function' && define.amd) { // eslint-disable-line
-      define([], factory) // eslint-disable-line
-  } else if (typeof module === 'object' && module.exports) {
-      module.exports = factory()
-  } else {
-      root.returnExports = factory()
+export {
+  orderPromises,
+  getStyledArrayFromChapters
 }
-}(typeof self !== 'undefined' ? self : this, function () {
-  return {
-    getStyledArrayFromChapters,
-    orderPromises,
-  }
-}))

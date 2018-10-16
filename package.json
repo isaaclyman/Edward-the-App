@@ -6,15 +6,16 @@
   "author": "Isaac Lyman <packagejson@isaaclyman.com>",
   "scripts": {
     "build": "vue-cli-service build",
-    "test": "jest -i",
-    "lint": "vue-cli-service lint",
-    "cypress": "cypress open",
     "dev": "vue-cli-service serve",
-    "integration": "cypress run",
     "server": "node server.js",
     "server-dev": "nodemon server.js",
     "start": "npm run server",
-    "test:e2e": "vue-cli-service test:e2e"
+    "lint": "vue-cli-service lint",
+    "test": "jest -i",
+    "pretest": "node tests/pretest.js",
+    "cypress": "npm run pretest && cypress open",
+    "integration": "npm run pretest && cypress run",
+    "test:e2e": "npm run pretest && vue-cli-service test:e2e"
   },
   "dependencies": {
     "autoprefixer": "7.1.2",
@@ -85,6 +86,7 @@
     "@vue/cli-plugin-pwa": "^3.0.4",
     "@vue/cli-service": "^3.0.4",
     "@vue/eslint-config-airbnb": "^3.0.4",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-jest": "^23.6.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",

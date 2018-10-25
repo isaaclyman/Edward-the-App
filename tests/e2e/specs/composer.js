@@ -47,7 +47,8 @@ const tests = isPremium => () => {
     cy.get('@chapterEditor').type(content)
     cy.get('@chapterEditor').should('contain', content)
 
-    // Because there are two debounces and a promise between typing something and having it saved, we need two ticks
+    // Because there are two debounces and a promise between typing something and having it saved, we need three ticks
+    cy.tick(halfTick)
     cy.tick(halfTick)
     cy.tick(halfTick)
   }

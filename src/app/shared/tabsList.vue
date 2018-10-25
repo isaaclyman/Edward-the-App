@@ -53,9 +53,6 @@ export default {
     const cachedIndex = this.tabCache.cacheGet()
     if (cachedIndex && cachedIndex < this.dataArray.length) {
       this.selectItem(cachedIndex)
-    } else {
-      this.tabCache.cacheSet(0)
-      this.selectItem(0)
     }
   },
   components: {},

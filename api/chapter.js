@@ -1,7 +1,7 @@
 const difference = require('lodash/difference')
 const isEqual = require('lodash/isEqual')
 const ts = require('../models/_util').addTimestamps
-const utilities = require('../api/utilities')
+const utilities = require('./api_util')
 const getDocId = utilities.getDocId
 const getChapId = utilities.getChapId
 

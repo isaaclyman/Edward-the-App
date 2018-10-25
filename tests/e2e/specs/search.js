@@ -1,4 +1,4 @@
-import { user } from '../../test/_util'
+import { user } from '../../test_util'
 import {
   createTestChapter,
   createTestDocument,
@@ -11,7 +11,7 @@ import {
   seed,
   createTestWorkshop
 } from '../scripts/_util'
-import writingWorkshops from '../../models/writingWorkshop'
+import writingWorkshops from '../../../models/writingWorkshop'
 import localForage from 'localforage'
 localForage.setDriver(localForage.INDEXEDDB)
 

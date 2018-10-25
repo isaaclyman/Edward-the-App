@@ -1,6 +1,6 @@
 const docx = require('docx')
 const { getChapters } = require('./chapter')
-const { getStyledArrayFromChapters } = require('../utilities')
+const { getStyledArrayFromChapters } = require('../compiled/utilities')
 
 const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/word/${route}`

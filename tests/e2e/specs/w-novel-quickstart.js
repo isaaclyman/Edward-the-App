@@ -1,9 +1,9 @@
-import { user, workshopGuids } from '../../test/_util'
+import { user, workshopGuids } from '../../test_util'
 import {
   createTestChapter, createTestDocument, createTestWorkshop, createTestUser, deleteTestUser, logIn, makeTestUserPremium,
   seed
 } from '../scripts/_util'
-import writingWorkshops from '../../models/writingWorkshop'
+import writingWorkshops from '../../../models/writingWorkshop'
 
 describe('the novel quickstart workshop (restricted)', () => {
   before(() => {

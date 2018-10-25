@@ -1,7 +1,5 @@
 require('./setUp')
-const util = require('../../test/_util')
-const knex = require('../../db')
-const guid = require('uuid/v1')
+const util = require('../../../compiled/test_util')
 
 module.exports = (knex, workshopName) => {
   const userQuery = `(SELECT id FROM users WHERE email = '${util.user.email}' LIMIT 1)`

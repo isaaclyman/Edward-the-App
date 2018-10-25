@@ -1,4 +1,4 @@
-const util = require('../../test/_util')
+const util = require('../../../compiled/test_util')
 const guid = require('uuid/v1')
 
 module.exports = (knex) => {

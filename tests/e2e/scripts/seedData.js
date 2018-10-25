@@ -1,11 +1,11 @@
 require('./setUp')
-const util = require('../../test/_util')
-const knex = require('../../db')
-const orderPromises = require('../../utilities').orderPromises
+const util = require('../../../compiled/test_util')
+const knex = require('../../../db')
+const orderPromises = require('../../../compiled/utilities').orderPromises
 const createTestOutline = require('./createTestOutline')
 const createTestPlan = require('./createTestPlan')
 const createTestWorkshop = require('./createTestWorkshop')
-const writingWorkshops = require('../../models/writingWorkshop')
+const writingWorkshops = require('../../../models/writingWorkshop')
 
 const seedPromiseFns = []
 const seedArgs = {

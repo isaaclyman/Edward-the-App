@@ -3,7 +3,7 @@ const { getChapters } = require('./chapter')
 const { getTopics } = require('./topic')
 const { getPlans } = require('./plan')
 const { getWorkshops } = require('./workshops')
-const orderPromises = require('../utilities').orderPromises
+const orderPromises = require('../compiled/utilities').orderPromises
 const find = require('lodash/find')
 
 const getDocExport = (db, userId, docGuid) => {  

@@ -1,9 +1,9 @@
-import { user } from '../../test/_util'
+import { user } from '../../test_util'
 import {
   createTestChapter, createTestDocument, createTestWorkshop, createTestUser, deleteTestUser, logIn, makeTestUserPremium,
   seed
 } from '../scripts/_util'
-import writingWorkshops from '../../models/writingWorkshop'
+import writingWorkshops from '../../../models/writingWorkshop'
 
 describe(`the Plot workshop (restricted)`, () => {
   before(() => {

@@ -1,4 +1,4 @@
-import { user } from '../../test/_util'
+import { user } from '../../test_util'
 import {
   createTestChapter, createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium,
   createTestOutline, createTestPlan, createTestWorkshop,

@@ -1,6 +1,6 @@
 const difference = require('lodash/difference')
 const ts = require('../models/_util').addTimestamps
-const utilities = require('../api/utilities')
+const utilities = require('./api_util')
 const getDocId = utilities.getDocId
 
 const updateTopic = (db, userId, docGuid, topic) => {

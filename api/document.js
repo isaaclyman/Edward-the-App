@@ -1,11 +1,11 @@
-const orderPromises = require('../utilities').orderPromises
+const orderPromises = require('../compiled/utilities').orderPromises
 const updateChapter = require('./chapter').updateChapter
 const updateTopic = require('./topic').updateTopic
 const updatePlan = require('./plan').updatePlan
 const updateSection = require('./section').updateSection
 const updateWorkshop = require('./workshops').updateWorkshop
 const ts = require('../models/_util').addTimestamps
-const utilities = require('./utilities')
+const utilities = require('./api_util')
 
 const addDocument = (db, userId, document) => {
   return db.knex('documents').where({

@@ -1,6 +1,6 @@
 const isEqual = require('lodash/isEqual')
 const ts = require('../models/_util').addTimestamps
-const utilities = require('../api/utilities')
+const utilities = require('./api_util')
 const getPlanId = utilities.getPlanId
 
 const updateSection = (db, userId, docGuid, planGuid, section) => {

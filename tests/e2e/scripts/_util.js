@@ -1,7 +1,8 @@
-const LocalStorageApi = require('../../src/app/api/localStorage')
-const lsa = new LocalStorageApi()
+import { user } from '../../test_util'
+import LocalStorageApi from '../../../src/app/api/localStorage'
+const lsa = new LocalStorageApi(user.email)
 const newGuid = require('uuid/v1')
-const writingWorkshops = require('../../models/writingWorkshop')
+const writingWorkshops = require('../../../models/writingWorkshop')
 
 let seedArgs = []
 function resetSeed () {
@@ -15,7 +16,7 @@ function runSeed (cy) {
   
   const seedString = seedArgs.join(' ')
   resetSeed()
-  const seedCommand = `node cypress/scripts/seedData.js ${seedString}`
+  const seedCommand = `node tests/e2e/scripts/seedData.js ${seedString}`
   console.log(`seeding: ${seedCommand}`)
   return cy.exec(seedCommand)
 }

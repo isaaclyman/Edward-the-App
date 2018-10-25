@@ -7,8 +7,8 @@ describe('the landing page', () => {
     cy.visit('/')
   })
 
-  it('includes a hook image', () => {
-    cy.get('.hook-img img').should('exist').should('be.visible')
+  it('includes a hook video', () => {
+    cy.get('.hook-video iframe').should('exist').should('be.visible')
   })
 
   it('includes an explanation of what Edward is', () => {

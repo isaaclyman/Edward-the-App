@@ -26,7 +26,7 @@ describe('the free write workshop (restricted)', () => {
 
   it('should not allow a Limited user to visit the Free Write workshop directly', () => {
     cy.visit('/app.html#/workshop/free-write')
-    cy.url().should('contain', '/write')
+    cy.url().should('not.contain', '/workshop')
   })
 
   it('should not show the Workshops column on the Write page', () => {

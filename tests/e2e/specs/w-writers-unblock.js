@@ -27,7 +27,7 @@ describe(`the Writer's Unblock workshop (restricted)`, () => {
 
   it(`should not allow a Limited user to visit the Writer's Unblock workshop directly`, () => {
     cy.visit('/app.html#/workshop/unblock')
-    cy.url().should('contain', '/write')
+    cy.url().should('not.contain', '/workshop')
   })
 })
 

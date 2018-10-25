@@ -27,7 +27,7 @@ describe(`the Plot workshop (restricted)`, () => {
 
   it(`should not allow a Limited user to visit the Plot workshop directly`, () => {
     cy.visit('/app.html#/workshop/plot')
-    cy.url().should('contain', '/write')
+    cy.url().should('not.contain', '/workshop')
   })
 })
 

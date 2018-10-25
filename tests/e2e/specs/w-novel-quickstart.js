@@ -27,7 +27,7 @@ describe('the novel quickstart workshop (restricted)', () => {
 
   it('should not allow a Limited user to visit the Novel Quickstart workshop directly', () => {
     cy.visit('/app.html#/workshop/novel-quickstart')
-    cy.url().should('contain', '/write')
+    cy.url().should('not.contain', '/workshop')
   })
 })
 

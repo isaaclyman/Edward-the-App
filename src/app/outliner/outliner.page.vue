@@ -71,7 +71,7 @@
           item-name="Chapter"
           @add="addChapter"
           @update:activeIndex="selectChapter"/>
-        <div class="chapter">
+        <div class="chapter" v-if="activeChapter">
           <div 
             class="chapter-head" 
             :class="{ 'light': activeChapter.archived }">
@@ -180,10 +180,10 @@ export default {
   computed: {
     activeChapter() {
       if (this.activeChapterIndex === -1) {
-        return {}
+        return null
       }
 
-      return this.allChapters[this.activeChapterIndex] || {}
+      return this.allChapters[this.activeChapterIndex]
     },
     allChapters() {
       return this.$store.state.chapters.chapters || []

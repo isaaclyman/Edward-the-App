@@ -90,6 +90,10 @@ export default {
       return this.$store.state.chapters.chapters
     },
     chapterTopics() {
+      if (!this.chapter) {
+        return []
+      }
+
       return this.topics.map(topic => this.getTopic(this.chapter, topic)).filter(topic => !!topic)
     },
   },

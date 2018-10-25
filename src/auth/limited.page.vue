@@ -26,16 +26,16 @@
     </div>
     <div class="fill"/>
     <div class="actions">
-      <button 
-        class="continue-button button-green" 
-        @click="noPremium()">
-        Continue to the app
-      </button>
       <router-link to="/account">
-        <button class="button-link">
-          Upgrade to a Premium account
+        <button class="button-green">
+          Upgrade to Premium
         </button>
       </router-link>
+      <button 
+        class="continue-button button-link" 
+        @click="noPremium()">
+        Continue as a Limited user
+      </button>
     </div>
   </div>
 </template>

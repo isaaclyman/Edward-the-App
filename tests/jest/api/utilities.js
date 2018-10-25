@@ -1,4 +1,4 @@
-import utilities from '../../../api/utilities'
+import utilities from '../../../api/api_util'
 
 test('containSameElements is true when it should be', () => {
   const arr1 = ['bob', 3, undefined, 'foo']

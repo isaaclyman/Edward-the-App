@@ -6,6 +6,7 @@ import {
   route,
   serverReady,
   stubRecaptcha,
+  user,
   uuid
 } from '../_imports'
 
@@ -21,8 +22,8 @@ import localStorage from 'mock-local-storage'
 global.window = {}
 window.localStorage = global.localStorage
 
-import Storage from '../../../src/app/api/localStorage'
-const storage = new Storage()
+import LocalStorageApi from '../../../src/app/api/localStorage'
+const storage = new LocalStorageApi(user.email)
 
 stubRecaptcha(test)
 

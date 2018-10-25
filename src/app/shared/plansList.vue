@@ -10,7 +10,7 @@
       item-name="Plan"
       @add="addPlan"
       @update:activeIndex="selectPlan"/>
-    <div class="plan">
+    <div class="plan" v-if="activePlan">
       <div class="plan-header">
         <h4 class="plan-title">
           {{ activePlan.title }}
@@ -168,9 +168,13 @@ export default {
   },
   computed: {
     activePlan() {
-      return this.allPlans[this.activePlanIndex] || {}
+      return this.allPlans[this.activePlanIndex]
     },
     activePlanSections() {
+      if (!this.activePlan) {
+        return []
+      }
+
       return this.activePlan.sections || []
     },
     allPlans() {
@@ -213,6 +217,7 @@ export default {
       }
 
       this.$store.commit(ADD_PLAN, { plan })
+      console.log(this.activePlanIndex)
     },
     addSection(title) {
       if (!ValidateTitle('section', title)) {
@@ -329,7 +334,7 @@ export default {
         index = 0
       }
 
-      if (this.allPlans[index].archived) {
+      if (this.allPlans[index] && this.allPlans[index].archived) {
         index = this.allPlans.indexOf(this.viewingPlans[0])
       }
       

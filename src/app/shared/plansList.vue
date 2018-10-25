@@ -10,7 +10,9 @@
       item-name="Plan"
       @add="addPlan"
       @update:activeIndex="selectPlan"/>
-    <div class="plan" v-if="activePlan">
+    <div 
+      class="plan" 
+      v-if="activePlan">
       <div class="plan-header">
         <h4 class="plan-title">
           {{ activePlan.title }}

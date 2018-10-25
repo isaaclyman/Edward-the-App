@@ -71,7 +71,9 @@
           item-name="Chapter"
           @add="addChapter"
           @update:activeIndex="selectChapter"/>
-        <div class="chapter" v-if="activeChapter">
+        <div 
+          class="chapter" 
+          v-if="activeChapter">
           <div 
             class="chapter-head" 
             :class="{ 'light': activeChapter.archived }">

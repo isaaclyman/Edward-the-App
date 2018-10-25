@@ -105,8 +105,6 @@ import LocalStorageApi from '../app/api/localStorage'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import swal from 'sweetalert'
 
-const storage = new LocalStorageApi()
-
 const accountPayments = {
   [accountTypes.LIMITED.name]: { display: 'Edward Limited monthly subscription', amount: 0 },
   [accountTypes.PREMIUM.name]: { display: 'Edward Premium monthly subscription', amount: 299 },
@@ -118,6 +116,7 @@ export default {
     if (!this.user || !this.user.accountType || this.user.accountType.name === accountTypes.DEMO.name) {
       this.$router.push('/login')
     }
+    this.storage = new LocalStorageApi(this.user.email)
   },
   components: {
     PulseLoader,
@@ -148,6 +147,7 @@ export default {
       error: false,
       payment: null,
       saving: false,
+      storage: null
     }
   },
   methods: {
@@ -166,7 +166,7 @@ export default {
             oldAccountType: accountTypes.LIMITED.name,
             newAccountType: accountTypes.PREMIUM.name,
             token,
-          }).then(() => storage.getFullExport()).then(exported => api.fullImport(exported)).then(() => {
+          }).then(() => this.storage.getFullExport()).then(exported => api.fullImport(exported)).then(() => {
             this.error = false
             this.saving = false
             this.showSuccessPage()
@@ -190,7 +190,7 @@ export default {
             oldAccountType: accountTypes.LIMITED.name,
             newAccountType: accountTypes.GOLD.name,
             token,
-          }).then(() => storage.getFullExport()).then(exported => api.fullImport(exported)).then(() => {
+          }).then(() => this.storage.getFullExport()).then(exported => api.fullImport(exported)).then(() => {
             this.error = false
             this.saving = false
             this.showSuccessPage()
@@ -250,7 +250,7 @@ export default {
         this.error = false
         this.saving = true
 
-        api.fullExport().then(exported => storage.doFullImport(exported)).then(() => authApi.upgrade({
+        api.fullExport().then(exported => this.storage.doFullImport(exported)).then(() => authApi.upgrade({
           oldAccountType: this.user.accountType.name,
           newAccountType: accountTypes.LIMITED.name,
         })).then(() => {

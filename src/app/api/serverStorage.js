@@ -8,11 +8,15 @@ import { LOAD_CONTENT } from '../shared/chapters.store'
 import { LOAD_WORKSHOPS } from '../shared/workshops.store'
 
 class ServerStorageApi {
-  constructor() {
+  constructor(username) {
+    if (!username) {
+      throw new Error('Username was not supplied for ServerStorageApi.')
+    }
+
     let savingCounter = 0
     const store = VueInstance.$store
 
-    this.offlineStorage = new OfflineStorageApi()
+    this.offlineStorage = new OfflineStorageApi(username)
 
     const saving = () => {
       savingCounter++

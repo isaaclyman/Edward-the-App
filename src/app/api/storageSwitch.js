@@ -38,7 +38,7 @@ const cachedStorage = {
   },
   Server: {
     cached: null,
-    get: () => new ServerStorageApi(),
+    get: username => new ServerStorageApi(username),
   },
   Offline: {
     cached: null,
@@ -47,7 +47,7 @@ const cachedStorage = {
 }
 
 let waitForInit = Promise.resolve()
-const getCached = (storage, username = 'unknown') => {
+const getCached = (storage, username) => {
   if (!storage.cached) {
     storage.cached = storage.get(username)
   }
@@ -63,11 +63,15 @@ const getCached = (storage, username = 'unknown') => {
 export function getStorageApi(user) {
   return api.isOnline().then(() => true, () => false).then((isOnline) => {
     if (!user || !user.accountType) {
-      return getCached(cachedStorage.Local)
+      return getCached(cachedStorage.Demo)
     }
 
     if (user.accountType.name === 'DEMO') {
       return getCached(cachedStorage.Demo)
+    }
+
+    if (!user.email) {
+      throw new Error('User does not have a valid username/email for initializing storage.')
     }
 
     if (!user.isPremium) {
@@ -79,7 +83,7 @@ export function getStorageApi(user) {
     }
 
     if (user.isPremium) {
-      return getCached(cachedStorage.Server)
+      return getCached(cachedStorage.Server, user.email)
     }
 
     return getCached(cachedStorage.Local, user.email)

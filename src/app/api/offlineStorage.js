@@ -5,6 +5,10 @@ import VueInstance from '../../app'
 
 class OfflineStorageApi {
   constructor(username) {
+    if (!username) {
+      throw new Error('Username was not supplied for OfflineStorageApi.')
+    }
+
     this.store = VueInstance.$store
 
     this.requiresSyncCache = new Cache(`${UNRESETTABLE}_HAS_GONE_OFFLINE`)

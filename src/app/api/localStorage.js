@@ -6,6 +6,10 @@ const { orderPromises } = require('../../../utilities')
 
 class LocalStorageApi {
   constructor(username) {
+    if (!username) {
+      throw new Error('Username was not supplied for LocalStorageApi.')
+    }
+
     localForage.setDriver([localForage.INDEXEDDB, localForage.WEBSQL, localForage.LOCALSTORAGE])
     this.storage = localForage
     window._storage = this.storage

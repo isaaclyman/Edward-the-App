@@ -49,12 +49,6 @@ import Cache from './cache'
 import Octicons from 'octicons'
 
 export default {
-  created() {
-    const cachedIndex = this.tabCache.cacheGet()
-    if (cachedIndex && cachedIndex < this.dataArray.length) {
-      this.selectItem(cachedIndex)
-    }
-  },
   components: {},
   computed: {},
   data() {
@@ -101,6 +95,12 @@ export default {
     unhoverItem() {
       this.$emit('unhover')
     },
+  },
+  mounted() {
+    const cachedIndex = this.tabCache.cacheGet()
+    if (cachedIndex && cachedIndex < this.dataArray.length) {
+      this.selectItem(cachedIndex)
+    }
   },
   props: {
     activeIndex: {

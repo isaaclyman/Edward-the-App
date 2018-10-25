@@ -411,8 +411,6 @@ export default {
       }
 
       this.selectChapter(this.allChapters.indexOf(activeChapter) || -1)
-    } else {
-      this.selectChapter(-1)
     }
 
     const workshopGuid = this.$route.query.workshop

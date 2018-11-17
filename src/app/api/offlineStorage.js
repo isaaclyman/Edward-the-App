@@ -24,7 +24,7 @@ class OfflineStorageApi {
 
   init() {
     this.requiresSyncCache.cacheSet(true)
-    return this.clearOldStorage().then(() => this.updateStorage())
+    return Promise.resolve()
   }
 
   isPremium() {
@@ -64,7 +64,7 @@ class OfflineStorageApi {
     doc.topics = this.store.state.chapters.topics
     doc.plans = this.store.state.chapters.plans
     doc.workshops = this.store.state.workshop.workshops
-    return this.storage.setItem(this.docKey(), doc)
+    return this.clearOldStorage().then(() => this.storage.setItem(this.docKey(), doc))
   }
 
   notAllowedError() {
@@ -112,11 +112,13 @@ class OfflineStorageApi {
   updateWorkshops() { return this.updateStorage() }
 
   getAllChapters(documentGuid) {
-    if (documentGuid !== this.docGuid()) {
-      throw new Error('Cannot get chapters from a different document while offline.')
-    }
+    this.getLatestStoredDocument().then(doc => {
+      if (documentGuid !== doc.guid) {
+        throw new Error('Cannot get chapters from a different document while offline.')
+      }
 
-    return this.getStoredDocument().then(doc => doc.chapters)
+      return doc.chapters
+    })
   }
 
   getAllDocuments() {
@@ -124,27 +126,33 @@ class OfflineStorageApi {
   }
 
   getAllPlans(documentGuid) {
-    if (documentGuid !== this.docGuid()) {
-      throw new Error('Cannot get plans from a different document while offline.')
-    }
+    this.getLatestStoredDocument().then(doc => {
+      if (documentGuid !== doc.guid) {
+        throw new Error('Cannot get plans from a different document while offline.')
+      }
 
-    return this.getStoredDocument().then(doc => doc.plans)
+      return doc.plans
+    })
   }
 
   getAllTopics(documentGuid) {
-    if (documentGuid !== this.docGuid()) {
-      throw new Error('Cannot get topics from a different document while offline.')
-    }
+    this.getLatestStoredDocument().then(doc => {
+      if (documentGuid !== doc.guid) {
+        throw new Error('Cannot get topics from a different document while offline.')
+      }
 
-    return this.getStoredDocument().then(doc => doc.topics)
+      return doc.topics
+    })
   }
 
   getAllWorkshops(documentGuid) {
-    if (documentGuid !== this.docGuid()) {
-      throw new Error('Cannot get workshops from a different document while offline.')
-    }
+    this.getLatestStoredDocument().then(doc => {
+      if (documentGuid !== doc.guid) {
+        throw new Error('Cannot get workshops from a different document while offline.')
+      }
 
-    return this.getStoredDocument().then(doc => doc.workshops)
+      return doc.workshops
+    })
   }
 
   /*

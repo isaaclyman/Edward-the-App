@@ -59,6 +59,8 @@ For local development, you'll need a root-level `.env` file with the following k
 
 The webpack dev server (port 8080) will automatically redirect from routes like `/app` and `/auth` to `/app.html` and `/auth.html`. On the express server (port 3000) the original routes work without a redirect.
 
+For best results, it's recommended to visit `127.0.0.1` instead of `localhost`.
+
 ## Tests
 
 `npm run test` is self-contained. Do not try to run it while a local server is already running. Port 3000 must be available.

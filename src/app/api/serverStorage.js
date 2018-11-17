@@ -229,7 +229,7 @@ class ServerStorageApi {
     return api.getTopics(documentGuid)
   }
 
-  getWorkshops(documentGuid) {
+  getAllWorkshops(documentGuid) {
     return api.getWorkshops(documentGuid)
   }
 

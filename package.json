@@ -15,7 +15,8 @@
     "pretest": "node tests/pretest.js",
     "cypress": "npm run pretest && cypress open",
     "integration": "npm run pretest && cypress run",
-    "test:e2e": "npm run pretest && vue-cli-service test:e2e"
+    "test:e2e": "npm run pretest && vue-cli-service test:e2e",
+    "inspect": "vue inspect > inspect.js"
   },
   "dependencies": {
     "autoprefixer": "7.1.2",

@@ -32,7 +32,7 @@ const store = {
           storage.getAllChapters(guid),
           storage.getAllPlans(guid),
           storage.getAllTopics(guid),
-          storage.isPremium() ? storage.getWorkshops(guid) : Promise.resolve(false),
+          storage.isPremium() ? storage.getAllWorkshops(guid) : Promise.resolve(false),
         ]
 
         return Promise.all(promises).then(([chapters, plans, topics, workshops]) => {

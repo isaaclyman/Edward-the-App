@@ -18,10 +18,16 @@ class ServerStorageApi {
 
     this.offlineStorage = new OfflineStorageApi(username)
 
+    this.goOffline = () => {
+      store.commit(SET_STATUS_OFFLINE)
+      api.isOnlineCached = false
+      this.offlineStorage.updateStorage()
+    }
+
     const saving = () => {
       savingCounter++
       store.commit(SET_STATUS_SAVING)
-      this.offlineStorage.updateStorage()
+      return this.offlineStorage.updateStorage()
     }
 
     const done = (isError, isOffline) => {
@@ -37,8 +43,7 @@ class ServerStorageApi {
       }
 
       if (isOffline) {
-        store.commit(SET_STATUS_OFFLINE)
-        this.offlineStorage.updateStorage()
+        this.goOffline()
         return
       }
 
@@ -141,6 +146,10 @@ class ServerStorageApi {
         return this.docImport(offlineDoc)
       }).then(() => this.offlineStorage.clearOldStorage()).then(() => {
         this.loadDocument(resolvedDoc)
+      }, () => {
+        this.goOffline().then(() => {
+          throw new Error('Attempted to resolve a cached document and import it, but the doc import API threw an error.')
+        })
       })
     }).then(() => (
       this.offlineStorage.clearOldStorage()

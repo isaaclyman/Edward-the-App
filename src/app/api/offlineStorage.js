@@ -112,7 +112,7 @@ class OfflineStorageApi {
   updateWorkshops() { return this.updateStorage() }
 
   getAllChapters(documentGuid) {
-    this.getLatestStoredDocument().then(doc => {
+    return this.getLatestStoredDocument().then(doc => {
       if (documentGuid !== doc.guid) {
         throw new Error('Cannot get chapters from a different document while offline.')
       }
@@ -126,7 +126,7 @@ class OfflineStorageApi {
   }
 
   getAllPlans(documentGuid) {
-    this.getLatestStoredDocument().then(doc => {
+    return this.getLatestStoredDocument().then(doc => {
       if (documentGuid !== doc.guid) {
         throw new Error('Cannot get plans from a different document while offline.')
       }
@@ -136,7 +136,7 @@ class OfflineStorageApi {
   }
 
   getAllTopics(documentGuid) {
-    this.getLatestStoredDocument().then(doc => {
+    return this.getLatestStoredDocument().then(doc => {
       if (documentGuid !== doc.guid) {
         throw new Error('Cannot get topics from a different document while offline.')
       }
@@ -146,7 +146,7 @@ class OfflineStorageApi {
   }
 
   getAllWorkshops(documentGuid) {
-    this.getLatestStoredDocument().then(doc => {
+    return this.getLatestStoredDocument().then(doc => {
       if (documentGuid !== doc.guid) {
         throw new Error('Cannot get workshops from a different document while offline.')
       }

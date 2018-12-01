@@ -10,3 +10,5 @@ build:
 branches:
   only:
     - _dev
+before_install:
+  - npm install -g npm@6.4.1

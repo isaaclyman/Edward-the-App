@@ -1,17 +1,11 @@
 language: node_js
 node_js:
   - "8.11.4"
-cache:
-  directories:
-    - "node_modules"
 build:
   - npm run build
   - npm run test
 branches:
   only:
     - _dev
-before_install:
-  - npm set registry https://registry.npmjs.org/
-  - npm install -g npm@6.4.1
 install:
   - npm ci

@@ -15,13 +15,15 @@ describe('the page idle watcher (limited)', () => {
     })
   })
   
+  let clock
   beforeEach(() => {
     logIn(cy, user.email, user.password)
 
-    cy.clock()
     cy.visit('/app.html#/write')
     cy.get('select.document-dropdown').select('test')
-    cy.get('.main-menu').should('exist')    
+    cy.get('.main-menu').should('exist')
+
+    clock = cy.clock()
   })
 
   it('should not appear after 30 minutes on a limited account', () => {
@@ -45,7 +47,12 @@ describe('the page idle watcher (premium)', () => {
 
     cy.clock()
     cy.visit('/app.html#/write')
+    cy.wait(1000)
+    cy.tick(2000)
+    cy.tick(2000)
     cy.get('select.document-dropdown').select('test')
+    cy.wait(1000)
+    cy.tick(2000)
     cy.get('.main-menu').should('exist')    
   })
 
@@ -64,25 +71,25 @@ describe('the page idle watcher (premium)', () => {
   })
 
   it('should appear after 30 minutes of idle time', () => {
-    cy.tick(45 * 60 * 1000)
+    cy.tick(45 * 60 * 1000).then(cl => cl.restore())
     cy.get('.idle-page').should('exist')
   })
 
   it('should reload the page when the reload button is clicked', () => {
     let reloaded = false
     window.onbeforeunload = () => { reloaded = true }
-    cy.tick(45 * 60 * 1000)
+    cy.tick(45 * 60 * 1000).then(cl => cl.restore())
     cy.get('.idle-page').find('.reload-button').should('be.visible')
-    cy.get('.idle-page').find('.reload-button').click()
+    cy.get('.idle-page').find('.reload-button').click({ force: true })
     cy.wrap(reloaded).should('be', true)
   })
 
   it('should go back to the app when the "back to app" button is clicked', () => {
     let reloaded = false
     window.onbeforeunload = () => { reloaded = true }
-    cy.tick(45 * 60 * 1000)
+    cy.tick(45 * 60 * 1000).then(cl => cl.restore())
     cy.get('.idle-page').find('.cancel-button').should('be.visible')
-    cy.get('.idle-page').find('.cancel-button').click()
+    cy.get('.idle-page').find('.cancel-button').click({ force: true })
     cy.get('.idle-page').should('not.exist')
     cy.get('.main-menu').should('exist')
     cy.wrap(reloaded).should('be', false)

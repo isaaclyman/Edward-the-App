@@ -18,7 +18,6 @@ describe('the main menu', () => {
   beforeEach(() => {
     logIn(cy, user.email, user.password)
 
-    cy.clock()
     cy.visit('/app.html#/write')
     cy.get('select.document-dropdown').select('test')
     cy.get('.main-menu').should('exist')    

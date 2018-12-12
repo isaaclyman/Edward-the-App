@@ -6,17 +6,17 @@
   "author": "Isaac Lyman <packagejson@isaaclyman.com>",
   "scripts": {
     "build": "vue-cli-service build",
+    "test": "jest -i",
+    "lint": "vue-cli-service lint",
+    "cypress": "npm run pretest && npm run test:e2e",
     "dev": "vue-cli-service serve",
+    "inspect": "vue inspect > inspect.js",
+    "integration": "npm run pretest && cypress run",
+    "pretest": "node tests/pretest.js",
     "server": "node server.js",
     "server-dev": "nodemon server.js",
     "start": "npm run server",
-    "lint": "vue-cli-service lint",
-    "test": "jest -i",
-    "pretest": "node tests/pretest.js",
-    "cypress": "npm run pretest && cypress open",
-    "integration": "npm run pretest && cypress run",
-    "test:e2e": "npm run pretest && vue-cli-service test:e2e",
-    "inspect": "vue inspect > inspect.js"
+    "test:e2e": "vue-cli-service test:e2e"
   },
   "dependencies": {
     "autoprefixer": "7.1.2",
@@ -93,7 +93,7 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-preset-env": "^1.7.0",
     "compression-webpack-plugin": "^2.0.0",
-    "cypress": "^3.1.2",
+    "cypress": "^3.1.3",
     "fake-indexeddb": "^2.0.4",
     "jest": "^23.6.0",
     "mock-local-storage": "^1.1.7",

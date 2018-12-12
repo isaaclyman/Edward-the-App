@@ -1,5 +1,15 @@
 {
-  "env":{
+  "env": {
+    "development": {
+      "presets": [
+        "@vue/app"
+      ]
+    },
+    "production": {
+      "presets": [
+        "@vue/app"
+      ]
+    },
     "test": {
       "presets": [
         ["env", {
@@ -7,9 +17,6 @@
             "node": true
           }
         }]
-      ],
-      "plugins": [
-        "transform-es2015-modules-commonjs"
       ]
     }
   }

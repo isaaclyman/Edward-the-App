@@ -20,6 +20,7 @@ const tests = isPremium => () => {
     })
   })
 
+  let clock
   beforeEach(() => {
     logIn(cy, user.email, user.password)
 
@@ -27,12 +28,13 @@ const tests = isPremium => () => {
       createTestDocument(isPremium).then(docId => createTestChapter(isPremium, docId))
     }
 
-    cy.clock()
     cy.visit('/app.html#/write')
     cy.get('select.document-dropdown').select('test')
     cy.get('.editor-wrap').find('div.ql-editor').as('chapterEditor')
     cy.get('.editor-wrap').find('.tabs').find('.add-button').as('addButton')
     cy.get('.editor-wrap').find('.tabs').find('.add-tab').as('addTab')
+
+    clock = cy.clock()
   })
 
   const chapterTab = cy => cy.get('.editor-wrap').find('.tabs').find('button.button-tab:not(.add-button)')
@@ -61,6 +63,7 @@ const tests = isPremium => () => {
   it('saves what you write', () => {
     const content = 'This is a test story'
     typeChapter(cy, 1, content)
+    clock.then(cl => cl.restore())
     cy.reload()
     cy.get('@chapterEditor').should('contain', content)
   })
@@ -73,6 +76,7 @@ const tests = isPremium => () => {
     typeChapter(cy, 3, content3)
     typeChapter(cy, 1, content1)
     typeChapter(cy, 2, content2)
+    clock.then(cl => cl.restore())
     cy.reload()
 
     selectChapter(cy, 1)
@@ -104,6 +108,7 @@ const tests = isPremium => () => {
     cy.get('.editor-wrap').find('.tabs').find('button.button-tab').contains(chapterName).click()
 
     typeChapter(cy, 4, chapterName)
+    clock.then(cl => cl.restore())
     cy.reload()
     selectChapter(cy, 4)
     cy.get('@chapterEditor').should('contain', chapterName)

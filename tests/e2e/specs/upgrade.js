@@ -29,10 +29,11 @@ describe('upgrading as a limited user', () => {
       .then(docId => createTestChapter(false, docId).then(() => docId))
       .then(docId => createTestOutline(false, docId).then(() => docId))
       .then(docId => createTestPlan(false, docId))
-    cy.clock()
     cy.visit('/app.html#/write')
     cy.get('select.document-dropdown').select('test')
     cy.get('.editor-wrap').find('div.ql-editor').as('chapterEditor')
+    
+    cy.clock()
   })
 
   const testContent = {
@@ -84,7 +85,7 @@ describe('upgrading as a limited user', () => {
 
     // Acknowledge success
     cy.url({ timeout: 15000 }).should('contain', '/success')
-    cy.tick(1000)    
+    cy.tick(1000).then(clock => clock.restore())
     cy.get('button.button-green').click({ force: true })
     cy.url().should('contain', '/app')
 
@@ -116,10 +117,11 @@ describe('downgrading as a premium user', () => {
       createTestOutline(true)
       createTestPlan(true)
     })
-    cy.clock()
     cy.visit('/app.html#/write')
     cy.get('select.document-dropdown').select('test')
     cy.get('.editor-wrap').find('div.ql-editor').as('chapterEditor')
+  
+    cy.clock()
   })
 
   const testContent = {
@@ -153,7 +155,7 @@ describe('downgrading as a premium user', () => {
     cy.get('button').contains('Upgrade').click()
     cy.url().should('contain', '/account')
     cy.get('button').contains('Limited').click()
-    cy.tick(1000)
+    cy.tick(1000).then(cl => cl.restore())
     cy.get('button').contains('OK').click()
 
     // Acknowledge success

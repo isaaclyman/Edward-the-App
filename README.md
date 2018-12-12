@@ -67,4 +67,4 @@ For best results, it's recommended to visit `127.0.0.1` instead of `localhost`.
 
 If tests fail on a fresh install of Edward, it's probably due to missing tables. Run the tests a second time.
 
-The Cypress tests require both `npm run dev` and `npm run server-dev` to be running in order to function. I recommend that you run these (and `npm run integration`) in the Powershell console or Linux Bash, not in the Git Bash.
+The Cypress tests require `npm run server` to be running in order to function. I recommend that you run this (and `npm run cypress`) in the Powershell console or Linux Bash, not in the Git Bash.

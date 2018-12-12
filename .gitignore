@@ -32,3 +32,6 @@ cypress/screenshots/
 # Test artifacts
 cypress/videos/
 cypress/screenshots/
+
+# Vue inspected build config
+inspect.js

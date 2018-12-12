@@ -62,6 +62,13 @@ module.exports = {
     workboxPluginMode: 'GenerateSW',
     name: 'Edward the App',
     themeColor: '#BFEADA',
-    assetsVersion: '20181003'
+    assetsVersion: '20181003',
+    iconPaths: {
+      favicon32: 'img/favicon-32x32.png',
+      favicon16: 'img/favicon-16x16.png',
+      appleTouchIcon: 'img/favicon-152x152.png',
+      maskIcon: 'img/favicon.svg',
+      msTileImage: 'img/favicon-144x144.png'
+    }
   }
 }

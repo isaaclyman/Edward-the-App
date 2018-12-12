@@ -11,10 +11,10 @@
  * See https://goo.gl/2aRDsh
  */
 
-importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.2/workbox-sw.js");
+importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.ffc0c00b547ad396f53499520850f33e.js"
+  "/precache-manifest.91a72263981994696fbe07879e058182.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "edward-the-app"});

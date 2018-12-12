@@ -61,30 +61,39 @@ const getCached = (storage, username) => {
 }
 
 export function getStorageApi(user) {
-  const isOnline = api.isOnlineCached
-  if (!user || !user.accountType) {
-    return getCached(cachedStorage.Demo)
+  let isOnlinePromise
+  if (api.isOnlineCached === null) {
+    isOnlinePromise = api.isOnline().then(() => null, () => null)
+  } else {
+    isOnlinePromise = Promise.resolve()
   }
-
-  if (user.accountType.name === 'DEMO') {
-    return getCached(cachedStorage.Demo)
-  }
-
-  if (!user.email) {
-    throw new Error('User does not have a valid username/email for initializing storage.')
-  }
-
-  if (!user.isPremium) {
+  
+  return isOnlinePromise.then(() => {
+    const isOnline = api.isOnlineCached
+    if (!user || !user.accountType) {
+      return getCached(cachedStorage.Demo)
+    }
+  
+    if (user.accountType.name === 'DEMO') {
+      return getCached(cachedStorage.Demo)
+    }
+  
+    if (!user.email) {
+      throw new Error('User does not have a valid username/email for initializing storage.')
+    }
+  
+    if (!user.isPremium) {
+      return getCached(cachedStorage.Local, user.email)
+    }
+  
+    if (!isOnline) {
+      return getCached(cachedStorage.Offline, user.email)
+    }
+  
+    if (user.isPremium) {
+      return getCached(cachedStorage.Server, user.email)
+    }
+  
     return getCached(cachedStorage.Local, user.email)
-  }
-
-  if (!isOnline) {
-    return getCached(cachedStorage.Offline, user.email)
-  }
-
-  if (user.isPremium) {
-    return getCached(cachedStorage.Server, user.email)
-  }
-
-  return getCached(cachedStorage.Local, user.email)
+  })
 }

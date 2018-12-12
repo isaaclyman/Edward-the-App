@@ -11,8 +11,7 @@ const route = route => `/api/${route}`
 
 class Api {
   constructor () {
-    this.isOnlineCached = true
-    this.isOnline()
+    this.isOnlineCached = null
   }
 
   isOnline() {

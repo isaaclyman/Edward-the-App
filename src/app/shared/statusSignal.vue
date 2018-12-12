@@ -42,14 +42,8 @@ let offlineInterval
 
 export default {
   created() {
-    offlineInterval = setInterval(() => {
-      api.isOnline().then(() => {
-        // TODO: If previously offline, then upsync to the server
-        this.$store.commit(SET_STATUS_DONE)
-      }, () => {
-        this.$store.commit(SET_STATUS_OFFLINE)
-      })
-    }, 15 * 1000)
+    this.checkOffline()
+    offlineInterval = setInterval(this.checkOffline, 15 * 1000)
   },
   beforeDestroy() {
     clearInterval(offlineInterval)
@@ -98,6 +92,15 @@ export default {
   },
   directives: {
     tooltip,
+  },
+  methods: {
+    checkOffline() {
+      api.isOnline().then(() => {
+        this.$store.commit(SET_STATUS_DONE)
+      }, () => {
+        this.$store.commit(SET_STATUS_OFFLINE)
+      })
+    }
   },
   watch: {
     offline(isOffline, wasOffline) {

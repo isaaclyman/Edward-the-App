@@ -29,10 +29,6 @@ class DemoStorageApi {
 
     this.documentGuidsKey = 'DOCUMENT_IDS'
     this.documentsKey = documentGuid => `DOCUMENT_${documentGuid}`
-
-    window.onbeforeunload = function () {
-      localStorage.clear()
-    }
   }
 
   // INFO
@@ -41,6 +37,10 @@ class DemoStorageApi {
   }
 
   addDocument({ guid, name }) {
+    window.onbeforeunload = function () {
+      localStorage.clear()
+    }
+
     return this._getAllDocumentGuids().then((documentGuids) => {
       if (!documentGuids.includes(guid)) {
         documentGuids.push(guid)

@@ -100,6 +100,8 @@ class ServerStorageApi {
   }
 
   syncCache() {
+    const restoredToken = '[RESTORED]'
+
     return this.offlineStorage.getLatestStoredDocument().then((offlineDoc) => {
       if (!offlineDoc || !offlineDoc.guid) {
         return
@@ -110,7 +112,14 @@ class ServerStorageApi {
         const matchBy = obj => obj && obj.guid
         const markDeleted = (obj) => {
           if (!obj) return
-          obj.title = `${obj.title} [RESTORED]`
+
+          if (typeof obj.title !== 'string') {
+            obj.title = ''
+          }
+
+          if (obj.title.includes(restoredToken)) return
+
+          obj.title = `${obj.title} ${restoredToken}`
         }
 
         const resolvedChapters = VersionResolver.getMostRecentEach(onlineDoc.chapters, offlineDoc.chapters, matchBy, markDeleted)

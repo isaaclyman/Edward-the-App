@@ -21,7 +21,7 @@ class ServerStorageApi {
     this.goOffline = () => {
       store.commit(SET_STATUS_OFFLINE)
       api.isOnlineCached = false
-      this.offlineStorage.updateStorage()
+      return this.offlineStorage.updateStorage()
     }
 
     const saving = () => {

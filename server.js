@@ -20,6 +20,7 @@ app.use('/static', express.static(path.join(__dirname, 'dist/')))
 app.use('/', expressStaticGzip(path.join(__dirname, 'dist'), { indexFromEmptyFile: false }))
 // app.use(express.static(path.join(__dirname, 'dist')))
 app.use(bodyParser.json({
+  limit: '50mb',
   // For Stripe webhooks, we compute the raw body so its signature can be verified
   verify: (req, res, buf) => {
     const url = req.originalUrl
@@ -28,7 +29,6 @@ app.use(bodyParser.json({
     }
   },
 }))
-app.use(bodyParser.json())
 app.use(cookieParser(process.env.SESSION_COOKIE_SECRET))
 app.use(timeout(15000))
 

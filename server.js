@@ -71,7 +71,7 @@ const serverReady = dbReady.then(() => {
     secret: process.env.SESSION_COOKIE_SECRET,
     resave: false,
     cookie: {
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 7 days
       // Set "null" for a temporary cookie (expires when browser session ends)
       secure: process.env.INSECURE_COOKIES !== 'true',
     },

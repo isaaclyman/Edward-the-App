@@ -193,7 +193,7 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
 
           return res.status(200).send()
         })
-      }).then(() => {
+
         return new Email(
           [email],
           'Your Edward account is verified',
@@ -204,7 +204,7 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
           '\n\nIf you ever want to upgrade, change or delete your account, you can visit ' +
           'https://edwardtheapp.com/auth#/account.' +
           '\n\nThanks again and happy writing!'
-        )
+        ).send()
       })
     }).then(undefined, err => {
       console.error(err)
@@ -314,7 +314,7 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
           '\n\nAnd if you\'d prefer to share your thoughts anonymously, you can take our survey at ' +
           'https://goo.gl/forms/LeEHKbXGFkNYUNgL2.' +
           '\n\nGood luck with your novel!'
-        )
+        ).send()
       }
     }, err => {
       if (res.headersSent) {

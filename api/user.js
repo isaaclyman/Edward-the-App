@@ -301,6 +301,21 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
       }, true))
     }).then(() => {
       res.status(200).send()
+
+      if ([accountTypes.PREMIUM.name, accountTypes.GOLD.name].includes(newAccountType) && oldAccountType === accountTypes.LIMITED.name) {
+        return new Email(
+          [req.user.email],
+          'Thanks for upgrading your Edward account!',
+          'Hi! I\'m Isaac, the creator of Edward. Thanks for upgrading your account. ' +
+          'I hope you enjoy all your new Premium features, like automatic backups, cloud storage, and workshops.' +
+          '\n\nWhat do you think of Edward so far? I\'d love to hear your thoughts.' +
+          '\n\nAs a Premium user, your concerns and suggestions are very important, so ' +
+          'feel free to reach out to me any time at this address.' +
+          '\n\nAnd if you\'d prefer to share your thoughts anonymously, you can take our survey at ' +
+          'https://goo.gl/forms/LeEHKbXGFkNYUNgL2.' +
+          '\n\nGood luck with your novel!'
+        )
+      }
     }, err => {
       if (res.headersSent) {
         return

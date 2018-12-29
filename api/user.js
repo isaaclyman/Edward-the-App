@@ -166,7 +166,7 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
     const { email, key } = req.body
 
     if (!email || !key) {
-      res.status(401).send('Email and reset key must be provided.')
+      res.status(401).send('Email and verification key must be provided.')
       return
     }
 
@@ -193,6 +193,18 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
 
           return res.status(200).send()
         })
+      }).then(() => {
+        return new Email(
+          [email],
+          'Your Edward account is verified',
+          'Thanks for verifying your email address! Now you can log in and start writing.' +
+          '\n\nWe hope you\'ll enjoy Edward and tell your friends about it.' +
+          '\n\nOnce you\'ve had a chance to try it out, could you give us some feedback? Take our survey ' +
+          'at https://goo.gl/forms/saXggUzUs6PtScRH3 and let us know how Edward can make your dreams come true.' +
+          '\n\nIf you ever want to upgrade, change or delete your account, you can visit ' +
+          'https://edwardtheapp.com/auth#/account.' +
+          '\n\nThanks again and happy writing!'
+        )
       })
     }).then(undefined, err => {
       console.error(err)

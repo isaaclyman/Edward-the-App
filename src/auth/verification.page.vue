@@ -66,8 +66,8 @@ export default {
       return this.user && this.user.email
     },
     user() {
-      const meta = this.$route.matched.find(record => record && record.meta.getCurrentUser).meta
-      return meta.getCurrentUser()
+      const record = this.$route.matched.find(record => record && record.meta.getCurrentUser)
+      return record && record.meta && record.meta.getCurrentUser()
     },
   },
   data() {

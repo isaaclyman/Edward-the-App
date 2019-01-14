@@ -315,6 +315,16 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
           'https://goo.gl/forms/LeEHKbXGFkNYUNgL2.' +
           '\n\nGood luck with your novel!'
         ).send()
+      } else if ([accountTypes.PREMIUM.name, accountTypes.GOLD.name].includes(oldAccountType) && newAccountType === accountTypes.LIMITED.name) {
+        return new Email(
+          [req.user.email],
+          'You\'ve cancelled your Premium subscription',
+          'We\'re sorry Edward Premium didn\'t live up to your expectations. ' +
+          'New features are being added all the time, and we hope to win you back soon.' +
+          '\n\nIn the meantime, could you let us know how we can do better? Just reply to this email ' +
+          'and tell us what disappointed you most about Edward. Your honest feedback would mean the world to us.' +
+          '\n\nThanks for trying out Edward Premium. We wish you the absolute best in your writing journey.'
+        ).send()
       }
     }, err => {
       if (res.headersSent) {
@@ -466,11 +476,22 @@ module.exports = function (app, passport, db, isPremiumUser, isOverdue, isLogged
       return modelUtil.isCorrectPassword(password, hash).then(() => {
         // Password is correct
         const userId = req.user.id
+        const email = req.user.email
         req.logout()
         return db.knex('users').where('id', userId).del().then(() => {
           if (stripeId) {
             return payments.deleteAllCustomerData(stripeId, subscriptionId)
           }
+        }).then(() => {
+          return new Email(
+            [email],
+            'You\'ve cancelled your Edward account',
+            'We\'re sorry Edward didn\'t live up to your expectations. ' +
+            'New features are being added all the time, and we hope to win you back soon.' +
+            '\n\nIn the meantime, could you let us know how we can do better? Just reply to this email ' +
+            'and tell us what disappointed you most about Edward. Your honest feedback would mean the world to us.' +
+            '\n\nThanks again for trying out Edward. We wish you the absolute best in your writing journey.'
+          ).send()
         })
       }, () => {
         res.status(401).send('Incorrect password.')

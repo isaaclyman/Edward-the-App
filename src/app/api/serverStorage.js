@@ -6,6 +6,7 @@ import VueInstance from '../../app'
 import { SET_STATUS_DONE, SET_STATUS_ERROR, SET_STATUS_OFFLINE, SET_STATUS_SAVING } from '../shared/status.store'
 import { LOAD_CONTENT } from '../shared/chapters.store'
 import { LOAD_WORKSHOPS } from '../shared/workshops.store'
+import debounce from 'lodash/debounce'
 
 class ServerStorageApi {
   constructor(username) {
@@ -58,6 +59,15 @@ class ServerStorageApi {
           api.isOnline().then(() => done(true, false), () => done(true, true))
         },
       )
+      return promise
+    }
+
+    const updateStorageAfterDebounced = debounce(promise => {
+      promise.then(() => this.offlineStorage.updateStorage())
+    }, 1000)
+
+    this.updateStorageAfter = promise => {
+      updateStorageAfterDebounced(promise)
       return promise
     }
 
@@ -236,19 +246,19 @@ class ServerStorageApi {
   // GET
 
   getAllChapters(documentGuid) {
-    return api.getChapters(documentGuid)
+    return this.updateStorageAfter(api.getChapters(documentGuid))
   }
 
   getAllPlans(documentGuid) {
-    return api.getPlans(documentGuid)
+    return this.updateStorageAfter(api.getPlans(documentGuid))
   }
 
   getAllTopics(documentGuid) {
-    return api.getTopics(documentGuid)
+    return this.updateStorageAfter(api.getTopics(documentGuid))
   }
 
   getAllWorkshops(documentGuid) {
-    return api.getWorkshops(documentGuid)
+    return this.updateStorageAfter(api.getWorkshops(documentGuid))
   }
 
   // UPDATE

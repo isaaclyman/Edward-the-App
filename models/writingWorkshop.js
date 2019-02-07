@@ -17,7 +17,7 @@ const workshops = {
     '/workshop/plot', true),
   SETTING_WORKSHOP: createWorkshop('SETTING_WORKSHOP', 'Setting Workshop',
     'Build a stronger sense of place by exploring the setting of your novel.',
-    '/workshop/setting', false)
+    '/workshop/setting', true)
 }
 
-module.exports = workshops
+exports.default = workshops

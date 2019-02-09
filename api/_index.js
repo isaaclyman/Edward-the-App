@@ -8,6 +8,7 @@ module.exports = function (app, passport, db) {
   })
 
   // Serve main app
+  // During local development, app.html is served directly so these middlewares will not function
   app.get('/app', httpsMiddleware, isLoggedInMiddleware, isNotOverdueMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, '../dist/app.html'), {
       headers: {

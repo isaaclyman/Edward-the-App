@@ -124,6 +124,12 @@ export default new Router({
       beforeEnter: compose(assertOnline, assertPremium),
     },
     {
+      path: '/workshop/setting',
+      name: 'Setting Workshop',
+      component: () => import('./workshops/settingWorkshop.vue' /* webpackChunkName: "w-setting-workshop" */),
+      beforeEnter: compose(assertOnline, assertPremium),
+    },
+    {
       path: '*',
       name: 'Page does not exist',
       component: NotFound,

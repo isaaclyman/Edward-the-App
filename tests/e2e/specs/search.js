@@ -11,7 +11,7 @@ import {
   seed,
   createTestWorkshop
 } from '../scripts/_util'
-import writingWorkshops from '../../../models/writingWorkshop'
+import writingWorkshops from '../../../compiled/writingWorkshop'
 import localForage from 'localforage'
 localForage.setDriver(localForage.INDEXEDDB)
 

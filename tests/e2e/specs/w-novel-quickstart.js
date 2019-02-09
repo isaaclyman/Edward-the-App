@@ -3,7 +3,7 @@ import {
   createTestChapter, createTestDocument, createTestWorkshop, createTestUser, deleteTestUser, logIn, makeTestUserPremium,
   seed
 } from '../scripts/_util'
-import writingWorkshops from '../../../models/writingWorkshop'
+import writingWorkshops from '../../../compiled/writingWorkshop'
 
 describe('the novel quickstart workshop (restricted)', () => {
   before(() => {

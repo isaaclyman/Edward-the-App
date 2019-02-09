@@ -2,7 +2,7 @@ import { user } from '../../test_util'
 import LocalStorageApi from '../../../src/app/api/localStorage'
 const lsa = new LocalStorageApi(user.email)
 const newGuid = require('uuid/v1')
-const writingWorkshops = require('../../../models/writingWorkshop')
+const writingWorkshops = require('../../../compiled/writingWorkshop')
 
 let seedArgs = []
 function resetSeed () {
@@ -128,6 +128,9 @@ export function createTestWorkshop (type) {
   switch (type) {
     case writingWorkshops.PLOT_WORKSHOP.name:
       seedArgs.push('--plot-workshop')
+      break
+    case writingWorkshops.SETTING_WORKSHOP.name:
+      seedArgs.push('--setting-workshop')
       break
     case writingWorkshops.NOVEL_QUICKSTART.name:
       seedArgs.push('--novel-quickstart')

@@ -5,7 +5,7 @@ const orderPromises = require('../../../compiled/utilities').orderPromises
 const createTestOutline = require('./createTestOutline')
 const createTestPlan = require('./createTestPlan')
 const createTestWorkshop = require('./createTestWorkshop')
-const writingWorkshops = require('../../../models/writingWorkshop')
+const writingWorkshops = require('../../../compiled/writingWorkshop').default
 
 const seedPromiseFns = []
 const seedArgs = {
@@ -20,6 +20,7 @@ const seedArgs = {
   '--novel-quickstart': () => createTestWorkshop(knex, writingWorkshops.NOVEL_QUICKSTART.name),
   '--writers-unblock': () => createTestWorkshop(knex, writingWorkshops.WRITERS_UNBLOCK.name),
   '--plot-workshop': () => createTestWorkshop(knex, writingWorkshops.PLOT_WORKSHOP.name),
+  '--setting-workshop': () => createTestWorkshop(knex, writingWorkshops.SETTING_WORKSHOP.name),
   '--reset-key': () => util.setTestUserResetKey(knex),
   '--verify-key': () => util.setTestUserVerifyKey(knex)
 }

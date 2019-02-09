@@ -3,7 +3,7 @@
     <div class="workshop">
       <h1>Setting Workshop</h1>
       <p>
-        Choose a setting from your novel: any time and location where part of the novel takes place, from a gardening shed in 1965 to a space colony in the 30th century. A prompt will appear below. Use the prompt as a starting point to explore your setting, thinking about how it affects the action and how it makes the characters feel. Use imagery such as sights, sounds and smells to create a sense of realism. What you write may or may not be relevant to the plot of your novel.
+        Choose a setting from your novel: any time and place where part of the novel takes place. A prompt will appear below. Use the prompt as a starting point to explore your setting, thinking about how it affects the action and how it makes the characters feel. Use imagery such as sights, sounds and smells to create a sense of realism. What you write doesn't need to be relevant to the plot of your novel.
       </p>
       <button 
         v-if="!begun" 

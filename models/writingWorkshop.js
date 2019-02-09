@@ -20,4 +20,4 @@ const workshops = {
     '/workshop/setting', true)
 }
 
-exports.default = workshops
+export default workshops

@@ -97,6 +97,10 @@ export default {
   },
   methods: {
     begin(currentWorkshop) {
+      if (this.workshop) {
+        return
+      }
+
       this.begun = true
 
       if (!currentWorkshop) {

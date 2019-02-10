@@ -152,7 +152,7 @@ export default {
     getChapterSentences() {
       const chapters = this.allChapters.slice(-10)
       const fullText = chapters.map(chapter => GetContentString(chapter.content)).join('. ')
-      const sentences = fullText.replace(/\.[ *.]+/g, '.').split('.')
+      const sentences = fullText.replace(/\.\s/g, '.').split('.')
       return sentences.filter(sentence => !!sentence.trim())
     },
     getCurrentPrompts() {

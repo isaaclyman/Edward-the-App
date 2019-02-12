@@ -16,7 +16,8 @@
     "server": "node server.js",
     "server-dev": "nodemon server.js",
     "start": "npm run server",
-    "test:e2e": "vue-cli-service test:e2e"
+    "test:e2e": "vue-cli-service test:e2e",
+    "heroku-postbuild": "echo Skip builds on Heroku"
   },
   "dependencies": {
     "autoprefixer": "7.1.2",

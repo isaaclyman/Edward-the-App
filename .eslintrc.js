@@ -14,6 +14,7 @@ module.exports = {
     'generator-star-spacing': 0,
     'no-console': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'quotes': ['error', 'single', {'allowTemplateLiterals': true}],
     'semi': [2, 'never']
   },
   parserOptions: {

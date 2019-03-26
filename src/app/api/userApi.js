@@ -10,10 +10,12 @@ const api = {
     return axios.post(route, body).then(response => response.data)
   },
 
-  getUser() { return this.simpleGet(route('current')) },
-  logOut() { return this.simpleGet(route('logout')) },
-  updateEmail(email) { return this.simplePost(route('email'), { email }) },
-  updatePassword(password) { return this.simplePost(route('password'), { password }) },
+  getUser() {
+    return this.simpleGet(route('current'))
+  },
+  logOut() {
+    return this.simpleGet(route('logout'))
+  }
 }
 
 export default api

@@ -307,7 +307,7 @@ export default {
         dangerMode: true,
         icon: 'warning',
         text:
-          'Do you want to downgrade to a Limited account? You'll lose access to your documents on all other computers, and your data will be deleted if it exceeds the space your browser allows. Premium content (like workshops) will be lost.',
+          'Do you want to downgrade to a Limited account? You\'ll lose access to your documents on all other computers, and your data will be deleted if it exceeds the space your browser allows. Premium content (like workshops) will be lost.',
         title: 'Downgrade to Limited account?'
       }).then(willDowngrade => {
         if (!willDowngrade) {

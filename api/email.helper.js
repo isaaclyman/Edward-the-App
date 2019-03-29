@@ -15,8 +15,8 @@ class Email {
         this.transporter = transporter
 
         const textBody = body +
-        '\n---' +
-        '\nThanks for using Edward.' +
+        '\n\n-' +
+        '\n\nThanks for using Edward.' +
         `\nNeed help? Email support@edwardtheapp.com.` +
         `\nOr get in touch on Twitter @EdwardTheApp.`
         

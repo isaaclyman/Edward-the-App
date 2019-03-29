@@ -121,7 +121,7 @@
 import api from '../app/api/api'
 import authApi from './authApi'
 import accountTypes from '../../models/accountType'
-import iconSmall from '../../public/img/icon-small.png'
+import iconSmall from '../../public/img/old/icon-small.png'
 import { goToApp } from './shared'
 import LocalStorageApi from '../app/api/localStorage'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'

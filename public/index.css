@@ -354,6 +354,7 @@ h3.features {
 
 @media (min-width: 768px) {
   .pricing-cards {
+    align-items: flex-start;
     flex-direction: row;
   }
 }
@@ -372,6 +373,7 @@ h3.features {
   .pricing-card {
     flex: 1;
     margin-bottom: 0;
+    max-width: 436px;
     padding: 32px 32px 64px 32px;
   }
 

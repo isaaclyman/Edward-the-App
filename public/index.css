@@ -356,6 +356,7 @@ h3.features {
   .pricing-cards {
     align-items: flex-start;
     flex-direction: row;
+    justify-content: center;
   }
 }
 

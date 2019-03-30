@@ -143,12 +143,12 @@ a.button.secondary {
   padding-right: 24px;
 }
 
-.section.padded {
+.section.features {
   padding-top: 32px;
 }
 
 @media (min-width: 768px) {
-  .section.padded {
+  .section.features {
     padding-top: 104px;
   }
 }
@@ -171,13 +171,14 @@ a.button.secondary {
 
 h3 {
   color: #00866f;
-  font-size: 54px;
+  font-size: 43px;
   margin-bottom: 21px;
   text-align: center;
 }
 
 @media (min-width: 768px) {
   h3 {
+    font-size: 54px;
     margin-bottom: 40px;
   }
 }
@@ -205,7 +206,7 @@ h4.light {
 .tablet-img {
   background-image: url("./img/Hero-spots@2x.png");
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
   height: 200px;
   max-width: 100%;
   width: 466px;
@@ -213,6 +214,7 @@ h4.light {
 
 @media (min-width: 768px) {
   .tablet-img {
+    background-size: contain;
     height: 236px;
   }
 }
@@ -235,12 +237,17 @@ h4.light {
   box-shadow: 0 12px 40px hsla(0, 0%, 0%, 0.16);
   display: flex;
   flex-direction: row;
-  margin-bottom: 64px;
   margin-top: 38px;
   max-width: 100%;
-  padding: 62px 58px;
+  padding: 32px 16px;
   position: relative;
   width: 1030px;
+}
+
+@media (min-width: 768px) {
+  .testimonial {
+    padding: 62px 58px;
+  }
 }
 
 .testimonial, .testimonial div {
@@ -276,6 +283,11 @@ h4.light {
   margin-top: 1em;
 }
 
+h3.features {
+  margin-top: 0;
+  padding-top: 128px;
+}
+
 .feature {
   align-items: center;
   display: flex;
@@ -290,8 +302,14 @@ h4.light {
 }
 
 .feature-img {
-  height: 294px;
+  width: 325px;
   max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .feature-img {
+    width: 586px;
+  }
 }
 
 .feature-main {
@@ -305,4 +323,199 @@ h4.light {
 .feature-sub {
   font-size: 24px;
   text-align: center;
+}
+
+.coming-soon {
+  color: hsla(0, 0%, 32%, 1);
+  font-size: 16px;
+}
+
+.section.pricing {
+  padding-top: 32px;
+}
+
+@media (min-width: 768px) {
+  .section.pricing {
+    padding-top: 64px;
+  }
+}
+
+.section.pricing h3 {
+  margin-bottom: 64px;
+}
+
+.pricing-cards {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 128px;
+  max-width: 100%;
+  padding: 0 20px;
+}
+
+@media (min-width: 768px) {
+  .pricing-cards {
+    flex-direction: row;
+  }
+}
+
+.pricing-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px hsla(0, 0%, 0%, 0.16);
+  width: 600px;
+  padding: 32px 16px 32px 16px;
+  margin-bottom: 32px;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .pricing-card {
+    flex: 1;
+    margin-bottom: 0;
+    padding: 32px 32px 64px 32px;
+  }
+
+  .pricing-card:not(:last-of-type) {
+    margin-right: 32px;
+  }
+}
+
+.pricing-card hr {
+  border-color: #000000;
+}
+
+@media (min-width: 768px) {
+  .pricing-card hr {
+    border-top-width: 2px;
+  }
+}
+
+.highlighted-price {
+  border: 6px solid hsla(169, 100%, 26%, 1);
+}
+
+.account-type {
+  color: hsla(0, 0%, 19%, 1);
+  font-size: 34px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.account-price {
+  font-size: 24px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.account-intro {
+  color: hsla(169, 100%, 26%, 1);
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 32px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.benefits {
+  list-style-type: none;
+  padding-left: 64px;
+}
+
+.benefit {
+  color: hsla(0, 0%, 19%, 1);
+  font-size: 24px;
+  position: relative;
+}
+
+.benefit:not(:last-of-type) {
+  margin-bottom: 16px;
+}
+
+.benefit .fa-check {
+  color: hsla(169, 100%, 26%, 1);
+  fill: hsla(169, 100%, 26%, 1);
+  font-size: 34px;
+  height: 34px;
+  left: -62px;
+  position: absolute;
+}
+
+h3.black {
+  color: hsla(0, 0%, 19%, 1);
+}
+
+.cta {
+  padding-bottom: 128px;
+}
+
+.cta h3, .cta h4 {
+  margin-bottom: 32px;
+  margin-top: 0;
+}
+
+.footer {
+  background-color: hsla(0, 0%, 19%, 1);
+  color: #ffffff;
+  padding: 64px;
+}
+
+.footer-links {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 64px;
+}
+
+@media (min-width: 768px) {
+  .footer-links {
+    flex-direction: row;
+  }
+}
+
+.footer-links a {
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 32px;
+}
+
+@media (min-width: 768px) {
+  .footer-links a {
+    margin-bottom: 0;
+  }
+}
+
+.footer-links a:not(:last-of-type) {
+  margin-right: 32px;
+}
+
+.social {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .social {
+    flex-direction: row;
+  }
+}
+
+.social .follow {
+  color: #fff;
+  font-size: 34px;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+  .social .follow {
+    margin-bottom: 0;
+  }
+}
+
+.social a {
+  color: #ffffff;
+  fill: #ffffff;
+  font-size: 44px;
+  margin-left: 32px;
 }

@@ -4,16 +4,16 @@ self.__precacheManifest = [
     "url": "/img/Hero-spots@2x.png"
   },
   {
-    "revision": "66dec3cce1774d4d2a51",
-    "url": "/static/css/account-page.87c928cd.css"
+    "revision": "3c08960aad9d5311eaf7",
+    "url": "/static/css/account-page.3656c53d.css"
   },
   {
-    "revision": "bb1491d056d76057794b",
-    "url": "/static/css/admin.9fe55786.css"
+    "revision": "8e463ee5c1a7a669c612",
+    "url": "/static/css/admin.cd50251b.css"
   },
   {
-    "revision": "bb1491d056d76057794b",
-    "url": "/static/js/admin.4d7a027d.js"
+    "revision": "8e463ee5c1a7a669c612",
+    "url": "/static/js/admin.1a15b450.js"
   },
   {
     "revision": "6716f79c07eab42dd03c",
@@ -24,20 +24,20 @@ self.__precacheManifest = [
     "url": "/static/js/analyser.50d7fb4e.js"
   },
   {
-    "revision": "c783eb17598ebd7f1ee9",
-    "url": "/static/css/app.ed7614cf.css"
+    "revision": "e490a113912b7ed2a303",
+    "url": "/static/css/app.94ac360a.css"
   },
   {
-    "revision": "c783eb17598ebd7f1ee9",
-    "url": "/static/js/app.c1a648be.js"
+    "revision": "e490a113912b7ed2a303",
+    "url": "/static/js/app.60a686bb.js"
   },
   {
-    "revision": "95e9cd71869192f1719a",
-    "url": "/static/css/auth.a5112f0b.css"
+    "revision": "df66eabc153b4375030b",
+    "url": "/static/css/auth.e9a96ad2.css"
   },
   {
-    "revision": "95e9cd71869192f1719a",
-    "url": "/static/js/auth.274c5b3e.js"
+    "revision": "df66eabc153b4375030b",
+    "url": "/static/js/auth.61f59c67.js"
   },
   {
     "revision": "cc40aca4496ca34eb4b0",
@@ -48,12 +48,12 @@ self.__precacheManifest = [
     "url": "/static/js/chunk-vendors.772ca58a.js"
   },
   {
-    "revision": "163c81b822d061814e53",
-    "url": "/static/css/exporter.049e3d90.css"
+    "revision": "923177a22d2123fa219f",
+    "url": "/static/css/exporter.f9649b20.css"
   },
   {
-    "revision": "163c81b822d061814e53",
-    "url": "/static/js/exporter.797a242e.js"
+    "revision": "923177a22d2123fa219f",
+    "url": "/static/js/exporter.d3bf08b7.js"
   },
   {
     "revision": "6a3db803c032001388d0",
@@ -100,8 +100,8 @@ self.__precacheManifest = [
     "url": "/static/img/edward-favicon-196.3591ccce.png"
   },
   {
-    "revision": "66dec3cce1774d4d2a51",
-    "url": "/static/js/account-page.f11baf0f.js"
+    "revision": "3c08960aad9d5311eaf7",
+    "url": "/static/js/account-page.c00e94b2.js"
   },
   {
     "revision": "a92162e1e6b0aeb009322f7402470012",
@@ -172,12 +172,12 @@ self.__precacheManifest = [
     "url": "/img/old/icon-small.png"
   },
   {
-    "revision": "0d7e90660ca646efac9f547cdf834a14",
-    "url": "/img/old/icon-512.png"
+    "revision": "2ae233190f674f5bfc9cde5ae06113b0",
+    "url": "/img/old/Globe.svg"
   },
   {
-    "revision": "f4aa04ce66b1198251e19c81ac511605",
-    "url": "/img/old/icon-192.png"
+    "revision": "0d7e90660ca646efac9f547cdf834a14",
+    "url": "/img/old/icon-512.png"
   },
   {
     "revision": "4e51f921b8c4268dda5e8c4e08576a6f",
@@ -200,8 +200,8 @@ self.__precacheManifest = [
     "url": "/img/edward-favicon-96.png"
   },
   {
-    "revision": "2ae233190f674f5bfc9cde5ae06113b0",
-    "url": "/img/old/Globe.svg"
+    "revision": "f4aa04ce66b1198251e19c81ac511605",
+    "url": "/img/old/icon-192.png"
   },
   {
     "revision": "2d81f1deb2b49c4df263e0c8d33c1136",
@@ -240,12 +240,12 @@ self.__precacheManifest = [
     "url": "/img/old/Book-2.svg"
   },
   {
-    "revision": "c5f97cb1b8b890059013821412cedf0c",
-    "url": "/img/old/app-screenshot.png"
-  },
-  {
     "revision": "d7a54a779bf7352026e053db7aefd8c6",
     "url": "/img/old/Books.svg"
+  },
+  {
+    "revision": "c5f97cb1b8b890059013821412cedf0c",
+    "url": "/img/old/app-screenshot.png"
   },
   {
     "revision": "7976fee44571aab5896eaee85a18be65",
@@ -340,7 +340,7 @@ self.__precacheManifest = [
     "url": "/img/Interactive-map.png"
   },
   {
-    "revision": "f6143839992e9f92671cb0180048e844",
+    "revision": "a7e2dca847b1feaec67e21d800d0b40f",
     "url": "/auth.html"
   },
   {
@@ -400,11 +400,11 @@ self.__precacheManifest = [
     "url": "/img/Archive@2x.png"
   },
   {
-    "revision": "a3c275dd8ba39c6fcb29ef4fd93c6adf",
+    "revision": "a25bf005a76daccfd1cf36213ce9b31f",
     "url": "/app.html"
   },
   {
-    "revision": "91421cf824d4cf2691fde26581ca5d40",
+    "revision": "6cf005a8722006bac73c9a596992fc5e",
     "url": "/admin.html"
   }
 ];

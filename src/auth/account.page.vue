@@ -14,7 +14,7 @@
       <p
         class="error"
         v-if="isOverdue"
-      >Your account is overdue. You cannot access the app until you downgrade to a Limited account or make a successful payment.</p>
+      >Your account is overdue. You cannot access the app until you downgrade to a Dreamer account or make a successful payment.</p>
       <p>Click here to update your payment method.</p>
       <button @click="updatePayment()">Update Payment Method</button>
     </div>

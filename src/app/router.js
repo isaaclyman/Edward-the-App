@@ -19,7 +19,7 @@ const assertPremium = () =>
     if (user.isPremium) {
       return true
     }
-    throw new Error('Can\'t access this route with a Limited account.')
+    throw new Error('Can\'t access this route with a Dreamer account.')
   })
 
 const assertOnline = () =>

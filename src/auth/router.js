@@ -84,7 +84,7 @@ export default new Router({
     },
     {
       path: '/limited',
-      name: 'Limited Account',
+      name: 'Dreamer Account',
       component: Limited,
       beforeEnter: assertVerified,
       meta: { getCurrentUser },

@@ -3,7 +3,7 @@
     <div class="warning">
       <h1>Just so you know...</h1>
       <p>
-        <strong>This is a limited account.</strong> When you use a limited account, you should know:
+        <strong>This is a Dreamer account.</strong> When you use a Dreamer account, you should know:
       </p>
       <ul>
         <li>
@@ -17,7 +17,7 @@
         </li>
       </ul>
       <p>
-        Limited accounts are not intended for long-term use, but you can use yours for as long as you want.
+        Dreamer accounts are not intended for long-term use, but you can use yours for as long as you want.
         <router-link to="/account">
           <strong>Or upgrade to an Author account</strong>
         </router-link>

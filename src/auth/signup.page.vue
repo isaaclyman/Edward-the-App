@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <p class="signup-message">
-      <strong>Your Limited account is free. You can use it for as long as you like.</strong>
+      <strong>Your Dreamer account is free. You can use it for as long as you like.</strong>
     </p>
     <div class="signup-section username">
       <div class="signup-field">

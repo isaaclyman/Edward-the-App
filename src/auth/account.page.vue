@@ -27,14 +27,14 @@
       </div>
       <div v-if="!isPremium">
         <p class="above-small">Upgrade to a Premium account to access your novels from anywhere.</p>
-        <p class="price">($2.99 per month, up to 10,000 pages)</p>
+        <p class="price">($7.99 per month, up to 10,000 pages)</p>
         <button 
           class="button-green" 
           @click="limitedToPremium()">Go Premium</button>
       </div>
       <div v-if="!isGold">
         <p class="above-small">Upgrade to a Gold account for extra Premium storage space.</p>
-        <p class="price">($10 per month, up to 125,000 pages)</p>
+        <p class="price">($14.99 per month, up to 125,000 pages)</p>
         <button 
           class="button-gold" 
           @click="toGold()">Go Gold</button>
@@ -134,11 +134,11 @@ const accountPayments = {
   },
   [accountTypes.PREMIUM.name]: {
     display: 'Edward Premium monthly subscription',
-    amount: 299
+    amount: 799
   },
   [accountTypes.GOLD.name]: {
     display: 'Edward Gold monthly subscription',
-    amount: 1000
+    amount: 1499
   }
 }
 

@@ -3,7 +3,7 @@
     <div class="warning">
       <h1>Just so you know...</h1>
       <p>
-        <strong>This is a limited account.</strong> When you use a limited account, you should know that:
+        <strong>This is a limited account.</strong> When you use a limited account, you should know:
       </p>
       <ul>
         <li>
@@ -13,15 +13,15 @@
           <strong>Your documents are not safe.</strong> If you reinstall your browser, clear your browsing data, or wipe your hard drive, all your work will be deleted. If you use more space than your browser allows, it may erase all your data without warning.
         </li>
         <li>
-          <strong>Your documents are not online.</strong> They are stored on this computer. You cannot access them from any other computer.
+          <strong>Your documents are not online.</strong> You can't access them from any other computer.
         </li>
       </ul>
       <p>
-        Limited accounts are not intended for long-term or serious use, but you can use yours for as long as you want and export as many novels as you want.
+        Limited accounts are not intended for long-term use, but you can use yours for as long as you want.
         <router-link to="/account">
           <strong>Or upgrade to a Premium account</strong>
         </router-link>
-        to get <strong>private, safe, permanent online storage</strong> for all your documents. It's only $2.99 per month.
+        to get <strong>private, safe, permanent online storage</strong> for all your documents. It's only $7.99 per month.
       </p>
     </div>
     <div class="fill"/>

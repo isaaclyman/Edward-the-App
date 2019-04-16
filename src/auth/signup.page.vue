@@ -73,6 +73,14 @@
         Create account
       </button>
     </div>
+    <hr class="divider">
+    <div class="log-in">
+      <div class="log-in-text">Already have an account?</div>
+      <button 
+        tabindex="6" 
+        class="log-in-link button-link" 
+        @click="logIn()">Log in</button>
+    </div>
   </div>
 </template>
 
@@ -133,6 +141,9 @@ export default {
     }
   },
   methods: {
+    logIn() {
+      this.$router.push('/login')
+    },
     setInfoTooltip(el) {
       tippy(el, {
         arrow: true,
@@ -256,5 +267,27 @@ export default {
 
 .legal {
   margin-bottom: 20px;
+}
+
+.divider {
+  background-color: #CCC;
+  height: 1px;
+  margin: 20px 0;
+  width: 100%;
+}
+
+.log-in {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.log-in-text {
+  display: flex;
+  justify-content: center;
+}
+
+.log-in-link {
+  font-size: 16px;
 }
 </style>

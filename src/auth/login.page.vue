@@ -51,14 +51,6 @@
         class="sign-up-link button-link" 
         @click="signUp()">Sign up for free.</button>
     </div>
-    <hr class="divider">
-    <div class="sign-up">
-      <div class="sign-up-text">Just want to check it out?</div>
-      <button 
-        tabindex="7" 
-        class="sign-up-link button-link" 
-        @click="viewDemo()">Try the demo.</button>
-    </div>
   </div>
 </template>
 

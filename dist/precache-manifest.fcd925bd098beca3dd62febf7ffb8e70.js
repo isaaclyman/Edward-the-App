@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "56837a2db27bc536891f5b9174ba4afb",
-    "url": "/img/Hero-spots.png"
+    "revision": "d37b38c5c09c9c578ffbced0d723d30e",
+    "url": "/img/Hero-spots@2x.png"
   },
   {
-    "revision": "ed061fb266fd79289099",
-    "url": "/static/css/account-page.fd2f1da1.css"
+    "revision": "66dec3cce1774d4d2a51",
+    "url": "/static/css/account-page.87c928cd.css"
   },
   {
     "revision": "bb1491d056d76057794b",
@@ -24,20 +24,20 @@ self.__precacheManifest = [
     "url": "/static/js/analyser.50d7fb4e.js"
   },
   {
-    "revision": "ae064c3d645e04cc9ab1",
+    "revision": "c783eb17598ebd7f1ee9",
     "url": "/static/css/app.ed7614cf.css"
   },
   {
-    "revision": "ae064c3d645e04cc9ab1",
-    "url": "/static/js/app.69a0aa8a.js"
+    "revision": "c783eb17598ebd7f1ee9",
+    "url": "/static/js/app.c1a648be.js"
   },
   {
-    "revision": "4f77ae3d4f2d597e926f",
-    "url": "/static/css/auth.7900aa36.css"
+    "revision": "95e9cd71869192f1719a",
+    "url": "/static/css/auth.a5112f0b.css"
   },
   {
-    "revision": "4f77ae3d4f2d597e926f",
-    "url": "/static/js/auth.227c3309.js"
+    "revision": "95e9cd71869192f1719a",
+    "url": "/static/js/auth.274c5b3e.js"
   },
   {
     "revision": "cc40aca4496ca34eb4b0",
@@ -100,20 +100,20 @@ self.__precacheManifest = [
     "url": "/static/img/edward-favicon-196.3591ccce.png"
   },
   {
-    "revision": "ed061fb266fd79289099",
-    "url": "/static/js/account-page.1def2810.js"
+    "revision": "66dec3cce1774d4d2a51",
+    "url": "/static/js/account-page.f11baf0f.js"
   },
   {
-    "revision": "eaf13b721f837da0843767159cca72ad",
-    "url": "/img/old/edward-analyze.png"
+    "revision": "a92162e1e6b0aeb009322f7402470012",
+    "url": "/img/old/Download-Book.svg"
   },
   {
     "revision": "735ab4f94fbcd57074377afca324c813",
     "url": "/robots.txt"
   },
   {
-    "revision": "a92162e1e6b0aeb009322f7402470012",
-    "url": "/img/old/Download-Book.svg"
+    "revision": "3bdd4172f514066c84885a124dadeeac",
+    "url": "/img/old/edward-outlines.png"
   },
   {
     "revision": "3591ccce01a0acef4fd126684f66a53b",
@@ -136,12 +136,12 @@ self.__precacheManifest = [
     "url": "/index-old.css"
   },
   {
-    "revision": "7e8135710c3693c36f00ee8a4cf09091",
-    "url": "/img/old/wizard-screenshot.PNG"
-  },
-  {
     "revision": "3d31edda2822efc0da5a8d81d6e0cd06",
     "url": "/img/old/word-processor.png"
+  },
+  {
+    "revision": "7e8135710c3693c36f00ee8a4cf09091",
+    "url": "/img/old/wizard-screenshot.PNG"
   },
   {
     "revision": "b9f4a8e6f3d1c3aaeaf2899d616ab989",
@@ -152,12 +152,12 @@ self.__precacheManifest = [
     "url": "/img/old/Tablet-Chart.svg"
   },
   {
-    "revision": "8c15a975ae07355603340c287f3a4d51",
-    "url": "/img/old/Magnifier.svg"
-  },
-  {
     "revision": "6a1e19199fe88319dc6e8dd865047336",
     "url": "/img/old/Map.svg"
+  },
+  {
+    "revision": "8c15a975ae07355603340c287f3a4d51",
+    "url": "/img/old/Magnifier.svg"
   },
   {
     "revision": "5da22d927f509a1d6e0c7e9bc69b06bc",
@@ -172,12 +172,12 @@ self.__precacheManifest = [
     "url": "/img/old/icon-small.png"
   },
   {
-    "revision": "f4aa04ce66b1198251e19c81ac511605",
-    "url": "/img/old/icon-192.png"
-  },
-  {
     "revision": "0d7e90660ca646efac9f547cdf834a14",
     "url": "/img/old/icon-512.png"
+  },
+  {
+    "revision": "f4aa04ce66b1198251e19c81ac511605",
+    "url": "/img/old/icon-192.png"
   },
   {
     "revision": "e237ed6ac05a481d82beec44f93b17aa",
@@ -196,16 +196,16 @@ self.__precacheManifest = [
     "url": "/img/edward-favicon-76.png"
   },
   {
+    "revision": "2d81f1deb2b49c4df263e0c8d33c1136",
+    "url": "/img/old/Folder.svg"
+  },
+  {
     "revision": "7f4e861e05461f60955dbd5e9ca03f32",
     "url": "/img/edward-favicon-96.png"
   },
   {
     "revision": "2ae233190f674f5bfc9cde5ae06113b0",
     "url": "/img/old/Globe.svg"
-  },
-  {
-    "revision": "2d81f1deb2b49c4df263e0c8d33c1136",
-    "url": "/img/old/Folder.svg"
   },
   {
     "revision": "3ffdaff217b171b32ea2425fe4e59b8c",
@@ -216,24 +216,24 @@ self.__precacheManifest = [
     "url": "/img/old/favicon.svg"
   },
   {
-    "revision": "6969d59d900aaf7d1f27215635b75bff",
-    "url": "/img/old/favicon.png"
-  },
-  {
     "revision": "d197d194ff350fc53077dc5f9dba7cb2",
     "url": "/img/old/favicon-64x64.png"
   },
   {
-    "revision": "eb79418117a636f5899ab1d7b642a780",
-    "url": "/img/old/favicon-16x16.png"
+    "revision": "6969d59d900aaf7d1f27215635b75bff",
+    "url": "/img/old/favicon.png"
   },
   {
     "revision": "02cd07ba0d732c582f85ac8c364779d3",
     "url": "/img/old/favicon-32x32.png"
   },
   {
-    "revision": "46c79677df0ee7d8c4e1ba88e412001d",
-    "url": "/img/old/favicon-144x144.png"
+    "revision": "eb79418117a636f5899ab1d7b642a780",
+    "url": "/img/old/favicon-16x16.png"
+  },
+  {
+    "revision": "cc7ef9a9ff24f6ab32c76c44808d8c81",
+    "url": "/img/old/favicon-152x152.png"
   },
   {
     "revision": "825d1ef2f0a157c855e55c3fe65dd694",
@@ -244,10 +244,6 @@ self.__precacheManifest = [
     "url": "/img/old/Books.svg"
   },
   {
-    "revision": "c5f97cb1b8b890059013821412cedf0c",
-    "url": "/img/old/app-screenshot.png"
-  },
-  {
     "revision": "7976fee44571aab5896eaee85a18be65",
     "url": "/img/old/Checklist.svg"
   },
@@ -256,16 +252,20 @@ self.__precacheManifest = [
     "url": "/img/old/Data-Transfer.svg"
   },
   {
+    "revision": "c5f97cb1b8b890059013821412cedf0c",
+    "url": "/img/old/app-screenshot.png"
+  },
+  {
+    "revision": "46c79677df0ee7d8c4e1ba88e412001d",
+    "url": "/img/old/favicon-144x144.png"
+  },
+  {
     "revision": "ccdad086da02c10eb2a4154ed6e34dcf",
     "url": "/img/old/edward-plans.png"
   },
   {
-    "revision": "cc7ef9a9ff24f6ab32c76c44808d8c81",
-    "url": "/img/old/favicon-152x152.png"
-  },
-  {
-    "revision": "3bdd4172f514066c84885a124dadeeac",
-    "url": "/img/old/edward-outlines.png"
+    "revision": "eaf13b721f837da0843767159cca72ad",
+    "url": "/img/old/edward-analyze.png"
   },
   {
     "revision": "a694200c52ca0a19fcaf0c958120afc5",
@@ -312,12 +312,12 @@ self.__precacheManifest = [
     "url": "/img/Outline.png"
   },
   {
-    "revision": "699e14038c15664d9869d6f61efd1122",
-    "url": "/img/edward-favicon-192.png"
-  },
-  {
     "revision": "fd6b056055fc509bedab0a6d5e1f0adc",
     "url": "/img/edward-favicon-195.png"
+  },
+  {
+    "revision": "699e14038c15664d9869d6f61efd1122",
+    "url": "/img/edward-favicon-192.png"
   },
   {
     "revision": "fea4c90e91d672dffc0b734311d6d1c1",
@@ -340,7 +340,7 @@ self.__precacheManifest = [
     "url": "/img/Interactive-map.png"
   },
   {
-    "revision": "6d9258e6575da92afa29a4ad919edd23",
+    "revision": "3dcc8cf6ba8fe40004b373b4ddd016be",
     "url": "/auth.html"
   },
   {
@@ -352,12 +352,12 @@ self.__precacheManifest = [
     "url": "/img/Data@2x.png"
   },
   {
-    "revision": "6e8061919cc2f38989edb8fd4442d27a",
-    "url": "/img/Autosave@2x.png"
+    "revision": "63327f5bfb928af6bd432968838b2cd9",
+    "url": "/img/Data.png"
   },
   {
-    "revision": "d37b38c5c09c9c578ffbced0d723d30e",
-    "url": "/img/Hero-spots@2x.png"
+    "revision": "56837a2db27bc536891f5b9174ba4afb",
+    "url": "/img/Hero-spots.png"
   },
   {
     "revision": "5d5c07f511a191868835df8119185f42",
@@ -388,8 +388,8 @@ self.__precacheManifest = [
     "url": "/img/Log-in@2x.png"
   },
   {
-    "revision": "63327f5bfb928af6bd432968838b2cd9",
-    "url": "/img/Data.png"
+    "revision": "6e8061919cc2f38989edb8fd4442d27a",
+    "url": "/img/Autosave@2x.png"
   },
   {
     "revision": "3403e43d15879af29b66cf06d578c5f9",
@@ -400,7 +400,7 @@ self.__precacheManifest = [
     "url": "/img/Archive@2x.png"
   },
   {
-    "revision": "7e92c1d1162b1632f9d4cf24c552d1d8",
+    "revision": "1d2567fcc513e18bdb7fc45ba8860b92",
     "url": "/app.html"
   },
   {

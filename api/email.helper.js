@@ -17,8 +17,7 @@ class Email {
         const textBody = body +
         '\n\n-' +
         '\n\nThanks for using Edward.' +
-        `\nNeed help? Email support@edwardtheapp.com.` +
-        `\nOr get in touch on Twitter @EdwardTheApp.`
+        `\nNeed help? Email support@edwardtheapp.com.`
         
         this.options = {
             from: '"Edward the App" <support@edwardtheapp.com>',

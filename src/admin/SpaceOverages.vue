@@ -1,10 +1,10 @@
 <template>
   <div class="stat">
     <div v-if="overages != null">
-      <p>Premium Overages: {{ overages.premiums.length }}</p>
-      <p>Gold Overages: {{ overages.golds.length }}</p>
+      <p>Author Overages: {{ overages.premiums.length }}</p>
+      <p>Bestseller Overages: {{ overages.golds.length }}</p>
       <p v-if="overages.premiums.length">
-        <strong>Premium users over 20MB</strong>
+        <strong>Author users over 20MB</strong>
       </p>
       <div 
         v-for="user in overages.premiums" 
@@ -14,7 +14,7 @@
         </p>
       </div>
       <p v-if="overages.golds.length">
-        <strong>Gold users over 250MB</strong>
+        <strong>Bestseller users over 250MB</strong>
       </p>
       <div 
         v-for="user in overages.golds" 

@@ -21,30 +21,30 @@
     <hr>
     <div class="upgrade">
       <div v-if="isGold">
-        <p class="above-small">Don't want your Gold account any more?</p>
+        <p class="above-small">Don't want your Bestseller account any more?</p>
         <p class="small">Please back up all of your documents first.</p>
-        <button @click="goldToPremium()">Revert to Premium</button>
+        <button @click="goldToPremium()">Revert to Author</button>
       </div>
       <div v-if="!isPremium">
-        <p class="above-small">Upgrade to a Premium account to access your novels from anywhere.</p>
+        <p class="above-small">Upgrade to an Author account to access your novels from anywhere.</p>
         <p class="price">($7.99 per month, up to 10,000 pages)</p>
         <button 
           class="button-green" 
-          @click="limitedToPremium()">Go Premium</button>
+          @click="limitedToPremium()">Upgrade to Author</button>
       </div>
       <div v-if="!isGold">
-        <p class="above-small">Upgrade to a Gold account for extra Premium storage space.</p>
+        <p class="above-small">Upgrade to a Bestseller account for extra storage space.</p>
         <p class="price">($14.99 per month, up to 125,000 pages)</p>
         <button 
           class="button-gold" 
-          @click="toGold()">Go Gold</button>
+          @click="toGold()">Upgrade to Bestseller</button>
       </div>
       <div v-if="isPremium">
-        <p class="above-small">Want to downgrade to a Limited account?</p>
+        <p class="above-small">Want to downgrade to a Dreamer account?</p>
         <p
           class="small"
         >Please back up all of your documents first. They may not fit in your browser's storage.</p>
-        <button @click="paidToLimited()">Revert to Limited</button>
+        <button @click="paidToLimited()">Revert to Dreamer</button>
       </div>
       <div 
         class="error" 
@@ -129,15 +129,15 @@ import swal from 'sweetalert'
 
 const accountPayments = {
   [accountTypes.LIMITED.name]: {
-    display: 'Edward Limited monthly subscription',
+    display: 'Edward Dreamer monthly subscription',
     amount: 0
   },
   [accountTypes.PREMIUM.name]: {
-    display: 'Edward Premium monthly subscription',
+    display: 'Edward Author monthly subscription',
     amount: 799
   },
   [accountTypes.GOLD.name]: {
-    display: 'Edward Gold monthly subscription',
+    display: 'Edward Bestseller monthly subscription',
     amount: 1499
   }
 }
@@ -307,8 +307,8 @@ export default {
         dangerMode: true,
         icon: 'warning',
         text:
-          'Do you want to downgrade to a Limited account? You\'ll lose access to your documents on all other computers, and your data will be deleted if it exceeds the space your browser allows. Premium content (like workshops) will be lost.',
-        title: 'Downgrade to Limited account?'
+          'Do you want to downgrade to a Dreamer account? You\'ll lose access to your documents on all other computers, and your data will be deleted if it exceeds the space your browser allows. Author-only content (like workshops) will be lost.',
+        title: 'Downgrade to Dreamer account?'
       }).then(willDowngrade => {
         if (!willDowngrade) {
           return

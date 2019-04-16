@@ -106,7 +106,7 @@ class DemoStorageApi {
   }
 
   deleteWorkshop() {
-    // Not implemented here. Premium-only feature.
+    // Not implemented here. Author-only feature.
   }
 
   _getAllChapters(documentGuid) {
@@ -204,7 +204,7 @@ class DemoStorageApi {
   }
 
   getAllWorkshops() {
-    // Not implemented here. Premium-only feature.
+    // Not implemented here. Author-only feature.
     return []
   }
 
@@ -296,7 +296,7 @@ class DemoStorageApi {
   }
 
   updateWorkshops() {
-    // Not implemented here. Premium-only feature.
+    // Not implemented here. Author-only feature.
   }
 
   /*

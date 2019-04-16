@@ -19,7 +19,7 @@
       <p>
         Limited accounts are not intended for long-term use, but you can use yours for as long as you want.
         <router-link to="/account">
-          <strong>Or upgrade to a Premium account</strong>
+          <strong>Or upgrade to an Author account</strong>
         </router-link>
         to get <strong>private, safe, permanent online storage</strong> for all your documents. It's only $7.99 per month.
       </p>
@@ -28,13 +28,13 @@
     <div class="actions">
       <router-link to="/account">
         <button class="button-green">
-          Upgrade to Premium
+          Upgrade to Author
         </button>
       </router-link>
       <button 
         class="continue-button button-link" 
         @click="noPremium()">
-        Continue as a Limited user
+        Continue as a Dreamer
       </button>
     </div>
   </div>

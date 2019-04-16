@@ -40,7 +40,7 @@
       </div>
       <div class="export-option">
         <h3>Export to Microsoft Word document</h3>
-        <div>(Premium users only)</div>
+        <div>(Author subscriptions only)</div>
         <pulse-loader v-if="loading"/>
         <div class="export-checkbox">
           <input 
@@ -311,7 +311,7 @@ export default {
           button: 'OK',
           dangerMode: true,
           icon: 'error',
-          text: 'Only Premium users can export to a Microsoft Word document. Please upgrade to a Premium subscription to continue.',
+          text: 'Only Author accounts can export to a Microsoft Word document. Please upgrade to an Author subscription to continue.',
           title: 'Not allowed',
         })
         return

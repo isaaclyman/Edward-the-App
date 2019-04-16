@@ -5,9 +5,9 @@
         <strong>Users by type</strong>
       </p>
       <p>Demo: {{ userCount.demo }}</p>
-      <p>Limited: {{ userCount.limited }}</p>
-      <p>Premium: {{ userCount.premium }}</p>
-      <p>Gold: {{ userCount.gold }}</p>
+      <p>Dreamer: {{ userCount.limited }}</p>
+      <p>Author: {{ userCount.premium }}</p>
+      <p>Bestseller: {{ userCount.gold }}</p>
       <p>Admin: {{ userCount.admin }}</p>
       <p>TOTAL: {{ totalUsers }}</p>
     </div>

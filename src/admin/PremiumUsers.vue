@@ -1,6 +1,6 @@
 <template>
   <div class="stat">
-    <p>New Premium signups (limit 150):</p>
+    <p>New Author account signups (limit 150):</p>
     <p 
       v-if="users" 
       v-text="usersDisplay"/>

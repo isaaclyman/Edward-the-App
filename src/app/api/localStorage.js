@@ -107,7 +107,7 @@ class LocalStorageApi {
   }
 
   deleteWorkshop() {
-    throw new Error('Workshops are a Premium-only feature.')
+    throw new Error('Workshops are a Author-only feature.')
   }
 
   _getAllChapters(documentGuid) {
@@ -219,7 +219,7 @@ class LocalStorageApi {
   }
 
   getAllWorkshops() {
-    throw new Error('Workshops are a Premium-only feature.')
+    throw new Error('Workshops are a Author-only feature.')
   }
 
   saveAllContent(documentGuid, { chapters, plans, topics }) {
@@ -318,7 +318,7 @@ class LocalStorageApi {
   }
 
   updateWorkshops() {
-    throw new Error('Workshops are a Premium-only feature.')
+    throw new Error('Workshops are a Author-only feature.')
   }
 
   /*

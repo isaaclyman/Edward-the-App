@@ -56,7 +56,7 @@
         <p 
           v-if="!isPremium" 
           class="warn">
-          Workshops are only available for Premium subscribers.
+          Workshops are only available for Author accounts.
         </p>
         <div 
           v-for="workshop in workshops" 
@@ -73,7 +73,7 @@
             <div 
               class="workshop-restricted" 
               v-if="workshop.available && !isPremium">
-              PREMIUM ONLY
+              AUTHORS ONLY
             </div>
             <div class="workshop-details">
               <div class="workshop-name">

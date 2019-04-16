@@ -2,7 +2,7 @@
   "name": "edward-the-app",
   "version": "1.0.0",
   "private": true,
-  "description": "A better way to outline and write novels",
+  "description": "Write your novel with the world's most helpful writing app",
   "author": "Isaac Lyman <packagejson@isaaclyman.com>",
   "scripts": {
     "build": "vue-cli-service build",

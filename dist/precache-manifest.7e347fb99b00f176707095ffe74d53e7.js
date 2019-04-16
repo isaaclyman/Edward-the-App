@@ -112,15 +112,15 @@ self.__precacheManifest = [
     "url": "/robots.txt"
   },
   {
-    "revision": "3bdd4172f514066c84885a124dadeeac",
-    "url": "/img/old/edward-outlines.png"
+    "revision": "eaf13b721f837da0843767159cca72ad",
+    "url": "/img/old/edward-analyze.png"
   },
   {
     "revision": "3591ccce01a0acef4fd126684f66a53b",
     "url": "/img/edward-favicon-196.png"
   },
   {
-    "revision": "4669b86b7c3d81cdea4aea1381be52ff",
+    "revision": "4ecd3cc50585be5a733a0d9aac8ea9f2",
     "url": "/index.html"
   },
   {
@@ -180,7 +180,7 @@ self.__precacheManifest = [
     "url": "/img/old/icon-192.png"
   },
   {
-    "revision": "e237ed6ac05a481d82beec44f93b17aa",
+    "revision": "4e51f921b8c4268dda5e8c4e08576a6f",
     "url": "/img/edward-favicon-32.png"
   },
   {
@@ -196,16 +196,16 @@ self.__precacheManifest = [
     "url": "/img/edward-favicon-76.png"
   },
   {
-    "revision": "2d81f1deb2b49c4df263e0c8d33c1136",
-    "url": "/img/old/Folder.svg"
-  },
-  {
     "revision": "7f4e861e05461f60955dbd5e9ca03f32",
     "url": "/img/edward-favicon-96.png"
   },
   {
     "revision": "2ae233190f674f5bfc9cde5ae06113b0",
     "url": "/img/old/Globe.svg"
+  },
+  {
+    "revision": "2d81f1deb2b49c4df263e0c8d33c1136",
+    "url": "/img/old/Folder.svg"
   },
   {
     "revision": "3ffdaff217b171b32ea2425fe4e59b8c",
@@ -216,12 +216,12 @@ self.__precacheManifest = [
     "url": "/img/old/favicon.svg"
   },
   {
-    "revision": "d197d194ff350fc53077dc5f9dba7cb2",
-    "url": "/img/old/favicon-64x64.png"
-  },
-  {
     "revision": "6969d59d900aaf7d1f27215635b75bff",
     "url": "/img/old/favicon.png"
+  },
+  {
+    "revision": "d197d194ff350fc53077dc5f9dba7cb2",
+    "url": "/img/old/favicon-64x64.png"
   },
   {
     "revision": "02cd07ba0d732c582f85ac8c364779d3",
@@ -240,6 +240,10 @@ self.__precacheManifest = [
     "url": "/img/old/Book-2.svg"
   },
   {
+    "revision": "c5f97cb1b8b890059013821412cedf0c",
+    "url": "/img/old/app-screenshot.png"
+  },
+  {
     "revision": "d7a54a779bf7352026e053db7aefd8c6",
     "url": "/img/old/Books.svg"
   },
@@ -252,10 +256,6 @@ self.__precacheManifest = [
     "url": "/img/old/Data-Transfer.svg"
   },
   {
-    "revision": "c5f97cb1b8b890059013821412cedf0c",
-    "url": "/img/old/app-screenshot.png"
-  },
-  {
     "revision": "46c79677df0ee7d8c4e1ba88e412001d",
     "url": "/img/old/favicon-144x144.png"
   },
@@ -264,8 +264,8 @@ self.__precacheManifest = [
     "url": "/img/old/edward-plans.png"
   },
   {
-    "revision": "eaf13b721f837da0843767159cca72ad",
-    "url": "/img/old/edward-analyze.png"
+    "revision": "3bdd4172f514066c84885a124dadeeac",
+    "url": "/img/old/edward-outlines.png"
   },
   {
     "revision": "a694200c52ca0a19fcaf0c958120afc5",
@@ -316,7 +316,7 @@ self.__precacheManifest = [
     "url": "/img/edward-favicon-195.png"
   },
   {
-    "revision": "699e14038c15664d9869d6f61efd1122",
+    "revision": "214be9aaf1db9d4f3740d69a414cd1cb",
     "url": "/img/edward-favicon-192.png"
   },
   {
@@ -340,7 +340,7 @@ self.__precacheManifest = [
     "url": "/img/Interactive-map.png"
   },
   {
-    "revision": "3dcc8cf6ba8fe40004b373b4ddd016be",
+    "revision": "f6143839992e9f92671cb0180048e844",
     "url": "/auth.html"
   },
   {
@@ -400,7 +400,7 @@ self.__precacheManifest = [
     "url": "/img/Archive@2x.png"
   },
   {
-    "revision": "1d2567fcc513e18bdb7fc45ba8860b92",
+    "revision": "a3c275dd8ba39c6fcb29ef4fd93c6adf",
     "url": "/app.html"
   },
   {

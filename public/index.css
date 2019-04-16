@@ -106,6 +106,10 @@ a {
   }
 }
 
+button, a.button {
+  text-align: center;
+}
+
 a.button {
   background-color: #f47866;
   border-radius: 12px;

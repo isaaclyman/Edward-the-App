@@ -89,6 +89,13 @@ h3 {
   justify-content: flex-end;
 }
 
+.header-links-center {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
 a {
   color: #00866F;
   font-size: 16px;
@@ -523,4 +530,8 @@ h3.black {
   fill: #ffffff;
   font-size: 44px;
   margin-left: 32px;
+}
+
+.legal {
+  font-size: 20px;
 }

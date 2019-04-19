@@ -134,7 +134,7 @@ a.button.secondary {
   color: #ffffff;
 }
 
-.content a.button, .content a.secondary {
+.content a.button, .content a.secondary, .cta a.button {
   max-width: 100%;
   text-align: center;
   width: 300px;

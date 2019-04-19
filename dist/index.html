@@ -51,8 +51,7 @@
       <div class="content center">
         <h3>Stop dreaming, start writing</h3>
         <h4 class="margin-bottom">
-          Write your novel in the cloud with the world's most helpful writing
-          app.
+          Write your first novel with the world's most helpful writing app.
         </h4>
         <a href="/auth#/signup" class="button">Subscribe for free</a>
         <a href="#features" class="secondary">See features ></a>
@@ -145,7 +144,8 @@
         <div class="feature-main">One-click dictionary & thesaurus</div>
         <div class="feature-sub">
           Use the convenient dictionary/thesaurus to make sure "inconceivable"
-          means what you think it means, or to find the perfect word for any situation.
+          means what you think it means, or to find the perfect word for any
+          situation.
         </div>
       </div>
       <div class="feature">
@@ -294,6 +294,7 @@
     var scrollInEls = document.querySelectorAll('.scroll-in')
     var scrollOutEls = document.querySelectorAll('.scroll-out')
     var scrollShadowEls = document.querySelectorAll('.scroll-shadow-in')
+    var fadeUpEls = document.querySelectorAll('.feature-img');
 
     window.onscroll = function() {
       if (window.pageYOffset > 85) {
@@ -317,6 +318,13 @@
         })
         scrollShadowEls.forEach(el => el.classList.remove('scroll-shadow'))
       }
+
+      fadeUpEls.forEach(el => {
+        var bottomEdge = window.pageYOffset + window.innerHeight - 300;
+        if (bottomEdge > el.offsetTop) {
+          el.classList.add('scroll-fade-in')
+        }
+      })
     }
 
     window.onscroll()

@@ -102,7 +102,8 @@ h3 {
 
 a {
   color: #00866F;
-  font-size: 16px;
+  display: inline-block;
+  font-size: 24px;
   font-weight: bold;
   text-decoration: none;
 }
@@ -125,14 +126,8 @@ a.button {
   background-color: #f47866;
   border-radius: 12px;
   color: #323232;
-  padding: 8px 16px;
+  padding: 16px 32px;
   text-decoration: none;
-}
-
-@media (min-width: 768px) {
-  a.button {
-    padding: 16px 32px;
-  }
 }
 
 a.button.secondary {
@@ -141,10 +136,17 @@ a.button.secondary {
 }
 
 .content a.button, .content a.secondary {
-  margin-bottom: 16px;
   max-width: 100%;
   text-align: center;
-  width: 500px;
+  width: 300px;
+}
+
+.content a.button {
+  margin-bottom: 8px;
+}
+
+.content a.secondary {
+  padding: 8px;
 }
 
 @media (min-width: 768px) {
@@ -317,13 +319,22 @@ h3.features {
 }
 
 .feature-img {
-  width: 325px;
   max-width: 100%;
+  position: relative;
+  width: 325px;
 }
 
 @media (min-width: 768px) {
   .feature-img {
+    opacity: 0;
+    top: 12px;
+    transition: top 500ms, opacity 500ms;
     width: 586px;
+  }
+  
+  .feature-img.scroll-fade-in {
+    opacity: 1;
+    top: 0;
   }
 }
 

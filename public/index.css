@@ -102,7 +102,8 @@ h3 {
 
 a {
   color: #00866F;
-  font-size: 16px;
+  display: inline-block;
+  font-size: 24px;
   font-weight: bold;
   text-decoration: none;
 }
@@ -125,14 +126,8 @@ a.button {
   background-color: #f47866;
   border-radius: 12px;
   color: #323232;
-  padding: 8px 16px;
+  padding: 16px 32px;
   text-decoration: none;
-}
-
-@media (min-width: 768px) {
-  a.button {
-    padding: 16px 32px;
-  }
 }
 
 a.button.secondary {
@@ -144,7 +139,7 @@ a.button.secondary {
   margin-bottom: 16px;
   max-width: 100%;
   text-align: center;
-  width: 500px;
+  width: 300px;
 }
 
 @media (min-width: 768px) {

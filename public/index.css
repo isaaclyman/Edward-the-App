@@ -136,10 +136,17 @@ a.button.secondary {
 }
 
 .content a.button, .content a.secondary {
-  margin-bottom: 16px;
   max-width: 100%;
   text-align: center;
   width: 300px;
+}
+
+.content a.button {
+  margin-bottom: 8px;
+}
+
+.content a.secondary {
+  padding: 8px;
 }
 
 @media (min-width: 768px) {

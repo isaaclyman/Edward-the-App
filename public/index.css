@@ -319,13 +319,22 @@ h3.features {
 }
 
 .feature-img {
-  width: 325px;
   max-width: 100%;
+  position: relative;
+  width: 325px;
 }
 
 @media (min-width: 768px) {
   .feature-img {
+    opacity: 0;
+    top: 12px;
+    transition: top 500ms, opacity 500ms;
     width: 586px;
+  }
+  
+  .feature-img.scroll-fade-in {
+    opacity: 1;
+    top: 0;
   }
 }
 

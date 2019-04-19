@@ -294,6 +294,7 @@
     var scrollInEls = document.querySelectorAll('.scroll-in')
     var scrollOutEls = document.querySelectorAll('.scroll-out')
     var scrollShadowEls = document.querySelectorAll('.scroll-shadow-in')
+    var fadeUpEls = document.querySelectorAll('.feature-img');
 
     window.onscroll = function() {
       if (window.pageYOffset > 85) {
@@ -317,6 +318,13 @@
         })
         scrollShadowEls.forEach(el => el.classList.remove('scroll-shadow'))
       }
+
+      fadeUpEls.forEach(el => {
+        var bottomEdge = window.pageYOffset + window.innerHeight - 300;
+        if (bottomEdge > el.offsetTop) {
+          el.classList.add('scroll-fade-in')
+        }
+      })
     }
 
     window.onscroll()

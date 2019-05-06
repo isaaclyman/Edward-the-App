@@ -13,7 +13,7 @@ import 'tippy.js/dist/tippy.css'
 import './main.css'
 import store from './store'
 
-if (window && window.isProd !== false) {
+if (window && window.isProd === true) {
   Raven
     .config('https://1deaeecd96244297ad475854be0d5502@sentry.io/540818')
     .addPlugin(RavenVue, Vue)

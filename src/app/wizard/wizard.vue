@@ -114,9 +114,6 @@ export default {
 
       this.$store.dispatch(SET_UP_DOCUMENT, { document: newDocument, type }).then(() => {
         this.saving = false
-        if (this.isPremium && type.name === 'Novel') {
-          this.$router.push('/workshop/novel-quickstart')
-        }
       }, () => {
         this.error = true
         this.saving = false

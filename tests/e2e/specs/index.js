@@ -7,12 +7,8 @@ describe('the landing page', () => {
     cy.visit('/')
   })
 
-  it('includes a hook video', () => {
-    cy.get('.hook-video iframe').should('exist').should('be.visible')
-  })
-
   it('includes an explanation of what Edward is', () => {
-    cy.contains('Edward is a')
+    cy.contains('writing app')
   })
 
   it('includes at least 1 link to the login page', () => {

@@ -114,6 +114,5 @@ const tests = (userType) => () => {
   }
 }
 
-describe('the wizard page (demo)', tests('demo'))
 describe('the wizard page (limited)', tests('limited'))
 describe('the wizard page (premium)', tests('premium'))

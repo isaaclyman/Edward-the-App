@@ -23,8 +23,14 @@ module.exports = function (app, passport, db) {
   })
 
   // Check if the client is online
-  app.get('/api/online', isLoggedInMiddleware, (req, res) => {
-    res.status(200).send()
+  app.get('/api/online', (req, res) => {
+    if (req.isAuthenticated()) {
+      res.status(200).send()
+      return
+    }
+
+    res.status(401).send()
+    return
   })
 
   // Serve user-facing APIs

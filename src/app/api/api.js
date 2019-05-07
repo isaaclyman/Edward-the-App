@@ -18,7 +18,10 @@ class Api {
     const promise = this.simpleGet(route('online'))
     promise.then(() => {
       this.isOnlineCached = true
-    }, () => {
+    }, err => {
+      if (err.response && err.response.status === 401) {
+        setTimeout(() => window.location.reload(), 2000)
+      }
       this.isOnlineCached = false
     })
     return promise

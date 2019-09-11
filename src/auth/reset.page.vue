@@ -100,7 +100,7 @@ export default {
       this.resetFailed = false
 
       this.resetLoading = true
-      authApi.updatePassword({ password: this.password }).then(() => {
+      authApi.updatePassword(this.password).then(() => {
         this.resetLoading = false
         this.success = true
       }, (err) => {

@@ -1,27 +1,31 @@
 <template>
   <div class="wrap">
-    <hr class="divider">
     <div class="username">
-      <label for="login-username-input">Email address:</label>
+      <label for="login-username-input">Email</label>
       <input 
         tabindex="1" 
         id="login-username-input" 
         class="login-field" 
         type="text" 
-        v-model="email">
+        v-model="email"
+        placeholder="Type your email here">
     </div>
     <div class="password">
-      <label for="login-password-input">Password:</label>
+      <label for="login-password-input">Password</label>
       <input 
         tabindex="2" 
         id="login-password-input" 
         class="login-field" 
         type="password" 
-        v-model="password">
+        v-model="password"
+        placeholder="Type your password here">
+    </div>
+    <div class="forgot-password">
+      Forgotten your password?
       <router-link to="/forgot">
         <button 
           tabindex="3" 
-          class="button-link forgot-button">Forgot your password?</button>
+          class="button-link forgot-button">Click here to fix.</button>
       </router-link>
     </div>
     <div class="captcha">
@@ -31,8 +35,14 @@
         @expire="resetCaptchaResponse" 
         ref="captcha"/>
     </div>
-    <div class="messages">
-      <p>{{ loginMessage }}</p>
+    <div
+      v-if="loginMessage"
+      class="messages"
+    >
+      <p>
+        <span class="fa fa-exclamation-circle"/>
+        {{ loginMessage }}
+      </p>
     </div>
     <div class="actions">
       <pulse-loader v-if="loading"/>
@@ -45,10 +55,10 @@
     </div>
     <hr class="divider">
     <div class="sign-up">
-      <div class="sign-up-text">Don't have an account?</div>
+      Don't have an account?
       <button 
         tabindex="6" 
-        class="sign-up-link button-link" 
+        class="button-link" 
         @click="signUp()">Sign up for free.</button>
     </div>
   </div>
@@ -117,7 +127,7 @@ export default {
       }, () => {
         this.loading = false
         this.$refs.captcha.reset()
-        this.loginMessage = 'Login failed. Please try again.'
+        this.loginMessage = 'One or more of the details you entered are wrong. Please check your responses and try again.'
       })
     },
     resetCaptchaResponse() {
@@ -156,40 +166,59 @@ export default {
 }
 
 .sign-up {
-  display: flex;
-  flex-direction: column;
+  font-size: 20px;
+  font-weight: bold;
   width: 100%;
 }
 
-.sign-up-text {
-  display: flex;
-  justify-content: center;
-}
-
-.sign-up-link {
-  font-size: 16px;
-}
-
-.divider {
-  background-color: #CCC;
-  height: 1px;
-  margin: 20px 0;
-  width: 100%;
+.sign-up .button-link {
+  padding: 0 3px;
 }
 
 .username, .password {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin: 0;
-  margin-bottom: 20px;
+  margin-bottom: 32px;
   width: 100%;
 }
 
 .username label, .password label {
-  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-align: left;
   width: 100%;
+}
+
+.username input, .password input {
+  border: 2px solid #323232;
+  border-radius: 6px;
+  color: #323232;
+  font-size: 20px;
+  font-weight: bold;
+  height: 64px;
+  padding: 18px 16px;
+  text-align: left;
+  width: 100%;
+}
+
+input::placeholder {
+  color: #323232;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.forgot-password {
+  margin-bottom: 32px;
+}
+
+.forgot-password, .forgot-password button {
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 3px;
 }
 
 .login-field {
@@ -198,30 +227,31 @@ export default {
 
 .captcha {
   display: flex;
-  justify-content: center;
-  margin-bottom: 12px;
+  justify-content: flex-start;
+  margin-bottom: 32px;
   width: 100%;
 }
 
 .messages {
   align-items: center;
-  color: red;
+  color: #DA0000;
   display: flex;
-  font-size: 12px;
-  height: 20px;
+  font-size: 20px;
+  font-weight: bold;
   justify-content: center;
   margin: 0;
-  margin-bottom: 6px;
+  margin-bottom: 32px;
   width: 100%;
 }
 
 .actions {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  margin-bottom: 32px;
   width: 100%;
 }
 
-.login-button {
-  font-size: 16px;
+hr {
+  margin-bottom: 32px;
 }
 </style>

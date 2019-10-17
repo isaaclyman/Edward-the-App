@@ -14,7 +14,7 @@
       <div 
         class="logo" 
         @click="goToLogin()">
-        <img src="../../public/img/Logo.png">
+        <img src="../../public/img/modal-logo@2x.png">
       </div>
       <router-view/>
     </div>
@@ -63,13 +63,14 @@ export default {
 
 .page {
   background-color: #FFF;
-  border: 1px solid #CCC;
-  border-radius: 5px;
+  border-radius: 6px;
+  box-shadow: 0px 12px 40px 0px rgba(0,0,0,0.16);
   display: flex;
   flex-direction: column;
   margin: 0 auto;
   max-width: 100%;
   min-height: 400px;
+  padding: 32px 64px 64px 64px;
   width: 700px;
 }
 
@@ -79,7 +80,11 @@ export default {
   display: flex;
   height: 77px;
   justify-content: center;
-  margin-top: 20px;
+  margin-bottom: 32px;
+}
+
+.logo img {
+  height: 64px;
 }
 
 .footer {
@@ -89,12 +94,11 @@ export default {
 }
 
 .footer-text, .footer-link {
-  color: #000;
-  font-family: 'Libre Baskerville', serif;
-  font-size: 10px;
+  color: #323232;
+  font-size: 20px;
 }
 
 .footer-text {
-  margin: 2px;
+  margin: 32px 2px;
 }
 </style>

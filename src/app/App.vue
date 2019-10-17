@@ -13,7 +13,7 @@
           <div class="logo-wrap">
             <img 
               class="logo" 
-              src="../../public/img/Logo.png">
+              src="../../public/img/modal-logo@2x.png">
           </div>
           <div class="app-header--menu">
             <main-menu/>
@@ -33,7 +33,7 @@
         key="loading">
         <img 
           class="logo" 
-          src="../../public/img/Logo.png">
+          src="../../public/img/modal-logo.png">
         <pulse-loader/>
       </div>
       <div 

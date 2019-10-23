@@ -1,54 +1,52 @@
 <template>
   <div class="wrap">
-    <div class="forgot">
-      <div class="message">
-        <h3>Forgot your password?</h3>
-        <p>
-          No problem. Enter the email address associated with your Edward account and click the button.
-          You'll get an email with a link to log in and change your password.
-        </p>
-      </div>
-      <div class="input">
-        <input 
-          tabindex="1" 
-          class="email-input" 
-          v-model="email" 
-          placeholder="edward@example.com">
-      </div>
-      <div class="captcha">
-        <Captcha 
-          :tabindex="2" 
-          @change="setCaptchaResponse" 
-          @expire="resetCaptchaResponse" 
-          ref="captcha"/>
-      </div>
-      <div 
-        class="actions" 
-        v-if="!emailSent">
-        <pulse-loader v-if="saving"/>
+    <div class="message">
+      <h3>Forgot your password?</h3>
+      <p>
+        No problem. Enter your account email and click the Reset button.
+        We'll email you a link to change your password.
+      </p>
+    </div>
+    <div class="input">
+      <input 
+        tabindex="1" 
+        class="email-input" 
+        v-model.trim="email" 
+        placeholder="Type your email here">
+    </div>
+    <div class="captcha">
+      <Captcha 
+        :tabindex="2" 
+        @change="setCaptchaResponse" 
+        @expire="resetCaptchaResponse" 
+        ref="captcha"/>
+    </div>
+    <div 
+      class="actions" 
+      v-if="!emailSent">
+      <pulse-loader v-if="saving"/>
+      <button 
+        tabindex="3" 
+        v-if="!saving" 
+        class="button-green reset-button" 
+        @click="reset()">Reset my password</button>
+      <p 
+        class="error" 
+        v-if="error">
+        {{error}}
+      </p>
+    </div>
+    <div 
+      class="success" 
+      v-if="emailSent">
+      Email sent! Go check your inbox.
+    </div>
+    <div class="cancel">
+      <router-link to="/login">
         <button 
-          tabindex="3" 
-          v-if="!saving" 
-          class="button-green reset-button" 
-          @click="reset()">Reset my password</button>
-        <p 
-          class="error" 
-          v-if="error">
-          That didn't work. Please check your email address and try again.
-        </p>
-      </div>
-      <div 
-        class="success" 
-        v-if="emailSent">
-        Email sent! Go check your inbox.
-      </div>
-      <div class="cancel">
-        <router-link to="/login">
-          <button 
-            tabindex="4" 
-            class="button-link">Back to login</button>
-        </router-link>
-      </div>
+          tabindex="4" 
+          class="button-link">Back to login</button>
+      </router-link>
     </div>
   </div>
 </template>
@@ -72,14 +70,24 @@ export default {
     return {
       captchaResponse: '',
       email: '',
-      error: false,
+      error: '',
       saving: false,
       emailSent: false,
     }
   },
   methods: {
     reset() {
-      this.error = false
+      if (!this.email) {
+        this.error = 'Please enter a valid email address.'
+        return
+      }
+
+      if (!this.captchaResponse) {
+        this.error = 'Please indicate that you are not a robot.'
+        return
+      }
+
+      this.error = ''
       this.saving = true
       authApi.sendResetPasswordLink({
         email: this.email,
@@ -90,7 +98,8 @@ export default {
         this.emailSent = true
       }, (err) => {
         this.saving = false
-        this.error = true
+        this.$refs.captcha.reset()
+        this.error = `That didn't work. Please check your email address and try again.`
         this.emailSent = false
         console.error(err)
       })
@@ -107,40 +116,72 @@ export default {
 
 <style scoped>
 .wrap {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
   flex: 1;
   flex-direction: column;
 }
 
-.forgot {
-  max-width: 1200px;
-  padding: 20px 50px;
-  width: 100%;
+h3 {
+  font-size: 34px;
+  font-weight: normal;
+  margin-bottom: 32px;
+  margin-top: 0;
+}
+
+p {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 32px;
+  margin-top: 0;
 }
 
 .input {
-  margin: 20px 0;
+  margin-bottom: 32px;
+  margin-top: 0;
+  width: 100%;
 }
 
 .input input {
-  width: 300px;
+  border: 2px solid #323232;
+  border-radius: 6px;
+  color: #323232;
+  font-size: 20px;
+  font-weight: bold;
+  height: 64px;
+  padding: 18px 16px;
+  text-align: left;
+  width: 100%;
+}
+
+input::placeholder {
+  color: #323232;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .captcha {
-  margin-bottom: 12px;
+  margin-bottom: 32px;
   width: 100%;
 }
 
 .success {
-  margin: 20px 0;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
 }
 
 .cancel {
-  margin-top: 20px;
+  margin-top: 29px;
+}
+
+.cancel button {
+  padding: 3px 0;
 }
 
 .error {
-  color: red;
+  color: #DA0000;
+  margin-bottom: 0;
+  margin-top: 32px;
 }
 </style>

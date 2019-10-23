@@ -71,7 +71,7 @@ export default {
   max-width: 100%;
   min-height: 400px;
   padding: 32px 64px 64px 64px;
-  width: 700px;
+  width: 660px;
 }
 
 .logo {

@@ -1,9 +1,9 @@
 <template>
   <div class="wrap">
     <div class="warning">
-      <h1>Just so you know...</h1>
+      <h3>Just so you know...</h3>
       <p>
-        <strong>This is a Dreamer account.</strong> When you use a Dreamer account, you should know:
+        <strong>This is a free (Dreamer) account.</strong> When you use a free account, you should know:
       </p>
       <ul>
         <li>
@@ -18,24 +18,21 @@
       </ul>
       <p>
         Dreamer accounts are not intended for long-term use, but you can use yours for as long as you want.
-        <router-link to="/account">
-          <strong>Or upgrade to an Author account</strong>
-        </router-link>
-        to get <strong>private, safe, permanent online storage</strong> for all your documents. It's only $7.99 per month.
+      </p>
+      <p class="upgrade">
+        Upgrade to an Author account to get private, safe, permanent online storage for all your documents.
+        It's only $7.99 per month and guarantees your peace of mind.
       </p>
     </div>
-    <div class="fill"/>
     <div class="actions">
       <router-link to="/account">
         <button class="button-green">
           Upgrade to Author
         </button>
       </router-link>
-      <button 
-        class="continue-button button-link" 
-        @click="noPremium()">
-        Continue as a Dreamer
-      </button>
+      <p>
+        That's fine, <button class="button-link" @click="noPremium()">continue with a free account for now</button>
+      </p>
     </div>
   </div>
 </template>
@@ -61,7 +58,7 @@ export default {
   methods: {
     noPremium() {
       goToApp()
-    },
+    }
   },
   props: {},
 }
@@ -69,34 +66,52 @@ export default {
 
 <style scoped>
 .wrap {
-  align-items: center;
+  align-items: flex-start;
+  color: #323232;
   display: flex;
   flex: 1;
   flex-direction: column;
 }
 
-.warning {
-  padding: 0 50px;
+h3 {
+  font-size: 34px;
+  font-weight: normal;
+  margin-bottom: 32px;
+  margin-top: 0;
+}
+
+p {
+  margin-bottom: 16px;
+  margin-top: 0;
+}
+
+p, ul {
+  font-size: 20px;
 }
 
 ul {
   padding-left: 6px;
 }
 
-.fill {
-  flex: 1;
-}
-
-.actions {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin: 12px 0;
-  width: 300px;
-}
-
-.continue-button {
+ul li {
   margin-bottom: 8px;
+}
+
+.actions button.button-link {
+  padding: 0 3px;
+}
+
+.actions button.button-green {
+  margin: 32px 0;
+}
+
+.upgrade, .upgrade a, .actions p, .actions p a {
+  color: #323232;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.upgrade {
+  margin: 0;
 }
 </style>

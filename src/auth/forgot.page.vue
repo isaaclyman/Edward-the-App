@@ -33,7 +33,7 @@
       <p 
         class="error" 
         v-if="error">
-        {{error}}
+        {{ error }}
       </p>
     </div>
     <div 

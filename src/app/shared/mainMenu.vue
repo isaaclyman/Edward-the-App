@@ -24,24 +24,37 @@
           :key="route.name + '-hr'">
       </template>
     </div>
-    <status-signal/>
-    <hr class="vert mobile-hide">
-    <a 
-      class="disguised mobile-hide" 
-      :href="isOnline ? '/auth#/account' : '#'">
-      <div 
-        class="account" 
-        :class="{ 'offline': !isOnline }" 
-        :title="accountType.description" 
-        v-tooltip>
-        <div class="email">
-          {{ email }}
+    <div class="extra">
+      <status-signal/>
+      <button class="main-menu--button">
+        <img
+          src="img/icons_more-white.png"
+          class="main-menu--icon">
+        <div>More</div>
+      </button>
+      <button class="main-menu--button">
+        <img 
+          src="img/icons_account-white.png"
+          class="main-menu--icon">
+        <div>Account</div>
+      </button>
+      <!-- <a 
+        class="disguised mobile-hide" 
+        :href="isOnline ? '/auth#/account' : '#'">
+        <div 
+          class="account" 
+          :class="{ 'offline': !isOnline }" 
+          :title="accountType.description" 
+          v-tooltip>
+          <div class="email">
+            {{ email }}
+          </div>
+          <div class="account-type">
+            {{ accountType.displayName }}
+          </div>
         </div>
-        <div class="account-type">
-          {{ accountType.displayName }}
-        </div>
-      </div>
-    </a>
+      </a> -->
+    </div>
     <!-- Workshops modal -->
     <div style="display: none">
       <div 
@@ -188,6 +201,10 @@ export default {
   justify-content: center;
 }
 
+.routes .main-menu--button {
+  padding: 14px 52px;
+}
+
 .main-menu--button {
   background-color: transparent;
   border: none;
@@ -198,7 +215,6 @@ export default {
   height: 100%;
   margin-bottom: 2px;
   margin-top: 2px;
-  padding: 14px 52px;
   transition: font-size 100ms;
 }
 
@@ -232,6 +248,12 @@ a:not(.router-link-active) .main-menu--button:not([disabled]):hover {
 
 hr.between:last-of-type {
   display: none;
+}
+
+.extra {
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 .account {

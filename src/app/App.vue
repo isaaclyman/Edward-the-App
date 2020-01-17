@@ -180,7 +180,7 @@ export default {
 }
 
 .logo {
-  height: 28px;
+  height: 32px;
 }
 
 @media (max-width: 800px) {

@@ -71,21 +71,21 @@ export default {
   data() {
     return {
       errorIcon: Octicons.alert.toSVG({
-        height: 15,
-        width: 15,
+        height: 18,
+        width: 18,
       }),
       isSaving: false,
       offlineIcon: Octicons.plug.toSVG({
-        height: 15,
-        width: 15,
+        height: 18,
+        width: 18,
       }),
       offlineText:
         'No internet connection is available. Your work is saved locally. ' +
         'To avoid losing work, don\'t edit this document on any other device until the connection is restored.',
       saveErrorText: 'An error has occurred. Your work may not be saved.',
       savedIcon: Octicons.check.toSVG({
-        height: 15,
-        width: 15,
+        height: 18,
+        width: 18,
       }),
       savingDebouncer: window.setTimeout(() => {}),
     }
@@ -138,7 +138,7 @@ export default {
 .status-wrap {
   align-items: center;
   display: flex;
-  font-size: 17px;
+  font-size: 22px;
   justify-content: center;
   margin-right: 8px;
 }
@@ -148,7 +148,7 @@ export default {
   height: 20px;
   position: relative;
   text-align: right;
-  width: 65px;
+  width: 95px;
 }
 
 .status-saving {
@@ -157,18 +157,18 @@ export default {
 }
 
 .status-saved {
-  color: rgb(1,171,109);
-  fill: rgb(1,171,109);
+  color: rgb(255, 255, 255);
+  fill: rgb(255, 255, 255);
 }
 
 .status-error {
-  color: rgb(255, 0, 0);
-  fill: rgb(255, 0, 0);
+  color: rgb(255, 170, 0);
+  fill: rgb(255, 170, 0);
 }
 
 .status-offline {
-  color: rgb(47, 79, 79);
-  fill: rgb(47, 79, 79);
+  color: rgb(255, 170, 0);
+  fill: rgb(255, 170, 0);
 }
 
 .status-saving, .status-saved, .status-error, .status-offline {

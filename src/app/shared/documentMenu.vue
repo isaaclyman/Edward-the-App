@@ -98,6 +98,7 @@ export default {
   flex-direction: row;
   height: 30px;
   padding: 2px 30px;
+  z-index: 100;
 }
 
 .menu-item {

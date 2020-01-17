@@ -7,7 +7,6 @@ import Auth from './auth/Auth.vue'
 
 import 'tippy.js/dist/tippy.css'
 
-import './main.css'
 import './auth/auth.css'
 
 Raven

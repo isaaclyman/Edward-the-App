@@ -4,12 +4,12 @@
   "description": "Write your first novel",
   "icons": [
     {
-      "src": "/img/edward-favicon-192.png",
+      "src": "/img/edward-favicon_192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/img/edward-favicon-512.png",
+      "src": "/img/edward-favicon_512.png",
       "type": "image/png",
       "sizes": "512x512"
     }

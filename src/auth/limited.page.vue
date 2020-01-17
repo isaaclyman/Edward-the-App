@@ -31,7 +31,9 @@
         </button>
       </router-link>
       <p>
-        That's fine, <button class="button-link" @click="noPremium()">continue with a free account for now</button>
+        That's fine, <button
+          class="button-link"
+          @click="noPremium()">continue with a free account for now</button>
       </p>
     </div>
   </div>

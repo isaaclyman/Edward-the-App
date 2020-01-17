@@ -13,7 +13,7 @@
           <div class="logo-wrap">
             <img 
               class="logo" 
-              src="../../public/img/modal-logo@2x.png">
+              src="../../public/img/main-logo.png">
           </div>
           <div class="app-header--menu">
             <main-menu/>
@@ -153,10 +153,10 @@ export default {
 }
 
 .app-header {
-  background-color: #FFF;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.09), 0 6px 6px rgba(0,0,0,0.11);
+  background-color: #00866F;
+  box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
   display: flex;
-  height: 60px;
+  height: 75px;
   width: 100%;
   z-index: 50;
 }
@@ -208,7 +208,7 @@ export default {
   flex: 1;
   max-height: calc(100% - 62px);
   overflow: auto;
-  padding: 14px 14px;
+  padding: 44px 14px 14px 14px;
 }
 
 .tooltip {

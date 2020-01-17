@@ -255,6 +255,12 @@ textarea {
   }
 }
 
+@media (min-width: 801px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
 .workshop-wrap {
   display: flex;
   font-size: 16px;

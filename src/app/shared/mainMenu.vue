@@ -3,33 +3,27 @@
     <div style="display:none">
       <offline-storage/>
     </div>
-    <template v-for="route in routes">
-      <router-link 
-        :to="(route.worksOffline || isOnline) ? route.location : '#'" 
-        :key="route.name">
-        <button 
-          class="main-menu--button" 
-          :title="route.tooltip" 
-          v-tooltip 
-          :disabled="!route.worksOffline && !isOnline">
-          <div v-html="getIconSvg(route.icon)"/>
-          <div>{{ route.name }}</div>
-        </button>
-      </router-link>
-      <hr 
-        class="vert between mobile-hide" 
-        :key="route.name + '-hr'">
-    </template>
-    <button 
-      class="main-menu--button" 
-      :title="toolsTooltip" 
-      v-tooltip 
-      @click="showWorkshops()" 
-      :disabled="!isOnline">
-      <div v-html="getIconSvg('tools')"/>
-      <div>Workshop</div>
-    </button>
-    <div class="spacer"/>
+    <div class="routes">
+      <template v-for="route in routes">
+        <router-link 
+          :to="(route.worksOffline || isOnline) ? route.location : '#'" 
+          :key="route.name">
+          <button 
+            class="main-menu--button" 
+            :title="route.tooltip" 
+            v-tooltip 
+            :disabled="!route.worksOffline && !isOnline">
+            <img
+              class="main-menu--icon"
+              :src="'img/' + route.icon">
+            <div>{{ route.name }}</div>
+          </button>
+        </router-link>
+        <hr 
+          class="vert between mobile-only" 
+          :key="route.name + '-hr'">
+      </template>
+    </div>
     <status-signal/>
     <hr class="vert mobile-hide">
     <a 
@@ -126,34 +120,22 @@ export default {
   data() {
     return {
       routes: [{
-        icon: 'telescope',
+        icon: 'icons_outline-white.png',
         location: '/plan',
         name: 'Plan',
         tooltip: 'Make general notes about characters, topics, settings, and more.',
         worksOffline: true,
       }, {
-        icon: 'list-unordered',
-        location: '/outline',
-        name: 'Outline',
-        tooltip: 'Create and organize chapters and chapter-specific notes.',
-        worksOffline: true,
-      }, {
-        icon: 'pencil',
+        icon: 'icons_write-white.png',
         location: '/write',
         name: 'Write',
         tooltip: 'Write, search and measure your content.',
         worksOffline: true,
       }, {
-        icon: 'pulse',
-        location: '/analyze',
-        name: 'Analyze',
-        tooltip: 'Get data-driven insights into your writing.',
-        worksOffline: false,
-      }, {
-        icon: 'search',
-        location: '/search',
-        name: 'Search',
-        tooltip: 'Search your entire document for a word or phrase.',
+        icon: 'icons_plan-white.png',
+        location: '/outline',
+        name: 'Outline',
+        tooltip: 'Create and organize chapters and chapter-specific notes.',
         worksOffline: true,
       }],
       toolsTooltip: 'Workshop your novel with free or prompted writing exercises.',
@@ -199,19 +181,29 @@ export default {
   flex: 1;
 }
 
+.routes {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+}
+
 .main-menu--button {
   background-color: transparent;
   border: none;
-  color: #777;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  color: rgba(255, 255, 255, 1);
+  font-size: 18px;
   height: 100%;
   margin-bottom: 2px;
   margin-top: 2px;
-  padding: 6px 20px;
-  transition: color 100ms ease-in-out;
+  padding: 14px 52px;
+  transition: font-size 100ms;
 }
 
-.main-menu--button:not([disabled]):hover {
-  color: #000;
+a:not(.router-link-active) .main-menu--button:not([disabled]):hover {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 @media (max-width: 800px) {
@@ -221,15 +213,25 @@ export default {
 }
 
 .router-link-active > .main-menu--button {
-  color: #000;
+  background-color: #0F6858;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
+  height: 110px;
+  font-size: 22px;
+  padding: 22px 52px;
+}
+
+.main-menu--icon {
+  transition: width 100ms;
+  width: 36px;
+}
+
+.router-link-active .main-menu--icon {
+  width: 45px;
 }
 
 hr.between:last-of-type {
   display: none;
-}
-
-.spacer {
-  flex: 1;
 }
 
 .account {
@@ -317,15 +319,15 @@ hr.between:last-of-type {
 
 <style>
 .main-menu--icon {
-  fill: #777;
+  fill: rgba(255, 255, 255, 1);
   transition: fill 100ms ease-in-out;
 }
 
 .main-menu--button:not([disabled]):hover .main-menu--icon {
-  fill: #000;
+  fill: rgba(255, 255, 255, 0.7);
 }
 
 .router-link-active > .main-menu--button .main-menu--icon {
-  fill: #000;
+  fill: rgba(255, 255, 255, 1);
 }
 </style>

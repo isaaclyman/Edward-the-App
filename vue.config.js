@@ -64,10 +64,10 @@ module.exports = {
     themeColor: '#BFEADA',
     assetsVersion: '20181003',
     iconPaths: {
-      favicon32: 'img/edward-favicon-32.png',
-      favicon16: 'img/edward-favicon-16.png',
-      appleTouchIcon: 'img/edward-favicon-152.png',
-      msTileImage: 'img/edward-favicon-144.png'
+      favicon32: 'img/edward-favicon_32.png',
+      favicon16: 'img/edward-favicon_16.png',
+      appleTouchIcon: 'img/edward-favicon_152.png',
+      msTileImage: 'img/edward-favicon_144.png'
     }
   }
 }

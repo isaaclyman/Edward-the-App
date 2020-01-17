@@ -54,17 +54,17 @@ export default {
   data() {
     return {
       addSvg: Octicons.plus.toSVG({
-        height: 14,
-        width: 14,
+        height: 16,
+        width: 16,
       }),
       cancelSvg: Octicons['circle-slash'].toSVG({
-        height: 14,
-        width: 14,
+        height: 16,
+        width: 16,
       }),
       newItem: '',
       saveSvg: Octicons.check.toSVG({
-        height: 14,
-        width: 14,
+        height: 16,
+        width: 16,
       }),
       showAddItem: false,
       tabCache: new Cache(`CURRENT_${this.itemName}_TAB`),
@@ -140,9 +140,41 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  margin-bottom: 16px;
   max-height: 60px;
   min-height: 28px;
   overflow: auto;
+}
+
+.button-tab {
+  align-items: center;
+  background-color: #F0F0F0;
+  border: 2px solid #323232;
+  border-radius: 12px;
+  color: #323232;
+  display: flex;
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 8px;
+  opacity: 1;
+  padding: 6px 10px;
+  transition: background-color 100ms, opacity 0.8;
+}
+
+.button-tab.active {
+  background-color: #323232;
+  color: #fff;
+}
+
+.button-tab:not(.active):hover {
+  opacity: 0.7;
+}
+
+.add-button {
+  background-color: #00866F;
+  border-color: #00866F;
+  color: #fff;
+  fill: #fff;
 }
 
 .tab-input {

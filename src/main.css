@@ -98,28 +98,6 @@ button.button-red {
   fill: #FFF;
 }
 
-.button-tab {
-  align-items: center;
-  background-color: transparent;
-  border: 1px solid #CCC;
-  border-bottom: none;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border-color: #CCC;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  display: flex;
-  font-size: 14px;
-  margin-right: 1px;
-  padding: 6px 10px;
-  transition: background-color 100ms, border-color 100ms;
-}
-
-.button-tab.active {
-  background-color: #FFF;
-  border-color: rgba(13, 91, 166, 0.5);
-}
-
 button[disabled] {
   opacity: 0.5;
   cursor: default;

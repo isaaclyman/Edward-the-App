@@ -468,10 +468,12 @@ export default {
 }
 
 .editor-wrap {
+  background-color: #F0F0F0;
   display: flex;
   flex: 1;
   flex-direction: column;
   margin-right: 20px;
+  padding: 16px;
   position: relative;
 }
 
@@ -482,8 +484,10 @@ export default {
 }
 
 .stats {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(0, 134, 111, 0.95);
   bottom: 0;
+  color: #fff;
+  font-size: 16px;
   left: 0;
   opacity: 0;
   pointer-events: none;

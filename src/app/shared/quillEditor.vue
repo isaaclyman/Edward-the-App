@@ -209,11 +209,13 @@ function getAllOccurrences(regex, str) {
 
 <style>
 .ql-toolbar {
-  background-color: #F0F0F0;
+  background-color: #D6D6D6;
+  border: 0 !important;
 }
 
 .ql-container {
   background-color: #FFF;
+  border: 0 !important;
 }
 
 .ql-editor {
@@ -246,5 +248,22 @@ function getAllOccurrences(regex, str) {
 
 .ql-fullscreen:hover {
   fill: #06c;
+}
+
+.ql-picker {
+  background-color: #fff;
+  border: 2px solid #323232;
+}
+
+.ql-formats button, .ql-snow .ql-formats button {
+  background-color: #F0F0F0;
+  border: 2px solid #323232;
+  border-radius: 8px;
+  color: #323232;
+  display: flex;
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 8px;
+  opacity: 1;
 }
 </style>

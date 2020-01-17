@@ -209,8 +209,11 @@ function getAllOccurrences(regex, str) {
 
 <style>
 .ql-toolbar {
+  align-items: center;
   background-color: #D6D6D6;
   border: 0 !important;
+  display: flex;
+  flex-direction: row;
 }
 
 .ql-container {
@@ -242,7 +245,6 @@ function getAllOccurrences(regex, str) {
 
 .ql-fullscreen {
   fill: #444;
-  min-width: 40px;
   width: auto !important;
 }
 
@@ -253,6 +255,15 @@ function getAllOccurrences(regex, str) {
 .ql-picker {
   background-color: #fff;
   border: 2px solid #323232;
+  height: 32px !important;
+}
+
+.ql-picker .ql-picker-label {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .ql-formats button, .ql-snow .ql-formats button {
@@ -263,7 +274,15 @@ function getAllOccurrences(regex, str) {
   display: flex;
   font-size: 16px;
   font-weight: bold;
+  height: 32px;
   margin-right: 8px;
   opacity: 1;
+  width: 32px;
+}
+
+.ql-formats:nth-of-type(3) {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
 }
 </style>

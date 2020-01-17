@@ -1,18 +1,10 @@
-import Octicons from 'octicons'
 import Quill from 'quill'
 import 'quill/dist/quill.snow.css'
-import tooltip from './tippyBuilder'
 
 const toolbarOptions = [[
   { header: [1, 2, 3, false] },
 ], [
-  'bold', 'italic', 'underline', 'strike',
-], [
-  { list: 'ordered' }, { list: 'bullet' },
-], [
-  'blockquote',
-], [
-  'clean',
+  'bold', 'italic', 'underline', 'strike', 'blockquote', { list: 'ordered' }, { list: 'bullet' }, 'clean'
 ]]
 
 const allowedFormats = [
@@ -48,19 +40,8 @@ const createQuill = (el, placeholder, container, onFullScreen) => {
   })
 
   if (onFullScreen) {
-    const fullScreenSvg = Octicons['device-desktop'].toSVG({
-      height: 30,
-    })
     const fullScreenButton = container.querySelector('.ql-fullscreen')
-    fullScreenButton.title = 'Full-screen writing mode'
-    fullScreenButton.innerHTML = fullScreenSvg
-
-    tooltip({
-      distance: 10,
-      el: fullScreenButton,
-      interactive: false,
-      position: 'top',
-    })
+    fullScreenButton.innerHTML = '<div class="fas fa-expand-arrows-alt"></div>'
   }
 
   return quill

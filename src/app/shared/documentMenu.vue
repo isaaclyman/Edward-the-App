@@ -1,47 +1,51 @@
 <template>
   <div class="menu">
-    <div class="menu-item">
+    <div class="menu-items">
       <document-picker/>
     </div>
-    <div class="menu-item">
+    <div class="menu-items">
       <router-link to="/documentEdit">
-        <button class="menu-button">Edit</button>
+        <button class="menu-button">
+          Edit
+          <div class="fas fa-edit"/>
+        </button>
       </router-link>
       <router-link to="/export">
         <button 
           class="menu-button mobile-hide" 
-          :disabled="!isOnline">Download / Upload</button>
+          :disabled="!isOnline">
+          Download / Upload
+          <div class="fas fa-download"/>
+        </button>
       </router-link>
-      <hr class="vert-flex">
       <button 
         class="menu-button" 
         @click="showWizard()" 
-        :disabled="!isOnline">New</button>
+        :disabled="!isOnline">
+        New
+        <div class="fas fa-plus"/>
+      </button>
     </div>
     <div class="spacer"/>
     <div 
-      class="menu-item" 
-      v-if="notDemo">
-      <a href="/auth#/account">
+      class="menu-items" 
+      v-if="isLimited">
+      <div>Keep your work safe.</div>
+      <a href="/auth#/signup">
         <button 
-          class="menu-button button-green mobile-hide" 
-          :disabled="!isOnline">Upgrade</button>
+          class="menu-button upgrade-button mobile-hide" 
+          :disabled="!isOnline">Upgrade to Author</button>
       </a>
     </div>
     <div 
-      class="menu-item" 
-      v-if="!notDemo">
+      class="menu-items" 
+      v-if="!isLimited && !isGold">
+      <div>Need more space?</div>
       <a href="/auth#/signup">
         <button 
-          class="menu-button button-green mobile-hide" 
-          :disabled="!isOnline">Upgrade</button>
+          class="menu-button upgrade-button mobile-hide" 
+          :disabled="!isOnline">Upgrade to Gold</button>
       </a>
-    </div>
-    <div class="menu-item">
-      <button 
-        class="menu-button" 
-        @click="logOut()" 
-        :disabled="!isOnline">Log Out</button>
     </div>
   </div>
 </template>
@@ -61,8 +65,11 @@ export default {
     isOnline() {
       return this.$store.state.status.status !== Statuses.OFFLINE
     },
-    notDemo() {
-      return this.$store.state.user.user.accountType.name !== 'DEMO'
+    isLimited() {
+      return this.$store.state.user.user.accountType.name === 'LIMITED'
+    },
+    isGold() {
+      return this.$store.state.user.user.accountType.name === 'GOLD'
     }
   },
   data() {
@@ -93,27 +100,67 @@ export default {
 <style scoped>
 .menu {
   align-items: center;
-  background-color: #444;
+  background-color: #F0F0F0;
   display: flex;
   flex-direction: row;
-  height: 30px;
-  padding: 2px 30px;
+  height: 36px;
+  padding: 0px 30px;
   z-index: 100;
 }
 
-.menu-item {
+.menu-items {
   color: #fff;
-  margin: 3px 0;
+  display: flex;
+  height: 100%;
   margin-right: 20px;
 }
 
+.menu-items div {
+  align-items: center;
+  color: #323232;
+  display: flex;
+  flex-direction: row;
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 16px;
+  padding: 0px 8px;
+}
+
+.menu-items a {
+  align-items: center;
+  display: flex;
+  text-decoration: none;
+}
+
 .menu-button {
-  color: #fff;
-  margin: 0 2px;
-  padding: 3px 10px;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  color: #323232;
+  display: flex;
+  font-size: 16px;
+  font-weight: bold;
+  height: 100%;
+  padding: 0px 22px;
+  transition: box-shadow 200ms;
+}
+
+.menu-button:hover {
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+}
+
+.menu-button svg {
+  margin-left: 8px;
 }
 
 .spacer {
   flex: 1;
+}
+
+.menu-button.upgrade-button {
+  background-color: #F47866;
+  border-radius: 4px;
+  color: #323232;
+  height: 30px;
 }
 </style>

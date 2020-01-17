@@ -208,6 +208,7 @@ export default {
 .main-menu--button {
   background-color: transparent;
   border: none;
+  border-radius: 8px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   color: rgba(255, 255, 255, 1);

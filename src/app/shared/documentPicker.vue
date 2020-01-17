@@ -62,9 +62,11 @@ export default {
 
 <style scoped>
 .document-dropdown {
-  background-color: #777;
-  color: #FFF;
-  font-size: 14px;
+  background-color: transparent;
+  border: none;
+  color: #323232;
+  font-size: 16px;
+  font-weight: bold;
   opacity: 1;
   padding: 4px;
 }
@@ -75,6 +77,6 @@ export default {
 
 .document-dropdown /deep/ option {
   background-color: #FFF;
-  color: #000;
+  color: #323232;
 }
 </style>

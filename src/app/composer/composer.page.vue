@@ -64,7 +64,7 @@
               class="switch-label" 
               :class="{ 'active': sidebar === 'outline' }" 
               @click="switchOutline()">
-              <div v-html="outlineSvg"/>
+              <img src="img/icons_outline-green.png">
               <div class="switch-label-text">Outline</div>
             </button>
             <hr class="vert">
@@ -72,8 +72,8 @@
               class="switch-label" 
               :class="{ 'active': sidebar === 'plan' }" 
               @click="switchPlans()">
-              <div v-html="planSvg"/>
-              <div class="switch-label-text">Plans</div>
+              <img src="img/icons_plan-green.png">
+              <div class="switch-label-text">Plan</div>
             </button>
             <template v-if="isPremium">
               <hr class="vert">
@@ -81,23 +81,23 @@
                 class="switch-label" 
                 :class="{ 'active': sidebar === 'workshop' }" 
                 @click="switchWorkshops()">
-                <div v-html="workshopSvg"/>
+                <img src="img/icons_workshops-green.png">
                 <div class="switch-label-text">Workshops</div>
               </button>
             </template>
-          </div>
-          <div class="archived-filter">
-            <input 
-              id="showArchivedTopics" 
-              type="checkbox" 
-              v-model="filters.archived">
-            <label for="showArchivedTopics">Show Archived</label>
           </div>
         </div>
         <!-- Document Plans -->
         <div 
           class="sidebar-content" 
           v-show="sidebar === 'plan'">
+          <div class="archived-filter">
+            <input 
+              id="showArchivedTopics-p" 
+              type="checkbox" 
+              v-model="filters.archived">
+            <label for="showArchivedTopics-p">Show Archived</label>
+          </div>
           <template v-if="hasPlans">
             <plans-list 
               :filter-plans="showPlan" 
@@ -114,6 +114,13 @@
         <div 
           class="sidebar-content" 
           v-show="sidebar === 'outline'">
+          <div class="archived-filter">
+            <input 
+              id="showArchivedTopics-o" 
+              type="checkbox" 
+              v-model="filters.archived">
+            <label for="showArchivedTopics-o">Show Archived</label>
+          </div>
           <template v-if="hasTopics">
             <div class="topic-list-wrap">
               <topic-list 
@@ -133,6 +140,13 @@
         <div 
           class="sidebar-content" 
           v-show="sidebar === 'workshop'">
+          <div class="archived-filter">
+            <input 
+              id="showArchivedTopics-w" 
+              type="checkbox" 
+              v-model="filters.archived">
+            <label for="showArchivedTopics-w">Show Archived</label>
+          </div>
           <template v-if="hasWorkshops">
             <workshop-list 
               ref="workshopList" 
@@ -503,6 +517,7 @@ export default {
 }
 
 .sidebar-wrap {
+  background-color: #F2F9F8;
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -512,51 +527,71 @@ export default {
 
 .sidebar-content {
   overflow: auto;
+  padding: 16px 32px;
 }
 
 .sidebar-options {
   align-items: center;
   display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-  min-height: 60px;
-  max-height: 60px;
+  flex-direction: row;
 }
 
 .plan-switch {
   align-items: center;
   display: flex;
+  flex: 1;
   flex-direction: row;
-  height: 35px;
-  margin-bottom: 6px;
-  margin-top: 6px;
+  height: 94px;
 }
 
 .switch-label {
   align-items: center;
+  background-color: #E4EBEA;
   border: none;
-  color: #888;
+  border-radius: 0;
+  color: #323232;
   cursor: pointer;
   display: flex;
-  fill: #888;
+  fill: #323232;
+  flex: 1;
   flex-direction: column;
   font-size: 16px;
-  margin: 0 4px;
-  transition: color 100ms, fill 100ms;
+  height: 100%;
+  opacity: 1;
+  transition: background-color 200ms, opacity 100ms;
 }
 
-.switch-label:hover {
-  color: #000;
-  fill: #000;
+.switch-label:not(.active):hover {
+  color: #323232;
+  fill: #323232;
+  opacity: 0.7;
 }
 
 .switch-label.active {
-  color: #000;
-  fill: #000;
+  background-color: #F2F9F8;
 }
 
 .switch-label-text {
   margin: 0 12px;
+}
+
+.switch-label + hr.vert {
+  background-color: #FFF;
+  border: none;
+  height: 100%;
+  margin: 0;
+  width: 3px;
+}
+
+.switch-label img {
+  filter: grayscale(100%);
+  height: 36px;
+  margin-bottom: 8px;
+  transition: filter 200ms;
+}
+
+.switch-label.active img {
+  filter: grayscale(0%);
 }
 
 .archived-filter {
@@ -564,7 +599,6 @@ export default {
   align-self: flex-start;
   display: flex;
   flex-direction: row;
-  margin-top: 8px;
 }
 
 .topic-list-wrap {

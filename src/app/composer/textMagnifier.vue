@@ -43,13 +43,17 @@ export default {
         this.cachedHtml = this.html
       }
 
-      let { x: left, y: top } = this.getRelativeCoords(event, this.magnifyEl.getBoundingClientRect())
-      left = this.transformCoord(left, 95)
-      top = this.transformCoord(top, 30)
+      let { x: magLeft, y: magTop } = this.getRelativeCoords(event, this.magnifyEl.getBoundingClientRect())
+      magLeft = this.transformCoord(magLeft, 65)
+      magTop = this.transformCoord(magTop, 30)
 
       const magnifierStyle = this.$refs.magnifier.style
-      magnifierStyle.left = `${left}px`
-      magnifierStyle.top = `${top}px`
+      magnifierStyle.left = `${magLeft}px`
+      magnifierStyle.top = `${magTop}px`
+
+      let { y: wrapTop } = this.getRelativeCoords(event, this.wrapElBoundingClientRect)
+      const wrapStyle = this.$refs.wrap.style
+      wrapStyle.top = `${wrapTop - 60}px`
 
       this.show = true
     },
@@ -106,15 +110,15 @@ export default {
 .magnifier-wrap {
   background-color: #FFF;
   border: 1px solid #CCC;
-  height: 100px;
-  left: 170px;
+  height: 120px;
+  left: 0;
   opacity: 0;
   overflow: hidden;
   pointer-events: none;
   position: absolute;
   top: 0;
   transition: opacity 100ms;
-  width: 200px;
+  width: 300px;
 }
 
 .magnifier-wrap.show {

@@ -9,31 +9,11 @@
         v-html="mapHtml" 
         ref="map"/>
     </div>
-    <button 
-      class="help-icon" 
-      v-html="helpIconSvg" 
-      @click="helpClick"/>
     <text-magnifier 
       :html="mapHtml" 
       :magnify-el="mapNode" 
       :mark="mark" 
       :wrap-el="mapWrapNode"/>
-
-    <!-- [?] Modal -->
-    <div style="display: none">
-      <div 
-        class="help" 
-        ref="helpModal">
-        <p>This is the mini-map. It's the 10,000 foot view of your document. As you write, you'll see it fill up.</p>
-        <p>It has a couple of helpful features:</p>
-        <ul>
-          <li>If you hover your mouse on the mini-map, a magnifier will appear to help you scan through your document quickly.</li>
-          <li>If you click a paragraph in the mini-map, you'll jump to that paragraph in the editor.</li>
-          <li>If you highlight a word in the editor, every appearance of that word will be highlighted in the mini-map.</li>
-          <li>If you click a highlighted word in the mini-map, you'll jump to that word in the editor and highlight it.</li>
-        </ul>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -42,8 +22,6 @@ import './map-shared.css'
 
 import debounce from 'lodash/debounce'
 import Mark from 'mark.js'
-import Octicons from 'octicons'
-import swal from 'sweetalert'
 import TextMagnifier from './textMagnifier.vue'
 
 export default {
@@ -52,12 +30,6 @@ export default {
   },
   data() {
     return {
-      helpIconSvg: Octicons.question.toSVG({
-        class: 'help-icon--svg',
-        height: 20,
-        width: 20,
-      }),
-      helpNode: null,
       mapHtml: '',
       mapNode: null,
       mapWrapNode: null,
@@ -69,12 +41,6 @@ export default {
     }
   },
   methods: {
-    helpClick() {
-      swal({
-        content: this.helpNode,
-        title: 'Tip',
-      })
-    },
     mapClick({ target }) {
       if (target.tagName.toLowerCase() === 'mark') {
         this.markClick({ target })
@@ -122,7 +88,6 @@ export default {
   },
   mounted() {
     this.$nextTick(this.updateMap)
-    this.helpNode = this.$refs.helpModal
     this.markInstance = new Mark(this.$refs.map)
     this.mapNode = this.$refs.map
     this.mapWrapNode = this.$refs.mapWrap
@@ -171,18 +136,7 @@ function getNumberOfWords(str) {
   width: 100%;
 }
 
-.wrap:hover .help-icon {
-  opacity: 1;
-}
-
 .map-inner {
   height: 100%;
-}
-
-.help-icon {
-  opacity: 0;
-  position: absolute;
-  right: 6px;
-  top: 6px;
 }
 </style>

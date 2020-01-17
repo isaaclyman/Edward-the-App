@@ -103,7 +103,6 @@
 </template>
 
 <script>
-import Octicons from 'octicons'
 import OfflineStorage from '../offlineStorage/offlineStorage.vue'
 import { Statuses } from './status.store'
 import StatusSignal from './statusSignal.vue'
@@ -159,13 +158,6 @@ export default {
     tooltip,
   },
   methods: {
-    getIconSvg(iconName) {
-      return Octicons[iconName].toSVG({
-        class: 'main-menu--icon',
-        height: 25,
-        width: 25,
-      })
-    },
     showWorkshops() {
       swal({
         content: this.$refs.workshopsModal,

@@ -187,7 +187,70 @@ input {
 }
 
 input[type="checkbox"] {
-  margin-right: 4px;
+  opacity: 0;
+  position: absolute;
+}
+
+input[type="checkbox"] + label {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  padding: 0;
+  position: relative;
+}
+
+input[type="checkbox"] + label:before {
+  background-color: transparent;
+  border: 2px solid #323232;
+  border-radius: 3px;
+  content: '';
+  display: inline-block;
+  height: 18px;
+  margin-right: 10px;
+  transition: background-color 100ms;
+  vertical-align: text-top;
+  width: 18px;
+}
+
+input[type="checkbox"]:hover + label:before {
+  background-color: #323232;
+}
+
+input[type="checkbox"]:focus + label:before {
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12);
+}
+
+input[type="checkbox"]:checked + label:before {
+  background-color: #323232;
+}
+
+input[type="checkbox"]:disabled + label {
+  color: #b8b8b8;
+  cursor: auto;
+}
+
+input[type="checkbox"]:disabled + label:before {
+  background-color: #ddd;
+  box-shadow: none;
+}
+
+input[type="checkbox"]:checked + label:after {
+  background-color: white;
+  box-shadow: 
+    2px 0 0 white,
+    4px 0 0 white,
+    4px -2px 0 white,
+    4px -4px 0 white,
+    4px -6px 0 white,
+    4px -8px 0 white;
+  content: '';
+  height: 2px;
+  left: 5px;
+  position: absolute;
+  top: 9px;
+  transform: rotate(45deg);
+  width: 2px;
 }
 
 input[type="file"] {

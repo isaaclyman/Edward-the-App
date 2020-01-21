@@ -271,6 +271,7 @@ function getAllOccurrences(regex, str) {
   border: 2px solid #323232;
   border-radius: 8px;
   color: #323232;
+  fill: #323232;
   display: flex;
   font-size: 16px;
   font-weight: bold;
@@ -278,6 +279,20 @@ function getAllOccurrences(regex, str) {
   margin-right: 8px;
   opacity: 1;
   width: 32px;
+}
+
+.ql-formats button.ql-active, .ql-snow .ql-formats button.ql-active {
+  background-color: #323232;
+  color: #F0F0F0;
+  fill: #F0F0F0;
+}
+
+.ql-snow .ql-formats button.ql-active .ql-stroke {
+  stroke: #F0F0F0;
+}
+
+.ql-snow .ql-formats button.ql-active .ql-fill {
+  fill: #F0F0F0;
 }
 
 .ql-formats:nth-of-type(3) {

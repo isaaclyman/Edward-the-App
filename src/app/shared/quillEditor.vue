@@ -266,6 +266,10 @@ function getAllOccurrences(regex, str) {
   font-weight: bold;
 }
 
+.ql-formats, .ql-snow .ql-formats {
+  display: flex;
+}
+
 .ql-formats button, .ql-snow .ql-formats button {
   background-color: #F0F0F0;
   border: 2px solid #323232;
@@ -299,5 +303,6 @@ function getAllOccurrences(regex, str) {
   display: flex;
   flex: 1;
   justify-content: flex-end;
+  margin-right: 0 !important;
 }
 </style>

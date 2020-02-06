@@ -87,10 +87,6 @@ button.button-link[disabled] {
   color: #444;
 }
 
-.button-link-icon {
-  margin-right: 4px;
-}
-
 button.button-red {
   background-color: #e53935 !important;
   border: none;

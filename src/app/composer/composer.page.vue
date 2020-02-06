@@ -607,6 +607,7 @@ export default {
 
 .topic-list-wrap {
   overflow: auto;
+  padding-top: 16px;
 }
 
 /* MOBILE */

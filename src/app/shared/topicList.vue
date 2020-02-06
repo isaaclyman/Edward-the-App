@@ -10,41 +10,49 @@
           {{ getMasterTopic(topic).title }}
         </h5>
         <div class="topic-actions">
+          <button
+            class="topic-action"
+            v-show="!isEditing(index)"
+            @click="editTopic(index)"
+            title="Edit"
+            v-tooltip>
+            <span class="fas fa-edit"/>
+          </button>
+          <button 
+            class="topic-action"
+            v-show="isEditing(index)" 
+            @click="endEditTopic()"
+            title="Save"
+            v-tooltip>
+            <span class="fas fa-check"/>
+          </button>
           <button 
             class="topic-action" 
             v-show="!getMasterTopic(topic).archived" 
-            @click="archiveTopic({ index })">Archive</button>
+            @click="archiveTopic({ index })"
+            title="Archive"
+            v-tooltip>
+            <span class="fas fa-archive"/>
+          </button>
           <button 
             class="topic-action" 
             v-show="getMasterTopic(topic).archived" 
-            @click="restoreTopic({ index })">Restore</button>
+            @click="restoreTopic({ index })"
+            title="Un-archive"
+            v-tooltip>
+            <span class="fas fa-box-open"/>
+          </button>
           <button 
             class="topic-action button-red" 
             v-show="getMasterTopic(topic).archived" 
-            @click="deleteTopic({ index })">Delete Forever</button>
+            @click="deleteTopic({ index })"
+            title="Delete forever"
+            v-tooltip>
+            <span class="fas fa-trash"/>  
+          </button>
         </div>
       </div>
       <div class="topic-content">
-        <div 
-          class="content-actions" 
-          v-if="showActions(topic)">
-          <button 
-            class="button-link" 
-            v-if="!isEditing(index)" 
-            @click="editTopic(index)">
-            <span 
-              class="button-link-icon" 
-              v-html="editSvg"/>Edit
-          </button>
-          <button 
-            class="button-link" 
-            v-if="isEditing(index)" 
-            @click="endEditTopic()">
-            <span 
-              class="button-link-icon" 
-              v-html="doneSvg"/>Done Editing
-          </button>
-        </div>
         <div 
           class="content-static" 
           :class="{ 'space-above': !showActions(topic) }" 
@@ -53,7 +61,7 @@
           <span 
             class="content-placeholder" 
             v-if="showActions(topic) && !getTextContent(topic.content)">
-            No content yet. Click "Edit" to add some.
+            No content yet. Click <span class="fas fa-edit"/> to add some.
           </span>
         </div>
         <div 
@@ -77,13 +85,16 @@ import {
   UPDATE_TOPIC_CONTENT,
 } from '../shared/chapters.store'
 import { GetContentString, GetHtml } from './deltaParser'
-import Octicons from 'octicons'
 import QuillEditor from '../shared/quillEditor.vue'
 import swal from 'sweetalert'
+import tooltip from '../shared/tooltip.directive'
 
 export default {
   components: {
     QuillEditor,
+  },
+  directives: {
+    tooltip
   },
   computed: {
     allChapters() {
@@ -99,15 +110,7 @@ export default {
   },
   data() {
     return {
-      doneSvg: Octicons.check.toSVG({
-        height: 14,
-        width: 14,
-      }),
       editingTopicIndex: -1,
-      editSvg: Octicons.pencil.toSVG({
-        height: 14,
-        width: 14,
-      }),
     }
   },
   methods: {
@@ -206,7 +209,7 @@ export default {
 }
 
 .topic {
-  border: 1px solid rgba(5, 133, 157, 1);
+  border: none;
   border-top: none;
   color: #000;
   margin-bottom: 20px;
@@ -214,34 +217,42 @@ export default {
 
 .topic-head {
   align-items: center;
-  background-color: rgba(5, 133, 157, 1);
+  background-color: #00866F;
   color: #FFF;
   display: flex;
   flex-direction: row;
-  height: 28px;
-  padding: 0 8px;
+  height: 48px;
+  padding-left: 16px;
+  padding-right: 8px;
 }
 
 .topic-title {
   flex: 1;
+  font-size: 16px;
+  font-weight: bold;
   padding: 2px 0;
 }
 
 .topic-actions {
+  display: flex;
+  flex-direction: row;
   height: 100%;
 }
 
 .topic-action {
-  background-color: transparent;
+  align-items: center;
+  background-color: #fff;
   border: none;
-  border-left: 1px solid #fff;
-  border-radius: 0;
-  border-right: 1px solid #fff;
-  color: #FFF;
-  height: 100%;
-  margin-right: 6px;
-  padding: 3px 6px;
+  border-radius: 8px;
+  color: #323232;
+  display: flex;
+  font-size: 16px;
+  justify-content: center;
+  height: 32px;
+  margin: 8px;
+  padding: 0;
   transition: background-color 100ms;
+  width: 32px;
 }
 
 .topic-action:hover {
@@ -249,12 +260,16 @@ export default {
   color: #000;
 }
 
+.topic-action span {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
 .topic-content {
   background-color: #FFF;
-  padding-bottom: 6px;
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 1px;
+  font-size: 16px;
+  padding: 16px;
 }
 
 .content-actions {
@@ -269,8 +284,6 @@ export default {
 }
 
 .content-static {
-  font-family: 'Source Serif Pro', sans-serif;
-  font-size: 13px;
   white-space: pre-wrap;
 }
 

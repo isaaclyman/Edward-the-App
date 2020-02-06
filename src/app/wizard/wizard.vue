@@ -156,7 +156,7 @@ export default {
 }
 
 .header /deep/ a {
-  font-family: 'Khula', sans-serif;
+  font-family: 'Source Serif Pro', sans-serif;
 }
 
 .content {

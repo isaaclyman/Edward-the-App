@@ -223,8 +223,8 @@ function getAllOccurrences(regex, str) {
 
 .ql-editor {
   background-color: transparent;
-  font-family: 'Khula', sans-serif;
-  font-size: 14px;
+  font-family: 'Source Serif Pro', sans-serif;
+  font-size: 16px;
   overflow-wrap: break-word;
   padding: 12px 20px 12px 10px;
   word-break: break-word;

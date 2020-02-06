@@ -491,7 +491,7 @@ export default {
 }
 
 .content-static {
-  font-family: 'Khula', sans-serif;
+  font-family: 'Source Serif Pro', sans-serif;
   font-size: 13px;
   white-space: pre-wrap;
 }

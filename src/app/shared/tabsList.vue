@@ -146,8 +146,8 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   margin-bottom: 16px;
-  max-height: 60px;
-  min-height: 28px;
+  min-height: 40px;
+  max-height: 82px;
   overflow: auto;
 }
 
@@ -160,7 +160,7 @@ export default {
   display: flex;
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   margin-right: 8px;
   opacity: 1;
   padding: 6px 10px;

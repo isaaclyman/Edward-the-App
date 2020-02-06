@@ -102,7 +102,6 @@
               </div>
               <div 
                 class="content-static" 
-                :class="{ 'space-above': section.archived }" 
                 v-if="!isEditing(index)">
                 <div v-html="getHtml(section)"/>
                 <span 
@@ -494,10 +493,6 @@ export default {
   font-family: 'Source Serif Pro', sans-serif;
   font-size: 13px;
   white-space: pre-wrap;
-}
-
-.content-static.space-above {
-  margin-top: 30px;
 }
 
 .content-placeholder {

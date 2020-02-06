@@ -55,7 +55,6 @@
       <div class="topic-content">
         <div 
           class="content-static" 
-          :class="{ 'space-above': !showActions(topic) }" 
           v-if="!isEditing(index)">
           <div v-html="getHtml(topic)"/>
           <span 
@@ -285,10 +284,6 @@ export default {
 
 .content-static {
   white-space: pre-wrap;
-}
-
-.content-static.space-above {
-  margin-top: 30px;
 }
 
 .content-placeholder {

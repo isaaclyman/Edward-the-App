@@ -15,8 +15,9 @@
       v-if="canAdd" 
       @click="showNewItem" 
       class="button-tab add-button" 
-      v-show="!showAddItem" 
-      v-html="addSvg"/>
+      v-show="!showAddItem">
+      <span class="fas fa-plus"/>
+    </button>
     <div 
       class="button-tab add-tab" 
       v-show="showAddItem" 
@@ -28,17 +29,17 @@
         @keyup.enter="addItem">
       <button 
         class="button-green tab-internal-button" 
-        @click="addItem">
-        <span 
-          class="u-center-all icon" 
-          v-html="saveSvg"/> Save
+        @click="addItem"
+        title="Save"
+        v-tooltip="{ arrow: false }">
+        <span class="fas fa-save"/>
       </button>
       <button 
         class="button-red tab-internal-button" 
-        @click="cancelAddItem">
-        <span 
-          class="u-center-all icon" 
-          v-html="cancelSvg"/> Cancel
+        @click="cancelAddItem"
+        title="Cancel"
+        v-tooltip="{ arrow: false }">
+        <span class="fas fa-times-circle"/>
       </button>
     </div>
   </div>
@@ -47,10 +48,14 @@
 <script>
 import Cache from './cache'
 import Octicons from 'octicons'
+import tooltip from '../shared/tooltip.directive'
 
 export default {
   components: {},
   computed: {},
+  directives: {
+    tooltip
+  },
   data() {
     return {
       addSvg: Octicons.plus.toSVG({
@@ -155,10 +160,11 @@ export default {
   display: flex;
   font-size: 16px;
   font-weight: bold;
+  margin-bottom: 4px;
   margin-right: 8px;
   opacity: 1;
   padding: 6px 10px;
-  transition: background-color 100ms, opacity 0.8;
+  transition: background-color 100ms;
 }
 
 .button-tab.active {
@@ -178,21 +184,30 @@ export default {
 }
 
 .tab-input {
-  background-color: rgba(255,255,255,0.8);
-  border: none;
-  height: 20px;
+  background-color: #fff;
+  border: 2px solid #323232;
+  height: 32px;
   margin-right: 6px;
 }
 
 .add-tab {
-  background-color: #CCC;
-  padding: 6px 6px;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.add-tab:hover {
+  opacity: 1 !important;
 }
 
 .tab-internal-button {
+  align-items: center;
   display: flex;
-  fill: #FFF;
-  padding: 2px 8px;
+  color: #fff;
+  height: 32px;
+  justify-content: center;
+  padding: 0;
+  width: 32px;
 }
 
 .tab-internal-button:not(:first-of-type) {

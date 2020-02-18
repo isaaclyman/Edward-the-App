@@ -47,7 +47,6 @@
 
 <script>
 import Cache from './cache'
-import Octicons from 'octicons'
 import tooltip from '../shared/tooltip.directive'
 
 export default {
@@ -58,19 +57,7 @@ export default {
   },
   data() {
     return {
-      addSvg: Octicons.plus.toSVG({
-        height: 16,
-        width: 16,
-      }),
-      cancelSvg: Octicons['circle-slash'].toSVG({
-        height: 16,
-        width: 16,
-      }),
       newItem: '',
-      saveSvg: Octicons.check.toSVG({
-        height: 16,
-        width: 16,
-      }),
       showAddItem: false,
       tabCache: new Cache(`CURRENT_${this.itemName}_TAB`),
     }
@@ -164,7 +151,7 @@ export default {
   margin-right: 8px;
   opacity: 1;
   padding: 6px 10px;
-  transition: background-color 100ms;
+  transition: background-color 100ms, color 100ms;
 }
 
 .button-tab.active {

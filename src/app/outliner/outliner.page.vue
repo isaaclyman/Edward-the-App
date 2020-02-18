@@ -1,6 +1,7 @@
 <template>
   <div class="outliner-wrap">
     <div class="outliner">
+      <h1>Outline</h1>
       <!-- Filters -->
       <div class="filters">
         <input 
@@ -9,15 +10,10 @@
           v-model="filters.archived" >
         <label for="showArchivedCheckbox">Show Archived</label>
       </div>
-      <hr>
       <!-- Chapter Chips -->
       <div class="chips-wrap chapter-chips">
         <div class="section-title">
-          <h3>Chapters</h3>
-          <button 
-            class="help-icon" 
-            v-html="helpIconSvg" 
-            @click="helpClick(helpChapterChipsNode, 'Chapter List')"/>
+          <h3>Add/rearrange chapters</h3>
         </div>
         <chips-list 
           name="Chapter" 
@@ -34,11 +30,7 @@
       <!-- Topic Chips -->
       <div class="chips-wrap topic-chips">
         <div class="section-title">
-          <h3>Topics</h3>
-          <button 
-            class="help-icon" 
-            v-html="helpIconSvg" 
-            @click="helpClick(helpTopicChipsNode, 'Topic List')"/>
+          <h3>Add a topic to all chapters</h3>
         </div>
         <chips-list 
           name="Topic" 
@@ -56,13 +48,6 @@
       <div 
         class="chapters" 
         v-if="viewingChapters.length > 0">
-        <div class="section-title">
-          <h3>Outline</h3>
-          <button 
-            class="help-icon" 
-            v-html="helpIconSvg" 
-            @click="helpClick(helpChapterBlocksNode, 'Outline')"/>
-        </div>
         <!-- Chapters > Topics -->
         <tabs-list 
           :active-index="activeChapterIndex" 
@@ -102,57 +87,6 @@
               :topics="allTopics"/>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Chapters: [?] Modal -->
-    <div style="display: none">
-      <div 
-        class="help" 
-        ref="helpChapterChipsModal">
-        <p>This is the chapter list. It's the easiest place to add, archive, restore, rename, and rearrange chapters.</p>
-        <p>To add a chapter, type its name into the "New Chapter" box and click "Add".</p>
-        <p>
-          To archive a chapter, click the "X" next to its name in the list.
-          Archiving a chapter removes it from your document without deleting it permanently.
-        </p>
-        <p>To restore an archived chapter, check the "Show Archived" box, then click the "+" next to its name in the list.</p>
-        <p>To rename a chapter, click the pencil icon next to its name in the list.</p>
-        <p>To rearrange a chapter, click and drag it to where you want it to go.</p>
-      </div>
-    </div>
-
-    <!-- Topics: [?] Modal -->
-    <div style="display: none">
-      <div 
-        class="help" 
-        ref="helpTopicChipsModal">
-        <p>This is the topic list. It's the easiest place to add, archive, restore, rename, and rearrange topics.</p>
-        <p>To add a topic, type its name into the "New Topic" box and click "Add". It will show up in every chapter in the "Outline" section.</p>
-        <p>
-          To archive a topic, click the "X" next to its name in the list.
-          Archiving a topic removes it from all chapters without deleting it permanently.
-        </p>
-        <p>To restore an archived topic, check the "Show Archived" box, then click the "+" next to its name in the list.</p>
-        <p>To rename a topic, click the pencil icon next to its name in the list.</p>
-        <p>To rearrange a topic, click and drag it to where you want it to go.</p>
-      </div>
-    </div>
-
-    <!-- Chapter blocks: [?] Modal -->
-    <div style="display: none">
-      <div 
-        class="help" 
-        ref="helpChapterBlocksModal">
-        <p>This is where the real work happens. Each of your chapters has a block below, with a section for each topic.</p>
-        <p>
-          A "topic" can be a character arc, a list of subpoints, citations you've found in your research, or really anything
-          that you want to keep handy while you write. Everything you outline here will be visible on the Write page, next to
-          the main editor.
-        </p>
-        <p>
-          You can update these topics any time you want.
-        </p>
       </div>
     </div>
   </div>
@@ -399,6 +333,10 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  margin-bottom: 16px;
+}
+
 .outliner-wrap {
   display: flex;
   justify-content: center;
@@ -406,9 +344,12 @@ export default {
 }
 
 .outliner {
+  background-color: #F2F9F8;
   display: block;
-  flex: 1;
+  height: min-content;
   max-width: 1050px;
+  padding: 32px;
+  width: 100%;
 }
 
 .section-title {
@@ -426,10 +367,8 @@ export default {
 }
 
 .chips-wrap {
-  border-left: 2px solid rgba(5, 133, 157, 0.5);
   margin-bottom: 16px;
   padding-bottom: 4px;
-  padding-left: 8px;
   padding-top: 4px;
 }
 

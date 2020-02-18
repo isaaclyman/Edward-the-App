@@ -2,7 +2,7 @@ import Vue from 'vue'
 import router from './admin/router'
 import Admin from './admin/Admin.vue'
 
-import './main.css'
+import './app.css'
 import './admin/admin.css'
 
 Vue.config.productionTip = false

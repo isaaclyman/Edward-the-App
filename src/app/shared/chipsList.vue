@@ -1,65 +1,73 @@
 <template>
   <div class="chip-list-wrap">
-    <div class="chip-list">
-      <draggable 
-        v-model="reactiveArray" 
-        :options="draggableOptions">
+    <draggable 
+      class="chip-list"
+      v-model="reactiveArray" 
+      :options="draggableOptions">
+      <div 
+        v-for="(chip, index) in reactiveArray" 
+        class="chip" 
+        :class="{ 'light': !isDeletable(chip) }" 
+        v-show="filterChips(chip)"
+        :key="index">
         <div 
-          v-for="(chip, index) in reactiveArray" 
-          class="chip" 
-          :class="{ 'light': !isDeletable(chip) }" 
-          v-show="filterChips(chip)"
-          :key="index">
-          <div 
-            class="chip-content" 
-            v-show="!showChipInput(index)">
-            <span class="chip-draggable">
-              {{ chip[nameProp] }}
-            </span>
-            <button 
-              v-show="isDeletable(chip)" 
-              class="button-icon chip-action-button action-rename" 
-              @click="renameChip(index, chip[nameProp])" 
-              v-html="editSvg"/>
-            <button 
-              v-show="isDeletable(chip)" 
-              class="button-icon chip-action-button action-delete" 
-              @click="deleteChip(index)" 
-              v-html="deleteSvg"/>
-            <button 
-              v-show="!isDeletable(chip)" 
-              class="button-icon chip-action-button action-restore" 
-              @click="restoreChip(index)" 
-              v-html="addSvg"/>
-          </div>
-          <div 
-            class="chip-content" 
-            v-if="showChipInput(index)">
-            <input 
-              class="chip-input" 
-              v-model="chipValues[index]" 
-              @keyup.enter="saveChipValue(index)" 
-              :placeholder="chip[nameProp]">
-            <button 
-              class="button-green chip-add-button" 
-              @click="saveChipValue(index)" 
-              :disabled="!chipValues[index]">
-              <span 
-                class="u-center-all chip-add-svg" 
-                v-html="saveSvg"/> Save
-            </button>
-            <button 
-              class="button-red chip-add-button" 
-              @click="cancelRename(index)">
-              <span 
-                class="u-center-all chip-add-svg" 
-                v-html="cancelSvg"/> Cancel
-            </button>
-          </div>
+          class="chip-content" 
+          v-show="!showChipInput(index)">
+          <span class="chip-draggable">
+            {{ chip[nameProp] }}
+          </span>
+          <button 
+            v-show="isDeletable(chip)" 
+            class="button-icon chip-action-button action-rename"
+            @click="renameChip(index, chip[nameProp])"
+            title="Rename"
+            v-tooltip>
+            <span class="fas fa-edit"/>
+          </button>
+          <button 
+            v-show="isDeletable(chip)" 
+            class="button-icon chip-action-button action-delete" 
+            @click="deleteChip(index)"
+            title="Archive"
+            v-tooltip>
+            <span class="fas fa-archive"/>
+          </button>
+          <button 
+            v-show="!isDeletable(chip)" 
+            class="button-icon chip-action-button action-restore"
+            @click="restoreChip(index)"
+            title="Un-archive"
+            v-tooltip>
+            <span class="fas fa-box-open"/>
+          </button>
         </div>
-      </draggable>
-    </div>
-    <div class="chip">
+        <div 
+          class="chip-content" 
+          v-if="showChipInput(index)">
+          <input 
+            class="chip-internal-input" 
+            v-model="chipValues[index]" 
+            @keyup.enter="saveChipValue(index)" 
+            :placeholder="chip[nameProp]">
+          <button 
+            class="button-green chip-internal-button" 
+            @click="saveChipValue(index)" 
+            :disabled="!chipValues[index]"
+            title="Save"
+            v-tooltip>
+            <span class="u-center-all fas fa-save"/>
+          </button>
+          <button 
+            class="button-red chip-internal-button" 
+            @click="cancelRename(index)"
+            title="Cancel"
+            v-tooltip>
+            <span class="u-center-all fas fa-times-circle"/>
+          </button>
+        </div>
+      </div>
+    </draggable>
+    <div>
       <div class="chip-content">
         <input 
           class="chip-input" 
@@ -70,9 +78,7 @@
           class="button-green chip-add-button" 
           @click="addNewChip" 
           :disabled="!newChip">
-          <span 
-            class="u-center-all chip-add-svg" 
-            v-html="addSvg"/> Add
+          Add
         </button>
       </div>
     </div>
@@ -81,8 +87,8 @@
 
 <script>
 import draggable from 'vuedraggable'
-import Octicons from 'octicons'
 import swal from 'sweetalert'
+import tooltip from '../shared/tooltip.directive'
 
 export default {
   components: {
@@ -103,35 +109,18 @@ export default {
   },
   data() {
     return {
-      addSvg: Octicons.plus.toSVG({
-        height: 14,
-        width: 14,
-      }),
-      cancelSvg: Octicons['circle-slash'].toSVG({
-        height: 14,
-        width: 14,
-      }),
       chipValues: [],
-      deleteSvg: Octicons.x.toSVG({
-        height: 14,
-        width: 14,
-      }),
       draggableOptions: {
         animation: 100,
         draggable: '.chip',
         group: this.name,
         handle: '.chip-draggable',
       },
-      editSvg: Octicons.pencil.toSVG({
-        height: 14,
-        width: 14,
-      }),
-      newChip: '',
-      saveSvg: Octicons.check.toSVG({
-        height: 14,
-        width: 14,
-      }),
+      newChip: ''
     }
+  },
+  directives: {
+    tooltip
   },
   methods: {
     addNewChip() {
@@ -214,6 +203,7 @@ export default {
 <style scoped>
 .chip-list-wrap {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
 }
 
@@ -224,15 +214,25 @@ export default {
 }
 
 .chip {
-  background-color: #CCC;
-  border-radius: 4px;
-  display: inline-block;
-  margin: 2px 3px;
-  padding: 4px 6px;
+  align-items: center;
+  background-color: #323232;
+  border: 2px solid #323232;
+  border-radius: 12px;
+  color: #fff;
+  display: flex;
+  fill: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  margin-right: 8px;
+  opacity: 1;
+  padding: 6px 10px;
+  transition: background-color 100ms, color 100ms;
 }
 
 .chip.light {
   background-color: #DEDEDE;
+  color: #323232;
 }
 
 .chip-content {
@@ -250,15 +250,19 @@ export default {
 }
 
 .chip-input {
-  background-color: rgba(255,255,255,0.8);
-  border: none;
-  height: 20px;
+  background-color: #fff;
+  border: 2px solid #323232;
+  color: #323232;
+  font-weight: bold;
+  height: 36px;
   margin-right: 6px;
+  padding: 8px 12px;
 }
 
 .chip-add-button {
   display: flex;
   fill: #FFF;
+  font-size: 16px;
   padding: 2px 8px;
 }
 
@@ -266,11 +270,32 @@ export default {
   margin-left: 6px;
 }
 
-.chip-add-svg {
+.chip-internal-button {
+  align-items: center;
+  display: flex;
+  font-size: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 32px;
+}
+
+.chip-internal-input {
+  background-color: #fff;
+  border: 2px solid #323232;
+  color: #323232;
+  font-weight: bold;
+  height: 28px;
   margin-right: 6px;
+  padding: 4px 8px;
+}
+
+.chip-internal-button:not(:first-of-type) {
+  margin-left: 6px;
 }
 
 .chip-action-button {
+  color: inherit;
+  font-size: inherit;
   margin-left: 8px;
 }
 </style>

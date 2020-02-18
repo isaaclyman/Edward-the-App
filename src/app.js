@@ -10,7 +10,7 @@ import App from './app/App.vue'
 import './assets/yui-cssreset.css'
 import 'tippy.js/dist/tippy.css'
 
-import './main.css'
+import './app.css'
 import store from './store'
 
 if (window && window.isProd === true) {

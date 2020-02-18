@@ -66,22 +66,22 @@
           </button>
         </div>
       </div>
-    </draggable>
-    <div>
-      <div class="chip-content">
-        <input 
-          class="chip-input" 
-          v-model="newChip" 
-          @keyup.enter="addNewChip" 
-          :placeholder="placeholder">
-        <button 
-          class="button-green chip-add-button" 
-          @click="addNewChip" 
-          :disabled="!newChip">
-          Add
-        </button>
+      <div slot="footer">
+        <div class="chip-content">
+          <input 
+            class="chip-input" 
+            v-model="newChip" 
+            @keyup.enter="addNewChip" 
+            :placeholder="placeholder">
+          <button 
+            class="button-green chip-add-button" 
+            @click="addNewChip" 
+            :disabled="!newChip">
+            Add
+          </button>
+        </div>
       </div>
-    </div>
+    </draggable>
   </div>
 </template>
 
@@ -223,8 +223,7 @@ export default {
   fill: #fff;
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 8px;
-  margin-right: 8px;
+  margin: 4px 8px 4px 0;
   opacity: 1;
   padding: 6px 10px;
   transition: background-color 100ms, color 100ms;

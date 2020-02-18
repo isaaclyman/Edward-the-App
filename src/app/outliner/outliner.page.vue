@@ -1,20 +1,19 @@
 <template>
   <div class="outliner-wrap">
     <div class="outliner">
-      <h1>Outline</h1>
-      <!-- Filters -->
-      <div class="filters">
-        <input 
-          id="showArchivedCheckbox" 
-          type="checkbox" 
-          v-model="filters.archived" >
-        <label for="showArchivedCheckbox">Show Archived</label>
+      <div class="header">
+        <h1 class="header-title">Outline</h1>
+        <div>
+          <input 
+            id="showArchivedCheckbox" 
+            type="checkbox" 
+            v-model="filters.archived" >
+          <label for="showArchivedCheckbox">Show Archived</label>
+        </div>
       </div>
       <!-- Chapter Chips -->
       <div class="chips-wrap chapter-chips">
-        <div class="section-title">
-          <h3>Add/rearrange chapters</h3>
-        </div>
+        <h3>Add/rearrange chapters</h3>
         <chips-list 
           name="Chapter" 
           name-prop="title"
@@ -29,9 +28,7 @@
       </div>
       <!-- Topic Chips -->
       <div class="chips-wrap topic-chips">
-        <div class="section-title">
-          <h3>Add a topic to all chapters</h3>
-        </div>
+        <h3>Add a topic to all chapters</h3>
         <chips-list 
           name="Topic" 
           name-prop="title"
@@ -44,7 +41,7 @@
           @restore="restoreTopic"
           @update="renameTopic"/>
       </div>
-      <hr>
+      <hr class="divider">
       <div 
         class="chapters" 
         v-if="viewingChapters.length > 0">
@@ -59,33 +56,41 @@
         <div 
           class="chapter" 
           v-if="activeChapter">
-          <div 
-            class="chapter-head" 
-            :class="{ 'light': activeChapter.archived }">
-            <h4 class="chapter-title">
+          <div class="chapter-head">
+            <h3 class="chapter-title">
               {{ activeChapter.title }}
-            </h4>
+            </h3>
             <div class="chapter-actions">
               <button 
-                class="chapter-action" 
+                class="chapter-action button-icon" 
                 v-show="!activeChapter.archived" 
-                @click="archiveChapter({ index: activeChapterIndex })">Archive</button>
+                @click="archiveChapter({ index: activeChapterIndex })"
+                title="Archive"
+                v-tooltip>
+                <span class="fas fa-archive"/>
+              </button>
               <button 
-                class="chapter-action" 
+                class="chapter-action button-icon" 
                 v-show="activeChapter.archived" 
-                @click="restoreChapter({ index: activeChapterIndex })">Restore</button>
+                @click="restoreChapter({ index: activeChapterIndex })"
+                title="Un-archive"
+                v-tooltip>
+                <span class="fas fa-box-open"/>  
+              </button>
               <button 
-                class="chapter-action button-red" 
+                class="chapter-action chapter-action-danger button-icon" 
                 v-show="activeChapter.archived" 
-                @click="deleteChapter({ index: activeChapterIndex })">Delete Forever</button>
+                @click="deleteChapter({ index: activeChapterIndex })"
+                title="Delete Forever"
+                v-tooltip>
+                <span class="fas fa-trash"/>
+              </button>
             </div>
           </div>
-          <div class="chapter-content">
-            <topic-list 
-              :chapter="activeChapter" 
-              :filter-topics="showTopic" 
-              :topics="allTopics"/>
-          </div>
+          <topic-list 
+            :chapter="activeChapter" 
+            :filter-topics="showTopic" 
+            :topics="allTopics"/>
         </div>
       </div>
     </div>
@@ -106,6 +111,7 @@ import swal from 'sweetalert'
 import TabsList from '../shared/tabsList.vue'
 import TopicList from '../shared/topicList.vue'
 import { ValidateTitle } from '../shared/validate'
+import tooltip from '../shared/tooltip.directive'
 
 export default {
   components: {
@@ -176,6 +182,9 @@ export default {
       }),
       helpTopicChipsNode: null,
     }
+  },
+  directives: {
+    tooltip
   },
   methods: {
     addChapter(title) {
@@ -347,15 +356,20 @@ h1 {
   background-color: #F2F9F8;
   display: block;
   height: min-content;
+  margin-bottom: 32px;
   max-width: 1050px;
   padding: 32px;
   width: 100%;
 }
 
-.section-title {
+.header {
   align-items: center;
   display: flex;
   flex-direction: row;
+}
+
+.header-title {
+  flex: 1;
 }
 
 .help-icon {
@@ -363,13 +377,11 @@ h1 {
 }
 
 .filters {
-  margin: 10px 0;
+  margin: 16px 0;
 }
 
 .chips-wrap {
-  margin-bottom: 16px;
-  padding-bottom: 4px;
-  padding-top: 4px;
+  margin-bottom: 24px;
 }
 
 .chapters {
@@ -377,37 +389,25 @@ h1 {
 }
 
 .chapter {
-  background-color: #FFF;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  box-shadow: 0px -2px 12px -4px rgba(0, 0, 0, 0.75);
   margin-bottom: 10px;
 }
 
 .chapter-head {
   align-items: center;
-  background-color: rgba(5, 133, 157, 1);
-  border: 1px solid rgba(5, 133, 157, 1);
-  color: #FFF;
   display: flex;
   flex-direction: row;
-  padding: 8px;
-}
-
-.chapter-head.light {
-  background-color: rgba(5, 133, 157, 0.5);
 }
 
 .chapter-title {
-  flex: 1;
-  margin: 0;
+  margin-right: 8px;
 }
 
 .chapter-action {
   background-color: transparent;
-  border-color: #FFF;
-  color: #FFF;
-  margin-right: 6px;
+  color: #323232;
+  margin-left: 16px;
   transition: background-color 100ms;
 }
 
@@ -416,14 +416,8 @@ h1 {
   color: #000;
 }
 
-.chapter-content {
-  background-color: rgba(5, 133, 157, 0.05);
-  border: 1px solid rgba(5, 133, 157, 0.75);
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top: none;
-  padding: 0 8px;
-  padding-top: 20px;
+.chapter-action-danger {
+  color: #e53935;
 }
 </style>
 

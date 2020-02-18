@@ -226,6 +226,7 @@ export default {
 }
 
 .topic-title {
+  color: #fff;
   flex: 1;
   font-size: 16px;
   font-weight: bold;

@@ -2,7 +2,7 @@
 
 html, body {
   font-family: 'Source Serif Pro', sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   height: 100vh;
   margin: 0;
   padding: 0;
@@ -139,7 +139,7 @@ h5 {
 
 hr {
   border: none;
-  border-bottom: 1px solid #CCC;
+  border-bottom: 3px solid #CCC;
   margin: 20px 5px;
 }
 

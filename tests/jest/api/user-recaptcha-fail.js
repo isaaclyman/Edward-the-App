@@ -5,7 +5,7 @@ const user = { email: 'trash@edwardtheapp.com', password: 'thisismysecurepasswor
 
 beforeAll(() => {
   const oldPost = request.post
-  jest.spyOn(request, 'post').mockImplementation(body => {
+  jest.spyOn(request, 'post').mockImplementation(function (body) {
     if (body.uri === 'https://www.google.com/recaptcha/api/siteverify') {
       return Promise.resolve({ success: false })
     }

@@ -138,7 +138,6 @@ import Cache from '../shared/cache'
 import { GetContentString } from '../shared/deltaParser'
 import guid from '../shared/guid'
 import QuillEditor from '../shared/quillEditor.vue'
-import Timer from '../shared/timer.vue'
 import writingWorkshops from '../../../models/writingWorkshop'
 
 const exerciseCache = new Cache('NOVEL_QUICKSTART_CURRENT_EXERCISE')
@@ -146,7 +145,6 @@ const exerciseCache = new Cache('NOVEL_QUICKSTART_CURRENT_EXERCISE')
 export default {
   components: {
     QuillEditor,
-    Timer,
   },
   computed: {
     allWorkshops() {

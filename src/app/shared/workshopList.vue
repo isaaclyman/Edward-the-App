@@ -27,8 +27,7 @@
             v-model="selectedWorkshopGuid"
           >
             <option 
-              v-for="workshop in selectableWorkshops" 
-              v-if="filterWorkshops(workshop)" 
+              v-for="workshop in filteredSelectableWorkshops" 
               :key="workshop.guid" 
               :value="workshop.guid"
             >
@@ -114,6 +113,9 @@ export default {
     },
     activeWorkshopsTitle() {
       return this.firstActiveWorkshop.title
+    },
+    filteredSelectableWorkshops() {
+      return this.selectableWorkshops.filter(w => this.filterWorkshops(w))
     },
     firstActiveWorkshop() {
       return (this.activeWorkshops && this.activeWorkshops.length && this.activeWorkshops[0]) || {}

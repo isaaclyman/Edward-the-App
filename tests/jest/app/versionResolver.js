@@ -87,15 +87,15 @@ test('getMostRecentEach merges two arrays, keeping the most recent version of ea
     })
   
   var fullArr = [obj1, obj2, obj3, obj4, obj5, obj6]
-  for (var obj of fullArr) {
+  for (var objf of fullArr) {
     await wait()
-    VersionResolver.timestamp(obj)
+    VersionResolver.timestamp(objf)
   }
 
   var newArr = [new2, new3, new4]
-  for (var obj of newArr) {
+  for (var objn of newArr) {
     await wait()
-    VersionResolver.timestamp(obj)
+    VersionResolver.timestamp(objn)
   }
 
   var arr1 = [obj1, new2, obj4, obj5]
@@ -103,8 +103,8 @@ test('getMostRecentEach merges two arrays, keeping the most recent version of ea
 
   var result = VersionResolver.getMostRecentEach(arr1, arr2, obj => obj.id, () => {})
 
-  for (var obj of fullArr) {
-    expect(result.some(resultObj => resultObj.id === obj.id)).toBe(true)
+  for (var obje of fullArr) {
+    expect(result.some(resultObj => resultObj.id === obje.id)).toBe(true)
   }
 
   expect(result.find(obj => obj.id === 1).isNew).toBeFalsy()

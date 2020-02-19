@@ -23,7 +23,7 @@ Cypress.Cookies.defaults({
   whitelist: ['connect.sid']
 })
 
-Cypress.on('uncaught:exception', (err, runnable) => {
+Cypress.on('uncaught:exception', (err) => {
   expect(err.message).to.include('setTimeout is not defined')
 
   // return false to prevent the error from

@@ -120,6 +120,7 @@ export default {
         case 'time':
           return 'minute limit'
       }
+      return 'word limit'
     },
     timeDisplay() {
       if (this.secondsRemaining > 30) {

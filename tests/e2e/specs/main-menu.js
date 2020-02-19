@@ -1,7 +1,6 @@
 import { user } from '../../test_util'
 import {
-  createTestChapter, createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium,
-  seed
+  createTestDocument, createTestUser, deleteTestUser, logIn, seed
 } from '../scripts/_util'
 import localForage from 'localforage'
 localForage.setDriver(localForage.INDEXEDDB)

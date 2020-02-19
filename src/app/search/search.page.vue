@@ -290,7 +290,7 @@ export default {
     getMatchingOutlines(query) {
       return this.allChapters.reduce((arr, chapter) => {
         for (const key in chapter.topics) {
-          if (!chapter.topics.prototype.hasOwnProperty(key)) {
+          if (!Object.prototype.hasOwnProperty.call(chapter, key)) {
             continue
           }
 

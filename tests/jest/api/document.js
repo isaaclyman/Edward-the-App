@@ -61,7 +61,7 @@ test('delete a document', async () => {
 
 test('delete a document that has content', async () => {
   const doc = await addDocument(app, 'Test')
-  const chap = await addChapter(app, doc.guid, 'Test Chapter')
+  await addChapter(app, doc.guid, 'Test Chapter')
   await (
     app.post(route('document/delete'))
     .send({ guid: doc.guid })

@@ -1,6 +1,6 @@
 import { user } from '../../test_util'
 import {
-  createTestChapter, createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium,
+  createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium,
   seed
 } from '../scripts/_util'
 import localForage from 'localforage'

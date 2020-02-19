@@ -17,7 +17,7 @@ import { addPlan } from './_plan.helper'
 import { addSection } from './_section.helper'
 import { addWorkshops } from './_workshop.helper'
 
-import localStorage from 'mock-local-storage'
+import 'mock-local-storage'
 
 global.window = {}
 window.localStorage = global.localStorage
@@ -59,7 +59,7 @@ afterEach(async () => {
 })
 
 test('transfer an empty document from API to local storage', async () => {
-  const doc = await addDocument(app, 'Test Document')
+  await addDocument(app, 'Test Document')
   const exported = await app.get(route('backup/export')).expect(200).then(response => response.body)
   await storage.doFullImport(exported)
   await expectOneItemArray(storage.getAllDocuments())
@@ -81,7 +81,7 @@ test('transfer document with content from API to local storage', async done => {
   const chapter = await addChapter(app, doc.guid, 'Test Chapter')
   const plan = await addPlan(app, doc.guid, 'Test Plan')
   const section = await addSection(app, doc.guid, plan.planGuid, 'Test Section')
-  const workshops = await addWorkshops(app, doc.guid)
+  await addWorkshops(app, doc.guid)
   const newChapter = {
     documentGuid: doc.guid,
     chapterGuid: chapter.chapterGuid,

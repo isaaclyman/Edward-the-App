@@ -1,6 +1,6 @@
 import { user, uuid } from '../_imports'
 
-import localStorage from 'mock-local-storage'
+import 'mock-local-storage'
 
 global.window = {}
 window.localStorage = global.localStorage

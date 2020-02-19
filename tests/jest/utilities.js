@@ -3,7 +3,7 @@ import { setTimeout } from 'timers'
 
 const getPromiseFn = (callback, timeout) =>
   () =>
-    new Promise((resolve, reject) =>
+    new Promise((resolve) =>
       setTimeout(() =>
         resolve(callback()), timeout || 10
       )

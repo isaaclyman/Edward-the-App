@@ -1,6 +1,6 @@
 import { user } from '../../test_util'
 import {
-  createTestChapter, createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium,
+  createTestDocument, createTestUser, deleteTestUser, logIn, makeTestUserPremium,
   seed
 } from '../scripts/_util'
 import localForage from 'localforage'
@@ -15,7 +15,6 @@ describe('the page idle watcher (limited)', () => {
     })
   })
   
-  let clock
   beforeEach(() => {
     logIn(cy, user.email, user.password)
 
@@ -23,7 +22,7 @@ describe('the page idle watcher (limited)', () => {
     cy.get('select.document-dropdown').select('test')
     cy.get('.main-menu').should('exist')
 
-    clock = cy.clock()
+    cy.clock()
   })
 
   it('should not appear after 30 minutes on a limited account', () => {

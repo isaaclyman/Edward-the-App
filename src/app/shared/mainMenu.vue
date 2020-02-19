@@ -26,11 +26,25 @@
     </div>
     <div class="extra">
       <status-signal/>
-      <button class="main-menu--button">
+      <button
+        class="main-menu--button"
+        ref="moreButton">
         <img
           src="img/icons_more-white.png"
           class="main-menu--icon">
         <div>More</div>
+        <div
+          ref="moreMenu"
+          style="display: none">
+          <div>
+            <span class="fas fa-search"/>
+            Search
+          </div>
+          <div>
+            <span class="fas fa-hammer"/>
+            Workshop
+          </div>
+        </div>
       </button>
       <button class="main-menu--button">
         <img 
@@ -109,6 +123,7 @@ import StatusSignal from './statusSignal.vue'
 import swal from 'sweetalert'
 import tooltip from './tooltip.directive'
 import writingWorkshops from '../../../models/writingWorkshop'
+import tippy from 'tippy.js'
 
 export default {
   components: {
@@ -156,6 +171,16 @@ export default {
   },
   directives: {
     tooltip,
+  },
+  mounted() {
+    tippy.one(this.$refs.moreButton, {
+      arrow: true,
+      content: this.$refs.moreMenu.innerHTML,
+      distance: 10,
+      interactive: true,
+      placement: 'bottom',
+      trigger: 'click'
+    })
   },
   methods: {
     showWorkshops() {

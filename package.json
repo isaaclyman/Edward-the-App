@@ -107,7 +107,7 @@
     "regenerator-runtime": "^0.12.1",
     "sass-loader": "^8.0.0",
     "supertest": "^3.0.0",
-    "vue-template-compiler": "^2.5.17"
+    "vue-template-compiler": "2.6.11"
   },
   "engines": {
     "node": "^8.11.0",

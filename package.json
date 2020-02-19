@@ -75,7 +75,6 @@
     "vue": "2.6.11",
     "vue-router": "3.0.1",
     "vue-spinner": "1.0.3",
-    "vue-switches": "2.0.1",
     "vuedraggable": "2.23.2",
     "vuex": "3.0.1",
     "vuex-persistedstate": "2.0.0"

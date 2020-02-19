@@ -20,7 +20,7 @@
     "test": "jest -i"
   },
   "dependencies": {
-    "autoprefixer": "7.1.2",
+    "autoprefixer": "9.7.4",
     "axios": "^0.19.0",
     "bcryptjs": "2.4.3",
     "body-parser": "1.18.2",

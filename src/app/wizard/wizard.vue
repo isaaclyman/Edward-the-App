@@ -2,29 +2,27 @@
   <div class="wrap">
     <div class="container">
       <div class="header">
-        <p>
-          <strong>Welcome to Edward.</strong>
-        </p>
+        <h2>Welcome to Edward.</h2>
         <p>
           New here? <a 
             target="_blank" 
             href="https://www.youtube.com/watch?v=OvERL5CPPXM">Watch the introductory video.</a>
         </p>
       </div>
-      <div class="content border-bottom">
+      <div class="content">
         <div v-if="!hasDocuments">
           <p>You haven't created any documents yet.</p>
         </div>
         <div v-if="hasDocuments">
-          <p>Choose a saved document:</p>
-          <div class="document-picker-wrap">
+          <h3>Choose a saved document:</h3>
+          <div class="document-picker">
             <document-picker/>
           </div>
         </div>
       </div>
       <div class="content">
         <div>
-          <p>Create a new document:</p>
+          <h3>Create a new document:</h3>
         </div>
         <div class="types">
           <button 
@@ -33,16 +31,20 @@
             v-for="type in documentTypes" 
             :key="type.name"
             @click="selectDocument(type)">
-            <div v-html="type.svg"/>
+            <div
+              class="type-img"
+              v-html="type.svg"
+            />
             <div>{{ type.name }}</div>
           </button>
         </div>
         <template v-if="selectedType">
           <div class="title">
-            <label for="new-document-title">{{ selectedType.name }} title:</label>
+            <label for="new-document-title">Title</label>
             <input 
-              id="new-document-title" 
-              v-model="title" 
+              id="new-document-title"
+              :placeholder="'My ' + selectedType.name"
+              v-model="title"
               @keyup.enter="createDocument()">
           </div>
           <div class="actions">
@@ -133,17 +135,15 @@ export default {
 }
 
 .container {
-  background-color: #FFF;
-  border-radius: 3px;
-  box-shadow: 0px 0px 15px 2px rgba(136,136,136,1);
+  background-color: #f0f0f0;
   display: block;
   flex: 1;
   margin: 0 auto;
   max-width: 800px;
+  padding: 16px;
 }
 
 .header {
-  border-bottom: 1px solid #CCC;
   display: flex;
   flex-direction: column;
   height: 75px;
@@ -167,12 +167,12 @@ export default {
   margin: 0;
 }
 
-.border-bottom {
-  border-bottom: 1px solid #CCC;
+.document-picker {
+  margin-top: 6px;
 }
 
-.document-picker-wrap {
-  margin-top: 6px;
+.document-picker select {
+  border: 2px solid #323232;
 }
 
 .types {
@@ -182,33 +182,40 @@ export default {
 
 .type {
   align-items: center;
-  background-color: #FFF;
-  border: 2px solid #CCC;
+  background-color: #F0F0F0;
+  border: 2px solid #323232;
   border-radius: 3px;
+  color: #323232;
   cursor: pointer;
   display: flex;
+  fill: #323232;
   flex-direction: column;
   height: 90px;
   justify-content: center;
-  margin-right: 6px;
-  transition: background-color 100ms;
+  margin-right: 12px;
+  transition: background-color 100ms, color 100ms, fill 1000ms;
   padding: 8px;
   width: 90px;
 }
 
-.type:hover {
-  background-color: #F0F0F0;
+.type:not(.selected):hover {
+  background-color: #fff;
 }
 
 .type.selected {
-  background-color: #F0F0F0;
-  border-color: rgb(1,171,109);
+  background-color: #323232;
+  color: #fff;
+  fill: #fff;
+}
+
+.type-img {
+  height: 36px;
 }
 
 .title {
   display: flex;
   flex-direction: column;
-  margin: 8px 0;
+  margin: 16px 0;
   max-width: 500px;
 }
 

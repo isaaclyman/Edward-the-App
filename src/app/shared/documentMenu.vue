@@ -44,7 +44,7 @@
       <a href="/auth#/signup">
         <button 
           class="menu-button upgrade-button mobile-hide" 
-          :disabled="!isOnline">Upgrade to Gold</button>
+          :disabled="!isOnline">Upgrade to Bestseller</button>
       </a>
     </div>
   </div>

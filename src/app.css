@@ -36,7 +36,7 @@ strong {
 
 a:not(.disguised) {
   cursor: pointer;
-  font-size: 14px;
+  font-size: inherit;
   line-height: 21px;
   text-decoration: underline;
 }
@@ -51,10 +51,10 @@ button {
   border: 1px solid #CCC;
   border-radius: 12px;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
   opacity: 1;
-  padding: 16px 32px;
+  padding: 8px 16px;
 }
 
 button.button-green {
@@ -165,10 +165,12 @@ hr.vert-flex {
 }
 
 input {
-  border: 1px solid rgba(13, 91, 166, 0.5);
+  border: 2px solid #323232;
   border-radius: 2px;
+  color: #323232;
   font-size: 16px;
-  padding: 4px;
+  font-weight: bold;
+  padding: 8px 12px;
 }
 
 input[type="checkbox"] {

@@ -2,45 +2,52 @@
   <idle-watcher>
     <transition 
       name="wrapper" 
-      mode="out-in">
+      mode="out-in"
+    >
       <div 
         id="app" 
         class="app" 
         v-if="loaded && currentDocument && currentDocument.guid" 
-        key="app">
-        <document-menu/>
+        key="app"
+      >
+        <document-menu />
         <div class="app-header">
           <div class="logo-wrap">
             <img 
               class="logo" 
-              src="../../public/img/main-logo.png">
+              src="../../public/img/main-logo.png"
+            >
           </div>
           <div class="app-header--menu">
-            <main-menu/>
+            <main-menu />
           </div>
         </div>
         <div class="page">
           <transition 
             name="wrapper" 
-            mode="out-in">
-            <router-view/>
+            mode="out-in"
+          >
+            <router-view />
           </transition>
         </div>
       </div>
       <div 
         v-else-if="!loaded" 
         class="loading" 
-        key="loading">
+        key="loading"
+      >
         <img 
           class="logo" 
-          src="../../public/img/modal-logo.png">
-        <pulse-loader/>
+          src="../../public/img/modal-logo.png"
+        >
+        <pulse-loader />
       </div>
       <div 
         v-else 
         class="page" 
-        key="wizard">
-        <wizard/>
+        key="wizard"
+      >
+        <wizard />
       </div>
     </transition>
   </idle-watcher>

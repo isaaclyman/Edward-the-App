@@ -3,16 +3,19 @@
     <draggable 
       class="chip-list"
       v-model="reactiveArray" 
-      :options="draggableOptions">
+      :options="draggableOptions"
+    >
       <div 
         v-for="(chip, index) in reactiveArray" 
         class="chip" 
         :class="{ 'light': !isDeletable(chip) }" 
         v-show="filterChips(chip)"
-        :key="index">
+        :key="index"
+      >
         <div 
           class="chip-content" 
-          v-show="!showChipInput(index)">
+          v-show="!showChipInput(index)"
+        >
           <span class="chip-draggable">
             {{ chip[nameProp] }}
           </span>
@@ -21,48 +24,55 @@
             class="button-icon chip-action-button action-rename"
             @click="renameChip(index, chip[nameProp])"
             title="Rename"
-            v-tooltip>
-            <span class="fas fa-edit"/>
+            v-tooltip
+          >
+            <span class="fas fa-edit" />
           </button>
           <button 
             v-show="isDeletable(chip)" 
             class="button-icon chip-action-button action-delete" 
             @click="deleteChip(index)"
             title="Archive"
-            v-tooltip>
-            <span class="fas fa-archive"/>
+            v-tooltip
+          >
+            <span class="fas fa-archive" />
           </button>
           <button 
             v-show="!isDeletable(chip)" 
             class="button-icon chip-action-button action-restore"
             @click="restoreChip(index)"
             title="Un-archive"
-            v-tooltip>
-            <span class="fas fa-box-open"/>
+            v-tooltip
+          >
+            <span class="fas fa-box-open" />
           </button>
         </div>
         <div 
           class="chip-content" 
-          v-if="showChipInput(index)">
+          v-if="showChipInput(index)"
+        >
           <input 
             class="chip-internal-input" 
             v-model="chipValues[index]" 
             @keyup.enter="saveChipValue(index)" 
-            :placeholder="chip[nameProp]">
+            :placeholder="chip[nameProp]"
+          >
           <button 
             class="button-green chip-internal-button" 
             @click="saveChipValue(index)" 
             :disabled="!chipValues[index]"
             title="Save"
-            v-tooltip>
-            <span class="u-center-all fas fa-save"/>
+            v-tooltip
+          >
+            <span class="u-center-all fas fa-save" />
           </button>
           <button 
             class="button-red chip-internal-button" 
             @click="cancelRename(index)"
             title="Cancel"
-            v-tooltip>
-            <span class="u-center-all fas fa-times-circle"/>
+            v-tooltip
+          >
+            <span class="u-center-all fas fa-times-circle" />
           </button>
         </div>
       </div>
@@ -72,11 +82,13 @@
             class="chip-input" 
             v-model="newChip" 
             @keyup.enter="addNewChip" 
-            :placeholder="placeholder">
+            :placeholder="placeholder"
+          >
           <button 
             class="button-green chip-add-button" 
             @click="addNewChip" 
-            :disabled="!newChip">
+            :disabled="!newChip"
+          >
             Add
           </button>
         </div>

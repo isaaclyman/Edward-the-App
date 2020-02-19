@@ -1,13 +1,13 @@
 <template>
   <div class="wrap">
     <div v-if="!error && !success">
-      <pulse-loader/>
+      <pulse-loader />
     </div>
     <div v-if="error">
       <h4>
         Email failed to send.
       </h4>
-      <p v-text="error"/>
+      <p v-text="error" />
     </div>
     <div v-if="success">
       <h4>

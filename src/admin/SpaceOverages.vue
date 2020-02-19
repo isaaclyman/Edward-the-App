@@ -8,7 +8,8 @@
       </p>
       <div 
         v-for="user in overages.premiums" 
-        :key="user.id">
+        :key="user.id"
+      >
         <p>
           email: {{ user.email }} | id: {{ user.id }} | space: {{ user.space_used }}
         </p>
@@ -18,7 +19,8 @@
       </p>
       <div 
         v-for="user in overages.golds" 
-        :key="user.id">
+        :key="user.id"
+      >
         <p>
           email: {{ user.email }} | id: {{ user.id }} | space: {{ user.space_used }}
         </p>
@@ -27,7 +29,8 @@
     <div 
       class="error" 
       v-if="error" 
-      v-text="error"/>
+      v-text="error"
+    />
   </div>
 </template>
 

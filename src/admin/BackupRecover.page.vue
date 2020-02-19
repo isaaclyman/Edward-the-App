@@ -7,12 +7,16 @@
       <p>Enter user ID:</p>
       <input 
         type="number" 
-        v-model="userId">
+        v-model="userId"
+      >
     </div>
     <div v-if="userId">
       <button 
         class="button-green" 
-        @click="getBackup()">Get backup for this user</button>
+        @click="getBackup()"
+      >
+        Get backup for this user
+      </button>
     </div>
     <div v-if="userId">
       <label for="dataRecoveryUpload">Upload a backup for this user: </label>
@@ -20,7 +24,8 @@
         id="dataRecoveryUpload" 
         type="file" 
         accept=".json" 
-        @change="setFile">
+        @change="setFile"
+      >
     </div>
   </div>
 </template>

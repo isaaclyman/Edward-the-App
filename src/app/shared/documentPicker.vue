@@ -3,14 +3,19 @@
     class="document-dropdown" 
     v-model="documentValue" 
     @change="changeDocument" 
-    :disabled="!isOnline">
+    :disabled="!isOnline"
+  >
     <option 
       v-if="!currentDocument" 
-      value="">No document selected</option>
+      value=""
+    >
+      No document selected
+    </option>
     <option 
       v-for="document in allDocuments" 
       :key="document.guid" 
-      :value="document.guid">
+      :value="document.guid"
+    >
       {{ document.name }}
     </option>
   </select>

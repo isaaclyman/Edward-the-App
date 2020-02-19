@@ -4,7 +4,8 @@
       class="topic" 
       v-for="(topic, index) in chapterTopics" 
       v-show="showTopic(topic)" 
-      :key="topic.guid">
+      :key="topic.guid"
+    >
       <div class="topic-head">
         <h5 class="topic-title">
           {{ getMasterTopic(topic).title }}
@@ -15,63 +16,72 @@
             v-show="!isEditing(index)"
             @click="editTopic(index)"
             title="Edit"
-            v-tooltip>
-            <span class="fas fa-edit"/>
+            v-tooltip
+          >
+            <span class="fas fa-edit" />
           </button>
           <button 
             class="topic-action"
             v-show="isEditing(index)" 
             @click="endEditTopic()"
             title="Save"
-            v-tooltip>
-            <span class="fas fa-check"/>
+            v-tooltip
+          >
+            <span class="fas fa-check" />
           </button>
           <button 
             class="topic-action" 
             v-show="!getMasterTopic(topic).archived" 
             @click="archiveTopic({ index })"
             title="Archive"
-            v-tooltip>
-            <span class="fas fa-archive"/>
+            v-tooltip
+          >
+            <span class="fas fa-archive" />
           </button>
           <button 
             class="topic-action" 
             v-show="getMasterTopic(topic).archived" 
             @click="restoreTopic({ index })"
             title="Un-archive"
-            v-tooltip>
-            <span class="fas fa-box-open"/>
+            v-tooltip
+          >
+            <span class="fas fa-box-open" />
           </button>
           <button 
             class="topic-action button-red" 
             v-show="getMasterTopic(topic).archived" 
             @click="deleteTopic({ index })"
             title="Delete forever"
-            v-tooltip>
-            <span class="fas fa-trash"/>  
+            v-tooltip
+          >
+            <span class="fas fa-trash" />  
           </button>
         </div>
       </div>
       <div class="topic-content">
         <div 
           class="content-static" 
-          v-if="!isEditing(index)">
-          <div v-html="getHtml(topic)"/>
+          v-if="!isEditing(index)"
+        >
+          <div v-html="getHtml(topic)" />
           <span 
             class="content-placeholder" 
-            v-if="showActions(topic) && !getTextContent(topic.content)">
-            No content yet. Click <span class="fas fa-edit"/> to add some.
+            v-if="showActions(topic) && !getTextContent(topic.content)"
+          >
+            No content yet. Click <span class="fas fa-edit" /> to add some.
           </span>
         </div>
         <div 
           class="content-editable" 
-          v-show="isEditing(index)">
+          v-show="isEditing(index)"
+        >
           <quill-editor 
             :content="topic.content" 
             :content-id="chapter.guid" 
             ref="quillEditor" 
             @update:content="updateContent(topic, $event)"
-            @shortcut:done="endEditTopic()"/>
+            @shortcut:done="endEditTopic()"
+          />
         </div>
       </div>
     </div>

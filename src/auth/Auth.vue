@@ -1,10 +1,12 @@
 <template>
   <div 
     id="app" 
-    class="app">
+    class="app"
+  >
     <div 
       class="error" 
-      v-if="incompatible">
+      v-if="incompatible"
+    >
       <p>
         This web browser does not support all the features of Edward.
         For the best experience, the latest version of <a href="https://www.google.com/chrome/">Google Chrome</a> is recommended.
@@ -13,16 +15,18 @@
     <div class="page">
       <div 
         class="logo" 
-        @click="goToLogin()">
+        @click="goToLogin()"
+      >
         <img src="../../public/img/modal-logo@2x.png">
       </div>
-      <router-view/>
+      <router-view />
     </div>
     <div class="footer">
       <p class="footer-text">
         Edward the App © 2018 by <a 
           class="footer-link" 
-          href="http://isaaclyman.com">Novelist LLC</a>.
+          href="http://isaaclyman.com"
+        >Novelist LLC</a>.
       </p>
     </div>
   </div>

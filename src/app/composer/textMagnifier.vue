@@ -2,13 +2,16 @@
   <div 
     class="magnifier-wrap" 
     :class="{ 'show': show }" 
-    ref="wrap">
+    ref="wrap"
+  >
     <div 
       class="magnifier" 
-      ref="magnifier">
+      ref="magnifier"
+    >
       <div 
         class="magnifier-content map" 
-        ref="magnifierContent"/>
+        ref="magnifierContent"
+      />
     </div>
   </div>
 </template>

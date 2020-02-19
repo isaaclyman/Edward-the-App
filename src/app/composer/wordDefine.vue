@@ -2,21 +2,25 @@
   <div>
     <div 
       class="actions" 
-      v-show="showActions">
+      v-show="showActions"
+    >
       <div 
         class="define-icon" 
-        v-html="defineIcon"/>
+        v-html="defineIcon"
+      />
       <div class="define-buttons">
         <a 
           class="define-link" 
           :href="gDefineUrl" 
-          target="_blank">
+          target="_blank"
+        >
           <button class="define-button">Define</button>
         </a>
         <a 
           class="define-link" 
           :href="gSynonymUrl" 
-          target="_blank">
+          target="_blank"
+        >
           <button class="define-button">Synonyms</button>
         </a>
       </div>

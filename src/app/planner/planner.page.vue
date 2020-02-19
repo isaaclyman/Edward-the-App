@@ -7,7 +7,8 @@
           class="show-archived" 
           id="showArchivedCheckbox" 
           type="checkbox" 
-          v-model="filters.archived" >
+          v-model="filters.archived"
+        >
         <label for="showArchivedCheckbox">Show Archived</label>
       </div>
       <hr>
@@ -18,7 +19,8 @@
           <button 
             class="help-icon" 
             v-html="helpIconSvg" 
-            @click="helpClick(helpPlanChipsModal, 'Plan List')"/>
+            @click="helpClick(helpPlanChipsModal, 'Plan List')"
+          />
         </div>
         <chips-list 
           name="Plan" 
@@ -30,20 +32,23 @@
           @delete="archivePlan"
           @rearrange="rearrangePlan"
           @restore="restorePlan"
-          @update="renamePlan"/>
+          @update="renamePlan"
+        />
       </div>
       <hr>
       <plans-list 
         ref="plansList" 
         :filter-plans="showPlan" 
-        :filter-sections="showSection"/>
+        :filter-sections="showSection"
+      />
     </div>
 
     <!-- Plans: [?] Modal -->
     <div style="display: none">
       <div 
         class="help" 
-        ref="helpPlanChipsModal">
+        ref="helpPlanChipsModal"
+      >
         <p>This is the plan list. It's the easiest place to add, archive, restore, rename, and rearrange plans.</p>
         <p>To add a plan, type its name into the "New Plan" box and click "Add".</p>
         <p>

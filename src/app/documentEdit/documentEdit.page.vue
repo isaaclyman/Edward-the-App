@@ -9,23 +9,31 @@
       <div class="actions">
         <label 
           class="name-label" 
-          for="documentNameInput">Change document name:</label>
+          for="documentNameInput"
+        >Change document name:</label>
         <div>
           <input 
             class="name-input" 
             id="documentNameInput" 
             type="text" 
-            v-model="newDocumentName">
+            v-model="newDocumentName"
+          >
           <button 
             class="button-green" 
-            @click="saveDocumentName()">Save</button>
+            @click="saveDocumentName()"
+          >
+            Save
+          </button>
         </div>
       </div>
       <hr>
       <div class="actions">
         <button 
           class="button-red" 
-          @click="deleteDocument()">Delete Document</button>
+          @click="deleteDocument()"
+        >
+          Delete Document
+        </button>
       </div>
     </div>
   </div>

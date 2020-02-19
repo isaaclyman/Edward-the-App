@@ -56,12 +56,12 @@ module.exports = {
 
   // A set of global variables that need to be available in all test environments
   globals: {
-    "NODE_ENV": "test"
+    'NODE_ENV': 'test'
   },
 
   // An array of directory names to be searched recursively up from the requiring module's location
   moduleDirectories: [
-    "node_modules"
+    'node_modules'
   ],
 
   // An array of file extensions your modules use
@@ -126,7 +126,7 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "node",
+  testEnvironment: 'node',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -136,14 +136,14 @@ module.exports = {
 
   // The glob patterns Jest uses to detect test files
   testMatch: [
-    "<rootDir>/tests/jest/**/*.js",
-    "!<rootDir>/tests/jest/**/_*.js"
+    '<rootDir>/tests/jest/**/*.js',
+    '!<rootDir>/tests/jest/**/_*.js'
   ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
-    "\\\\node_modules\\\\",
-    "\\_.*\.js$"
+    '\\\\node_modules\\\\',
+    '\\_.*\.js$'
   ],
 
   // The regexp pattern Jest uses to detect test files

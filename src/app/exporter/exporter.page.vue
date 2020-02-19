@@ -3,37 +3,43 @@
     <div class="exporter">
       <div class="export-option">
         <h3>Export to PDF</h3>
-        <pulse-loader v-if="loading"/>
+        <pulse-loader v-if="loading" />
         <div class="export-checkbox">
           <input 
             id="pdfIncludeArchived" 
             v-if="!loading" 
             type="checkbox" 
-            v-model="pdfIncludeArchived">
+            v-model="pdfIncludeArchived"
+          >
           <label 
             for="pdfIncludeArchived" 
-            v-if="!loading">Include Archived</label>
+            v-if="!loading"
+          >Include Archived</label>
         </div>
         <template v-if="!loading">
           <button 
             class="button-green export-button" 
-            @click="exportPdfChapters()">
+            @click="exportPdfChapters()"
+          >
             Export all chapters
           </button>
           <button 
             class="button-green export-button" 
-            @click="exportPdfPlans()">
+            @click="exportPdfPlans()"
+          >
             Export all plans
           </button>
           <button 
             class="button-green export-button" 
-            @click="exportPdfOutlines()">
+            @click="exportPdfOutlines()"
+          >
             Export all outlines
           </button>
           <button 
             v-if="isPremium" 
             class="button-green export-button" 
-            @click="exportPdfWorkshops()">
+            @click="exportPdfWorkshops()"
+          >
             Export all workshops
           </button>
         </template>
@@ -41,21 +47,24 @@
       <div class="export-option">
         <h3>Export to Microsoft Word document</h3>
         <div>(Author subscriptions only)</div>
-        <pulse-loader v-if="loading"/>
+        <pulse-loader v-if="loading" />
         <div class="export-checkbox">
           <input 
             id="wordIncludeArchived" 
             v-if="!loading" 
             type="checkbox" 
-            v-model="wordIncludeArchived">
+            v-model="wordIncludeArchived"
+          >
           <label 
             for="wordIncludeArchived" 
-            v-if="!loading">Include Archived</label>
+            v-if="!loading"
+          >Include Archived</label>
         </div>
         <template v-if="!loading">
           <button 
             class="button-green export-button" 
-            @click="exportWordChapters()">
+            @click="exportWordChapters()"
+          >
             Export all chapters
           </button>
         </template>
@@ -63,33 +72,37 @@
       <div class="export-option">
         <h3>Create a backup</h3>
         <div>(You can recover your document from this file later.)</div>
-        <pulse-loader v-if="loading"/>
+        <pulse-loader v-if="loading" />
         <button 
           v-if="!loading" 
           class="button-green export-button" 
-          @click="exportJsonDocument()">
+          @click="exportJsonDocument()"
+        >
           Export entire document
         </button>
       </div>
       <div 
         class="export-option" 
-        v-if="isOnline">
+        v-if="isOnline"
+      >
         <h3>Import a backup</h3>
         <div>
           (Warning: This will overwrite the current document completely, including all chapters, plans, outlines and workshops.)
         </div>
         <div class="file-input-container">
-          <pulse-loader v-if="loading"/>
+          <pulse-loader v-if="loading" />
           <template v-if="!loading">
             <label 
               for="import-file-picker" 
-              class="file-input-label"/>
+              class="file-input-label"
+            />
             <input 
               id="import-file-picker" 
               class="file-input" 
               type="file" 
               accept=".json" 
-              @change="setFile">
+              @change="setFile"
+            >
             <button class="button-green export-button file-dummy-button">
               Import entire document
             </button>

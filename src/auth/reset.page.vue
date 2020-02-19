@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <div v-if="authLoading">
-      <pulse-loader/>
+      <pulse-loader />
     </div>
     <div v-if="!authFailed && !authLoading">
       <h3>Let's change your password.</h3>
@@ -13,14 +13,16 @@
           class="password-input" 
           type="password" 
           v-model="password"
-          placeholder="Type your new password here">
+          placeholder="Type your new password here"
+        >
       </div>
       <div v-if="resetLoading">
-        <pulse-loader/>
+        <pulse-loader />
       </div>
       <div 
         class="error" 
-        v-if="resetFailed">
+        v-if="resetFailed"
+      >
         <p>
           Password reset failed.
         </p>
@@ -30,32 +32,44 @@
       </div>
       <div 
         class="success" 
-        v-if="success">
+        v-if="success"
+      >
         Password changed!
       </div>
       <div class="actions">
         <button 
           v-if="!success" 
           class="button-green submit-button" 
-          @click="submit()">Set password</button>
+          @click="submit()"
+        >
+          Set password
+        </button>
         <button 
           v-if="success" 
           class="button-green finish-button" 
-          @click="finish()">Go to the app</button>
+          @click="finish()"
+        >
+          Go to the app
+        </button>
       </div>
     </div>
     <div
       v-if="authFailed"
-      class="failed">
+      class="failed"
+    >
       <h3>This link doesn't work.</h3>
       <p>
         If you're trying to reset your password, please go back to the
-        <router-link to="/forgot">Forgot Password</router-link> screen and try again.
+        <router-link to="/forgot">
+          Forgot Password
+        </router-link> screen and try again.
       </p>
     </div>
     <div class="cancel">
       <router-link to="/login">
-        <button class="button-link">Back to login</button>
+        <button class="button-link">
+          Back to login
+        </button>
       </router-link>
     </div>
   </div>

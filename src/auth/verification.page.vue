@@ -2,12 +2,14 @@
   <div class="wrap">
     <div 
       class="content" 
-      v-if="!email">
-      <pulse-loader/>
+      v-if="!email"
+    >
+      <pulse-loader />
     </div>
     <div 
       class="content" 
-      v-if="email">
+      v-if="email"
+    >
       <h1>You're almost done.</h1>
       <p>
         Before you can use Edward, you'll need to verify your email address. We've sent a link to {{ email }}.
@@ -20,7 +22,8 @@
         <button 
           class="button-green" 
           @click="sendLink()" 
-          v-if="!sent">
+          v-if="!sent"
+        >
           Send email
         </button>
         <p v-if="sent">
@@ -28,7 +31,8 @@
         </p>
         <p 
           class="error" 
-          v-if="error">
+          v-if="error"
+        >
           That didn't work. Please try again later or contact <a href="mailto:support@edwardtheapp.com">support@edwardtheapp.com</a>.
         </p>
       </div>
@@ -37,7 +41,9 @@
       </p>
       <div>
         <router-link to="/login">
-          <button class="button-link">Log out</button>
+          <button class="button-link">
+            Log out
+          </button>
         </router-link>
       </div>
     </div>

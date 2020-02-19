@@ -8,7 +8,10 @@
       <button 
         v-if="!begun" 
         class="begin button-green" 
-        @click="begin()">Begin</button>
+        @click="begin()"
+      >
+        Begin
+      </button>
       <div v-if="begun && !finished">
         <div class="prompt">
           <p>
@@ -22,12 +25,16 @@
           <quill-editor 
             :content="content" 
             @update:content="updateContent($event)" 
-            ref="quillEditor"/>
+            ref="quillEditor"
+          />
         </div>
         <div class="actions">
           <button 
             class="done button-green" 
-            @click="finish()">Done</button>
+            @click="finish()"
+          >
+            Done
+          </button>
         </div>
       </div>
       <div v-else-if="finished">
@@ -41,7 +48,10 @@
         </p>
         <button 
           class="button-green" 
-          @click="reset()">Start over</button>
+          @click="reset()"
+        >
+          Start over
+        </button>
       </div>
     </div>
   </div>

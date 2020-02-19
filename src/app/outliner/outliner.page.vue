@@ -2,12 +2,15 @@
   <div class="outliner-wrap">
     <div class="outliner">
       <div class="header">
-        <h1 class="header-title">Outline</h1>
+        <h1 class="header-title">
+          Outline
+        </h1>
         <div>
           <input 
             id="showArchivedCheckbox" 
             type="checkbox" 
-            v-model="filters.archived" >
+            v-model="filters.archived"
+          >
           <label for="showArchivedCheckbox">Show Archived</label>
         </div>
       </div>
@@ -24,7 +27,8 @@
           @delete="archiveChapter"
           @rearrange="rearrangeChapter"
           @restore="restoreChapter"
-          @update="renameChapter"/>
+          @update="renameChapter"
+        />
       </div>
       <!-- Topic Chips -->
       <div class="chips-wrap topic-chips">
@@ -39,12 +43,14 @@
           @delete="archiveTopic"
           @rearrange="rearrangeTopic"
           @restore="restoreTopic"
-          @update="renameTopic"/>
+          @update="renameTopic"
+        />
       </div>
       <hr class="divider">
       <div 
         class="chapters" 
-        v-if="viewingChapters.length > 0">
+        v-if="viewingChapters.length > 0"
+      >
         <!-- Chapters > Topics -->
         <tabs-list 
           :active-index="activeChapterIndex" 
@@ -52,10 +58,12 @@
           :filter-tabs="showChapter"
           item-name="Chapter"
           @add="addChapter"
-          @update:activeIndex="selectChapter"/>
+          @update:activeIndex="selectChapter"
+        />
         <div 
           class="chapter" 
-          v-if="activeChapter">
+          v-if="activeChapter"
+        >
           <div class="chapter-head">
             <h3 class="chapter-title">
               {{ activeChapter.title }}
@@ -66,31 +74,35 @@
                 v-show="!activeChapter.archived" 
                 @click="archiveChapter({ index: activeChapterIndex })"
                 title="Archive"
-                v-tooltip>
-                <span class="fas fa-archive"/>
+                v-tooltip
+              >
+                <span class="fas fa-archive" />
               </button>
               <button 
                 class="chapter-action button-icon" 
                 v-show="activeChapter.archived" 
                 @click="restoreChapter({ index: activeChapterIndex })"
                 title="Un-archive"
-                v-tooltip>
-                <span class="fas fa-box-open"/>  
+                v-tooltip
+              >
+                <span class="fas fa-box-open" />  
               </button>
               <button 
                 class="chapter-action chapter-action-danger button-icon" 
                 v-show="activeChapter.archived" 
                 @click="deleteChapter({ index: activeChapterIndex })"
                 title="Delete Forever"
-                v-tooltip>
-                <span class="fas fa-trash"/>
+                v-tooltip
+              >
+                <span class="fas fa-trash" />
               </button>
             </div>
           </div>
           <topic-list 
             :chapter="activeChapter" 
             :filter-topics="showTopic" 
-            :topics="allTopics"/>
+            :topics="allTopics"
+          />
         </div>
       </div>
     </div>

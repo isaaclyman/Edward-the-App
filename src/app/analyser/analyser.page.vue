@@ -12,13 +12,15 @@
           :class="{ 'button-green': currentAnalysis === analysis }"
           @click="selectAnalysis(analysis)" 
           :title="analysis.description" 
-          v-tooltip>
+          v-tooltip
+        >
           {{ analysis.title }}
         </button>
       </div>
       <div 
         class="analysis-inputs" 
-        v-if="currentAnalysis">
+        v-if="currentAnalysis"
+      >
         <template v-if="showInputs">
           <h4 class="analysis-title">
             Enter desired inputs:
@@ -26,20 +28,26 @@
           <div 
             class="analysis-input" 
             v-for="(input, index) in currentAnalysis.inputs" 
-            :key="index">
+            :key="index"
+          >
             <label :for="getInputId(input)">{{ input }}</label>
             <input 
               :id="getInputId(input)" 
-              v-model="currentAnalysis.args[input]">
+              v-model="currentAnalysis.args[input]"
+            >
           </div>
         </template>
         <button 
           class="analysis-button button-green" 
-          @click="runAnalysis(currentAnalysis)">Run the analysis</button>
+          @click="runAnalysis(currentAnalysis)"
+        >
+          Run the analysis
+        </button>
       </div>
       <div 
         class="results" 
-        ref="results"/>
+        ref="results"
+      />
     </div>
   </div>
 </template>

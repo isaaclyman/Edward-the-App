@@ -6,12 +6,14 @@
     @click.passive="resetIdleTime()"
     @mousemove.passive="resetIdleTime()"
     @scroll.passive="resetIdleTime()"
-    @keypress.passive="resetIdleTime()">
-    <slot/>
+    @keypress.passive="resetIdleTime()"
+  >
+    <slot />
   </div>
   <div 
     class="page-wrap" 
-    v-else>
+    v-else
+  >
     <div class="idle-page">
       <div class="idle-message">
         <h4>
@@ -24,10 +26,16 @@
         <div class="actions">
           <button 
             class="button-green reload-button" 
-            @click="reload()">Reload</button>
+            @click="reload()"
+          >
+            Reload
+          </button>
           <button 
             class="button-red cancel-button" 
-            @click="backToApp()">Back to the app</button>
+            @click="backToApp()"
+          >
+            Back to the app
+          </button>
         </div>
       </div>
     </div>

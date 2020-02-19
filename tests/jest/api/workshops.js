@@ -37,7 +37,7 @@ test('get workshops (empty)', async () => {
       expect(Array.isArray(list)).toBeTruthy()
       expect(list.length).toBe(0)
     })
-  );
+  )
 })
 
 test('add workshop content', async () => {

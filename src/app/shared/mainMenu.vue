@@ -1,47 +1,54 @@
 <template>
   <div class="main-menu">
     <div style="display:none">
-      <offline-storage/>
+      <offline-storage />
     </div>
     <div class="routes">
       <template v-for="route in routes">
         <router-link 
           :to="(route.worksOffline || isOnline) ? route.location : '#'" 
-          :key="route.name">
+          :key="route.name"
+        >
           <button 
             class="main-menu--button" 
             :title="route.tooltip" 
             v-tooltip 
-            :disabled="!route.worksOffline && !isOnline">
+            :disabled="!route.worksOffline && !isOnline"
+          >
             <img
               class="main-menu--icon"
-              :src="'img/' + route.icon">
+              :src="'img/' + route.icon"
+            >
             <div>{{ route.name }}</div>
           </button>
         </router-link>
         <hr 
           class="vert between mobile-only" 
-          :key="route.name + '-hr'">
+          :key="route.name + '-hr'"
+        >
       </template>
     </div>
     <div class="extra">
-      <status-signal/>
+      <status-signal />
       <button
         class="main-menu--button"
-        ref="moreButton">
+        ref="moreButton"
+      >
         <img
           src="img/icons_more-white.png"
-          class="main-menu--icon">
+          class="main-menu--icon"
+        >
         <div>More</div>
         <div
           ref="moreMenu"
-          style="display: none">
+          style="display: none"
+        >
           <div>
-            <span class="fas fa-search"/>
+            <span class="fas fa-search" />
             Search
           </div>
           <div>
-            <span class="fas fa-hammer"/>
+            <span class="fas fa-hammer" />
             Workshop
           </div>
         </div>
@@ -49,7 +56,8 @@
       <button class="main-menu--button">
         <img 
           src="img/icons_account-white.png"
-          class="main-menu--icon">
+          class="main-menu--icon"
+        >
         <div>Account</div>
       </button>
       <!-- <a 
@@ -73,27 +81,33 @@
     <div style="display: none">
       <div 
         class="workshops" 
-        ref="workshopsModal">
+        ref="workshopsModal"
+      >
         <p 
           v-if="!isPremium" 
-          class="warn">
+          class="warn"
+        >
           Workshops are only available for Author accounts.
         </p>
         <div 
           v-for="workshop in workshops" 
           :key="workshop.name" 
-          @click="startWorkshop(workshop)">
+          @click="startWorkshop(workshop)"
+        >
           <div 
             class="workshop" 
-            :class="{ 'restricted': !isPremium || !workshop.available }">
+            :class="{ 'restricted': !isPremium || !workshop.available }"
+          >
             <div 
               class="workshop-restricted" 
-              v-if="!workshop.available">
+              v-if="!workshop.available"
+            >
               COMING SOON
             </div>
             <div 
               class="workshop-restricted" 
-              v-if="workshop.available && !isPremium">
+              v-if="workshop.available && !isPremium"
+            >
               AUTHORS ONLY
             </div>
             <div class="workshop-details">

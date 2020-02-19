@@ -3,17 +3,20 @@
     <div 
       class="map" 
       @click="mapClick" 
-      ref="mapWrap">
+      ref="mapWrap"
+    >
       <div 
         class="map-inner" 
         v-html="mapHtml" 
-        ref="map"/>
+        ref="map"
+      />
     </div>
     <text-magnifier 
       :html="mapHtml" 
       :magnify-el="mapNode" 
       :mark="mark" 
-      :wrap-el="mapWrapNode"/>
+      :wrap-el="mapWrapNode"
+    />
   </div>
 </template>
 

@@ -14,7 +14,7 @@
       </p>
     </div>
     <div v-if="!failed">
-      <pulse-loader/>
+      <pulse-loader />
     </div>
   </div>
 </template>

@@ -2,13 +2,15 @@
   <div class="composer-wrap">
     <div 
       class="composer" 
-      v-if="hasChapters">
+      v-if="hasChapters"
+    >
       <div class="map-wrap">
         <text-map 
           :editor-element="editorElement" 
           :data-stream="activeChapter.content"
           @select="selectMap" 
-          :mark="mark"/>
+          :mark="mark"
+        />
       </div>
       <div class="editor-wrap">
         <tabs-list 
@@ -19,13 +21,16 @@
           @add="addChapter"
           @hover="hoverChapter"
           @unhover="unhoverChapter"
-          @update:activeIndex="selectChapter"/>
+          @update:activeIndex="selectChapter"
+        />
         <div 
           class="below-tabs" 
-          ref="editorContainer">
+          ref="editorContainer"
+        >
           <div 
             class="stats" 
-            :class="{ 'active': showStats }">
+            :class="{ 'active': showStats }"
+          >
             <div class="stats-content">
               <p>
                 <b>{{ activeChapter.title }}</b>
@@ -44,7 +49,7 @@
             </div>
           </div>
           <div class="define">
-            <word-define :word="mark"/>
+            <word-define :word="mark" />
           </div>
           <quill-editor 
             ref="textEditor" 
@@ -53,7 +58,8 @@
             :scroll-to="scrollTo"
             :container="editorContainerNode"
             @update:content="updateContent"
-            @update:selection="updateSelection"/>
+            @update:selection="updateSelection"
+          />
         </div>
       </div>
       <div class="sidebar-wrap">
@@ -63,26 +69,35 @@
             <button 
               class="switch-label" 
               :class="{ 'active': sidebar === 'outline' }" 
-              @click="switchOutline()">
+              @click="switchOutline()"
+            >
               <img src="img/icons_outline-green.png">
-              <div class="switch-label-text">Outline</div>
+              <div class="switch-label-text">
+                Outline
+              </div>
             </button>
             <hr class="vert">
             <button 
               class="switch-label" 
               :class="{ 'active': sidebar === 'plan' }" 
-              @click="switchPlans()">
+              @click="switchPlans()"
+            >
               <img src="img/icons_plan-green.png">
-              <div class="switch-label-text">Plan</div>
+              <div class="switch-label-text">
+                Plan
+              </div>
             </button>
             <template v-if="isPremium">
               <hr class="vert">
               <button 
                 class="switch-label" 
                 :class="{ 'active': sidebar === 'workshop' }" 
-                @click="switchWorkshops()">
+                @click="switchWorkshops()"
+              >
                 <img src="img/icons_workshops-green.png">
-                <div class="switch-label-text">Workshops</div>
+                <div class="switch-label-text">
+                  Workshops
+                </div>
               </button>
             </template>
           </div>
@@ -90,35 +105,42 @@
         <!-- Document Plans -->
         <div 
           class="sidebar-content" 
-          v-show="sidebar === 'plan'">
+          v-show="sidebar === 'plan'"
+        >
           <div class="archived-filter">
             <input 
               id="showArchivedTopics-p" 
               type="checkbox" 
-              v-model="filters.archived">
+              v-model="filters.archived"
+            >
             <label for="showArchivedTopics-p">Show Archived</label>
           </div>
           <template v-if="hasPlans">
             <plans-list 
               :filter-plans="showPlan" 
-              :filter-sections="showSection"/>
+              :filter-sections="showSection"
+            />
           </template>
           <template v-else>
             <div>No plans yet.</div>
             <div>
-              <router-link to="/plan">Start planning</router-link>
+              <router-link to="/plan">
+                Start planning
+              </router-link>
             </div>
           </template>
         </div>
         <!-- Chapter Outlines -->
         <div 
           class="sidebar-content" 
-          v-show="sidebar === 'outline'">
+          v-show="sidebar === 'outline'"
+        >
           <div class="archived-filter">
             <input 
               id="showArchivedTopics-o" 
               type="checkbox" 
-              v-model="filters.archived">
+              v-model="filters.archived"
+            >
             <label for="showArchivedTopics-o">Show Archived</label>
           </div>
           <template v-if="hasTopics">
@@ -126,36 +148,44 @@
               <topic-list 
                 :chapter="activeChapter" 
                 :filter-topics="showTopic" 
-                :topics="allTopics"/>
+                :topics="allTopics"
+              />
             </div>
           </template>
           <template v-else>
             <div>No outline yet.</div>
             <div>
-              <router-link to="/outline">Start outlining</router-link>
+              <router-link to="/outline">
+                Start outlining
+              </router-link>
             </div>
           </template>
         </div>
         <!-- Workshops -->
         <div 
           class="sidebar-content" 
-          v-show="sidebar === 'workshop'">
+          v-show="sidebar === 'workshop'"
+        >
           <div class="archived-filter">
             <input 
               id="showArchivedTopics-w" 
               type="checkbox" 
-              v-model="filters.archived">
+              v-model="filters.archived"
+            >
             <label for="showArchivedTopics-w">Show Archived</label>
           </div>
           <template v-if="hasWorkshops">
             <workshop-list 
               ref="workshopList" 
-              :filter-workshops="showWorkshop"/>
+              :filter-workshops="showWorkshop"
+            />
           </template>
           <template v-else>
             <div>No workshops completed yet.</div>
             <div>
-              <router-link to="/workshop/free-write">Do a free write</router-link>
+              <router-link to="/workshop/free-write">
+                Do a free write
+              </router-link>
             </div>
           </template>
         </div>
@@ -164,7 +194,9 @@
     <div v-else>
       <div>No chapters yet.</div>
       <div>
-        <router-link to="/outline">Create one</router-link>
+        <router-link to="/outline">
+          Create one
+        </router-link>
       </div>
     </div>
   </div>
@@ -183,7 +215,6 @@ import TextMap from './textMap.vue'
 import TopicList from '../shared/topicList.vue'
 import { UPDATE_SELECTION } from './composer.store'
 import { ValidateTitle } from '../shared/validate'
-import VueSwitch from 'vue-switches'
 import WordDefine from './wordDefine.vue'
 import WorkshopList from '../shared/workshopList.vue'
 
@@ -196,7 +227,6 @@ export default {
     TabsList,
     TextMap,
     TopicList,
-    VueSwitch,
     WordDefine,
     WorkshopList,
   },

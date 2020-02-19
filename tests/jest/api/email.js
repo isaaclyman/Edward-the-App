@@ -15,5 +15,5 @@ test('An email can be sent', async done => {
     done()
   }, err => {
     done.fail(`Email failed to send: ${err}`)
-  });
+  })
 })

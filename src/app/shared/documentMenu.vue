@@ -1,50 +1,56 @@
 <template>
   <div class="menu">
     <div class="menu-items">
-      <document-picker/>
+      <document-picker />
     </div>
     <div class="menu-items">
       <router-link to="/documentEdit">
         <button class="menu-button">
           Edit
-          <div class="fas fa-edit"/>
+          <div class="fas fa-edit" />
         </button>
       </router-link>
       <router-link to="/export">
         <button 
           class="menu-button mobile-hide" 
-          :disabled="!isOnline">
+          :disabled="!isOnline"
+        >
           Download / Upload
-          <div class="fas fa-download"/>
+          <div class="fas fa-download" />
         </button>
       </router-link>
       <button 
         class="menu-button" 
         @click="showWizard()" 
-        :disabled="!isOnline">
+        :disabled="!isOnline"
+      >
         New
-        <div class="fas fa-plus"/>
+        <div class="fas fa-plus" />
       </button>
     </div>
-    <div class="spacer"/>
+    <div class="spacer" />
     <div 
       class="menu-items" 
-      v-if="isLimited">
+      v-if="isLimited"
+    >
       <div>Keep your work safe.</div>
       <a href="/auth#/signup">
         <button 
           class="menu-button upgrade-button mobile-hide" 
-          :disabled="!isOnline">Upgrade to Author</button>
+          :disabled="!isOnline"
+        >Upgrade to Author</button>
       </a>
     </div>
     <div 
       class="menu-items" 
-      v-if="!isLimited && !isGold">
+      v-if="!isLimited && !isGold"
+    >
       <div>Need more space?</div>
       <a href="/auth#/signup">
         <button 
           class="menu-button upgrade-button mobile-hide" 
-          :disabled="!isOnline">Upgrade to Bestseller</button>
+          :disabled="!isOnline"
+        >Upgrade to Bestseller</button>
       </a>
     </div>
   </div>

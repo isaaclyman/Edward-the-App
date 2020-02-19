@@ -1,6 +1,6 @@
 const { execSync } = require('child_process')
 
-process.env['NODE_ENV'] = 'test';
+process.env['NODE_ENV'] = 'test'
 
 execSync(
   'npx babel utilities.js --out-file compiled/utilities.js && ' +

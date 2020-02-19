@@ -27,7 +27,7 @@ beforeEach(async () => {
 })
 
 test('get documents', async () => {
-  return checkDocuments(app, docs => expect(docs.length).toBe(0));
+  return checkDocuments(app, docs => expect(docs.length).toBe(0))
 })
 
 test('add documents', async () => {
@@ -41,7 +41,7 @@ test('add documents', async () => {
 
     expect(docs[1].guid).toBe(doc2.guid)
     expect(docs[1].name).toBe(doc2.name)
-  });
+  })
 })
 
 test('delete a document', async () => {
@@ -56,7 +56,7 @@ test('delete a document', async () => {
     expect(docs.length).toBe(1)
     expect(docs[0].guid).toBe(doc2.guid)
     expect(docs[0].name).toBe(doc2.name)
-  });
+  })
 })
 
 test('delete a document that has content', async () => {
@@ -69,7 +69,7 @@ test('delete a document that has content', async () => {
   )
   return checkDocuments(app, docs => {
     expect(docs.length).toBe(0)
-  });
+  })
 })
 
 test('update a document (rename)', async () => {
@@ -89,5 +89,5 @@ test('update a document (rename)', async () => {
 
     expect(docs[1].guid).toBe(doc2.guid)
     expect(docs[1].name).toBe(updatedName)
-  });
+  })
 })

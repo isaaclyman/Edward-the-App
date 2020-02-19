@@ -65,7 +65,7 @@ test('get current user', async () => {
       expect(userRes.isPremium).toBe(false)
       expect(userRes.accountType.name).toBe('LIMITED')
     })
-  );
+  )
 })
 
 test(`can't log in with wrong password`, async () => {
@@ -258,7 +258,7 @@ test('verify account', async () => {
       expect(userRes.isPremium).toBe(false)
       expect(userRes.accountType.name).toBe('LIMITED')
     })
-  );
+  )
 })
 
 test('cannot verify account with null or incorrect key', async () => {

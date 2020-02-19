@@ -13,16 +13,21 @@
           type="password" 
           v-model="password" 
           autocomplete="off" 
-          :disabled="saving">
+          :disabled="saving"
+        >
         <button 
           v-if="!saving" 
           class="button-red" 
-          @click="deleteAccount">Delete my account</button>
-        <pulse-loader v-if="saving"/>
+          @click="deleteAccount"
+        >
+          Delete my account
+        </button>
+        <pulse-loader v-if="saving" />
       </div>
       <div 
         class="error" 
-        v-if="error">
+        v-if="error"
+      >
         That didn't work. Please check your password and try again.
         If the problem persists, contact <a href="mailto:support@edwardtheapp.com">support@edwardtheapp.com</a>.
       </div>
@@ -30,7 +35,9 @@
     <hr>
     <div class="cancel">
       <router-link to="/account">
-        <button class="button-link">Never mind, go back</button>
+        <button class="button-link">
+          Never mind, go back
+        </button>
       </router-link>
     </div>
   </div>

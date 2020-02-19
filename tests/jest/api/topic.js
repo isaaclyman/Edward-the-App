@@ -30,7 +30,7 @@ beforeEach(async () => {
 test('get topics', async () => {
   return checkTopics(app, doc.guid, topics => {
     expect(topics.length).toBe(0)
-  });
+  })
 })
 
 test('add topics', async () => {
@@ -40,7 +40,7 @@ test('add topics', async () => {
     expect(topics.length).toBe(2)
     compareTopics(doc.guid, topics[0], topic1)
     compareTopics(doc.guid, topics[1], topic2)
-  });
+  })
 })
 
 test('arrange topics', async () => {
@@ -60,7 +60,7 @@ test('arrange topics', async () => {
     expect(topics.length).toBe(2)
     compareTopics(doc.guid, topics[0], topic2)
     compareTopics(doc.guid, topics[1], topic1)
-  });
+  })
 })
 
 test('delete topic', async () => {
@@ -79,7 +79,7 @@ test('delete topic', async () => {
   return checkTopics(app, doc.guid, topics => {
     expect(topics.length).toBe(1)
     compareTopics(doc.guid, topics[0], topic2)
-  });
+  })
 })
 
 test('update topic', async () => {
@@ -106,5 +106,5 @@ test('update topic', async () => {
     expect(topics.length).toBe(2)
     compareTopics(doc.guid, topics[0], newTopic)
     compareTopics(doc.guid, topics[1], topic2)
-  });
+  })
 })

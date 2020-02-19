@@ -8,7 +8,8 @@
         class="login-field" 
         type="text" 
         v-model="email"
-        placeholder="Type your email here">
+        placeholder="Type your email here"
+      >
     </div>
     <div class="password">
       <label for="login-password-input">Password</label>
@@ -18,14 +19,18 @@
         class="login-field" 
         type="password" 
         v-model="password"
-        placeholder="Type your password here">
+        placeholder="Type your password here"
+      >
     </div>
     <div class="forgot-password">
       Forgotten your password?
       <router-link to="/forgot">
         <button 
           tabindex="3" 
-          class="button-link forgot-button">Click here to fix.</button>
+          class="button-link forgot-button"
+        >
+          Click here to fix.
+        </button>
       </router-link>
     </div>
     <div class="captcha">
@@ -33,25 +38,29 @@
         :tabindex="4" 
         @change="setCaptchaResponse" 
         @expire="resetCaptchaResponse" 
-        ref="captcha"/>
+        ref="captcha"
+      />
     </div>
     <div
       v-if="loginMessage"
       class="messages"
     >
       <p>
-        <span class="fa fa-exclamation-circle"/>
+        <span class="fa fa-exclamation-circle" />
         {{ loginMessage }}
       </p>
     </div>
     <div class="actions">
-      <pulse-loader v-if="loading"/>
+      <pulse-loader v-if="loading" />
       <button 
         tabindex="5" 
         v-if="!loading" 
         class="login-button button-green" 
         :disabled="!canLogin" 
-        @click="logIn()">Log In</button>
+        @click="logIn()"
+      >
+        Log In
+      </button>
     </div>
     <hr class="divider">
     <div class="sign-up">
@@ -59,7 +68,10 @@
       <button 
         tabindex="6" 
         class="button-link" 
-        @click="signUp()">Sign up for free.</button>
+        @click="signUp()"
+      >
+        Sign up for free.
+      </button>
     </div>
   </div>
 </template>

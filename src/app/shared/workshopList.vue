@@ -1,14 +1,16 @@
 <template>
   <div 
     class="workshops-wrap" 
-    v-show="workshops.length > 0">
+    v-show="workshops.length > 0"
+  >
     <tabs-list 
       :active-index="activeWorkshopNameIndex" 
       :data-array="workshopNameTabs" 
       :filter-tabs="() => true"
       item-name="Workshop"
       :can-add="false"
-      @update:activeIndex="selectWorkshopNameIndex"/>
+      @update:activeIndex="selectWorkshopNameIndex"
+    />
     <div class="workshop-list">
       <div class="workshop-list-header">
         <div class="workshop-list-title">
@@ -22,19 +24,22 @@
           </div>
           <select 
             class="workshop-select-dropdown" 
-            v-model="selectedWorkshopGuid">
+            v-model="selectedWorkshopGuid"
+          >
             <option 
               v-for="workshop in selectableWorkshops" 
               v-if="filterWorkshops(workshop)" 
               :key="workshop.guid" 
-              :value="workshop.guid">
+              :value="workshop.guid"
+            >
               {{ workshop.title }}
             </option>
           </select>
         </div>
         <div 
           class="workshops" 
-          v-show="activeWorkshopsTitle">
+          v-show="activeWorkshopsTitle"
+        >
           <div class="workshop">
             <div class="workshop-header">
               <div class="workshop-title">
@@ -44,22 +49,32 @@
                 <button 
                   class="workshop-action" 
                   v-show="!firstActiveWorkshop.archived" 
-                  @click="archiveActiveWorkshops()">Archive</button>
+                  @click="archiveActiveWorkshops()"
+                >
+                  Archive
+                </button>
                 <button 
                   class="workshop-action" 
                   v-show="firstActiveWorkshop.archived" 
-                  @click="restoreActiveWorkshops()">Restore</button>
+                  @click="restoreActiveWorkshops()"
+                >
+                  Restore
+                </button>
                 <button 
                   class="workshop-action button-red" 
                   v-show="firstActiveWorkshop.archived" 
-                  @click="deleteActiveWorkshops()">Delete Forever</button>
+                  @click="deleteActiveWorkshops()"
+                >
+                  Delete Forever
+                </button>
               </div>
             </div>
             <div 
               class="workshop-content" 
               v-for="workshop in activeWorkshops" 
-              :key="`${workshop.guid}|${workshop.order}`">
-              <div v-html="getHtml(workshop)"/>
+              :key="`${workshop.guid}|${workshop.order}`"
+            >
+              <div v-html="getHtml(workshop)" />
             </div>
           </div>
         </div>

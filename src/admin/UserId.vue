@@ -7,17 +7,22 @@
       <input 
         type="text" 
         v-model="userEmail" 
-        placeholder="bob@example.com">
+        placeholder="bob@example.com"
+      >
     </div>
     <div>
       <button 
         class="button-green" 
-        @click="getUserId()">Get user ID</button>
+        @click="getUserId()"
+      >
+        Get user ID
+      </button>
     </div>
     <div v-if="matchingUsers && matchingUsers.length">
       <div 
         v-for="user in matchingUsers" 
-        :key="user.id">
+        :key="user.id"
+      >
         {{ user.email }}: {{ user.id }}
       </div>
     </div>

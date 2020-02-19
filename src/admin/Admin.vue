@@ -2,7 +2,7 @@
   <div class="wrap">
     <h4>This is a restricted Admin page.</h4>
     <hr>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 

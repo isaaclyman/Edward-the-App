@@ -4,7 +4,8 @@
     <div style="display: none">
       <div 
         class="offline-storage" 
-        ref="chromePermissionModal">
+        ref="chromePermissionModal"
+      >
         <p>
           Edward will work even when you don't have an Internet connection.
           To avoid data loss when offline, you need to grant app-level permissions on this device,
@@ -19,7 +20,8 @@
     <div style="display: none">
       <div 
         class="offline-storage" 
-        ref="standardPermissionModal">
+        ref="standardPermissionModal"
+      >
         <p>
           Edward will work even when you don't have an Internet connection.
           To avoid data loss when offline, you need to give permission to store files on your system.
@@ -33,7 +35,8 @@
     <div style="display: none">
       <div 
         class="offline-storage" 
-        ref="permissionFailedModal">
+        ref="permissionFailedModal"
+      >
         <p>
           Failed to get the required permissions. Edward may still work offline,
           but this could result in data loss.

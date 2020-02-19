@@ -1,5 +1,5 @@
 <template>
-  <div ref="recaptcha"/>
+  <div ref="recaptcha" />
 </template>
 
 <script>

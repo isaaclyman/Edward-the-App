@@ -14,7 +14,8 @@
     <div 
       class="error" 
       v-if="error" 
-      v-text="error"/>
+      v-text="error"
+    />
   </div>
 </template>
 

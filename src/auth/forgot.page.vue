@@ -12,40 +12,51 @@
         tabindex="1" 
         class="email-input" 
         v-model.trim="email" 
-        placeholder="Type your email here">
+        placeholder="Type your email here"
+      >
     </div>
     <div class="captcha">
       <Captcha 
         :tabindex="2" 
         @change="setCaptchaResponse" 
         @expire="resetCaptchaResponse" 
-        ref="captcha"/>
+        ref="captcha"
+      />
     </div>
     <div 
       class="actions" 
-      v-if="!emailSent">
-      <pulse-loader v-if="saving"/>
+      v-if="!emailSent"
+    >
+      <pulse-loader v-if="saving" />
       <button 
         tabindex="3" 
         v-if="!saving" 
         class="button-green reset-button" 
-        @click="reset()">Reset my password</button>
+        @click="reset()"
+      >
+        Reset my password
+      </button>
       <p 
         class="error" 
-        v-if="error">
+        v-if="error"
+      >
         {{ error }}
       </p>
     </div>
     <div 
       class="success" 
-      v-if="emailSent">
+      v-if="emailSent"
+    >
       Email sent! Go check your inbox.
     </div>
     <div class="cancel">
       <router-link to="/login">
         <button 
           tabindex="4" 
-          class="button-link">Back to login</button>
+          class="button-link"
+        >
+          Back to login
+        </button>
       </router-link>
     </div>
   </div>

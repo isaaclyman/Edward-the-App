@@ -2,10 +2,12 @@
   <div class="wrap">
     <div 
       class="editor" 
-      ref="container">
+      ref="container"
+    >
       <div 
         ref="editor" 
-        @keyup.ctrl.enter="emitDone"/>
+        @keyup.ctrl.enter="emitDone"
+      />
     </div>
     <div v-if="showFullScreen">
       <quill-full-screen
@@ -13,7 +15,8 @@
         :content-id="contentId"
         @close="hideFullScreen()"
         @update:content="emitFullscreenContent"
-        @update:selection="emitSelection"/>
+        @update:selection="emitSelection"
+      />
     </div>
   </div>
 </template>

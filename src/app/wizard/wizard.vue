@@ -6,7 +6,8 @@
         <p>
           New here? <a 
             target="_blank" 
-            href="https://www.youtube.com/watch?v=OvERL5CPPXM">Watch the introductory video.</a>
+            href="https://www.youtube.com/watch?v=OvERL5CPPXM"
+          >Watch the introductory video.</a>
         </p>
       </div>
       <div class="content">
@@ -16,7 +17,7 @@
         <div v-if="hasDocuments">
           <h3>Choose a saved document:</h3>
           <div class="document-picker">
-            <document-picker/>
+            <document-picker />
           </div>
         </div>
       </div>
@@ -30,7 +31,8 @@
             :class="{ 'selected': type === selectedType }"
             v-for="type in documentTypes" 
             :key="type.name"
-            @click="selectDocument(type)">
+            @click="selectDocument(type)"
+          >
             <div
               class="type-img"
               v-html="type.svg"
@@ -45,20 +47,23 @@
               id="new-document-title"
               :placeholder="'My ' + selectedType.name"
               v-model="title"
-              @keyup.enter="createDocument()">
+              @keyup.enter="createDocument()"
+            >
           </div>
           <div class="actions">
-            <pulse-loader v-if="saving"/>
+            <pulse-loader v-if="saving" />
             <button 
               v-if="!saving" 
               class="button-green" 
               @click="createDocument()" 
-              :disabled="!title">
+              :disabled="!title"
+            >
               Create
             </button>
             <p 
               class="error" 
-              v-if="error">
+              v-if="error"
+            >
               That didn't work. Please try again.
             </p>
           </div>

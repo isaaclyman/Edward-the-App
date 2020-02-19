@@ -10,25 +10,35 @@
       </div>
       <transition 
         name="fade" 
-        mode="out-in">
+        mode="out-in"
+      >
         <div 
           v-if="!finished" 
           class="content" 
-          key="content">
+          key="content"
+        >
           <!-- Title -->
-          <p class="description">Write the title of your novel:</p>
+          <p class="description">
+            Write the title of your novel:
+          </p>
           <div class="editor short title">
             <quill-editor 
               :content="content.title" 
-              @update:content="updateContent(0, $event)"/>
+              @update:content="updateContent(0, $event)"
+            />
           </div>
           <!-- Tagline -->
-          <p class="description">Write a tagline: a short, catchy slogan that draws potential readers in.</p>
-          <p class="example">e.g. "Can the best thing happen at the worst time?"</p>
+          <p class="description">
+            Write a tagline: a short, catchy slogan that draws potential readers in.
+          </p>
+          <p class="example">
+            e.g. "Can the best thing happen at the worst time?"
+          </p>
           <div class="editor short tagline">
             <quill-editor 
               :content="content.tagline" 
-              @update:content="updateContent(1, $event)"/>
+              @update:content="updateContent(1, $event)"
+            />
           </div>
           <!-- Two-sentence summary (NYT bestseller snippet) -->
           <p class="description">
@@ -40,10 +50,13 @@
           <div class="editor short summary">
             <quill-editor 
               :content="content.summary" 
-              @update:content="updateContent(2, $event)"/>
+              @update:content="updateContent(2, $event)"
+            />
           </div>
           <!-- Theme -->
-          <p class="description">In a sentence or two, explain the theme of the novel and why it's important to you.</p>
+          <p class="description">
+            In a sentence or two, explain the theme of the novel and why it's important to you.
+          </p>
           <p class="example">
             e.g. "This novel is about learning to trust the people who are always there for you.
             I want the reader to know that it's okay to believe in others, even if they've been hurt before."
@@ -51,7 +64,8 @@
           <div class="editor short theme">
             <quill-editor 
               :content="content.theme" 
-              @update:content="updateContent(3, $event)"/>
+              @update:content="updateContent(3, $event)"
+            />
           </div>
           <!-- Back jacket (a few paragraphs) -->
           <p class="description">
@@ -60,7 +74,8 @@
           <div class="editor medium jacket">
             <quill-editor 
               :content="content.jacket" 
-              @update:content="updateContent(4, $event)"/>
+              @update:content="updateContent(4, $event)"
+            />
           </div>
           <!-- Book report (a page or two) -->
           <p class="description">
@@ -69,24 +84,35 @@
           <div class="editor long report">
             <quill-editor 
               :content="content.report" 
-              @update:content="updateContent(5, $event)"/>
+              @update:content="updateContent(5, $event)"
+            />
           </div>
           <button 
             class="button-green done" 
-            @click="finish()">Finish</button>
+            @click="finish()"
+          >
+            Finish
+          </button>
         </div>
         <div 
           v-else 
           class="finished" 
-          key="finished">
+          key="finished"
+        >
           <div v-if="this.fullText.trim()">
             <p>
               Saved! You can view what you've written in the Workshops column of the Write page.
             </p>
             <p>
-              If you're ready to start writing, you can visit the <router-link to="/write">Write</router-link> page.
-              You can also visit the <router-link to="/plan">Plan</router-link> page to do more plotting and development,
-              or the <router-link to="/outline">Outline</router-link> page to start outlining individual chapters.
+              If you're ready to start writing, you can visit the <router-link to="/write">
+                Write
+              </router-link> page.
+              You can also visit the <router-link to="/plan">
+                Plan
+              </router-link> page to do more plotting and development,
+              or the <router-link to="/outline">
+                Outline
+              </router-link> page to start outlining individual chapters.
             </p>
           </div>
           <div v-else>
@@ -96,7 +122,10 @@
           </div>
           <button 
             class="button-green" 
-            @click="reset()">Start over</button>
+            @click="reset()"
+          >
+            Start over
+          </button>
         </div>
       </transition>
     </div>

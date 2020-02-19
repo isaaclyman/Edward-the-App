@@ -3,7 +3,8 @@
     <p>New Author account signups (limit 150):</p>
     <p 
       v-if="users" 
-      v-text="usersDisplay"/>
+      v-text="usersDisplay"
+    />
   </div>
 </template>
 

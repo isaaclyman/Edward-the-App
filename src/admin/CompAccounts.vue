@@ -1,21 +1,28 @@
 <template>
   <div>
     <p>Accounts with a payment due date over 35 days from today:</p>
-    <p v-if="!compUsers || !compUsers.length">(none)</p>
+    <p v-if="!compUsers || !compUsers.length">
+      (none)
+    </p>
     <div 
       v-for="user in compUsers" 
-      :key="user.id">
+      :key="user.id"
+    >
       <span>
         {{ user.email }} (due {{ user.payment_period_end }})
       </span>
       <button 
         class="button-red" 
-        @click="uncomp(user.id)">Uncomp</button>
+        @click="uncomp(user.id)"
+      >
+        Uncomp
+      </button>
     </div>
     <p 
       class="error" 
       v-if="error" 
-      v-text="error"/>
+      v-text="error"
+    />
     <hr>
     <div class="comp-form">
       <p>Comp an account:</p>
@@ -23,19 +30,25 @@
         <input 
           type="number" 
           v-model="userId" 
-          placeholder="User ID">
+          placeholder="User ID"
+        >
         <input 
           type="number" 
           v-model="months" 
-          placeholder="# of months to comp">
+          placeholder="# of months to comp"
+        >
         <button 
           class="button-green" 
-          @click="comp()">Comp this user</button>
+          @click="comp()"
+        >
+          Comp this user
+        </button>
       </div>
       <div 
         class="error" 
         v-if="compError" 
-        v-text="compError"/>
+        v-text="compError"
+      />
     </div>
   </div>
 </template>

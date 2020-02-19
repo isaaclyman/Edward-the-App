@@ -1,9 +1,9 @@
 <template>
   <p class="match">
     <span v-if="!match.atHead">...</span>
-    <span v-text="formattedPre"/>
-    <em v-text="formattedQuery"/>
-    <span v-text="formattedPost"/>
+    <span v-text="formattedPre" />
+    <em v-text="formattedQuery" />
+    <span v-text="formattedPost" />
     <span v-if="!match.atTail">...</span>
   </p>
 </template>

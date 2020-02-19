@@ -3,17 +3,25 @@
     <p>Unverified users (limit 150):</p>
     <p 
       v-if="users" 
-      v-text="usersDisplay"/>
+      v-text="usersDisplay"
+    />
     <button 
       class="button-green" 
-      @click="deleteUnverified()">Delete unverified users older than 3 days</button>
+      @click="deleteUnverified()"
+    >
+      Delete unverified users older than 3 days
+    </button>
     <div 
       class="success" 
-      v-if="success">Success!</div>
+      v-if="success"
+    >
+      Success!
+    </div>
     <div 
       class="error" 
       v-if="error" 
-      v-text="error"/>
+      v-text="error"
+    />
   </div>
 </template>
 

@@ -1,18 +1,22 @@
 <template>
   <div class="wrap">
-    <h3 class="signup-message">Your Dreamer account is free. Use it for as long as you want.</h3>
+    <h3 class="signup-message">
+      Your Dreamer account is free. Use it for as long as you want.
+    </h3>
     <div class="signup-section username">
       <div class="signup-field">
         <label 
           class="signup-label" 
-          for="signup-email">
+          for="signup-email"
+        >
           Email
           <button 
             class="field-info" 
             :class="{ 'invalid': warnEmail }" 
             v-html="infoSvg" 
             ref="emailInfo"
-            :title="emailInfo"/>
+            :title="emailInfo"
+          />
         </label>
         <input 
           class="signup-input" 
@@ -21,21 +25,24 @@
           type="text"
           tabindex="1" 
           v-model.trim="email" 
-          placeholder="Type your email here">
+          placeholder="Type your email here"
+        >
       </div>
     </div>
     <div class="signup-section password">
       <div class="signup-field">
         <label 
           class="signup-label" 
-          for="signup-password">
+          for="signup-password"
+        >
           Password
           <button 
             class="field-info" 
             :class="{ 'invalid': warnPassword }" 
             v-html="infoSvg" 
             ref="passwordInfo"
-            :title="passwordInfo"/>
+            :title="passwordInfo"
+          />
         </label>
         <input 
           class="signup-input" 
@@ -44,35 +51,42 @@
           type="password"
           tabindex="2" 
           v-model="password"
-          placeholder="Type your password here">
+          placeholder="Type your password here"
+        >
       </div>
     </div>
     <div class="legal">
       Before creating an account, you must read and agree to our
       <a 
         tabindex="5" 
-        href="/privacy">Privacy Policy</a> and <a 
-          tabindex="6" 
-          href="/terms">Terms of Use.</a>
+        href="/privacy"
+      >Privacy Policy</a> and <a 
+        tabindex="6" 
+        href="/terms"
+      >Terms of Use.</a>
     </div>
     <div class="captcha">
       <Captcha 
         :tabindex="4" 
         @change="setCaptchaResponse" 
         @expire="resetCaptchaResponse" 
-        ref="captcha"/>
+        ref="captcha"
+      />
     </div>
     <div class="message">
-      <p class="message-text">{{ message }}</p>
+      <p class="message-text">
+        {{ message }}
+      </p>
     </div>
     <div class="actions">
-      <pulse-loader v-if="loading"/>
+      <pulse-loader v-if="loading" />
       <button 
         tabindex="7" 
         class="button-green" 
         v-if="!loading" 
         @click="submit()" 
-        :disabled="!canSignUp">
+        :disabled="!canSignUp"
+      >
         Create account
       </button>
     </div>
@@ -82,7 +96,10 @@
       <button 
         tabindex="6" 
         class="log-in-link button-link" 
-        @click="logIn()">Log in.</button>
+        @click="logIn()"
+      >
+        Log in.
+      </button>
     </div>
   </div>
 </template>

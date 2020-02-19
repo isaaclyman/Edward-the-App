@@ -1,54 +1,93 @@
 <template>
   <div class="wrap">
     <div class="account">
-      <h1 class="type">You have a {{ accountType }}.</h1>
+      <h1 class="type">
+        You have a {{ accountType }}.
+      </h1>
       <h4 
         class="thanks" 
-        v-if="isPremium">Thanks for supporting Edward!</h4>
+        v-if="isPremium"
+      >
+        Thanks for supporting Edward!
+      </h4>
     </div>
     <hr v-if="isPremium">
     <div 
       class="payment" 
-      v-if="isPremium">
-      <p v-if="!isOverdue && paymentDueDate">Your next payment is due on {{ paymentDueDate }}.</p>
+      v-if="isPremium"
+    >
+      <p v-if="!isOverdue && paymentDueDate">
+        Your next payment is due on {{ paymentDueDate }}.
+      </p>
       <p
         class="error"
         v-if="isOverdue"
-      >Your account is overdue. You cannot access the app until you downgrade to a Dreamer account or make a successful payment.</p>
+      >
+        Your account is overdue. You cannot access the app until you downgrade to a Dreamer account or make a successful payment.
+      </p>
       <p>Click here to update your payment method.</p>
-      <button @click="updatePayment()">Update Payment Method</button>
+      <button @click="updatePayment()">
+        Update Payment Method
+      </button>
     </div>
     <hr>
     <div class="upgrade">
       <div v-if="isGold">
-        <p class="above-small">Don't want your Bestseller account any more?</p>
-        <p class="small">Please back up all of your documents first.</p>
-        <button @click="goldToPremium()">Revert to Author</button>
+        <p class="above-small">
+          Don't want your Bestseller account any more?
+        </p>
+        <p class="small">
+          Please back up all of your documents first.
+        </p>
+        <button @click="goldToPremium()">
+          Revert to Author
+        </button>
       </div>
       <div v-if="!isPremium">
-        <p class="above-small">Upgrade to an Author account to access your novels from anywhere.</p>
-        <p class="price">($7.99 per month, up to 10,000 pages)</p>
+        <p class="above-small">
+          Upgrade to an Author account to access your novels from anywhere.
+        </p>
+        <p class="price">
+          ($7.99 per month, up to 10,000 pages)
+        </p>
         <button 
           class="button-green" 
-          @click="limitedToPremium()">Upgrade to Author</button>
+          @click="limitedToPremium()"
+        >
+          Upgrade to Author
+        </button>
       </div>
       <div v-if="!isGold">
-        <p class="above-small">Upgrade to a Bestseller account for extra storage space.</p>
-        <p class="price">($14.99 per month, up to 125,000 pages)</p>
+        <p class="above-small">
+          Upgrade to a Bestseller account for extra storage space.
+        </p>
+        <p class="price">
+          ($14.99 per month, up to 125,000 pages)
+        </p>
         <button 
           class="button-gold" 
-          @click="toGold()">Upgrade to Bestseller</button>
+          @click="toGold()"
+        >
+          Upgrade to Bestseller
+        </button>
       </div>
       <div v-if="isPremium">
-        <p class="above-small">Want to downgrade to a Dreamer account?</p>
+        <p class="above-small">
+          Want to downgrade to a Dreamer account?
+        </p>
         <p
           class="small"
-        >Please back up all of your documents first. They may not fit in your browser's storage.</p>
-        <button @click="paidToLimited()">Revert to Dreamer</button>
+        >
+          Please back up all of your documents first. They may not fit in your browser's storage.
+        </p>
+        <button @click="paidToLimited()">
+          Revert to Dreamer
+        </button>
       </div>
       <div 
         class="error" 
-        v-if="error">
+        v-if="error"
+      >
         There has been a critical error.
         <strong>Your account change was not successful.</strong>
         Please try again or contact support at
@@ -64,19 +103,29 @@
         <input 
           class="account-input" 
           v-model="account.email" 
-          :disabled="!editingEmail">
+          :disabled="!editingEmail"
+        >
         <button 
           class="button-link" 
           v-if="!editingEmail" 
-          @click="editEmail()">Edit</button>
+          @click="editEmail()"
+        >
+          Edit
+        </button>
         <button 
           class="button-link" 
           v-if="editingEmail" 
-          @click="cancelEditEmail()">Cancel</button>
+          @click="cancelEditEmail()"
+        >
+          Cancel
+        </button>
         <button 
           class="button-green" 
           @click="saveEmail()" 
-          :disabled="!editingEmail">Save</button>
+          :disabled="!editingEmail"
+        >
+          Save
+        </button>
       </div>
       <h4>Password</h4>
       <div class="change-password">
@@ -89,30 +138,44 @@
         <button 
           class="button-link" 
           v-if="!editingPassword" 
-          @click="editPassword()">Edit</button>
+          @click="editPassword()"
+        >
+          Edit
+        </button>
         <button 
           class="button-link" 
           v-if="editingPassword" 
-          @click="cancelEditPassword()">Cancel</button>
+          @click="cancelEditPassword()"
+        >
+          Cancel
+        </button>
         <button 
           class="button-green" 
           @click="savePassword()" 
-          :disabled="!editingPassword">Save</button>
+          :disabled="!editingPassword"
+        >
+          Save
+        </button>
       </div>
     </div>
     <hr>
     <div class="delete">
       <router-link to="/delete-account">
-        <button class="button-link">Delete my account</button>
+        <button class="button-link">
+          Delete my account
+        </button>
       </router-link>
     </div>
     <hr>
     <div class="cancel">
-      <pulse-loader v-if="saving"/>
+      <pulse-loader v-if="saving" />
       <button 
         class="button-link" 
         @click="cancel()" 
-        :disabled="saving">Go back to the app</button>
+        :disabled="saving"
+      >
+        Go back to the app
+      </button>
     </div>
   </div>
 </template>

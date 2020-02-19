@@ -8,38 +8,44 @@
       :class="{ 'active': isActive(index) }"
       @click="selectItem(index)"
       @mouseover="hoverItem(index)"
-      @mouseout="unhoverItem()">
+      @mouseout="unhoverItem()"
+    >
       {{ item.title }}
     </button>
     <button 
       v-if="canAdd" 
       @click="showNewItem" 
       class="button-tab add-button" 
-      v-show="!showAddItem">
-      <span class="fas fa-plus"/>
+      v-show="!showAddItem"
+    >
+      <span class="fas fa-plus" />
     </button>
     <div 
       class="button-tab add-tab" 
       v-show="showAddItem" 
-      v-if="canAdd">
+      v-if="canAdd"
+    >
       <input 
         class="tab-input" 
         v-model="newItem" 
         :placeholder="`New ${itemName}...`" 
-        @keyup.enter="addItem">
+        @keyup.enter="addItem"
+      >
       <button 
         class="button-green tab-internal-button" 
         @click="addItem"
         title="Save"
-        v-tooltip="{ arrow: false }">
-        <span class="fas fa-save"/>
+        v-tooltip="{ arrow: false }"
+      >
+        <span class="fas fa-save" />
       </button>
       <button 
         class="button-red tab-internal-button" 
         @click="cancelAddItem"
         title="Cancel"
-        v-tooltip="{ arrow: false }">
-        <span class="fas fa-times-circle"/>
+        v-tooltip="{ arrow: false }"
+      >
+        <span class="fas fa-times-circle" />
       </button>
     </div>
   </div>

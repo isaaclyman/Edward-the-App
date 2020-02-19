@@ -1,5 +1,5 @@
 import { orderPromises } from '../../utilities'
-import { setTimeout } from 'timers';
+import { setTimeout } from 'timers'
 
 const getPromiseFn = (callback, timeout) =>
   () =>

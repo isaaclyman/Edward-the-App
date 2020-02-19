@@ -7,26 +7,31 @@
         v-html="wideSvg" 
         @click="showWideView()"
         title="Wide view" 
-        v-tooltip/>
+        v-tooltip
+      />
       <button 
         v-show="isWideView" 
         class="action narrow-view" 
         v-html="narrowSvg" 
         @click="showNarrowView()"
         title="Book-width view" 
-        v-tooltip/>
+        v-tooltip
+      />
       <button 
         class="action close" 
         v-html="exitSvg" 
-        @click="close()"/>
+        @click="close()"
+      />
     </div>
     <div 
       class="container" 
       :class="{ 'wide': isWideView }" 
-      ref="container">
+      ref="container"
+    >
       <div 
         class="editor" 
-        ref="editor"/>
+        ref="editor"
+      />
     </div>
   </div>
 </template>

@@ -13,18 +13,24 @@
           type="text" 
           placeholder="Search text"
           @keyup.enter="search()" 
-          ref="searchInput">
+          ref="searchInput"
+        >
         <button 
           class="button-green" 
-          @click="search()">Search</button>
+          @click="search()"
+        >
+          Search
+        </button>
       </div>
       <transition 
         name="fade" 
-        mode="out-in">
+        mode="out-in"
+      >
         <div 
           class="results" 
           v-if="!loading" 
-          key="results">
+          key="results"
+        >
           <template v-if="hasResults">
             <hr>
             <div class="filters">
@@ -32,28 +38,32 @@
                 <input 
                   id="show-chapters" 
                   type="checkbox" 
-                  v-model="filters.showChapters">
+                  v-model="filters.showChapters"
+                >
                 <label for="show-chapters">Show Chapters</label>
               </div>
               <div class="filter">
                 <input 
                   id="show-outlines" 
                   type="checkbox" 
-                  v-model="filters.showOutlines">
+                  v-model="filters.showOutlines"
+                >
                 <label for="show-outlines">Show Outlines</label>
               </div>
               <div class="filter">
                 <input 
                   id="show-plans" 
                   type="checkbox" 
-                  v-model="filters.showPlans">
+                  v-model="filters.showPlans"
+                >
                 <label for="show-plans">Show Plans</label>
               </div>
               <div class="filter">
                 <input 
                   id="show-workshops" 
                   type="checkbox" 
-                  v-model="filters.showWorkshops">
+                  v-model="filters.showWorkshops"
+                >
                 <label for="show-workshops">Show Workshops</label>
               </div>
             </div>
@@ -63,93 +73,109 @@
           </div>
           <div 
             class="result-set chapter-results" 
-            v-if="matches.chapters.length && filters.showChapters">
+            v-if="matches.chapters.length && filters.showChapters"
+          >
             <h3>Chapters</h3>
             <div 
               class="result" 
               v-for="chapter in matches.chapters" 
-              :key="chapter.guid">
+              :key="chapter.guid"
+            >
               <p class="result-title">
-                <strong v-text="chapter.title"/>
+                <strong v-text="chapter.title" />
                 <router-link :to="'/write?chapter=' + chapter.guid">
                   <button 
                     class="link-out" 
-                    v-html="linkSvg"/>
+                    v-html="linkSvg"
+                  />
                 </router-link>
               </p>
               <div 
                 v-for="match in chapter._matches" 
-                :key="match.index">
-                <match :match="match"/>
+                :key="match.index"
+              >
+                <match :match="match" />
               </div>
             </div>
           </div>
           <div 
             class="result-set outline-results" 
-            v-if="matches.outlines.length && filters.showOutlines">
+            v-if="matches.outlines.length && filters.showOutlines"
+          >
             <h3>Outlines</h3>
             <div 
               class="result" 
               v-for="topicMatch in matches.outlines" 
-              :key="topicMatch.chapterGuid + topicMatch.topicGuid">
+              :key="topicMatch.chapterGuid + topicMatch.topicGuid"
+            >
               <p class="result-title">
                 <strong>{{ topicMatch.chapterTitle }} | {{ topicMatch.topicTitle }}</strong>
                 <router-link :to="'/outline?chapter=' + topicMatch.chapterGuid">
                   <button 
                     class="link-out" 
-                    v-html="linkSvg"/>
+                    v-html="linkSvg"
+                  />
                 </router-link>
               </p>
               <div 
                 v-for="match in topicMatch._matches" 
-                :key="match.index">
-                <match :match="match"/>
+                :key="match.index"
+              >
+                <match :match="match" />
               </div>
             </div>
           </div>
           <div 
             class="result-set plan-results" 
-            v-if="matches.plans.length && filters.showPlans">
+            v-if="matches.plans.length && filters.showPlans"
+          >
             <h3>Plans</h3>
             <div 
               class="result" 
               v-for="sectionMatch in matches.plans" 
-              :key="sectionMatch.planGuid + sectionMatch.sectionGuid">
+              :key="sectionMatch.planGuid + sectionMatch.sectionGuid"
+            >
               <p class="result-title">
                 <strong>{{ sectionMatch.planTitle }} | {{ sectionMatch.sectionTitle }}</strong>
                 <router-link :to="'/plan?plan=' + sectionMatch.planGuid">
                   <button 
                     class="link-out" 
-                    v-html="linkSvg"/>
+                    v-html="linkSvg"
+                  />
                 </router-link>
               </p>
               <div 
                 v-for="match in sectionMatch._matches" 
-                :key="match.index">
-                <match :match="match"/>
+                :key="match.index"
+              >
+                <match :match="match" />
               </div>
             </div>
           </div>
           <div 
             class="result-set workshop-results" 
-            v-if="matches.workshops.length && filters.showWorkshops">
+            v-if="matches.workshops.length && filters.showWorkshops"
+          >
             <h3>Workshops</h3>
             <div 
               class="result" 
               v-for="workshopMatch in matches.workshops" 
-              :key="workshopMatch.guid">
+              :key="workshopMatch.guid"
+            >
               <p class="result-title">
                 <strong>{{ workshopMatch.title }}</strong>
                 <router-link :to="'/write?workshopName=' + workshopMatch.workshopName + '&workshop=' + workshopMatch.guid">
                   <button 
                     class="link-out" 
-                    v-html="linkSvg"/>
+                    v-html="linkSvg"
+                  />
                 </router-link>
               </p>
               <div 
                 v-for="match in workshopMatch._matches" 
-                :key="match.index">
-                <match :match="match"/>
+                :key="match.index"
+              >
+                <match :match="match" />
               </div>
             </div>
           </div>
@@ -157,8 +183,9 @@
         <div 
           class="loading" 
           v-else 
-          key="loading">
-          <pulse-loader/>
+          key="loading"
+        >
+          <pulse-loader />
         </div>
       </transition>
     </div>
@@ -263,7 +290,7 @@ export default {
     getMatchingOutlines(query) {
       return this.allChapters.reduce((arr, chapter) => {
         for (const key in chapter.topics) {
-          if (!chapter.topics.hasOwnProperty(key)) {
+          if (!chapter.topics.prototype.hasOwnProperty(key)) {
             continue
           }
 

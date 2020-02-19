@@ -3,27 +3,40 @@
     <p>Export user emails as CSV for upload to Mailgun:</p>
     <button 
       class="button-green" 
-      @click="getUserEmails()">Export</button>
+      @click="getUserEmails()"
+    >
+      Export
+    </button>
     <div 
       class="error" 
       v-if="error" 
-      v-text="error"/>
+      v-text="error"
+    />
     <hr>
     <div v-if="pendingEmails">
       <p>Pending emails:</p>
-      <p v-if="!pendingEmails.length">(none)</p>
+      <p v-if="!pendingEmails.length">
+        (none)
+      </p>
       <div 
         v-for="email in pendingEmails" 
-        :key="email.id">
+        :key="email.id"
+      >
         <span>
-          <strong v-text="email.subject"/>
+          <strong v-text="email.subject" />
         </span>
         <button 
           class="button-green" 
-          @click="reviewEmail(email.id)">Review</button>
+          @click="reviewEmail(email.id)"
+        >
+          Review
+        </button>
         <button 
           class="button-red" 
-          @click="deleteEmail(email.id)">Delete</button>
+          @click="deleteEmail(email.id)"
+        >
+          Delete
+        </button>
         <span v-if="reviewedId === email.id">Sent</span>
       </div>
     </div>
@@ -33,16 +46,24 @@
       <input 
         type="text" 
         v-model="newEmail.subject" 
-        placeholder="subject">
+        placeholder="subject"
+      >
       <textarea 
         v-model="newEmail.content" 
-        placeholder="content"/>
+        placeholder="content"
+      />
       <button 
         class="button-green" 
-        @click="createEmail()">Create</button>
+        @click="createEmail()"
+      >
+        Create
+      </button>
       <div 
         class="success" 
-        v-if="success">Success!</div>
+        v-if="success"
+      >
+        Success!
+      </div>
     </div>
   </div>
 </template>

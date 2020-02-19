@@ -42,5 +42,5 @@ test('updated timestamp is added correctly', async () => {
 
     expect(date1 < date2).toBe(true)
     expect(date2 < date3).toBe(true)
-  });
+  })
 })

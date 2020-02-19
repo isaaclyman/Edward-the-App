@@ -31,7 +31,7 @@ beforeEach(async () => {
 test('get plans', async () => {
   return checkPlans(app, doc.guid, plans => {
     expect(plans.length).toBe(0)
-  });
+  })
 })
 
 test('add plans', async () => {
@@ -41,7 +41,7 @@ test('add plans', async () => {
     expect(plans.length).toBe(2)
     comparePlans(doc.guid, plans[0], plan1)
     comparePlans(doc.guid, plans[1], plan2)
-  });
+  })
 })
 
 test('arrange plans', async () => {
@@ -60,7 +60,7 @@ test('arrange plans', async () => {
     expect(plans.length).toBe(2)
     comparePlans(doc.guid, plans[0], plan2)
     comparePlans(doc.guid, plans[1], plan1)
-  });
+  })
 })
 
 test('delete plan', async () => {
@@ -75,7 +75,7 @@ test('delete plan', async () => {
   return checkPlans(app, doc.guid, plans => {
     expect(plans.length).toBe(1)
     comparePlans(doc.guid, plans[0], plan2)
-  });
+  })
 })
 
 test('update plan', async () => {
@@ -98,5 +98,5 @@ test('update plan', async () => {
     expect(plans.length).toBe(2)
     comparePlans(doc.guid, plans[0], newPlan)
     comparePlans(doc.guid, plans[1], plan2)
-  });
+  })
 })

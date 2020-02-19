@@ -27,7 +27,7 @@ test('log in as premium user', async () => {
       expect(userRes.isPremium).toBe(true)
       expect(userRes.accountType.name).toBe('PREMIUM')
     })
-  );
+  )
 })
 
 test('access a premium API', async () => {

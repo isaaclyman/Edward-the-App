@@ -7,42 +7,55 @@
       </p>
       <p 
         class="intro" 
-        v-if="!begun">If you'd like, you can set a time or word limit:</p>
+        v-if="!begun"
+      >
+        If you'd like, you can set a time or word limit:
+      </p>
       <transition name="shrink">
         <div 
           class="timer-wrap" 
-          v-if="!finished">
+          v-if="!finished"
+        >
           <timer 
             @begin="begin()" 
-            :full-text="fullText"/>
+            :full-text="fullText"
+          />
         </div>
       </transition>
       <div 
         class="content" 
-        v-show="begun">
+        v-show="begun"
+      >
         <transition 
           name="fade" 
-          mode="out-in">
+          mode="out-in"
+        >
           <div 
             v-if="begun && !finished" 
             class="content-inner" 
-            key="editor">
+            key="editor"
+          >
             <div class="editor">
               <quill-editor 
                 :content="content" 
                 @update:content="updateContent($event)" 
-                ref="quillEditor"/>
+                ref="quillEditor"
+              />
             </div>
             <div class="done">
               <button 
                 class="button-green" 
-                @click="finish()">Done</button>
+                @click="finish()"
+              >
+                Done
+              </button>
             </div>
           </div>
           <div 
             v-else-if="finished" 
             class="content-inner" 
-            key="done">
+            key="done"
+          >
             <p class="finished">
               <template v-if="this.fullText.trim()">
                 <strong>Saved!</strong> You can view this free write in the Workshops column of the Write page.
@@ -53,7 +66,10 @@
             </p>
             <button 
               class="button-green" 
-              @click="reset()">Start over</button>
+              @click="reset()"
+            >
+              Start over
+            </button>
           </div>
         </transition>
       </div>

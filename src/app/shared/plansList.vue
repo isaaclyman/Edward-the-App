@@ -1,7 +1,8 @@
 <template>
   <div 
     class="plans-wrap" 
-    v-show="viewingPlans.length > 0">
+    v-show="viewingPlans.length > 0"
+  >
     <!-- Plan Tabs -->
     <tabs-list 
       :active-index="activePlanIndex" 
@@ -9,10 +10,12 @@
       :filter-tabs="filterPlans"
       item-name="Plan"
       @add="addPlan"
-      @update:activeIndex="selectPlan"/>
+      @update:activeIndex="selectPlan"
+    />
     <div 
       class="plan" 
-      v-if="activePlan">
+      v-if="activePlan"
+    >
       <div class="plan-header">
         <h4 class="plan-title">
           {{ activePlan.title }}
@@ -21,15 +24,24 @@
           <button 
             class="plan-action" 
             v-show="!activePlan.archived" 
-            @click="archivePlan({ index: activePlanIndex })">Archive</button>
+            @click="archivePlan({ index: activePlanIndex })"
+          >
+            Archive
+          </button>
           <button 
             class="plan-action" 
             v-show="activePlan.archived" 
-            @click="restorePlan({ index: activePlanIndex })">Restore</button>
+            @click="restorePlan({ index: activePlanIndex })"
+          >
+            Restore
+          </button>
           <button 
             class="plan-action button-red" 
             v-show="activePlan.archived" 
-            @click="deletePlan({ index: activePlanIndex })">Delete Forever</button>
+            @click="deletePlan({ index: activePlanIndex })"
+          >
+            Delete Forever
+          </button>
         </div>
       </div>
       <div class="plan-body">
@@ -40,7 +52,8 @@
             <button 
               class="help-icon" 
               v-html="helpIconSvg" 
-              @click="helpClick(helpSectionChipsModal, 'Section List')"/>
+              @click="helpClick(helpSectionChipsModal, 'Section List')"
+            />
           </div>
           <chips-list 
             name="Section" 
@@ -52,14 +65,16 @@
             @delete="archiveSection"
             @rearrange="rearrangeSection"
             @restore="restoreSection"
-            @update="renameSection"/>
+            @update="renameSection"
+          />
         </div>
         <div class="sections">
           <div 
             class="section" 
             v-for="(section, index) in activePlan.sections" 
             :key="section.guid" 
-            v-show="filterSections(section)">
+            v-show="filterSections(section)"
+          >
             <div class="section-header">
               <h5 class="section-title">
                 {{ section.title }}
@@ -68,57 +83,75 @@
                 <button 
                   class="section-action" 
                   v-show="!section.archived" 
-                  @click="archiveSection({ index })">Archive</button>
+                  @click="archiveSection({ index })"
+                >
+                  Archive
+                </button>
                 <button 
                   class="section-action" 
                   v-show="section.archived" 
-                  @click="restoreSection({ index })">Restore</button>
+                  @click="restoreSection({ index })"
+                >
+                  Restore
+                </button>
                 <button 
                   class="section-action button-red" 
                   v-show="section.archived" 
-                  @click="deleteSection({ index })">Delete Forever</button>
+                  @click="deleteSection({ index })"
+                >
+                  Delete Forever
+                </button>
               </div>
             </div>
             <div class="section-content">
               <div 
                 class="content-actions" 
-                v-if="!section.archived">
+                v-if="!section.archived"
+              >
                 <button 
                   class="button-link" 
                   v-if="!isEditing(index)" 
-                  @click="editSection(index)">
+                  @click="editSection(index)"
+                >
                   <span 
                     class="button-link-icon" 
-                    v-html="editSvg"/>Edit
+                    v-html="editSvg"
+                  />Edit
                 </button>
                 <button 
                   class="button-link" 
                   v-if="isEditing(index)" 
-                  @click="endEditSection()">
+                  @click="endEditSection()"
+                >
                   <span 
                     class="button-link-icon" 
-                    v-html="doneSvg"/>Done Editing
+                    v-html="doneSvg"
+                  />Done Editing
                 </button>
               </div>
               <div 
                 class="content-static" 
-                v-if="!isEditing(index)">
-                <div v-html="getHtml(section)"/>
+                v-if="!isEditing(index)"
+              >
+                <div v-html="getHtml(section)" />
                 <span 
                   class="content-placeholder" 
-                  v-if="!section.archived && !getTextContent(section.content)">
+                  v-if="!section.archived && !getTextContent(section.content)"
+                >
                   No content yet. Click "Edit" to add some.
                 </span>
               </div>
               <div 
                 class="content-editable" 
-                v-show="isEditing(index)">
+                v-show="isEditing(index)"
+              >
                 <quill-editor 
                   :content="section.content" 
                   :content-id="activePlan.guid" 
                   ref="quillEditor" 
                   @update:content="updateContent(section, $event)"
-                  @shortcut:done="endEditSection()"/>
+                  @shortcut:done="endEditSection()"
+                />
               </div>
             </div>
           </div>
@@ -130,7 +163,8 @@
     <div style="display: none">
       <div 
         class="help" 
-        ref="helpSectionChipsModal">
+        ref="helpSectionChipsModal"
+      >
         <p>This is the section list. It's the easiest place to add, archive, restore, rename, and rearrange sections.</p>
         <p>To add a section, type its name into the "New Section" box and click "Add".</p>
         <p>

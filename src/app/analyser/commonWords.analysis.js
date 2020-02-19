@@ -34,7 +34,7 @@ const CommonWords = ({ g: svg, maxHeight, maxWidth }, chapters) => {
 
   const frequencies = []
   for (const key of Object.keys(wordDict)) {
-    if (!wordDict.hasOwnProperty(key)) {
+    if (!wordDict.prototype.hasOwnProperty(key)) {
       return
     }
 

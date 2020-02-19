@@ -1,32 +1,37 @@
 <template>
   <div 
     class="status-wrap" 
-    v-if="!isDemo">
+    v-if="!isDemo"
+  >
     <div class="status">
       <div 
         class="status-saving" 
-        :class="{ 'show': isSaving }">
+        :class="{ 'show': isSaving }"
+      >
         Saving...
       </div>
       <div 
         class="status-saved" 
-        :class="{ 'show': !isSaving && saved }">
-        Saved <span v-html="savedIcon"/>
+        :class="{ 'show': !isSaving && saved }"
+      >
+        Saved <span v-html="savedIcon" />
       </div>
       <div 
         class="status-error" 
         :class="{ 'show': !isSaving && saveError }"
         :title="saveErrorText" 
-        v-tooltip="{ enabled: !isSaving && saveError }">
-        Error <span v-html="errorIcon"/>
+        v-tooltip="{ enabled: !isSaving && saveError }"
+      >
+        Error <span v-html="errorIcon" />
       </div>
       <div 
         class="status-offline" 
         :class="{ 'show': !isSaving && offline }"
         :title="offlineText" 
         v-tooltip="{ enabled: !isSaving && offline }" 
-        ref="offlineStatus">
-        Offline <span v-html="offlineIcon"/>
+        ref="offlineStatus"
+      >
+        Offline <span v-html="offlineIcon" />
       </div>
     </div>
   </div>

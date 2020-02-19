@@ -12,7 +12,8 @@
         </router-link>
         <button 
           class="button-green" 
-          @click="finished()">
+          @click="finished()"
+        >
           Go to the app
         </button>
       </div>

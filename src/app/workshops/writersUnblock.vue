@@ -12,14 +12,18 @@
       </p>
       <div 
         class="warn" 
-        v-if="!hasChapterContent">
+        v-if="!hasChapterContent"
+      >
         <p>You can't do this workshop until you've written at least one sentence in a chapter.</p>
       </div>
       <button 
         v-if="!begun" 
         class="begin button-green" 
         @click="begin()" 
-        :disabled="!hasChapterContent">Begin</button>
+        :disabled="!hasChapterContent"
+      >
+        Begin
+      </button>
       <div v-if="begun && !finished">
         <div class="prompt">
           <div class="sentence">
@@ -37,12 +41,14 @@
             <p 
               class="word" 
               v-for="word in words" 
-              :key="word">
+              :key="word"
+            >
               {{ word }}
               <a 
                 class="define-link" 
                 :href="getDefineLink(word)" 
-                target="_blank">define</a>
+                target="_blank"
+              >define</a>
             </p>
           </div>
         </div>
@@ -50,12 +56,16 @@
           <quill-editor 
             :content="content" 
             @update:content="updateContent($event)" 
-            ref="quillEditor"/>
+            ref="quillEditor"
+          />
         </div>
         <div class="actions">
           <button 
             class="done button-green" 
-            @click="finish()">Done</button>
+            @click="finish()"
+          >
+            Done
+          </button>
         </div>
       </div>
       <div v-else-if="finished">
@@ -69,7 +79,10 @@
         </p>
         <button 
           class="button-green" 
-          @click="reset()">Start over</button>
+          @click="reset()"
+        >
+          Start over
+        </button>
       </div>
     </div>
   </div>

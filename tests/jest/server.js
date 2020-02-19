@@ -17,7 +17,7 @@ test('connects to database', done => {
   return knex.raw('SELECT 1 AS test').then(
     () => done(),
     err => done.fail(err)
-  );
+  )
 })
 
 test('serves static file', () => {

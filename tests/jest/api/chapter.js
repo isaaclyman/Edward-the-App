@@ -31,7 +31,7 @@ beforeEach(async () => {
 test('get chapters', async () => {
   return checkChapters(app, doc.guid, chapters => {
     expect(chapters.length).toBe(0)
-  });
+  })
 })
 
 test('add chapters', async () => {
@@ -41,7 +41,7 @@ test('add chapters', async () => {
     expect(chapters.length).toBe(2)
     compareChapters(doc.guid, chapters[0], chap1)
     compareChapters(doc.guid, chapters[1], chap2)
-  });
+  })
 })
 
 test('arrange chapters', async () => {
@@ -60,7 +60,7 @@ test('arrange chapters', async () => {
     expect(chapters.length).toBe(2)
     compareChapters(doc.guid, chapters[0], chap2)
     compareChapters(doc.guid, chapters[1], chap1)
-  });
+  })
 })
 
 test('delete chapter', async () => {
@@ -75,7 +75,7 @@ test('delete chapter', async () => {
   return checkChapters(app, doc.guid, chapters => {
     expect(chapters.length).toBe(1)
     compareChapters(doc.guid, chapters[0], chap2)
-  });
+  })
 })
 
 test('update chapter', async () => {
@@ -103,7 +103,7 @@ test('update chapter', async () => {
     expect(chapters.length).toBe(2)
     compareChapters(doc.guid, chapters[0], newChapter)
     compareChapters(doc.guid, chapters[1], chap2)
-  });
+  })
 })
 
 test('update chapter with same content', async () => {
@@ -116,7 +116,7 @@ test('update chapter with same content', async () => {
     expect(chapters.length).toBe(2)
     compareChapters(doc.guid, chapters[0], chap1)
     compareChapters(doc.guid, chapters[1], chap2)
-  });
+  })
 })
 
 test('add chapters, then a topic', async () => {
@@ -145,7 +145,7 @@ test('add chapters, then a topic', async () => {
     expect(chapters.length).toBe(2)
     compareChapters(doc.guid, chapters[0], chap1)
     compareChapters(doc.guid, chapters[1], chap2)
-  });
+  })
 })
 
 test('add a topic, then add chapters', async () => {
@@ -174,7 +174,7 @@ test('add a topic, then add chapters', async () => {
     expect(chapters.length).toBe(2)
     compareChapters(doc.guid, chapters[0], chap1)
     compareChapters(doc.guid, chapters[1], chap2)
-  });
+  })
 })
 
 test('update chapter topic content', async () => {
@@ -222,5 +222,5 @@ test('update chapter topic content', async () => {
     expect(chapters.length).toBe(2)
     compareChapters(doc.guid, chapters[0], newChapter)
     compareChapters(doc.guid, chapters[1], chap2)
-  });
+  })
 })

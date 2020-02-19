@@ -41,7 +41,7 @@ test('add sections', async () => {
     expect(sections.length).toBe(2)
     compareSections(doc.guid, plan.planGuid, sections[0], section1)
     compareSections(doc.guid, plan.planGuid, sections[1], section2)
-  });
+  })
 })
 
 test('arrange sections', async () => {
@@ -63,7 +63,7 @@ test('arrange sections', async () => {
     expect(sections.length).toBe(2)
     compareSections(doc.guid, plan.planGuid, sections[0], section2)
     compareSections(doc.guid, plan.planGuid, sections[1], section1)
-  });
+  })
 })
 
 test('update section', async () => {
@@ -100,5 +100,5 @@ test('update section', async () => {
     expect(sections.length).toBe(2)
     compareSections(doc.guid, plan.planGuid, sections[0], newSection)
     compareSections(doc.guid, plan.planGuid, sections[1], section2)
-  });
+  })
 })

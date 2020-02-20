@@ -6,14 +6,13 @@
     <div class="routes">
       <template v-for="route in routes">
         <router-link 
-          :to="(route.worksOffline || isOnline) ? route.location : '#'" 
+          :to="route.location" 
           :key="route.name"
         >
           <button 
             class="main-menu--button" 
             :title="route.tooltip" 
             v-tooltip 
-            :disabled="!route.worksOffline && !isOnline"
           >
             <img
               class="main-menu--icon"
@@ -54,7 +53,8 @@
             </router-link>
             <button
               class="more-item"
-              :class="{ 'disabled': !isOnline }">
+              :disabled='!isOnline'
+              @click="showWorkshops">
               <span class="more-icon fas fa-hammer" />
               Workshop
             </button>
@@ -173,19 +173,16 @@ export default {
         location: '/plan',
         name: 'Plan',
         tooltip: 'Create book-level notes.',
-        worksOffline: true,
       }, {
         icon: 'icons_write-white.png',
         location: '/write',
         name: 'Write',
         tooltip: 'Write your content.',
-        worksOffline: true,
       }, {
         icon: 'icons_plan-white.png',
         location: '/outline',
         name: 'Outline',
         tooltip: 'Create chapters and chapter-level notes.',
-        worksOffline: true,
       }],
       toolsTooltip: 'Workshop your novel with free or prompted writing exercises.',
       workshops: Object.keys(writingWorkshops).map(key => writingWorkshops[key]),
@@ -197,7 +194,7 @@ export default {
   mounted() {
     tippy(this.$refs.moreButton, {
       arrow: true,
-      content: this.$refs.moreMenu.innerHTML,
+      content: this.$refs.moreMenu.firstChild,
       distance: 10,
       interactive: true,
       placement: 'bottom',
@@ -318,7 +315,11 @@ hr.between:last-of-type {
   width: 100%;
 }
 
-.more-item:hover {
+.more-item[disabled] {
+  cursor: default;
+}
+
+.more-item:not([disabled]):hover {
   background-color: #323232;
   color: #fff;
   fill: #fff;

@@ -3,8 +3,15 @@ import tooltip from './tippyBuilder'
 const directive = {
   bind: (el, { value = {} }) => {
     const {
-      arrow = true, content, distance = 10, interactive = false, enabled = true,
+      arrow = true, content: _content, distance = 10, interactive = false, enabled = true,
     } = value
+
+    let content = _content
+    const title = el.getAttribute('title')
+    if (!content && title) {
+      content = title
+      el.removeAttribute('title')
+    }
 
     const tippy = tooltip({
       arrow,

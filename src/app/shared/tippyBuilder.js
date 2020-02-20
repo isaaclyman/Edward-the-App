@@ -2,11 +2,11 @@ import tippy from 'tippy.js'
 
 const tooltip = ({
   arrow = true, content, distance = 10, el, interactive, placement = 'bottom', hideOnClick = true,
-} = {}) => tippy.one(el, {
+} = {}) => tippy(el, {
   arrow,
   distance,
   hideOnClick,
-  html: content,
+  content,
   interactive,
   placement,
 })

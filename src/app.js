@@ -9,6 +9,7 @@ import App from './app/App.vue'
 
 import './assets/yui-cssreset.css'
 import 'tippy.js/dist/tippy.css'
+import 'tippy.js/themes/light.css'
 
 import './app.css'
 import store from './store'

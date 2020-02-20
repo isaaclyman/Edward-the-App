@@ -270,6 +270,12 @@ textarea {
   justify-content: center;
 }
 
+/* TIPPY THEMES */
+
+.tippy-tooltip.nopadding-theme .tippy-content {
+  padding: 0;
+}
+
 /* COMMON CLASSES */
 
 .help {

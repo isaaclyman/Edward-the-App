@@ -43,13 +43,21 @@
           ref="moreMenu"
           style="display: none"
         >
-          <div>
-            <span class="fas fa-search" />
-            Search
-          </div>
-          <div>
-            <span class="fas fa-hammer" />
-            Workshop
+          <div class="more-menu">
+            <router-link
+              class="disguised"
+              to="/search">
+              <button class="more-item">
+                <span class="more-icon fas fa-search" />
+                Search
+              </button>
+            </router-link>
+            <button
+              class="more-item"
+              :class="{ 'disabled': !isOnline }">
+              <span class="more-icon fas fa-hammer" />
+              Workshop
+            </button>
           </div>
         </div>
       </button>
@@ -164,19 +172,19 @@ export default {
         icon: 'icons_outline-white.png',
         location: '/plan',
         name: 'Plan',
-        tooltip: 'Make general notes about characters, topics, settings, and more.',
+        tooltip: 'Create book-level notes.',
         worksOffline: true,
       }, {
         icon: 'icons_write-white.png',
         location: '/write',
         name: 'Write',
-        tooltip: 'Write, search and measure your content.',
+        tooltip: 'Write your content.',
         worksOffline: true,
       }, {
         icon: 'icons_plan-white.png',
         location: '/outline',
         name: 'Outline',
-        tooltip: 'Create and organize chapters and chapter-specific notes.',
+        tooltip: 'Create chapters and chapter-level notes.',
         worksOffline: true,
       }],
       toolsTooltip: 'Workshop your novel with free or prompted writing exercises.',
@@ -187,12 +195,13 @@ export default {
     tooltip,
   },
   mounted() {
-    tippy.one(this.$refs.moreButton, {
+    tippy(this.$refs.moreButton, {
       arrow: true,
       content: this.$refs.moreMenu.innerHTML,
       distance: 10,
       interactive: true,
       placement: 'bottom',
+      theme: 'light nopadding',
       trigger: 'click'
     })
   },
@@ -286,6 +295,41 @@ hr.between:last-of-type {
   align-items: center;
   display: flex;
   justify-content: center;
+}
+
+.more-menu {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 8px 0;
+}
+
+.more-item {
+  background-color: inherit;
+  border: none;
+  border-radius: 0;
+  color: #323232;
+  cursor: pointer;
+  display: block;
+  fill: #323232;
+  padding: 6px 20px;
+  text-align: left;
+  text-decoration: none;
+  transition: background-color 100ms, color 100ms, fill 100ms;
+  width: 100%;
+}
+
+.more-item:hover {
+  background-color: #323232;
+  color: #fff;
+  fill: #fff;
+}
+
+.more-item:not(:last-of-type) {
+  margin-bottom: 4px;
+}
+
+.more-icon {
+  margin-right: 6px;
 }
 
 .account {

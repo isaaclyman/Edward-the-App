@@ -139,7 +139,7 @@
                   class="content-placeholder" 
                   v-if="!section.archived && !getTextContent(section.content)"
                 >
-                  No content yet. Click "Edit" to add some.
+                  No content yet. Click <span class="fas fa-edit" /> to add some.
                 </span>
               </div>
               <div 
@@ -369,7 +369,7 @@ export default {
         index = 0
       }
 
-      if (this.allPlans[index] && this.allPlans[index].archived) {
+      if (this.allPlans[index] && this.allPlans[index].archived && !this.filterPlans(this.allPlans[index])) {
         index = this.allPlans.indexOf(this.viewingPlans[0])
       }
       
@@ -416,10 +416,6 @@ export default {
   margin-bottom: 16px;
   padding-bottom: 4px;
   padding-top: 4px;
-}
-
-.plan-body {
-  padding-top: 8px;
 }
 
 .plan-head {

@@ -39,6 +39,7 @@
         ref="plansList" 
         :filter-plans="showPlan" 
         :filter-sections="showSection"
+        :show-subheader="true"
       />
     </div>
 

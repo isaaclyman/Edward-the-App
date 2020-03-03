@@ -266,6 +266,7 @@ export default {
   color: #323232;
   font-weight: bold;
   height: 36px;
+  margin-bottom: 4px;
   margin-right: 6px;
   padding: 8px 12px;
 }
@@ -274,6 +275,7 @@ export default {
   display: flex;
   fill: #FFF;
   font-size: 16px;
+  margin-bottom: 4px;
   padding: 2px 8px;
 }
 

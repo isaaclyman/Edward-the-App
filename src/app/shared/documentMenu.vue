@@ -34,7 +34,7 @@
       v-if="isLimited"
     >
       <div>Keep your work safe.</div>
-      <a href="/auth#/signup">
+      <a href="/auth#/account">
         <button 
           class="menu-button upgrade-button mobile-hide" 
           :disabled="!isOnline"
@@ -46,7 +46,7 @@
       v-if="!isLimited && !isGold"
     >
       <div>Need more space?</div>
-      <a href="/auth#/signup">
+      <a href="/auth#/account">
         <button 
           class="menu-button upgrade-button mobile-hide" 
           :disabled="!isOnline"

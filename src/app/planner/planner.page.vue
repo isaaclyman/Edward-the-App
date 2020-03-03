@@ -1,26 +1,25 @@
 <template>
   <div class="wrap">
     <div class="planner">
-      <!-- 'Show Archived' checkbox -->
-      <div class="filters">
-        <input 
-          class="show-archived" 
-          id="showArchivedCheckbox" 
-          type="checkbox" 
-          v-model="filters.archived"
-        >
-        <label for="showArchivedCheckbox">Show Archived</label>
+      <div class="header">
+        <h1 class="header-title">
+          Plan
+        </h1>
+        <!-- 'Show Archived' checkbox -->
+        <div class="filters">
+          <input 
+            class="show-archived" 
+            id="showArchivedCheckbox" 
+            type="checkbox" 
+            v-model="filters.archived"
+          >
+          <label for="showArchivedCheckbox">Show Archived</label>
+        </div>
       </div>
-      <hr>
       <!-- Plan Chips -->
       <div class="chips-wrap plan-chips">
         <div class="section-title">
-          <h3>Plans</h3>
-          <button 
-            class="help-icon" 
-            v-html="helpIconSvg" 
-            @click="helpClick(helpPlanChipsModal, 'Plan List')"
-          />
+          <h3>Add/rearrange plans</h3>
         </div>
         <chips-list 
           name="Plan" 
@@ -35,7 +34,7 @@
           @update="renamePlan"
         />
       </div>
-      <hr>
+      <hr class="divider">
       <plans-list 
         ref="plansList" 
         :filter-plans="showPlan" 
@@ -70,7 +69,6 @@ import {
 } from '../shared/chapters.store'
 import ChipsList from '../shared/chipsList.vue'
 import guid from '../shared/guid'
-import Octicons from 'octicons'
 import PlansList from '../shared/plansList.vue'
 import swal from 'sweetalert'
 import { ValidateTitle } from '../shared/validate'
@@ -94,11 +92,6 @@ export default {
       filters: {
         archived: false,
       },
-      helpIconSvg: Octicons.question.toSVG({
-        class: 'help-icon--svg',
-        height: 16,
-        width: 16,
-      }),
     }
   },
   methods: {
@@ -181,9 +174,23 @@ export default {
 }
 
 .planner {
+  background-color: #F2F9F8;
   display: block;
-  flex: 1;
+  height: min-content;
+  margin-bottom: 32px;
   max-width: 1050px;
+  padding: 32px;
+  width: 100%;
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+
+.header-title {
+  flex: 1;
 }
 
 .filters {
@@ -191,10 +198,8 @@ export default {
 }
 
 .chips-wrap {
-  border-left: 2px solid rgba(13, 91, 166, 0.5);
   margin-bottom: 16px;
   padding-bottom: 4px;
-  padding-left: 8px;
   padding-top: 4px;
 }
 

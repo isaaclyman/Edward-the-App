@@ -45,7 +45,8 @@
           <div class="more-menu">
             <router-link
               class="disguised"
-              to="/search">
+              to="/search"
+            >
               <button class="more-item">
                 <span class="more-icon fas fa-search" />
                 Search
@@ -53,8 +54,9 @@
             </router-link>
             <button
               class="more-item"
-              :disabled='!isOnline'
-              @click="showWorkshops">
+              :disabled="!isOnline"
+              @click="showWorkshops"
+            >
               <span class="more-icon fas fa-hammer" />
               Workshop
             </button>
@@ -295,7 +297,7 @@ hr.between:last-of-type {
 }
 
 .more-menu {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
   padding: 8px 0;
 }
@@ -308,6 +310,7 @@ hr.between:last-of-type {
   cursor: pointer;
   display: block;
   fill: #323232;
+  font-size: inherit;
   padding: 6px 20px;
   text-align: left;
   text-decoration: none;
@@ -331,6 +334,7 @@ hr.between:last-of-type {
 
 .more-icon {
   margin-right: 6px;
+  width: 20px;
 }
 
 .account {

@@ -65,9 +65,9 @@
           v-if="activeChapter"
         >
           <div class="chapter-head">
-            <h3 class="chapter-title">
+            <h2 class="chapter-title">
               {{ activeChapter.title }}
-            </h3>
+            </h2>
             <div class="chapter-actions">
               <button 
                 class="chapter-action button-icon" 
@@ -118,7 +118,6 @@ import {
 import ChipsList from '../shared/chipsList.vue'
 import { GetContentString } from '../shared/deltaParser'
 import guid from '../shared/guid'
-import Octicons from 'octicons'
 import swal from 'sweetalert'
 import TabsList from '../shared/tabsList.vue'
 import TopicList from '../shared/topicList.vue'
@@ -170,15 +169,6 @@ export default {
   data() {
     return {
       activeChapterIndex: -1,
-      addSvg: Octicons.plus.toSVG({
-        class: 'add-icon--svg',
-        height: 14,
-        width: 14,
-      }),
-      expandSvg: Octicons['chevron-down'].toSVG({
-        height: 18,
-        width: 18,
-      }),
       filters: {
         archived: false,
         chapter: '',
@@ -187,11 +177,6 @@ export default {
       filtersVisible: false,
       helpChapterBlocksNode: null,
       helpChapterChipsNode: null,
-      helpIconSvg: Octicons.question.toSVG({
-        class: 'help-icon--svg',
-        height: 16,
-        width: 16,
-      }),
       helpTopicChipsNode: null,
     }
   },
@@ -382,10 +367,6 @@ h1 {
 
 .header-title {
   flex: 1;
-}
-
-.help-icon {
-  margin-left: 6px;
 }
 
 .filters {

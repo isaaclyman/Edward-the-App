@@ -592,6 +592,7 @@ export default {
   font-size: 16px;
   height: 100%;
   opacity: 1;
+  padding: 16px;
   transition: background-color 200ms, opacity 100ms;
 }
 

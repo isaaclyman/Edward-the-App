@@ -16,45 +16,44 @@
       class="plan" 
       v-if="activePlan"
     >
-      <div class="plan-header">
-        <h4 class="plan-title">
+      <div class="plan-head">
+        <h2 class="plan-title">
           {{ activePlan.title }}
-        </h4>
+        </h2>
         <div class="plan-actions">
           <button 
-            class="plan-action" 
+            class="plan-action button-icon" 
             v-show="!activePlan.archived" 
             @click="archivePlan({ index: activePlanIndex })"
+            title="Archive"
+            v-tooltip
           >
-            Archive
+            <span class="fas fa-archive" />
           </button>
           <button 
-            class="plan-action" 
+            class="plan-action button-icon" 
             v-show="activePlan.archived" 
             @click="restorePlan({ index: activePlanIndex })"
+            title="Un-archive"
+            v-tooltip
           >
-            Restore
+            <span class="fas fa-box-open" />  
           </button>
           <button 
-            class="plan-action button-red" 
+            class="plan-action plan-action-danger button-icon" 
             v-show="activePlan.archived" 
             @click="deletePlan({ index: activePlanIndex })"
+            title="Delete Forever"
+            v-tooltip
           >
-            Delete Forever
+            <span class="fas fa-trash" />
           </button>
         </div>
       </div>
+      <h3>Add/rearrange sections</h3>
       <div class="plan-body">
         <!-- Section Chips -->
         <div class="chips-wrap section-chips">
-          <div class="section-title">
-            <h3>Sections</h3>
-            <button 
-              class="help-icon" 
-              v-html="helpIconSvg" 
-              @click="helpClick(helpSectionChipsModal, 'Section List')"
-            />
-          </div>
           <chips-list 
             name="Section" 
             name-prop="title"
@@ -75,60 +74,59 @@
             :key="section.guid" 
             v-show="filterSections(section)"
           >
-            <div class="section-header">
+            <div class="section-head">
               <h5 class="section-title">
                 {{ section.title }}
               </h5>
               <div class="section-actions">
                 <button 
                   class="section-action" 
+                  v-show="!isEditing(index)" 
+                  @click="editSection(index)"
+                  title="Edit"
+                  v-tooltip
+                >
+                  <span class="fas fa-edit" />
+                </button>
+                <button 
+                  class="section-action" 
+                  v-show="isEditing(index)" 
+                  @click="endEditSection()"
+                  title="Save"
+                  v-tooltip
+                >
+                  <span class="fas fa-check" />
+                </button>
+                <button 
+                  class="section-action" 
                   v-show="!section.archived" 
                   @click="archiveSection({ index })"
+                  title="Archive"
+                  v-tooltip
                 >
-                  Archive
+                  <span class="fas fa-archive" />
                 </button>
                 <button 
                   class="section-action" 
                   v-show="section.archived" 
                   @click="restoreSection({ index })"
+                  title="Un-archive"
+                  v-tooltip
                 >
-                  Restore
+                  <span class="fas fa-box-open" />
                 </button>
                 <button 
                   class="section-action button-red" 
                   v-show="section.archived" 
                   @click="deleteSection({ index })"
+                  title="Delete forever"
+                  v-tooltip
                 >
-                  Delete Forever
+                  <span class="fas fa-trash" />  
                 </button>
               </div>
             </div>
             <div class="section-content">
-              <div 
-                class="content-actions" 
-                v-if="!section.archived"
-              >
-                <button 
-                  class="button-link" 
-                  v-if="!isEditing(index)" 
-                  @click="editSection(index)"
-                >
-                  <span 
-                    class="button-link-icon" 
-                    v-html="editSvg"
-                  />Edit
-                </button>
-                <button 
-                  class="button-link" 
-                  v-if="isEditing(index)" 
-                  @click="endEditSection()"
-                >
-                  <span 
-                    class="button-link-icon" 
-                    v-html="doneSvg"
-                  />Done Editing
-                </button>
-              </div>
               <div 
                 class="content-static" 
                 v-if="!isEditing(index)"
@@ -193,6 +191,7 @@ import Octicons from 'octicons'
 import QuillEditor from '../shared/quillEditor.vue'
 import swal from 'sweetalert'
 import TabsList from '../shared/tabsList.vue'
+import tooltip from '../shared/tooltip.directive'
 import { ValidateTitle } from '../shared/validate'
 
 export default {
@@ -230,13 +229,11 @@ export default {
       editSvg: Octicons.pencil.toSVG({
         height: 14,
         width: 14,
-      }),
-      helpIconSvg: Octicons.question.toSVG({
-        class: 'help-icon--svg',
-        height: 16,
-        width: 16,
-      }),
+      })
     }
+  },
+  directives: {
+    tooltip
   },
   methods: {
     addPlan(title) {
@@ -409,107 +406,104 @@ export default {
 
 <style scoped>
 .chips-wrap {
-  border-left: 2px solid rgba(13, 91, 166, 0.5);
   margin-bottom: 16px;
   padding-bottom: 4px;
-  padding-left: 8px;
   padding-top: 4px;
 }
 
-.plan {
-  background-color: #FFF;
-  border: 1px solid #CCC;
-  box-shadow: 0px -2px 12px -4px rgba(0,0,0,0.75);
-  margin-bottom: 10px;
+.plan-body {
+  padding-top: 8px;
 }
 
-.plan-header {
+.plan-head {
   align-items: center;
-  background-color: rgba(13, 91, 166, 1);
-  color: #FFF;
   display: flex;
   flex-direction: row;
-  padding: 8px;
 }
 
 .plan-title {
-  flex: 1;
+  margin-right: 8px;
 }
 
 .plan-action {
   background-color: transparent;
-  border-color: #FFF;
-  color: #FFF;
-  margin-right: 6px;
+  color: #323232;
+  margin-left: 16px;
   transition: background-color 100ms;
 }
 
 .plan-action:hover {
-  background-color: #444;
+  background-color: #FFF;
+  color: #000;
 }
 
-.plan-body {
-  background-color: rgba(13, 91, 166, 0.05);
-  padding-top: 8px;
-}
-
-.section-chips {
-  margin-left: 8px;
-}
-
-.sections {
-  padding: 8px;
+.plan-action-danger {
+  color: #e53935;
 }
 
 .section {
-  border: 1px solid rgba(13, 91, 166, 1);
+  border: none;
+  border-top: none;
+  color: #000;
   margin-bottom: 20px;
 }
 
-.section-header {
+.section-head {
   align-items: center;
-  background-color: rgba(13, 91, 166, 1);
+  background-color: #00866F;
   color: #FFF;
   display: flex;
   flex-direction: row;
-  height: 28px;
-  padding: 0 8px;
+  height: 48px;
+  padding-left: 16px;
+  padding-right: 8px;
 }
 
 .section-title {
-  align-items: center;
-  display: flex;
+  color: #fff;
   flex: 1;
-  flex-direction: row;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 2px 0;
 }
 
 .section-actions {
+  display: flex;
+  flex-direction: row;
   height: 100%;
 }
 
 .section-action {
-  background-color: transparent;
+  align-items: center;
+  background-color: #fff;
   border: none;
-  border-left: 1px solid #fff;
-  border-radius: 0;
-  border-right: 1px solid #fff;
-  color: #fff;
-  height: 100%;
-  margin-right: 6px;
-  padding: 3px 6px;
+  border-radius: 8px;
+  color: #323232;
+  display: flex;
+  font-size: 16px;
+  justify-content: center;
+  height: 32px;
+  margin: 8px;
+  padding: 0;
   transition: background-color 100ms;
+  width: 32px;
 }
 
 .section-action:hover {
-  background-color: #444;
+  background-color: #FFF;
+  color: #000;
+}
+
+.section-action span {
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 .section-content {
   background-color: #FFF;
-  padding-bottom: 6px;
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 1px;
+  font-size: 16px;
+  padding: 16px;
 }
 
 .content-actions {
@@ -524,8 +518,6 @@ export default {
 }
 
 .content-static {
-  font-family: 'Source Serif Pro', sans-serif;
-  font-size: 13px;
   white-space: pre-wrap;
 }
 

@@ -117,7 +117,7 @@ h1, h2, h3 {
 }
 
 h1 {
-  font-size: 34px;
+  font-size: 42px;
 }
 
 h2 {
@@ -290,18 +290,6 @@ textarea {
 
 .help p {
   margin-bottom: 10px;
-}
-
-.help-icon {
-  border: none;
-  height: 20px;
-  padding: 0;
-  transition: opacity 100ms;
-  width: 20px;
-}
-
-.help-icon--svg {
-  fill: #444;
 }
 
 @media (max-width: 800px) {

@@ -235,7 +235,7 @@ export default {
   fill: #fff;
   font-size: 16px;
   font-weight: bold;
-  margin: 4px 8px 4px 0;
+  margin: 4px 8px 8px 0;
   opacity: 1;
   padding: 6px 10px;
   transition: background-color 100ms, color 100ms;

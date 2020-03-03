@@ -119,6 +119,7 @@
             <plans-list 
               :filter-plans="showPlan" 
               :filter-sections="showSection"
+              :show-subheader="false"
             />
           </template>
           <template v-else>
@@ -181,11 +182,9 @@
             />
           </template>
           <template v-else>
-            <div>No workshops completed yet.</div>
+            <h3>No workshops completed yet.</h3>
             <div>
-              <router-link to="/workshop/free-write">
-                Do a free write
-              </router-link>
+              See More > Workshops in the main menu to get started.
             </div>
           </template>
         </div>
@@ -634,11 +633,11 @@ export default {
   align-self: flex-start;
   display: flex;
   flex-direction: row;
+  margin-bottom: 16px;
 }
 
 .topic-list-wrap {
   overflow: auto;
-  padding-top: 16px;
 }
 
 /* MOBILE */

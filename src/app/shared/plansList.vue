@@ -16,7 +16,10 @@
       class="plan" 
       v-if="activePlan"
     >
-      <div class="plan-head">
+      <div
+        class="plan-head"
+        v-if="showSubheader"
+      >
         <h2 class="plan-title">
           {{ activePlan.title }}
         </h2>
@@ -400,6 +403,10 @@ export default {
       required: true,
       type: Function,
     },
+    showSubheader: {
+      required: true,
+      type: Boolean
+    }
   },
 }
 </script>

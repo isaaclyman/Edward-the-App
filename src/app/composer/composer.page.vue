@@ -206,7 +206,6 @@ import { ADD_CHAPTER, UPDATE_CHAPTER_CONTENT } from '../shared/chapters.store'
 import Cache from '../shared/cache'
 import { GetContentString } from '../shared/deltaParser'
 import guid from '../shared/guid'
-import Octicons from 'octicons'
 import PlansList from '../shared/plansList.vue'
 import QuillEditor from '../shared/quillEditor.vue'
 import TabsList from '../shared/tabsList.vue'
@@ -322,18 +321,6 @@ export default {
         archived: false,
       },
       newChapter: '',
-      outlineSvg: Octicons['list-unordered'].toSVG({
-        height: 25,
-        width: 25,
-      }),
-      planSvg: Octicons.telescope.toSVG({
-        height: 25,
-        width: 25,
-      }),
-      workshopSvg: Octicons.tools.toSVG({
-        height: 25,
-        width: 25,
-      }),
       scrollTo: {
         paragraphIndex: -1,
         searchTermIndex: -1,

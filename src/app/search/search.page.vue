@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <div class="search">
-      <h2>Document Search</h2>
+      <h1>Search document</h1>
       <p>
         Enter a partial word, full word or phrase and Edward will find all your chapters, outlines, plans and workshops
         that match it.
@@ -11,7 +11,7 @@
           class="search-input" 
           v-model="searchText" 
           type="text" 
-          placeholder="Search text"
+          placeholder="Type your search term here"
           @keyup.enter="search()" 
           ref="searchInput"
         >
@@ -19,7 +19,7 @@
           class="button-green" 
           @click="search()"
         >
-          Search
+          Search now
         </button>
       </div>
       <transition 
@@ -32,7 +32,7 @@
           key="results"
         >
           <template v-if="hasResults">
-            <hr>
+            <h2>Filter Results</h2>
             <div class="filters">
               <div class="filter">
                 <input 
@@ -82,12 +82,11 @@
               :key="chapter.guid"
             >
               <p class="result-title">
-                <strong v-text="chapter.title" />
                 <router-link :to="'/write?chapter=' + chapter.guid">
-                  <button 
-                    class="link-out" 
-                    v-html="linkSvg"
-                  />
+                  <strong v-text="chapter.title" />
+                  <button class="link-out">
+                    <span class="fas fa-link" />
+                  </button>
                 </router-link>
               </p>
               <div 
@@ -102,6 +101,7 @@
             class="result-set outline-results" 
             v-if="matches.outlines.length && filters.showOutlines"
           >
+            <hr class="divider">
             <h3>Outlines</h3>
             <div 
               class="result" 
@@ -109,12 +109,11 @@
               :key="topicMatch.chapterGuid + topicMatch.topicGuid"
             >
               <p class="result-title">
-                <strong>{{ topicMatch.chapterTitle }} | {{ topicMatch.topicTitle }}</strong>
                 <router-link :to="'/outline?chapter=' + topicMatch.chapterGuid">
-                  <button 
-                    class="link-out" 
-                    v-html="linkSvg"
-                  />
+                  <strong>{{ topicMatch.chapterTitle }} | {{ topicMatch.topicTitle }}</strong>
+                  <button class="link-out">
+                    <span class="fas fa-link" />
+                  </button>
                 </router-link>
               </p>
               <div 
@@ -129,6 +128,7 @@
             class="result-set plan-results" 
             v-if="matches.plans.length && filters.showPlans"
           >
+            <hr class="divider">
             <h3>Plans</h3>
             <div 
               class="result" 
@@ -136,12 +136,11 @@
               :key="sectionMatch.planGuid + sectionMatch.sectionGuid"
             >
               <p class="result-title">
-                <strong>{{ sectionMatch.planTitle }} | {{ sectionMatch.sectionTitle }}</strong>
                 <router-link :to="'/plan?plan=' + sectionMatch.planGuid">
-                  <button 
-                    class="link-out" 
-                    v-html="linkSvg"
-                  />
+                  <strong>{{ sectionMatch.planTitle }} | {{ sectionMatch.sectionTitle }}</strong>
+                  <button class="link-out">
+                    <span class="fas fa-link" />
+                  </button>
                 </router-link>
               </p>
               <div 
@@ -156,6 +155,7 @@
             class="result-set workshop-results" 
             v-if="matches.workshops.length && filters.showWorkshops"
           >
+            <hr class="divider">
             <h3>Workshops</h3>
             <div 
               class="result" 
@@ -163,12 +163,11 @@
               :key="workshopMatch.guid"
             >
               <p class="result-title">
-                <strong>{{ workshopMatch.title }}</strong>
                 <router-link :to="'/write?workshopName=' + workshopMatch.workshopName + '&workshop=' + workshopMatch.guid">
-                  <button 
-                    class="link-out" 
-                    v-html="linkSvg"
-                  />
+                  <strong>{{ workshopMatch.title }}</strong>
+                  <button class="link-out">
+                    <span class="fas fa-link" />
+                  </button>
                 </router-link>
               </p>
               <div 
@@ -195,7 +194,6 @@
 <script>
 import { GetContentString, GetIndicesOf } from '../shared/deltaParser'
 import Match from './match.vue'
-import Octicons from 'octicons'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
 const prePostChars = 40
@@ -235,10 +233,6 @@ export default {
         showPlans: true,
         showWorkshops: true,
       },
-      linkSvg: Octicons.link.toSVG({
-        height: 14,
-        width: 14,
-      }),
       loading: false,
       matches: {
         chapters: [],
@@ -380,9 +374,13 @@ export default {
 }
 
 .search {
+  background-color: #F2F9F8;
   display: block;
-  flex: 1;
+  height: min-content;
+  margin-bottom: 32px;
   max-width: 1050px;
+  padding: 32px;
+  width: 100%;
 }
 
 .search-input {
@@ -391,13 +389,12 @@ export default {
   width: 100%;
 }
 
-.result-set {
-  margin: 20px 0;
+.results {
+  margin-top: 32px;
 }
 
-.result-set h3 {
-  border-left: 2px solid rgb(1,171,109);
-  padding-left: 8px;
+.result-set {
+  margin: 20px 0;
 }
 
 .result {
@@ -415,10 +412,18 @@ export default {
 }
 
 .result-title {
+  cursor: pointer;
   display: flex;
   flex-direction: row;
-  font-size: 16px;
+  font-size: 18px;
   margin: 0;
+}
+
+.result-title a {
+  color: inherit;
+  display: flex;
+  flex-direction: row;
+  text-decoration: none;
 }
 
 .link-out {
@@ -427,6 +432,7 @@ export default {
   color: #444;
   display: flex;
   flex-direction: row;
+  font-size: 14px;
   height: 20px;
   padding: 0;
   margin: 0 4px;

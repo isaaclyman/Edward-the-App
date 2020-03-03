@@ -190,7 +190,6 @@ import {
 import ChipsList from '../shared/chipsList.vue'
 import { GetContentString, GetHtml } from '../shared/deltaParser'
 import guid from '../shared/guid'
-import Octicons from 'octicons'
 import QuillEditor from '../shared/quillEditor.vue'
 import swal from 'sweetalert'
 import TabsList from '../shared/tabsList.vue'
@@ -224,15 +223,7 @@ export default {
   data() {
     return {
       activePlanIndex: -1,
-      doneSvg: Octicons.check.toSVG({
-        height: 14,
-        width: 14,
-      }),
-      editingSectionIndex: -1,
-      editSvg: Octicons.pencil.toSVG({
-        height: 14,
-        width: 14,
-      })
+      editingSectionIndex: -1
     }
   },
   directives: {

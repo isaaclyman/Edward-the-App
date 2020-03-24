@@ -11,13 +11,13 @@
       :can-add="false"
       @update:activeIndex="selectWorkshopNameIndex"
     />
-    <div class="workshop-list">
-      <div class="workshop-list-header">
-        <div class="workshop-list-title">
+    <div>
+      <div>
+        <h3>
           {{ currentWorkshopDisplayName }}
-        </div>
+        </h3>
       </div>
-      <div class="workshop-list-body">
+      <div>
         <div class="workshop-select">
           <div class="workshop-select-label">
             Select a workshop:
@@ -49,22 +49,28 @@
                   class="workshop-action" 
                   v-show="!firstActiveWorkshop.archived" 
                   @click="archiveActiveWorkshops()"
+                  title="Archive"
+                  v-tooltip
                 >
-                  Archive
+                  <span class="fas fa-archive" />
                 </button>
                 <button 
                   class="workshop-action" 
                   v-show="firstActiveWorkshop.archived" 
                   @click="restoreActiveWorkshops()"
+                  title="Un-archive"
+                  v-tooltip
                 >
-                  Restore
+                  <span class="fas fa-box-open" />
                 </button>
                 <button 
                   class="workshop-action button-red" 
                   v-show="firstActiveWorkshop.archived" 
                   @click="deleteActiveWorkshops()"
+                  title="Delete forever"
+                  v-tooltip
                 >
-                  Delete Forever
+                  <span class="fas fa-trash" />
                 </button>
               </div>
             </div>
@@ -89,10 +95,14 @@ import swal from 'sweetalert'
 import TabsList from '../shared/tabsList.vue'
 import uniq from 'lodash/uniq'
 import writingWorkshops from '../../../models/writingWorkshop'
+import tooltip from '../shared/tooltip.directive'
 
 export default {
   components: {
     TabsList,
+  },
+  directives: {
+    tooltip
   },
   computed: {
     currentWorkshopDisplayName() {
@@ -216,31 +226,39 @@ export default {
 
 <style scoped>
 .workshop-list {
-  background-color: #FFF;
-  border: 1px solid #CCC;
-  box-shadow: 0px -2px 12px -4px rgba(0,0,0,0.75);
-  margin-bottom: 10px;
+  border: none;
+  border-top: none;
+  color: #000;
+  margin-bottom: 20px;
 }
 
 .workshop-list-header {
   align-items: center;
-  background-color: rgba(1, 171, 109, 1);
+  background-color: #00866F;
   color: #FFF;
   display: flex;
   flex-direction: row;
-  padding: 8px;
+  height: 48px;
+  padding-left: 16px;
+  padding-right: 8px;
 }
 
 .workshop-list-title {
+  color: #fff;
   flex: 1;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 2px 0;
 }
 
 .workshop-list-body {
-  background-color: rgba(1, 171, 109, 0.05);
+  background-color: #FFF;
+  font-size: 16px;
+  padding: 16px;
 }
 
 .workshop-select {
-  padding: 12px 6px;
+  margin-bottom: 8px;
 }
 
 .workshop-select-label {
@@ -248,61 +266,69 @@ export default {
 }
 
 .workshop-select-dropdown {
-  border: 1px solid #BBB;
+  border: 2px solid #323232;
 }
 
 .workshops {
-  padding: 8px;
+  margin-top: 16px;
 }
 
 .workshop {
-  border: 1px solid rgba(1, 171, 109, 1);
+  border: none;
+  border-top: none;
+  color: #000;
   margin-bottom: 20px;
 }
 
 .workshop-header {
   align-items: center;
-  background-color: rgba(1, 171, 109, 1);
+  background-color: #00866F;
   color: #FFF;
   display: flex;
   flex-direction: row;
-  height: 28px;
-  padding: 0 8px;
+  height: 48px;
+  padding-left: 16px;
+  padding-right: 8px;
 }
 
 .workshop-title {
-  align-items: center;
-  display: flex;
+  color: #fff;
   flex: 1;
-  flex-direction: row;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 2px 0;
 }
 
 .workshop-actions {
+  display: flex;
+  flex-direction: row;
   height: 100%;
 }
 
 .workshop-action {
-  background-color: transparent;
+  align-items: center;
+  background-color: #fff;
   border: none;
-  border-left: 1px solid #fff;
-  border-radius: 0;
-  border-right: 1px solid #fff;
-  color: #fff;
-  height: 100%;
-  margin-right: 6px;
-  padding: 3px 6px;
+  border-radius: 8px;
+  color: #323232;
+  display: flex;
+  font-size: 16px;
+  justify-content: center;
+  height: 32px;
+  margin: 8px;
+  padding: 0;
   transition: background-color 100ms;
+  width: 32px;
 }
 
 .workshop-action:hover {
-  background-color: #444;
+  background-color: #FFF;
+  color: #000;
 }
 
 .workshop-content {
   background-color: #FFF;
-  padding-bottom: 4px;
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 6px;
+  font-size: 16px;
+  padding: 16px;
 }
 </style>

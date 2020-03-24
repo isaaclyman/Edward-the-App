@@ -140,7 +140,7 @@ export default {
   flex-wrap: wrap;
   margin-bottom: 16px;
   min-height: 40px;
-  max-height: 82px;
+  max-height: 84px;
   overflow: auto;
 }
 

@@ -54,7 +54,7 @@
             title="Delete forever"
             v-tooltip
           >
-            <span class="fas fa-trash" />  
+            <span class="fas fa-trash" />
           </button>
         </div>
       </div>

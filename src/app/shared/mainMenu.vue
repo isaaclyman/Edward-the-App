@@ -88,13 +88,15 @@
                 v-if="isOnline"
                 href="/auth#/account"
               >
-                <button class="button-green">
+                <button class="button-green account-action">
                   Account Settings
                 </button>
               </a>
-              <button @click="logOut()">
-                Log Out
-              </button>
+              <div>
+                <button class="account-action" @click="logOut()">
+                  Log Out
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -424,8 +426,9 @@ hr.between:last-of-type {
   margin-top: 16px;
 }
 
-.account-actions button {
+.account-action {
   margin-bottom: 8px;
+  width: 100%;
 }
 
 .warn {

@@ -472,7 +472,8 @@ export default {
 .composer {
   display: flex;
   flex: 1;
-  max-width: 1500px;
+  max-width: 100%;
+  width: 1500px;
 }
 
 .map-wrap {

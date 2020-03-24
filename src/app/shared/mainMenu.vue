@@ -21,10 +21,6 @@
             <div>{{ route.name }}</div>
           </button>
         </router-link>
-        <hr 
-          class="vert between mobile-only" 
-          :key="route.name + '-hr'"
-        >
       </template>
     </div>
     <div class="extra">
@@ -314,6 +310,7 @@ export default {
   height: 100%;
   margin-bottom: 2px;
   margin-top: 2px;
+  padding: 8px 16px;
   transition: font-size 100ms;
 }
 
@@ -321,8 +318,14 @@ a:not(.router-link-active) .main-menu--button:not([disabled]):hover {
   color: rgba(255, 255, 255, 0.7);
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
+  .routes .main-menu--button {
+    font-size: 16px;
+    padding: 6px 10px;
+  }
+
   .main-menu--button {
+    font-size: 14px;
     padding: 6px 10px;
   }
 }
@@ -334,6 +337,12 @@ a:not(.router-link-active) .main-menu--button:not([disabled]):hover {
   height: 110px;
   font-size: 22px;
   padding: 22px 52px;
+}
+
+@media (max-width: 1000px) {
+  .router-link-active > .main-menu--button {
+    padding: 24px 16px;
+  }
 }
 
 .main-menu--icon {
@@ -356,8 +365,6 @@ hr.between:last-of-type {
 }
 
 .more-menu {
-  font-size: 18px;
-  font-weight: bold;
   padding: 8px 0;
 }
 

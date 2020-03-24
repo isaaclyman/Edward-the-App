@@ -30,25 +30,25 @@
     </div>
     <div class="spacer" />
     <div 
-      class="menu-items" 
+      class="menu-items mobile-hide"
       v-if="isLimited"
     >
       <div>Keep your work safe.</div>
       <a href="/auth#/account">
         <button 
-          class="menu-button upgrade-button mobile-hide" 
+          class="menu-button upgrade-button" 
           :disabled="!isOnline"
         >Upgrade to Author</button>
       </a>
     </div>
     <div 
-      class="menu-items" 
+      class="menu-items mobile-hide"
       v-if="!isLimited && !isGold"
     >
       <div>Need more space?</div>
       <a href="/auth#/account">
         <button 
-          class="menu-button upgrade-button mobile-hide" 
+          class="menu-button upgrade-button" 
           :disabled="!isOnline"
         >Upgrade to Bestseller</button>
       </a>
@@ -152,5 +152,6 @@ export default {
   border-radius: 4px;
   color: #323232;
   height: 30px;
+  min-width: 200px;
 }
 </style>

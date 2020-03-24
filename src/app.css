@@ -304,14 +304,20 @@ textarea {
   margin-bottom: 10px;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
   .mobile-hide {
     display: none !important;
   }
 }
 
-@media (min-width: 801px) {
+@media (min-width: 1001px) {
   .mobile-only {
+    display: none !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .mobile-xs-hide {
     display: none !important;
   }
 }

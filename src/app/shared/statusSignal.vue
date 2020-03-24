@@ -8,13 +8,19 @@
         class="status-saving" 
         :class="{ 'show': isSaving }"
       >
-        Saving...
+        <span class="mobile-xs-hide">
+          Saving
+        </span>
+        ...
       </div>
       <div 
         class="status-saved" 
         :class="{ 'show': !isSaving && saved }"
       >
-        Saved <span v-html="savedIcon" />
+        <span class="mobile-xs-hide">
+          Saved
+        </span>
+        <span v-html="savedIcon" />
       </div>
       <div 
         class="status-error" 
@@ -22,7 +28,10 @@
         :title="saveErrorText" 
         v-tooltip="{ enabled: !isSaving && saveError }"
       >
-        Error <span v-html="errorIcon" />
+        <span class="mobile-xs-hide">
+          Error
+        </span>
+        <span v-html="errorIcon" />
       </div>
       <div 
         class="status-offline" 
@@ -31,7 +40,10 @@
         v-tooltip="{ enabled: !isSaving && offline }" 
         ref="offlineStatus"
       >
-        Offline <span v-html="offlineIcon" />
+        <span class="mobile-xs-hide">
+          Offline
+        </span>
+        <span v-html="offlineIcon" />
       </div>
     </div>
   </div>
@@ -145,15 +157,28 @@ export default {
   display: flex;
   font-size: 22px;
   justify-content: center;
-  margin-right: 8px;
+  margin: 0 16px;
 }
 
 .status {
   cursor: default;
+  display: inline-block;
   height: 20px;
   position: relative;
   text-align: right;
   width: 95px;
+}
+
+@media (max-width: 1000px) {
+  .status {
+    width: 55px;
+  }
+}
+
+@media (max-width: 650px) {
+  .status {
+    width: 16px;
+  }
 }
 
 .status-saving {
@@ -177,10 +202,19 @@ export default {
 }
 
 .status-saving, .status-saved, .status-error, .status-offline {
+  align-items: center;
   cursor: default;
+  display: flex;
+  flex-direction: row;
   opacity: 0;
   position: absolute;
   transition: opacity 500ms;
+}
+
+@media (max-width: 1000px) {
+  .status-saving, .status-saved, .status-error, .status-offline {
+    font-size: 14px;
+  }
 }
 
 .status-saving.show, .status-saved.show, .status-error.show, .status-offline.show {

@@ -96,6 +96,9 @@
                   Account Settings
                 </button>
               </a>
+              <button @click="logOut()">
+                Log Out
+              </button>
             </div>
           </div>
         </div>
@@ -161,6 +164,7 @@ import swal from 'sweetalert'
 import tooltip from './tooltip.directive'
 import writingWorkshops from '../../../models/writingWorkshop'
 import tippy from 'tippy.js'
+import userApi from '../api/userApi'
 
 export default {
   components: {
@@ -262,6 +266,20 @@ export default {
 
       swal.close()
       this.$router.push(workshop.route)
+    },
+    logOut() {
+      userApi.logOut().then(
+        () => {
+          window.location.href = '/auth'
+        },
+        () => {
+          swal({
+            icon: 'error',
+            text:
+              'Sorry, logout failed. If security is a concern, please clear your cookies and other browsing data and close your browser.'
+          })
+        }
+      )
     },
   },
 }
@@ -394,7 +412,13 @@ hr.between:last-of-type {
 }
 
 .account-actions {
+  display: flex;
+  flex-direction: column;
   margin-top: 16px;
+}
+
+.account-actions button {
+  margin-bottom: 8px;
 }
 
 .warn {

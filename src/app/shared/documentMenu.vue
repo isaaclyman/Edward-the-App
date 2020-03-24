@@ -59,9 +59,7 @@
 <script>
 import DocumentPicker from './documentPicker.vue'
 import { Statuses } from './status.store'
-import swal from 'sweetalert'
 import { UNLOAD_CURRENT_DOCUMENT } from './document.store'
-import userApi from '../api/userApi'
 
 export default {
   components: {
@@ -82,20 +80,6 @@ export default {
     return {}
   },
   methods: {
-    logOut() {
-      userApi.logOut().then(
-        () => {
-          window.location.href = '/auth'
-        },
-        () => {
-          swal({
-            icon: 'error',
-            text:
-              'Sorry, logout failed. If security is a concern, please clear your cookies and other browsing data and close your browser.'
-          })
-        }
-      )
-    },
     showWizard() {
       this.$store.dispatch(UNLOAD_CURRENT_DOCUMENT)
     }

@@ -58,7 +58,7 @@
               @click="showWorkshops"
             >
               <span class="more-icon fas fa-hammer" />
-              Workshop
+              Workshops
             </button>
           </div>
         </div>
@@ -93,6 +93,9 @@
         class="workshops" 
         ref="workshopsModal"
       >
+        <h1 class="workshop-modal-title">
+          Select a workshop
+        </h1>
         <p 
           v-if="!isPremium" 
           class="warn"
@@ -101,12 +104,12 @@
         </p>
         <div 
           v-for="workshop in workshops" 
-          :key="workshop.name" 
-          @click="startWorkshop(workshop)"
+          :key="workshop.name"
+          @click="setSelectedWorkshop(workshop)"
         >
           <div 
             class="workshop" 
-            :class="{ 'restricted': !isPremium || !workshop.available }"
+            :class="{ 'restricted': !isPremium || !workshop.available, 'selected': selectedWorkshop === workshop }"
           >
             <div 
               class="workshop-restricted" 
@@ -127,11 +130,6 @@
               <div class="workshop-description">
                 {{ workshop.description }}
               </div>
-            </div>
-            <div class="workshop-button">
-              <button class="button-green">
-                Begin
-              </button>
             </div>
           </div>
         </div>
@@ -186,6 +184,7 @@ export default {
         name: 'Outline',
         tooltip: 'Create chapters and chapter-level notes.',
       }],
+      selectedWorkshop: null,
       toolsTooltip: 'Workshop your novel with free or prompted writing exercises.',
       workshops: Object.keys(writingWorkshops).map(key => writingWorkshops[key]),
     }
@@ -206,13 +205,30 @@ export default {
   },
   methods: {
     showWorkshops() {
+      if (!this.selectedWorkshop) {
+        this.selectedWorkshop = this.workshops[0]
+      }
+
       swal({
         content: this.$refs.workshopsModal,
-        title: 'Workshops',
+        className: 'workshop-modal',
         buttons: {
           cancel: true,
+          confirm: {
+            text: 'Begin',
+            className: 'button-green'
+          }
         },
+      }).then(result => {
+        if (!result) {
+          return
+        }
+
+        this.startWorkshop(this.selectedWorkshop)
       })
+    },
+    setSelectedWorkshop(workshop) {
+      this.selectedWorkshop = workshop
     },
     startWorkshop(workshop) {
       if (!this.isPremium || !workshop.available) {
@@ -366,18 +382,29 @@ hr.between:last-of-type {
   color: red;
 }
 
+.workshop-modal-title {
+  margin-bottom: 16px;
+}
+
 .workshop {
   align-items: center;
-  border: 1px solid rgb(1, 171, 109);
-  color: #000;
+  background-color: #fff;
+  border: none;
+  color: #323232;
   cursor: pointer;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   margin-bottom: 12px;
-  padding: 8px;
+  padding: 16px;
   position: relative;
   text-decoration: none;
+  transition: background-color 200ms, color 200ms;
+}
+
+.workshop.selected {
+  background-color: #00866F;
+  color: #fff;
 }
 
 .workshop.restricted {
@@ -405,18 +432,19 @@ hr.between:last-of-type {
 }
 
 .workshop-name {
-  font-size: 28px;
+  font-size: 20px;
   text-align: left;
 }
 
 .workshop-description {
   font-size: 14px;
   text-align: left;
+  max-height: 0;
+  overflow: hidden;
 }
 
-.workshop-button {
-  margin-left: 12px;
-  padding: 8px;
+.workshop.selected .workshop-description {
+  max-height: 100px;
 }
 </style>
 
@@ -432,5 +460,9 @@ hr.between:last-of-type {
 
 .router-link-active > .main-menu--button .main-menu--icon {
   fill: rgba(255, 255, 255, 1);
+}
+
+.workshop-modal {
+  background-color: #F2F9F8;
 }
 </style>

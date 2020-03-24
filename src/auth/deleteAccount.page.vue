@@ -17,7 +17,7 @@
         >
         <button 
           v-if="!saving" 
-          class="button-red" 
+          class="button-red button-small" 
           @click="deleteAccount"
         >
           Delete my account
@@ -32,10 +32,9 @@
         If the problem persists, contact <a href="mailto:support@edwardtheapp.com">support@edwardtheapp.com</a>.
       </div>
     </div>
-    <hr>
     <div class="cancel">
       <router-link to="/account">
-        <button class="button-link">
+        <button class="button-small">
           Never mind, go back
         </button>
       </router-link>
@@ -76,22 +75,20 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  color: #00866F;
+}
+
 hr {
   margin: 16px 0;
   width: 100%;
 }
 
 .wrap {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
   flex: 1;
   flex-direction: column;
-}
-
-.delete, .cancel {
-  max-width: 1200px;
-  padding: 0 50px;
-  width: 100%;
 }
 
 .actions {

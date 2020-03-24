@@ -2,35 +2,21 @@
   <div class="wrap">
     <div class="account">
       <h1 class="type">
-        You have a {{ accountType }}.
+        My Account
       </h1>
-      <h4 
+      <p
         class="thanks" 
         v-if="isPremium"
       >
-        Thanks for supporting Edward!
-      </h4>
-    </div>
-    <hr v-if="isPremium">
-    <div 
-      class="payment" 
-      v-if="isPremium"
-    >
-      <p v-if="!isOverdue && paymentDueDate">
-        Your next payment is due on {{ paymentDueDate }}.
+        You have {{ accountTypeWithArticle }}. Thanks for supporting Edward the App!
       </p>
       <p
-        class="error"
-        v-if="isOverdue"
+        class="thanks"
+        v-else
       >
-        Your account is overdue. You cannot access the app until you downgrade to a Dreamer account or make a successful payment.
+        You have {{ accountTypeWithArticle }}.
       </p>
-      <p>Click here to update your payment method.</p>
-      <button @click="updatePayment()">
-        Update Payment Method
-      </button>
     </div>
-    <hr>
     <div class="upgrade">
       <div v-if="isGold">
         <p class="above-small">
@@ -45,7 +31,8 @@
       </div>
       <div v-if="!isPremium">
         <p class="above-small">
-          Upgrade to an Author account to access your novels from anywhere.
+          Have you considered upgrading to an Author account?
+          An Author account gives you premium storage space on our secure cloud servers, accessible from anywhere.
         </p>
         <p class="price">
           ($7.99 per month, up to 10,000 pages)
@@ -59,13 +46,13 @@
       </div>
       <div v-if="!isGold">
         <p class="above-small">
-          Upgrade to a Bestseller account for extra storage space.
+          Have you considered upgrading to a Bestseller account for extra premium storage space?
         </p>
         <p class="price">
           ($14.99 per month, up to 125,000 pages)
         </p>
         <button 
-          class="button-gold" 
+          class="button-small button-gold" 
           @click="toGold()"
         >
           Upgrade to Bestseller
@@ -73,15 +60,18 @@
       </div>
       <div v-if="isPremium">
         <p class="above-small">
-          Want to downgrade to a Dreamer account?
+          Don't need secure cloud storage or syncing with your other devices?
         </p>
         <p
           class="small"
         >
           Please back up all of your documents first. They may not fit in your browser's storage.
         </p>
-        <button @click="paidToLimited()">
-          Revert to Dreamer
+        <button
+          class="button-small"
+          @click="paidToLimited()"
+        >
+          Downgrade to Dreamer
         </button>
       </div>
       <div 
@@ -96,9 +86,30 @@
         >support@edwardtheapp.com</a>.
       </div>
     </div>
-    <hr>
+    <hr class="divider" v-if="isPremium">
+    <div 
+      class="payment" 
+      v-if="isPremium"
+    >
+      <p v-if="!isOverdue && paymentDueDate">
+        Your next payment is due on {{ paymentDueDate }}.
+      </p>
+      <p
+        class="error"
+        v-if="isOverdue"
+      >
+        Your account is overdue. You cannot access the app until you downgrade to a Dreamer account or make a successful payment.
+      </p>
+      <button
+        class="button-small"
+        @click="updatePayment()"
+      >
+        Update Payment Method
+      </button>
+    </div>
+    <hr class="divider">
     <div class="credentials">
-      <h4>Email</h4>
+      <h4>Update email address</h4>
       <div class="change-email">
         <input 
           class="account-input" 
@@ -106,28 +117,28 @@
           :disabled="!editingEmail"
         >
         <button 
-          class="button-link" 
+          class="button-small button-link" 
           v-if="!editingEmail" 
           @click="editEmail()"
         >
           Edit
         </button>
         <button 
-          class="button-link" 
+          class="button-small button-link" 
           v-if="editingEmail" 
           @click="cancelEditEmail()"
         >
           Cancel
         </button>
         <button 
-          class="button-green" 
+          class="button-small button-green" 
           @click="saveEmail()" 
           :disabled="!editingEmail"
         >
           Save
         </button>
       </div>
-      <h4>Password</h4>
+      <h4>Update password</h4>
       <div class="change-password">
         <input
           class="account-input"
@@ -136,21 +147,21 @@
           :disabled="!editingPassword"
         >
         <button 
-          class="button-link" 
+          class="button-small button-link" 
           v-if="!editingPassword" 
           @click="editPassword()"
         >
           Edit
         </button>
         <button 
-          class="button-link" 
+          class="button-small button-link" 
           v-if="editingPassword" 
           @click="cancelEditPassword()"
         >
           Cancel
         </button>
         <button 
-          class="button-green" 
+          class="button-small button-green" 
           @click="savePassword()" 
           :disabled="!editingPassword"
         >
@@ -158,23 +169,28 @@
         </button>
       </div>
     </div>
-    <hr>
+    <hr class="divider">
     <div class="delete">
+      <p>
+        Want to permanently delete your account? Remember, you can always contact us at
+        <a href="mailto:support@edwardtheapp.com">support@edwardtheapp.com</a>
+        if something has gone wrong.
+      </p>
       <router-link to="/delete-account">
-        <button class="button-link">
+        <button class="button-small">
           Delete my account
         </button>
       </router-link>
     </div>
-    <hr>
+    <hr class="divider">
     <div class="cancel">
       <pulse-loader v-if="saving" />
       <button 
-        class="button-link" 
+        class="button-small button-green"
         @click="cancel()" 
         :disabled="saving"
       >
-        Go back to the app
+        Back to the app
       </button>
     </div>
   </div>
@@ -224,6 +240,13 @@ export default {
   computed: {
     accountType() {
       return this.user.accountType.displayName
+    },
+    accountTypeWithArticle() {
+      if (this.accountType.toLowerCase().startsWith('a')) {
+        return `an ${this.accountType}`
+      }
+
+      return `a ${this.accountType}`
     },
     isGold() {
       return this.user.accountType.name === 'GOLD'
@@ -526,26 +549,20 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  color: #00866F;
+}
+
 hr {
   margin: 8px 0;
   width: 100%;
 }
 
 .wrap {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
   flex: 1;
   flex-direction: column;
-}
-
-.account,
-.payment,
-.upgrade,
-.delete,
-.credentials {
-  max-width: 1200px;
-  padding: 0 50px;
-  width: 100%;
 }
 
 .payment {
@@ -593,5 +610,9 @@ hr {
 
 .account-input {
   min-width: 250px;
+}
+
+.delete {
+  margin-bottom: 16px;
 }
 </style>

@@ -3,7 +3,7 @@
 html, body {
   background-color: #F2F9F8;
   font-family: 'Source Serif Pro', sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   height: 100vh;
   margin: 0;
   padding: 0;
@@ -37,7 +37,6 @@ strong {
 
 a:not(.disguised) {
   cursor: pointer;
-  font-size: 14px;
   line-height: 21px;
   text-decoration: underline;
 }
@@ -58,6 +57,11 @@ button {
   padding: 16px 32px;
 }
 
+button.button-small {
+  font-size: 16px;
+  padding: 8px 16px;
+}
+
 button.button-green {
   background-color: #00866F;
   border: none;
@@ -66,10 +70,9 @@ button.button-green {
 }
 
 button.button-gold {
-  background-color: rgb(251,240,25);
-  border: 1px solid #c8b900;
-  color: #000;
-  fill: #000;
+  background-color: #F47866;
+  color: #323232;
+  fill: #323232;
 }
 
 button.button-icon {

@@ -274,7 +274,7 @@ export default {
 }
 
 .warn {
-  color: red;
+  color: #DA0000;
 }
 
 .sentence {

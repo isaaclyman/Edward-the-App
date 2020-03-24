@@ -279,7 +279,7 @@ input::placeholder {
 }
 
 .signup-input.invalid {
-  border-color: red;
+  border-color: #DA0000;
 }
 
 .field-info {
@@ -299,7 +299,7 @@ input::placeholder {
 }
 
 .message {
-  color: red;
+  color: #DA0000;
   height: 20px;
   margin: 8px 0;
 }

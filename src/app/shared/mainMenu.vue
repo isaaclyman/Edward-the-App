@@ -379,7 +379,7 @@ hr.between:last-of-type {
 }
 
 .warn {
-  color: red;
+  color: #DA0000;
 }
 
 .workshop-modal-title {

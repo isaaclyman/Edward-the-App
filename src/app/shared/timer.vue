@@ -281,7 +281,7 @@ export default {
 }
 
 .counter.expired {
-  color: red;
+  color: #DA0000;
 }
 
 .counter button {

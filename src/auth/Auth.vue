@@ -58,7 +58,7 @@ export default {
 }
 
 .error {
-  color: red;
+  color: #DA0000;
   font-size: 16px;
   margin: 0 auto;
   max-width: 100%;

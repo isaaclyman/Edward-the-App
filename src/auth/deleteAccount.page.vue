@@ -107,7 +107,7 @@ hr {
 }
 
 .error {
-  color: red;
+  color: #DA0000;
 }
 
 .cancel {

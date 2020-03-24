@@ -193,21 +193,17 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .prompt {
-  margin-top: 20px;
+  margin: 16px 0;
 }
 
 .warn {
-  color: red;
+  color: #DA0000;
 }
 
 .write {
   height: 300px;
-  margin-bottom: 12px;
-}
-
-.actions {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 </style>

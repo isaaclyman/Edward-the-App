@@ -118,6 +118,6 @@ export default {
 }
 
 .error {
-  color: red;
+  color: #DA0000;
 }
 </style>

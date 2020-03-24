@@ -566,7 +566,7 @@ hr {
 }
 
 .small {
-  color: red;
+  color: #DA0000;
   font-size: 10px;
   margin: 0 0 4px 0;
 }
@@ -577,7 +577,7 @@ hr {
 }
 
 .error {
-  color: red;
+  color: #DA0000;
   margin: 8px 0;
 }
 

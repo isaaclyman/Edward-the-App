@@ -86,7 +86,10 @@
         >support@edwardtheapp.com</a>.
       </div>
     </div>
-    <hr class="divider" v-if="isPremium">
+    <hr
+      class="divider"
+      v-if="isPremium"
+    >
     <div 
       class="payment" 
       v-if="isPremium"

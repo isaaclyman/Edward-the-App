@@ -163,10 +163,16 @@ hr.vert {
 }
 
 hr.vert-flex {
-  border: non;
+  border: none;
   border-right: 1px solid #CCC;
   display: inline;
   margin: 0 10px;
+}
+
+hr.vert-strong {
+  border: none;
+  border-right: 2px solid #323232;
+  display: inline-block;
 }
 
 input {

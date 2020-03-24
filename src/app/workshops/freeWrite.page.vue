@@ -225,22 +225,18 @@ export default {
 }
 
 .content {
-  height: 300px;
   position: relative;
 }
 
 .content-inner {
-  left: 0;
-  position: absolute;
-  top: 0;
   width: 100%;
 }
 
 .editor {
   display: block;
-  height: 200px;
-  margin-bottom: 50px;
-  min-height: 200px;
+  height: 300px;
+  margin-bottom: 32px;
+  min-height: 300px;
   transition: opacity 200ms;
 }
 

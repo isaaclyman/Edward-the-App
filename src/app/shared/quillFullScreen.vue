@@ -198,7 +198,7 @@ export default {
 
 .container {
   align-self: center;
-  height: calc(100% - 40px);
+  height: calc(100% - 48px);
   max-width: 500px;
   padding: 20px 0;
   width: 100%;

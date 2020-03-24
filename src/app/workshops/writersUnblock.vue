@@ -265,11 +265,12 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .prompt {
   display: flex;
   flex-direction: row;
-  margin-top: 20px;
+  margin-bottom: 16px;
+  margin-top: 16px;
 }
 
 .warn {
@@ -277,14 +278,18 @@ export default {
 }
 
 .sentence {
-  border-right: 1px solid #CCC;
   flex: 1;
-  padding-right: 20px;
+  padding-right: 16px;
+  border-right: 2px solid #323232;
 }
 
 .words {
   flex: 1;
-  padding-left: 20px;
+  padding-left: 16px;
+}
+
+.sentence p, .words p {
+  margin-bottom: 0;
 }
 
 a.define-link {
@@ -296,10 +301,6 @@ a.define-link {
 
 .write {
   height: 300px;
-  margin-bottom: 12px;
-}
-
-.actions {
-  margin-bottom: 20px;
+  margin-bottom: 32px;
 }
 </style>

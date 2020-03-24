@@ -200,7 +200,7 @@ function getAllOccurrences(regex, str) {
 
 <style scoped>
 .wrap {
-  height: calc(100% - 40px);
+  height: calc(100% - 48px);
 }
 
 .editor {

@@ -38,7 +38,7 @@
           ($7.99 per month, up to 10,000 pages)
         </p>
         <button 
-          class="button-green" 
+          class="button-small button-green" 
           @click="limitedToPremium()"
         >
           Upgrade to Author
@@ -46,7 +46,7 @@
       </div>
       <div v-if="!isGold">
         <p class="above-small">
-          Have you considered upgrading to a Bestseller account for extra premium storage space?
+          Upgrade to a Bestseller account for extra premium storage space.
         </p>
         <p class="price">
           ($14.99 per month, up to 125,000 pages)

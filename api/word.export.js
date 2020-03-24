@@ -6,13 +6,13 @@ const registerApis = function (app, passport, db, isPremiumUser) {
   const route = route => `/api/word/${route}`
 
   // GET params: guid, title, includeArchived
-  app.get(route('export-chapters'), isPremiumUser, (req, res, next) => {
+  app.get(route('export-chapters'), isPremiumUser, (req, res) => {
     const userId = req.user.id
     const { guid, title, includeArchived } = req.query
 
-    const numbering = new docx.Numbering();
-    const numberedAbstract = numbering.createAbstractNumbering();
-    numberedAbstract.createLevel(0, "number", "%1.", "left");
+    const numbering = new docx.Numbering()
+    const numberedAbstract = numbering.createAbstractNumbering()
+    numberedAbstract.createLevel(0, 'number', '%1.', 'left')
     let numberedConcrete
 
     const resetNumbering = function() {
@@ -115,8 +115,11 @@ const registerApis = function (app, passport, db, isPremiumUser) {
         lastPara = para
       }
 
-      const exporter = new docx.ExpressPacker(doc, res)
-      exporter.pack(title || 'Document')
+      const packer = new docx.Packer()
+      packer.toBase64String(doc).then(str => {
+        res.attachment(title + '.docx')
+        res.send(Buffer.from(str, 'base64'))
+      })
     })
   })
 }

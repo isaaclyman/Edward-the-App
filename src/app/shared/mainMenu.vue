@@ -63,30 +63,45 @@
           </div>
         </div>
       </button>
-      <button class="main-menu--button">
+      <button
+        class="main-menu--button"
+        ref="accountButton"
+      >
         <img 
           src="img/icons_account-white.png"
           class="main-menu--icon"
         >
         <div>Account</div>
-      </button>
-      <!-- <a 
-        class="disguised mobile-hide" 
-        :href="isOnline ? '/auth#/account' : '#'">
-        <div 
-          class="account" 
-          :class="{ 'offline': !isOnline }" 
-          :title="accountType.description" 
-          v-tooltip>
-          <div class="email">
-            {{ email }}
-          </div>
-          <div class="account-type">
-            {{ accountType.displayName }}
+        <div
+          ref="accountMenu"
+          style="display: none"
+        >
+          <div class="account-menu">
+            <div class="account-email">
+              {{ email }}
+            </div>
+            <div
+              class="account-type"
+              :title="accountType.description"
+              v-tooltip
+            >
+              {{ accountType.displayName }}
+            </div>
+            <div class="account-actions">
+              <a
+                v-if="isOnline"
+                href="/auth#/account"
+              >
+                <button class="button-green">
+                  Account Settings
+                </button>
+              </a>
+            </div>
           </div>
         </div>
-      </a> -->
+      </button>
     </div>
+
     <!-- Workshops modal -->
     <div style="display: none">
       <div 
@@ -196,6 +211,16 @@ export default {
     tippy(this.$refs.moreButton, {
       arrow: true,
       content: this.$refs.moreMenu.firstChild,
+      distance: 10,
+      interactive: true,
+      placement: 'bottom',
+      theme: 'light nopadding',
+      trigger: 'click'
+    })
+
+    tippy(this.$refs.accountButton, {
+      arrow: true,
+      content: this.$refs.accountMenu.firstChild,
       distance: 10,
       interactive: true,
       placement: 'bottom',
@@ -353,29 +378,23 @@ hr.between:last-of-type {
   width: 20px;
 }
 
-.account {
-  color: inherit;
-  cursor: pointer;
-  margin-left: 8px;
-  opacity: 1;
-  text-decoration: none;
+.account-menu {
+  font-size: 16px;
+  padding: 8px 16px;
 }
 
-.account.offline {
-  cursor: default;
-  opacity: 0.5;
-}
-
-.email {
-  color: rgb(13, 91, 166);
-  font-size: 14px;
-  margin-right: 20px;
+.account-email {
+  color: #00866F;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .account-type {
-  color: rgb(13, 91, 166);
-  font-size: 14px;
-  margin-right: 20px;
+  font-weight: bold;
+}
+
+.account-actions {
+  margin-top: 16px;
 }
 
 .warn {

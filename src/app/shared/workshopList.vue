@@ -39,7 +39,7 @@
           class="workshops" 
           v-show="activeWorkshopsTitle"
         >
-          <div class="workshop">
+          <div class="workshop-item">
             <div class="workshop-header">
               <div class="workshop-title">
                 {{ activeWorkshopsTitle }} ({{ activeWorkshopsDate }})
@@ -225,38 +225,6 @@ export default {
 </script>
 
 <style scoped>
-.workshop-list {
-  border: none;
-  border-top: none;
-  color: #000;
-  margin-bottom: 20px;
-}
-
-.workshop-list-header {
-  align-items: center;
-  background-color: #00866F;
-  color: #FFF;
-  display: flex;
-  flex-direction: row;
-  height: 48px;
-  padding-left: 16px;
-  padding-right: 8px;
-}
-
-.workshop-list-title {
-  color: #fff;
-  flex: 1;
-  font-size: 16px;
-  font-weight: bold;
-  padding: 2px 0;
-}
-
-.workshop-list-body {
-  background-color: #FFF;
-  font-size: 16px;
-  padding: 16px;
-}
-
 .workshop-select {
   margin-bottom: 8px;
 }
@@ -273,7 +241,7 @@ export default {
   margin-top: 16px;
 }
 
-.workshop {
+.workshop-item {
   border: none;
   border-top: none;
   color: #000;

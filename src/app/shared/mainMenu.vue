@@ -230,7 +230,7 @@ export default {
   },
   methods: {
     showWorkshops() {
-      if (!this.selectedWorkshop) {
+      if (this.isPremium && !this.selectedWorkshop) {
         this.selectedWorkshop = this.workshops[0]
       }
 
@@ -239,7 +239,7 @@ export default {
         className: 'workshop-modal',
         buttons: {
           cancel: true,
-          confirm: {
+          confirm: !this.isPremium ? false : {
             text: 'Begin',
             className: 'button-green'
           }

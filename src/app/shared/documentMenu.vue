@@ -151,7 +151,9 @@ export default {
   background-color: #F47866;
   border-radius: 4px;
   color: #323232;
+  display: flex;
   height: 30px;
+  justify-content: center;
   min-width: 200px;
 }
 </style>

@@ -2,9 +2,9 @@
   <div class="wrap">
     <div class="document">
       <div class="title">
-        <h3>
-          "{{ documentName }}"
-        </h3>
+        <h1>
+          {{ documentName }}
+        </h1>
       </div>
       <div class="actions">
         <label 
@@ -92,14 +92,13 @@ export default {
 }
 
 .document {
-  background-color: #FFF;
-  border-radius: 5px;
-  box-shadow: 0px -2px 12px -4px rgba(0,0,0,0.75);
+  background-color: #F2F9F8;
   display: block;
-  flex: 1;
+  height: min-content;
+  margin-bottom: 32px;
   max-width: 1050px;
-  overflow: auto;
-  padding: 15px;
+  padding: 32px;
+  width: 100%;
 }
 
 .actions {

@@ -63,23 +63,17 @@
       class="counter" 
       :class="{ 'expired': limitReached }"
     >
-      <div v-if="limitType === 'word'">
-        {{ wordCount }} of {{ limit }} words written
-      </div>
-      <div v-else-if="limitType === 'time'">
-        {{ timeDisplay }}
-      </div>
       <div v-if="!limitReached && limitType !== null">
         <button 
-          class="button-link" 
+          class="button-slim" 
           @click="reset()"
         >
-          Cancel
+          Change limits
         </button>
       </div>
       <div v-if="limitReached">
         <button 
-          class="button-link" 
+          class="button-slim" 
           @click="reset()"
         >
           Set again
@@ -87,11 +81,17 @@
       </div>
       <div v-if="limitType === null">
         <button 
-          class="button-link" 
+          class="button-slim" 
           @click="reset()"
         >
           Set a limit
         </button>
+      </div>
+      <div v-if="limitType === 'word'">
+        {{ wordsDisplay }}
+      </div>
+      <div v-else-if="limitType === 'time'">
+        {{ timeDisplay }}
       </div>
     </div>
   </div>
@@ -141,6 +141,14 @@ export default {
     wordCount() {
       return (this.fullText.match(/[^\s]+/g) || []).length
     },
+    wordsDisplay() {
+      const remaining = this.limit - this.wordCount
+      if (remaining >= 0) {
+        return `${remaining} word${remaining !== 1 ? 's' : ''} remaining`
+      }
+
+      return `${Math.abs(remaining)} word${remaining !== -1 ? 's' : ''} over`
+    }
   },
   data() {
     return {
@@ -231,8 +239,6 @@ export default {
 
 <style scoped>
 .limit {
-  background-color: #FFF;
-  border: 1px solid rgba(13, 91, 166, 0.5);
   display: inline-block;
   margin: 20px 0;
   min-width: 250px;
@@ -240,7 +246,18 @@ export default {
 }
 
 .limit-option {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
   margin-bottom: 4px;
+}
+
+.limit-option label {
+  margin-left: 6px;
+}
+
+.set-limit {
+  margin-top: 8px;
 }
 
 .set-limit-label {
@@ -252,10 +269,12 @@ export default {
 }
 
 .counter {
-  color: rgb(1,171,109);
-  display: inline-block;
-  font-size: 24px;
-  margin: 20px 0;
+  align-items: center;
+  color: #00866F;
+  display: flex;
+  flex-direction: row;
+  font-weight: bold;
+  margin: 8px 0;
   min-width: 250px;
   padding: 14px 0;
   transition: color 200ms;
@@ -265,7 +284,7 @@ export default {
   color: red;
 }
 
-.counter .button-link {
-  padding: 6px 0;
+.counter button {
+  margin-right: 8px;
 }
 </style>

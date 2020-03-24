@@ -47,14 +47,19 @@ a.disguised {
 }
 
 button {
-  background-color: transparent;
-  border: 1px solid #CCC;
+  background-color: #F0F0F0;
+  border: 2px solid #323232;
   border-radius: 12px;
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
   opacity: 1;
   padding: 8px 16px;
+}
+
+button.button-slim {
+  border-radius: 8px;
+  padding: 4px 8px;
 }
 
 button.button-green {
@@ -66,7 +71,7 @@ button.button-green {
 
 button.button-gold {
   background-color: rgb(251,240,25);
-  border: 1px solid #c8b900;
+  border: 2px solid #c8b900;
   color: #000;
   fill: #000;
 }
@@ -306,7 +311,6 @@ textarea {
 
 .workshop-wrap {
   display: flex;
-  font-size: 16px;
   justify-content: center;
   width: 100%;
 }
@@ -316,7 +320,11 @@ textarea {
 }
 
 .workshop {
+  background-color: #F2F9F8;
   display: block;
-  max-width: 100%;
-  width: 600px;
+  height: min-content;
+  margin-bottom: 32px;
+  max-width: 850px;
+  padding: 32px;
+  width: 100%;
 }

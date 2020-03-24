@@ -273,7 +273,6 @@ export default {
   margin-bottom: 30px;
   max-width: 100%;;
   position: relative;
-  width: 600px;
 }
 
 .description {
@@ -289,6 +288,7 @@ export default {
 .editor {
   display: block;
   margin-bottom: 75px;
+  margin-top: 8px;
   transition: opacity 200ms;
 }
 

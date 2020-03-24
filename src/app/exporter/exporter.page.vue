@@ -1,6 +1,7 @@
 <template>
   <div class="wrap">
     <div class="exporter">
+      <h1>Download / Upload</h1>
       <div class="export-option">
         <h3>Export to PDF</h3>
         <pulse-loader v-if="loading" />
@@ -44,9 +45,10 @@
           </button>
         </template>
       </div>
+      <hr class="divider">
       <div class="export-option">
         <h3>Export to Microsoft Word document</h3>
-        <div>(Author subscriptions only)</div>
+        <div>(Paid subscriptions only)</div>
         <pulse-loader v-if="loading" />
         <div class="export-checkbox">
           <input 
@@ -69,6 +71,7 @@
           </button>
         </template>
       </div>
+      <hr class="divider">
       <div class="export-option">
         <h3>Create a backup</h3>
         <div>(You can recover your document from this file later.)</div>
@@ -81,12 +84,14 @@
           Export entire document
         </button>
       </div>
+      <hr class="divider">
       <div 
         class="export-option" 
         v-if="isOnline"
       >
         <h3>Import a backup</h3>
-        <div>
+        <div class="warning">
+          <span class="fas fa-exclamation-circle" />
           (Warning: This will overwrite the current document completely, including all chapters, plans, outlines and workshops.)
         </div>
         <div class="file-input-container">
@@ -380,13 +385,21 @@ export default {
 }
 
 .exporter {
+  background-color: #F2F9F8;
   display: block;
-  flex: 1;
+  height: min-content;
+  margin-bottom: 32px;
   max-width: 1050px;
+  padding: 32px;
+  width: 100%;
+}
+
+h1 {
+  margin-bottom: 32px;
 }
 
 .export-option {
-  margin-bottom: 16px;
+  margin-bottom: 32px;
 }
 
 .export-checkbox {
@@ -394,7 +407,7 @@ export default {
 }
 
 .export-button {
-  margin: 10px 0;
+  margin: 8px 16px 8px 0;
 }
 
 .file-input-container {
@@ -422,5 +435,9 @@ export default {
 
 .file-dummy-button {
   pointer-events: none;
+}
+
+.warning {
+  color: #DA0000;
 }
 </style>

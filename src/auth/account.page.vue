@@ -359,6 +359,8 @@ export default {
         return this.limitedToGold()
       } else if (userType === accountTypes.PREMIUM.name) {
         return this.premiumToGold()
+      } else {
+        console.log('Action not set up for ' + userType)
       }
     },
     premiumToGold() {

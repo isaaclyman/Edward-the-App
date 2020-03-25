@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.097c439eeb2bcc80a98b52e59ecc62ba.js"
+  "/precache-manifest.50f61ef691d7d03dab3e9ffbd58f547f.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "edward-the-app"});

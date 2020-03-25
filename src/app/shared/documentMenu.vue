@@ -123,11 +123,13 @@ export default {
 }
 
 .menu-button {
+  align-items: center;
   border: none;
   border-radius: 0;
   box-shadow: none;
   color: #323232;
   display: flex;
+  flex-direction: row;
   font-size: 16px;
   font-weight: bold;
   height: 100%;

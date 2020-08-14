@@ -4,11 +4,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/admin.html"
   },
   {
-    "revision": "abd4453b3a9eb35075ae3eeb5ce4ebe4",
+    "revision": "1bc7b654b1d77509ded99981c3eea722",
     "url": "/app.html"
   },
   {
-    "revision": "7ceab1b649245b5df7ec578daee7b4a4",
+    "revision": "d196dbe6cd2304395f03ea37c93eca39",
     "url": "/auth.html"
   },
   {
@@ -380,8 +380,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/robots.txt"
   },
   {
-    "revision": "0f80a5596142b91288e5",
-    "url": "/static/css/account-page.e24a96ce.css"
+    "revision": "cfbae8108f18a519533c",
+    "url": "/static/css/account-page.2faa39e5.css"
   },
   {
     "revision": "e2c3d6f8282213a2e8bb",
@@ -392,11 +392,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/analyser.e777c0a2.css"
   },
   {
-    "revision": "be5a7b5c8f746d4f11c5",
-    "url": "/static/css/app.fd65da67.css"
+    "revision": "5bf7dba8600bb41ad948",
+    "url": "/static/css/app.5d902150.css"
   },
   {
-    "revision": "cf80863cd4faf3e7a61e",
+    "revision": "7179efc4cab273440bca",
     "url": "/static/css/auth.fa67483c.css"
   },
   {
@@ -440,8 +440,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/img/modal-logo@2x.a7ee511e.png"
   },
   {
-    "revision": "0f80a5596142b91288e5",
-    "url": "/static/js/account-page.b5b7872b.js"
+    "revision": "cfbae8108f18a519533c",
+    "url": "/static/js/account-page.79ae1c6b.js"
   },
   {
     "revision": "e2c3d6f8282213a2e8bb",
@@ -452,12 +452,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/analyser.15f87b18.js"
   },
   {
-    "revision": "be5a7b5c8f746d4f11c5",
-    "url": "/static/js/app.827e09a1.js"
+    "revision": "5bf7dba8600bb41ad948",
+    "url": "/static/js/app.5929d4c3.js"
   },
   {
-    "revision": "cf80863cd4faf3e7a61e",
-    "url": "/static/js/auth.665160b7.js"
+    "revision": "7179efc4cab273440bca",
+    "url": "/static/js/auth.5e7ddc08.js"
   },
   {
     "revision": "42147f9c2b77eb926daf",

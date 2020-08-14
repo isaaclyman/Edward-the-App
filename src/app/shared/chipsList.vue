@@ -272,6 +272,7 @@ export default {
 }
 
 .chip-add-button {
+  align-items: center;
   display: flex;
   fill: #FFF;
   font-size: 16px;

@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/app.html"
   },
   {
-    "revision": "d196dbe6cd2304395f03ea37c93eca39",
+    "revision": "6e37053ec473fc38be608bc7772e334b",
     "url": "/auth.html"
   },
   {
@@ -368,7 +368,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.css"
   },
   {
-    "revision": "89a2dc9ecdb2441f5c1855554d73bbaf",
+    "revision": "8edbbb540ad934348d238cda58f2f965",
     "url": "/index.html"
   },
   {
@@ -396,8 +396,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/app.5d902150.css"
   },
   {
-    "revision": "7179efc4cab273440bca",
-    "url": "/static/css/auth.fa67483c.css"
+    "revision": "d9fe04012152a1d46fb7",
+    "url": "/static/css/auth.0e79c3cf.css"
   },
   {
     "revision": "42147f9c2b77eb926daf",
@@ -456,8 +456,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/app.5929d4c3.js"
   },
   {
-    "revision": "7179efc4cab273440bca",
-    "url": "/static/js/auth.5e7ddc08.js"
+    "revision": "d9fe04012152a1d46fb7",
+    "url": "/static/js/auth.b0b8f8a7.js"
   },
   {
     "revision": "42147f9c2b77eb926daf",

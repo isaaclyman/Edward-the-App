@@ -1,9 +1,9 @@
 <template>
   <div class="wrap">
     <h3 class="signup-message">
-      Your Dreamer account is free. Use it for as long as you want.
+      Edward is no longer accepting new signups.
     </h3>
-    <div class="signup-section username">
+    <!-- <div class="signup-section username">
       <div class="signup-field">
         <label 
           class="signup-label" 
@@ -91,7 +91,7 @@
       >
         Create account
       </button>
-    </div>
+    </div> -->
     <hr class="divider">
     <div class="log-in">
       <span>Already have an account?</span>
@@ -108,8 +108,8 @@
 
 <script>
 import authApi from './authApi'
-import Captcha from './captcha.vue'
-import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
+// import Captcha from './captcha.vue'
+// import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import tooltip from '../app/shared/tooltip.directive'
 
 const emailRegex = /^.+@.+\..+$/
@@ -117,8 +117,8 @@ const infoIcon = '<svg version="1.1" width="20" height="20" viewBox="0 0 14 16" 
 
 export default {
   components: {
-    Captcha,
-    PulseLoader,
+    // Captcha,
+    // PulseLoader,
   },
   directives: {
     tooltip

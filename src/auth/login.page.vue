@@ -64,14 +64,7 @@
     </div>
     <hr class="divider">
     <div class="sign-up">
-      Don't have an account?
-      <button 
-        tabindex="6" 
-        class="button-link" 
-        @click="signUp()"
-      >
-        Sign up for free.
-      </button>
+      Signups are no longer available.
     </div>
   </div>
 </template>

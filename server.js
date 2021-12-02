@@ -2,16 +2,13 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const express = require('express')
 const expressStaticGzip = require('express-static-gzip')
-const passport = require('passport')
 const path = require('path')
 const timeout = require('connect-timeout')
-const session = require('express-session')
-const KnexSessionStore = require('connect-session-knex')(session)
 
-if (!process.env.DATABASE_URL) {
-  const env = require('node-env-file')
-  env(path.join(__dirname, '.env'))
-}
+// if (!process.env.DATABASE_URL) {
+//   const env = require('node-env-file')
+//   env(path.join(__dirname, '.env'))
+// }
 
 const app = express()
 
@@ -52,35 +49,35 @@ app.get('/press', (req, res) => {
 })
 
 // Database ORM
-const knex = require('./db')
-const { db, dbReady } = require('./models/_index')(knex)
+// const knex = require('./db')
+// const { db, dbReady } = require('./models/_index')(knex)
 
-const serverReady = dbReady.then(() => {
+const serverReady = Promise.resolve(true).then(() => {
   // Configure passport auth
-  require('./passport/config')(passport, knex)
+  // require('./passport/config')(passport, knex)
 
   // Auth sessions
-  const sessionStore = new KnexSessionStore({
-    knex
-  })
+  // const sessionStore = new KnexSessionStore({
+  //   knex
+  // })
 
-  app.set('trust proxy', 1)
-  app.use(session({
-    store: sessionStore,
-    saveUninitialized: false,
-    secret: process.env.SESSION_COOKIE_SECRET,
-    resave: false,
-    cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 7 days
-      // Set "null" for a temporary cookie (expires when browser session ends)
-      secure: process.env.INSECURE_COOKIES !== 'true',
-    },
-  }))
-  app.use(passport.initialize())
-  app.use(passport.session())
+  // app.set('trust proxy', 1)
+  // app.use(session({
+  //   store: sessionStore,
+  //   saveUninitialized: false,
+  //   secret: process.env.SESSION_COOKIE_SECRET,
+  //   resave: false,
+  //   cookie: {
+  //     maxAge: 30 * 24 * 60 * 60 * 1000, // 7 days
+  //     // Set "null" for a temporary cookie (expires when browser session ends)
+  //     secure: process.env.INSECURE_COOKIES !== 'true',
+  //   },
+  // }))
+  // app.use(passport.initialize())
+  // app.use(passport.session())
 
   // REST APIs
-  require('./api/_index')(app, passport, db)
+  // require('./api/_index')(app, passport, db)
 
   // Log errors
   app.use((err, req, res, next) => {
@@ -96,7 +93,7 @@ const serverReady = dbReady.then(() => {
   app.server = app.listen(port, () => {
     console.log(`Express listening on port ${port}`)
   })
-  return sessionStore.ready
+  return true
 })
 
-module.exports = { app, knex, serverReady }
+module.exports = { app, serverReady }

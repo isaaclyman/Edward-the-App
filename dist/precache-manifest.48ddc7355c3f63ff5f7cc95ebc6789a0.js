@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/app.html"
   },
   {
-    "revision": "6e37053ec473fc38be608bc7772e334b",
+    "revision": "1cf9c68085a5aa0427a0e87f952fb742",
     "url": "/auth.html"
   },
   {
@@ -368,7 +368,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/index.css"
   },
   {
-    "revision": "8edbbb540ad934348d238cda58f2f965",
+    "revision": "0e0b08a61f6703902b4be0239ae0c3f0",
     "url": "/index.html"
   },
   {
@@ -380,7 +380,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/robots.txt"
   },
   {
-    "revision": "cfbae8108f18a519533c",
+    "revision": "592bdae3e8d842384ac7",
     "url": "/static/css/account-page.2faa39e5.css"
   },
   {
@@ -396,8 +396,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/app.5d902150.css"
   },
   {
-    "revision": "d9fe04012152a1d46fb7",
-    "url": "/static/css/auth.0e79c3cf.css"
+    "revision": "aab78c5f161fd0e278f5",
+    "url": "/static/css/auth.3be9293b.css"
   },
   {
     "revision": "42147f9c2b77eb926daf",
@@ -440,8 +440,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/img/modal-logo@2x.a7ee511e.png"
   },
   {
-    "revision": "cfbae8108f18a519533c",
-    "url": "/static/js/account-page.79ae1c6b.js"
+    "revision": "592bdae3e8d842384ac7",
+    "url": "/static/js/account-page.3fc97df6.js"
   },
   {
     "revision": "e2c3d6f8282213a2e8bb",
@@ -456,8 +456,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/app.5929d4c3.js"
   },
   {
-    "revision": "d9fe04012152a1d46fb7",
-    "url": "/static/js/auth.b0b8f8a7.js"
+    "revision": "aab78c5f161fd0e278f5",
+    "url": "/static/js/auth.5af80792.js"
   },
   {
     "revision": "42147f9c2b77eb926daf",

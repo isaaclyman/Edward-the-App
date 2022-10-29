@@ -10,7 +10,7 @@ module.exports = function (knex) {
   // Run all migrations that have not been run
   // Then make sure the demo user exists
   const demoEmail = 'demo@edwardtheapp.com'
-  const dbReady = knex.migrate.latest().then(() => {
+  const dbReady = Promise.resolve().then(() => {
     return (
       knex('users').where('email', demoEmail).first()
     )

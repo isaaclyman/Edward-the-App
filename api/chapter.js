@@ -39,7 +39,7 @@ const updateChapter = (db, userId, docGuid, chapter) => {
     return Promise.all([
       db.knex('chapter_topics').where({
         'user_id': userId,
-        'chapter_id': chapterId
+        'chapter_id': typeof chapterId === 'number' ? chapterId : chapterId.id
       }).select(),
       db.knex('master_topics').where({
         'user_id': userId,
@@ -65,12 +65,15 @@ const updateChapter = (db, userId, docGuid, chapter) => {
     const guidsToInsert = difference(incomingTopicGuids, existingTopicGuids)
     const guidsToUpdate = difference(incomingTopicGuids, guidsToInsert)
 
-    const insertPromise = db.knex('chapter_topics').insert(guidsToInsert.map(guid => ts(db.knex, {
-      content: topicDict[guid].content,
-      'user_id': userId,
-      'chapter_id': chapId(),
-      'master_topic_id': masterTopics.find(mt => mt.guid === guid).id
-    })))
+    let insertPromise = Promise.resolve()
+    if (guidsToInsert.length) {
+      insertPromise = db.knex('chapter_topics').insert(guidsToInsert.map(guid => ts(db.knex, {
+        content: topicDict[guid].content,
+        'user_id': userId,
+        'chapter_id': chapId(),
+        'master_topic_id': masterTopics.find(mt => mt.guid === guid).id
+      })))
+    }
 
     const updatePromises = guidsToUpdate.map(guid => db.knex('chapter_topics').where({
       'user_id': userId,

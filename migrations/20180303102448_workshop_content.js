@@ -1,15 +1,15 @@
 const writingWorkshops = require('../models/writingWorkshop')
 
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return workshopContentTable(knex)
 }
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return knex.schema.dropTableIfExists('workshop_content')
 }
 
 function workshopContentTable (knex) {
-  return knex.schema.createTable('workshop_content', t => {
+  return knex.schema.createTable('workshop_content', (t) => {
     t.increments('id').primary()
     // Duplicate guids are allowed in order to group workshop content together
     t.uuid('guid').notNullable()

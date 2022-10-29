@@ -12,7 +12,7 @@ const config = {
       done(null, conn)
     },
   },
-  acquireConnectionTimeout: 15000,
+  acquireConnectionTimeout: 10000,
 }
 
 const knex = require('knex')(config)
